@@ -12,9 +12,13 @@ export function SkincareDashboard() {
       <UserProfile />
       <RecommendationsSection>
         <TabsContent value="overview" className="space-y-6">
-          <SummaryOverview />
+          <SummaryOverview
+            summary={analysis.summary}
+            sensitivity={analysis.sensitivity}
+            skinTypeDescription={analysis.skinType.description}
+          />
           <div className="p-4 rounded-lg bg-white">
-            <h2 className="text-sm font-light text-muted-foreground">
+            <h2 className="text-base font-light text-muted-foreground">
               SEVERITY RADAR
             </h2>
             <p className="text-xs text-muted-foreground mt-1">
@@ -27,7 +31,7 @@ export function SkincareDashboard() {
             </div>
           </div>
           <div className="p-4 rounded-lg bg-white">
-            <h2 className="text-sm font-light text-muted-foreground">
+            <h2 className="text-base font-light text-muted-foreground">
               SKIN CONCERNS
             </h2>
             <p className="text-xs text-muted-foreground mt-1">
