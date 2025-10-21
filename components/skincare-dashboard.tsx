@@ -1,71 +1,49 @@
-"use client"
+import { UserProfile } from "@/components/user-profile";
+import { SummaryOverview } from "@/components/summary-overview";
+import { SeverityRadar } from "@/components/severity-radar";
+import { ConcernCard } from "@/components/concern-card";
+import { RecommendationsSection } from "@/components/recommendations-section";
+import { analysis } from "@/lib/mock-data";
+import { TabsContent } from "@/components/ui/tabs";
 
-import { useState } from "react"
-import { UserProfile } from "./user-profile"
-import { SummaryOverview } from "./summary-overview"
-import { ConcernCard } from "./concern-card"
-import { ConcernDetail } from "./concern-detail"
-import { RecommendationsSection } from "./recommendations-section"
-
-export function SkincareAnalysisDashboard({ data }: any) {
-  const [selectedConcern, setSelectedConcern] = useState<string | null>(null)
-
-  const selectedConcernData = selectedConcern ? data.concerns.find((c: any) => c.id === selectedConcern) : null
-
+export function SkincareDashboard() {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-semibold text-foreground">Skin Analysis</h1>
-          {data.metadata?.disclaimer && (
-            <p className="mt-1 text-xs text-muted-foreground">{data.metadata.disclaimer}</p>
-          )}
-        </div>
-      </div>
-
-      <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-        {/* User Profile */}
-        <UserProfile user={data.user} />
-
-        {/* Summary Overview */}
-        <SummaryOverview summary={data.summary} sensitivity={data.sensitivity} overviewCharts={data.overview_charts} />
-
-        {/* Skin Type Description */}
-        {data.skinTypeDescription && (
-          <div className="mb-6 rounded-lg border border-border bg-card p-4">
-            <p className="text-sm text-muted-foreground">{data.skinTypeDescription}</p>
-          </div>
-        )}
-
-        {/* Concerns Grid */}
-        {!selectedConcern ? (
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-foreground">Skin Concerns</h2>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {data.concerns.map((concern: any) => (
-                <ConcernCard key={concern.id} concern={concern} onClick={() => setSelectedConcern(concern.id)} />
-              ))}
+    <div className="p-4 space-y-6 bg-gray-50">
+      <UserProfile />
+      <RecommendationsSection>
+        <TabsContent value="overview" className="space-y-6">
+          <SummaryOverview />
+          <div className="p-4 rounded-lg bg-white">
+            <h2 className="text-sm font-light text-muted-foreground">
+              SEVERITY RADAR
+            </h2>
+            <p className="text-xs text-muted-foreground mt-1">
+              Severity is on a 0–5 scale (0 = best/5 = worst). Radar shows
+              overall severity: Larger filled area = more severe concerns across
+              dimensions.
+            </p>
+            <div className="h-[350px] w-full">
+              <SeverityRadar />
             </div>
-
-            {/* Recommendations */}
-            <RecommendationsSection recommendations={data.recommendations} />
           </div>
-        ) : (
-          <div className="space-y-4">
-            <button
-              onClick={() => setSelectedConcern(null)}
-              className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Back to Overview
-            </button>
-            <ConcernDetail concern={selectedConcernData} />
+          <div className="p-4 rounded-lg bg-white">
+            <h2 className="text-sm font-light text-muted-foreground">
+              SKIN CONCERNS
+            </h2>
+            <p className="text-xs text-muted-foreground mt-1">
+              Below are all your skin attributes rated in order of severity.
+              Click on each attribute to see a deeper analysis of each area.
+            </p>
+            <div className="space-y-4 mt-4">
+              {analysis.concerns
+                .sort((a, b) => b.score - a.score)
+                .map((concern) => (
+                  <ConcernCard key={concern.name} concern={concern} />
+                ))}
+            </div>
           </div>
-        )}
-      </div>
+        </TabsContent>
+      </RecommendationsSection>
     </div>
-  )
+  );
 }

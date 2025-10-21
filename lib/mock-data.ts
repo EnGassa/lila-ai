@@ -1,328 +1,150 @@
-export const mockAnalysisData = {
-  user: {
-    id: "user_001",
-    name: "Anonymous User",
-    age: 34,
-    gender: "Not specified",
-    profileImage: "/woman-profile-portrait.jpg",
-    analysisDate: "2024-10-17",
-    analysisTime: "14:32",
-    photoQuality: "Good - clear daylight shots with good focus/exposure",
-  },
-  metadata: {
-    analysisType: "Smartphone Photo Review (non-diagnostic)",
-    disclaimer: "Results are educational coaching, not a medical diagnosis. No escalation flags noted.",
-  },
+export const user = {
+  name: "Rose E.",
+  age: 39,
+  gender: "Female",
+  avatar: "/placeholder-user.jpg",
+};
+
+interface Recommendation {
+  product: string;
+  reason: string;
+}
+
+interface Concern {
+  name: string;
+  score: number;
+  ryg: "Green" | "Yellow" | "Red";
+  description: string;
+  recommendations: Recommendation[];
+}
+
+interface Analysis {
+  summary: {
+    skinType: string;
+    skinAge: number;
+    topConcerns: string[];
+  };
+  sensitivity: {
+    redness: number;
+    acne: number;
+  };
+  skinType: {
+    type: string;
+    description: string;
+  };
+  skinTone: {
+    fitzpatrick: string;
+    description: string;
+  };
+  concerns: Concern[];
+}
+
+export const analysis: Analysis = {
   summary: {
     skinType: "Combination",
     skinAge: 34,
-    fitzpatrickTone: "IV",
-    topConcerns: ["Pores", "Under Eye", "Redness"],
+    topConcerns: ["Under Eye", "Wrinkles", "Pores"],
   },
   sensitivity: {
     redness: 2,
     acne: 1,
   },
-  skinTypeDescription:
-    "Mild shine and visible pores on the T-zone (nose > inner cheeks), balanced/normal on the cheeks and jaw.",
-  overview_charts: {
-    radar: {
-      axis_order: ["pores", "wrinkles", "pigmentation", "redness", "texture", "acne", "under_eye"],
-      axes: [
-        {
-          key: "pores",
-          label: "Pores",
-          raw_score_1_5: 3,
-          value_0_100: 50,
-          your_percentile_0_1: 0.67,
-          cohort_median_0_100: 45,
-        },
-        {
-          key: "wrinkles",
-          label: "Wrinkles",
-          raw_score_1_5: 3,
-          value_0_100: 50,
-          your_percentile_0_1: 0.58,
-          cohort_median_0_100: 47,
-        },
-        {
-          key: "pigmentation",
-          label: "Pigmentation",
-          raw_score_1_5: 2,
-          value_0_100: 25,
-          your_percentile_0_1: 0.3,
-          cohort_median_0_100: 35,
-        },
-        {
-          key: "redness",
-          label: "Redness",
-          raw_score_1_5: 2,
-          value_0_100: 25,
-          your_percentile_0_1: 0.28,
-          cohort_median_0_100: 30,
-        },
-        {
-          key: "texture",
-          label: "Texture",
-          raw_score_1_5: 3,
-          value_0_100: 50,
-          your_percentile_0_1: 0.61,
-          cohort_median_0_100: 42,
-        },
-        {
-          key: "acne",
-          label: "Acne",
-          raw_score_1_5: 2,
-          value_0_100: 25,
-          your_percentile_0_1: 0.35,
-          cohort_median_0_100: 33,
-        },
-        {
-          key: "under_eye",
-          label: "Under Eye",
-          raw_score_1_5: 3,
-          value_0_100: 50,
-          your_percentile_0_1: 0.62,
-          cohort_median_0_100: 46,
-        },
-      ],
-      series: [
-        {
-          label: "You",
-          values_0_100: [50, 50, 25, 25, 50, 25, 50],
-        },
-        {
-          label: "Age 30–39 median",
-          values_0_100: [45, 47, 35, 30, 42, 33, 46],
-        },
-      ],
-      scale: {
-        min: 0,
-        max: 100,
-        direction: "higher_is_worse",
-        formula: "value_0_100 = (raw_score_1_5 - 1) / 4 * 100",
-        notes: "1=best, 5=worst; linear mapping for readability.",
-      },
-    },
+  skinType: {
+    type: "Combination",
+    description:
+      "Your skin shows characteristics of both oily and dry types. An oily T-zone (forehead, nose, and chin) is common, while the cheeks may be drier. This can be influenced by factors like genetics, hormones, and even seasonal weather changes.",
+  },
+  skinTone: {
+    fitzpatrick: "III",
+    description:
+      "This skin tone is characterized by light brown or olive skin that tans easily and is less prone to burning.",
   },
   concerns: [
     {
-      id: "pores",
       name: "Pores",
-      score: 3,
-      maxScore: 5,
-      severity: "yellow",
-      rationale:
-        "Visible sebaceous filaments and larger apparent pore size on nose; mild on inner cheeks; minimal elsewhere.",
-      explanation: "Higher sebaceous activity in T-zone concentrates oil in follicles.",
-      causes: [
-        "Higher sebaceous activity in T-zone concentrates oil in follicles.",
-        "UV exposure over time can reduce collagen support → enlarged appearance.",
-        "Dehydration or occlusive makeup can accentuate pore edges.",
-        "Genetics: baseline pore density varies by individual.",
+      score: 4.4,
+      ryg: "Red",
+      description:
+        "Visible sebaceous filaments and larger apparent pore size on nose; mild on...",
+      recommendations: [
+        {
+          product: "Salicylic Acid Cleanser",
+          reason: "Helps to exfoliate and clear out pores.",
+        },
       ],
-      regionalData: [
-        { region: "Nose", severity: 62, label: "High" },
-        { region: "L Malar Cheek", severity: 35, label: "Medium" },
-        { region: "R Malar Cheek", severity: 38, label: "Medium" },
-        { region: "Forehead", severity: 20, label: "Low" },
-        { region: "Chin", severity: 28, label: "Low" },
-      ],
-      chartData: [
-        { region: "Nose", value: 260, unit: "count" },
-        { region: "L Malar", value: 110, unit: "count" },
-        { region: "R Malar", value: 120, unit: "count" },
-        { region: "Forehead", value: 90, unit: "count" },
-        { region: "Chin", value: 95, unit: "count" },
-      ],
-      citations: ["[Pores-1]", "[Retinoids-1]"],
     },
     {
-      id: "wrinkles",
       name: "Wrinkles",
-      score: 2,
-      maxScore: 5,
-      severity: "green",
-      rationale: "Fine dynamic smile lines peri-orbital; no etched static lines at rest.",
-      explanation: "Dynamic lines appear with facial expressions; static lines are visible at rest.",
-      causes: [
-        "Natural aging: skin's production of collagen and elastin decreases.",
-        "Facial expressions: repeated muscle movements create grooves.",
-        "Sun exposure: UV radiation accelerates collagen breakdown.",
-        "Lifestyle factors: smoking and environmental pollutants speed aging.",
+      score: 3.3,
+      ryg: "Yellow",
+      description:
+        "Visible sebaceous filaments and larger apparent pore size on nose; mild on...",
+      recommendations: [
+        {
+          product: "Retinol Serum",
+          reason: "Promotes collagen production and reduces fine lines.",
+        },
       ],
-      regionalData: [
-        { region: "Peri-orbital (smiling)", severity: 35, label: "Low-Medium" },
-        { region: "Forehead", severity: 18, label: "Low" },
-        { region: "Cheeks", severity: 12, label: "Minimal" },
-      ],
-      chartData: [
-        { region: "Peri-orbital", value: 1.8, unit: "wrinkle length index" },
-        { region: "Forehead", value: 0.9, unit: "wrinkle length index" },
-        { region: "Cheeks", value: 0.6, unit: "wrinkle length index" },
-      ],
-      citations: ["[Photoaging-1]", "[Retinoids-1]"],
     },
     {
-      id: "pigmentation",
       name: "Pigmentation",
-      score: 2,
-      maxScore: 5,
-      severity: "yellow",
-      rationale: "Mild tone variation under eyes and around mouth; otherwise even.",
-      explanation: "Mild tone variation is normal and manageable with proper sun protection.",
-      causes: [
-        "Sun exposure: UV rays trigger overproduction of melanin.",
-        "Hormonal changes: fluctuations influence melanin production.",
-        "Post-inflammatory hyperpigmentation: can occur after skin inflammation.",
+      score: 2.8,
+      ryg: "Yellow",
+      description:
+        "Tightness and flakiness of skin, particularly on cheeks and forehead...",
+      recommendations: [
+        {
+          product: "Vitamin C Serum",
+          reason: "Brightens skin and fades dark spots.",
+        },
       ],
-      regionalData: [
-        { region: "Under-eye", severity: 40, label: "Medium" },
-        { region: "Perioral", severity: 30, label: "Low-Medium" },
-        { region: "Cheeks", severity: 18, label: "Low" },
-        { region: "Forehead", severity: 16, label: "Low" },
-        { region: "Nose", severity: 22, label: "Low" },
-      ],
-      chartData: [
-        { region: "Under-eye", value: 14, unit: "% relative area" },
-        { region: "Perioral", value: 9, unit: "% relative area" },
-        { region: "Cheeks", value: 6, unit: "% relative area" },
-        { region: "Forehead", value: 5, unit: "% relative area" },
-        { region: "Nose", value: 6, unit: "% relative area" },
-      ],
-      citations: ["[Pigmentation-1]", "[VitaminC-1]"],
     },
     {
-      id: "redness",
       name: "Redness",
-      score: 2,
-      maxScore: 5,
-      severity: "yellow",
-      rationale: "Localized pinkness at nose bridge/alar; cheeks neutral.",
-      explanation: "Localized redness indicates mild sensitivity in specific areas.",
-      causes: [
-        "Sensitivity: this area can be prone to sensitivity and broken capillaries.",
-        "Irritation: mild irritation from environmental factors or skincare products.",
+      score: 2.1,
+      ryg: "Green",
+      description:
+        "Visible sebaceous filaments and larger apparent pore size on nose; mild on...",
+      recommendations: [
+        {
+          product: "Niacinamide Serum",
+          reason: "Calms inflammation and reduces redness.",
+        },
       ],
-      regionalData: [
-        { region: "Nasal Bridge", severity: 40, label: "Medium" },
-        { region: "Alar", severity: 45, label: "Medium" },
-        { region: "Cheeks", severity: 22, label: "Low" },
-        { region: "Forehead", severity: 15, label: "Low" },
-      ],
-      chartData: [
-        { region: "Nose", value: 12, unit: "% redness" },
-        { region: "Cheeks", value: 6, unit: "% redness" },
-        { region: "Forehead", value: 4, unit: "% redness" },
-        { region: "Chin", value: 5, unit: "% redness" },
-      ],
-      citations: ["[Erythema-1]"],
     },
     {
-      id: "texture",
       name: "Skin Texture",
-      score: 2,
-      maxScore: 5,
-      severity: "green",
-      rationale: "Generally smooth with low roughness; occasional tiny macules.",
-      explanation: "Texture unevenness is manageable with proper hydration and exfoliation.",
-      causes: [
-        "Dead skin cell buildup: slowed natural exfoliation.",
-        "Dehydration: skin lacks moisture and appears less plump.",
-        "Collagen loss: gradual loss with age affects underlying support.",
+      score: 1.0,
+      ryg: "Green",
+      description:
+        "Visible sebaceous filaments and larger apparent pore size on nose; mild on...",
+      recommendations: [
+        {
+          product: "AHA/BHA Exfoliant",
+          reason: "Improves skin texture by removing dead skin cells.",
+        },
       ],
-      regionalData: [
-        { region: "Nose", severity: 30, label: "Low-Medium" },
-        { region: "Cheeks", severity: 22, label: "Low" },
-        { region: "Forehead", severity: 18, label: "Low" },
-        { region: "Chin", severity: 20, label: "Low" },
-      ],
-      chartData: [
-        { region: "Nose", value: 8, unit: "% roughness" },
-        { region: "Cheeks", value: 6, unit: "% roughness" },
-        { region: "Forehead", value: 5, unit: "% roughness" },
-        { region: "Chin", value: 5, unit: "% roughness" },
-      ],
-      citations: ["[Texture-1]"],
     },
     {
-      id: "acne",
-      name: "Acne Severity",
-      score: 1,
-      maxScore: 5,
-      severity: "green",
-      rationale: "No active inflammatory lesions; a couple of tiny spots only.",
-      explanation: "Clear skin indicates well-managed pores and good skin health.",
-      causes: [
-        "Clear pores: absence of acne indicates pores are not clogged with excess oil, dead skin cells, and bacteria.",
-      ],
-      regionalData: [{ region: "All Regions", severity: 0, label: "Clear" }],
-      chartData: [{ region: "All Regions", value: 0, unit: "lesion count" }],
-      citations: ["[Acne-Grading-1]"],
+      name: "Acne",
+      score: 1.0,
+      ryg: "Green",
+      description:
+        "Visible sebaceous filaments and larger apparent pore size on nose; mild on...",
+      recommendations: [],
     },
     {
-      id: "under_eye",
       name: "Under Eye",
-      score: 3,
-      maxScore: 5,
-      severity: "yellow",
-      rationale: "Mild bilateral darkening and slight hollowness; skin itself looks smooth.",
-      explanation: "Mild bilateral darkening and slight hollowness; skin itself looks smooth.",
-      causes: [
-        "Genetics: predisposition to dark circles can be hereditary.",
-        "Thin skin: very delicate, making underlying blood vessels more visible.",
-        "Volume loss: natural aging leads to loss of fat and collagen.",
-        "Lifestyle factors: lack of sleep, stress, and dehydration contribute.",
+      score: 1.0,
+      ryg: "Green",
+      description:
+        "Visible sebaceous filaments and larger apparent pore size on nose; mild on...",
+      recommendations: [
+        {
+          product: "Caffeine Eye Cream",
+          reason: "Reduces puffiness and the appearance of dark circles.",
+        },
       ],
-      regionalData: [
-        { region: "L Under-eye", severity: 38, label: "Medium" },
-        { region: "R Under-eye", severity: 42, label: "Medium" },
-      ],
-      chartData: [
-        { region: "L", value: 12, unit: "% darkness (ΔL* vs cheek)" },
-        { region: "R", value: 14, unit: "% darkness (ΔL* vs cheek)" },
-      ],
-      citations: ["[Periorbital-1]"],
     },
   ],
-  recommendations: {
-    dailyAM: {
-      priority: "high",
-      title: "Daily AM Routine",
-      steps: [
-        "Gentle cleanser",
-        "Vitamin C (or azelaic acid 10% if you prefer tone-calming)",
-        "Light gel-cream on cheeks",
-        "Broad-spectrum SPF 50+ (reapply outdoors)",
-      ],
-    },
-    dailyPM: {
-      priority: "high",
-      title: "PM Routine (2–4×/week)",
-      steps: ["Low-strength retinoid", "On alternate nights: 2% BHA focused on nose/center-cheeks"],
-    },
-    weekly: {
-      priority: "medium",
-      title: "Weekly Treatment",
-      steps: ["Short-contact clay mask on T-zone (10–12 min)"],
-    },
-    underEyeCare: {
-      priority: "medium",
-      title: "Under-Eye Care",
-      steps: [
-        "AM: caffeine/niacinamide gel",
-        "PM: richer eye cream if dry",
-        "Sleep regularity and iron/B12 status can influence darkness",
-      ],
-    },
-    habits: {
-      priority: "medium",
-      title: "Habits & Tips",
-      steps: [
-        "Hats/sunglasses + SPF for pore/age prevention",
-        "Patch-test new actives",
-        "Introduce one change per 10–14 days",
-      ],
-    },
-  },
-}
+};

@@ -1,40 +1,149 @@
-"use client"
+import { Card } from "@/components/ui/card";
+import { analysis } from "@/lib/mock-data";
+import { DotChart } from "./dot-chart";
 
-import { SeverityRadar } from "./severity-radar"
+interface InfoCardProps {
+  label: string;
+  value: React.ReactNode;
+  description?: string;
+  fullWidth?: boolean;
+}
 
-export function SummaryOverview({ summary, sensitivity, overviewCharts }: any) {
+function InfoCard({ label, value, description, fullWidth }: InfoCardProps) {
   return (
-    <div className="mb-8 space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-lg border border-border bg-card p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Skin Type</p>
-          <p className="mt-2 text-lg font-semibold text-foreground">{summary.skinType}</p>
-          <p className="mt-1 text-sm text-muted-foreground">Fitzpatrick: {summary.fitzpatrickTone}</p>
-        </div>
-        <div className="rounded-lg border border-border bg-card p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Skin Age</p>
-          <p className="mt-2 text-lg font-semibold text-foreground">{summary.skinAge}</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Sensitivity: Redness {sensitivity.redness}/5, Acne {sensitivity.acne}/5
-          </p>
-        </div>
-      </div>
+    <Card
+      className={`p-4 rounded-lg bg-white ${fullWidth ? "col-span-2" : ""}`}
+    >
+      <p className="text-xs font-light text-muted-foreground">{label}</p>
+      <div className="mt-1">{value}</div>
+      {description && (
+        <p className="text-sm font-light text-muted-foreground mt-2">
+          {description}
+        </p>
+      )}
+    </Card>
+  );
+}
 
-      <div className="rounded-lg border border-border bg-card p-4">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Top Concerns</p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {summary.topConcerns.map((concern: string) => (
-            <span
-              key={concern}
-              className="inline-block rounded-full bg-accent/10 px-3 py-1 text-sm font-medium text-accent"
-            >
+function SkinTypeCard() {
+  return (
+    <InfoCard
+      label="SKIN TYPE"
+      value={
+        <p className="text-lg font-medium">{analysis.skinType.type}</p>
+      }
+      description={analysis.skinType.description}
+      fullWidth
+    />
+  );
+}
+
+function SkinAgeCard() {
+  return (
+    <InfoCard
+      label="SKIN AGE"
+      value={
+        <p className="text-lg font-medium">
+          {analysis.summary.skinAge.toString()}
+        </p>
+      }
+    />
+  );
+}
+
+function SkinToneCard() {
+  const skinToneData = [
+    { color: "bg-yellow-200", value: 1, maxValue: 1 },
+    { color: "bg-yellow-300", value: 1, maxValue: 1 },
+    { color: "bg-yellow-400", value: 1, maxValue: 1 },
+    { color: "bg-yellow-500", value: 0, maxValue: 1 },
+    { color: "bg-yellow-600", value: 0, maxValue: 1 },
+    { color: "bg-yellow-700", value: 0, maxValue: 1 },
+  ];
+
+  return (
+    <InfoCard
+      label="SKIN TONE"
+      value={
+        <div>
+          <p className="text-lg font-medium">
+            Fitzpatrick: {analysis.skinTone.fitzpatrick}
+          </p>
+          <div className="mt-2">
+            <DotChart data={skinToneData} />
+          </div>
+        </div>
+      }
+    />
+  );
+}
+
+function TopConcernsCard() {
+  return (
+    <InfoCard
+      label="TOP CONCERNS"
+      value={
+        <div className="flex gap-2">
+          {analysis.summary.topConcerns.map((concern) => (
+            <p key={concern} className="text-lg font-medium">
               {concern}
-            </span>
+            </p>
           ))}
         </div>
-      </div>
+      }
+      fullWidth
+    />
+  );
+}
 
-      {overviewCharts?.radar && <SeverityRadar radarData={overviewCharts.radar} />}
+function SensitivityCard() {
+  const sensitivityData = {
+    redness: {
+      value: analysis.sensitivity.redness,
+      maxValue: 5,
+      color: "bg-red-500",
+    },
+    acne: {
+      value: analysis.sensitivity.acne,
+      maxValue: 5,
+      color: "bg-purple-500",
+    },
+  };
+
+  return (
+    <InfoCard
+      label="SENSITIVITY"
+      value={
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <p className="text-lg font-medium">
+              Redness: {sensitivityData.redness.value}/
+              {sensitivityData.redness.maxValue}
+            </p>
+            <DotChart data={[sensitivityData.redness]} />
+          </div>
+          <div className="flex items-center justify-between">
+            <p className="text-lg font-medium">
+              Acne: {sensitivityData.acne.value}/
+              {sensitivityData.acne.maxValue}
+            </p>
+            <DotChart data={[sensitivityData.acne]} />
+          </div>
+        </div>
+      }
+      fullWidth
+    />
+  );
+}
+
+export function SummaryOverview() {
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      <SkinTypeCard />
+      <SkinAgeCard />
+      <SkinToneCard />
+      <TopConcernsCard />
+      <SensitivityCard />
     </div>
-  )
+  );
 }

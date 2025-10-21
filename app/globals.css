@@ -86,6 +86,7 @@
   --color-muted: #d4ccc4;
   --color-muted-foreground: #7a6f68;
   --color-accent: #4a90e2;
+  --color-brown-500: #b07669;
 
   /* optional: --font-sans, --font-serif, --font-mono if they are applied in the layout.tsx */
   --color-background: var(--background);
