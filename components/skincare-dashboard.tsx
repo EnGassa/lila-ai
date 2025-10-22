@@ -7,6 +7,7 @@ import { TabsContent } from "@/components/ui/tabs";
 
 interface SkincareDashboardProps {
   data: any;
+  userId: string;
 }
 
 interface Concern {
@@ -16,7 +17,7 @@ interface Concern {
   areas: any[];
 }
 
-export function SkincareDashboard({ data }: SkincareDashboardProps) {
+export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
   const { analysis, charts } = data;
 
   const concerns: Concern[] = charts.overview_radar.axis_order.map((concernName: string, index: number) => ({
@@ -28,7 +29,7 @@ export function SkincareDashboard({ data }: SkincareDashboardProps) {
 
   return (
     <div className="p-4 space-y-6 bg-gray-50">
-      <UserProfile userData={data} />
+      <UserProfile userData={data} userId={userId} />
       <RecommendationsSection>
         <TabsContent value="overview" className="space-y-6">
           <SummaryOverview analysis={analysis} charts={charts} />

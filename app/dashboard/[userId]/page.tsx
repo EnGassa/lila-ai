@@ -32,5 +32,5 @@ export default async function DashboardPage({ params: { userId } }: { params: { 
     notFound();
   }
 
-  return <SkincareDashboard data={userData} />;
+  return <SkincareDashboard data={userData} userId={userId} />;
 }
