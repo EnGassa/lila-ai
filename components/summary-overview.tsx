@@ -1,6 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { DotChart } from "./dot-chart";
 
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
 // Fitzpatrick tone names and descriptions
 const FITZPATRICK_TONES = {
   I: { name: "Very Fair", color: "bg-[#EAD1B2]" },
@@ -38,18 +40,22 @@ function SkinTypeCard({ skinType, description }: { skinType: string, description
   return (
     <InfoCard
       label="SKIN TYPE"
-      value={<p className="text-lg font-medium">{skinType}</p>}
+      value={<p className="text-lg font-medium">{capitalize(skinType)}</p>}
       description={description}
       fullWidth
     />
   );
 }
 
-function SkinAgeCard({ skinAge }: { skinAge: number }) {
+function SkinAgeCard({ ageRange }: { ageRange: { low: number; high: number } }) {
   return (
     <InfoCard
       label="SKIN AGE"
-      value={<p className="text-lg font-medium">{skinAge.toString()}</p>}
+      value={
+        <p className="text-lg font-medium">
+          {ageRange.low} - {ageRange.high}
+        </p>
+      }
     />
   );
 }
@@ -64,38 +70,44 @@ function SkinToneCard({ fitzpatrickTone }: { fitzpatrickTone: keyof typeof FITZP
       <p className="mt-3 text-foreground font-semibold text-lg">Fitzpatrick: {fitzpatrickTone}</p>
 
       <div className="mt-3 space-y-2">
-        <div className="relative flex items-center gap-2">
-          <div className="absolute top-1/2 left-0 right-0 h-px bg-border -translate-y-1/2 pointer-events-none" />
-
-          <div className="relative flex w-full justify-between">
+        <div className="relative">
+          <div className="absolute top-[12px] left-0 right-0 h-px bg-border -translate-y-1/2 pointer-events-none" />
+          <div className="relative flex w-full justify-between items-start">
             {Object.entries(FITZPATRICK_TONES).map(([key, tone], index) => (
-              <div
-                key={key}
-                className={`h-6 w-6 rounded-full transition-all border-primary-foreground border-2 border-solid ${
-                  index + 1 === fitzpatrickLevel
-                    ? `${tone.color} border-foreground ring-1 ring-foreground`
-                    : `${tone.color} border-transparent`
-                }`}
-              />
+              <div key={key} className="flex flex-col items-center gap-2 text-center">
+                <div
+                  className={`h-6 w-6 rounded-full transition-all border-primary-foreground border-2 border-solid ${
+                    index + 1 === fitzpatrickLevel
+                      ? `${tone.color} border-foreground ring-1 ring-foreground`
+                      : `${tone.color} border-transparent`
+                  }`}
+                />
+                <div className="text-xs text-muted-foreground w-16">
+                  <p>{key}</p>
+                  <p>{tone.name}</p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
-        <p className="text-muted-foreground text-sm">{fitzpatrickInfo.name}</p>
+        <p className="text-muted-foreground text-sm text-center">{fitzpatrickInfo.name}</p>
       </div>
     </div>
   );
 }
+
+import { Badge } from "@/components/ui/badge";
 
 function TopConcernsCard({ topConcerns }: { topConcerns: string[] }) {
   return (
     <InfoCard
       label="TOP CONCERNS"
       value={
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {topConcerns.map((concern) => (
-            <p key={concern} className="text-lg font-medium">
-              {concern}
-            </p>
+            <Badge key={concern} variant="outline" className="text-lg font-medium">
+              {capitalize(concern.replace(/_/g, ' '))}
+            </Badge>
           ))}
         </div>
       }
@@ -104,15 +116,25 @@ function TopConcernsCard({ topConcerns }: { topConcerns: string[] }) {
   );
 }
 
-function SensitivityCard({ sensitivity }: { sensitivity: { redness: number, acne: number } }) {
+function SensitivityCard({ radarData }: { radarData: any }) {
+  const getScore = (name: string) => {
+    const index = radarData.axis_order.indexOf(name);
+    if (index === -1) return 0;
+    // Convert 0-100 scale to 0-5 scale for display
+    return Math.round((radarData.values_0_100[index] / 100) * 5);
+  };
+
+  const rednessScore = getScore("redness");
+  const acneScore = getScore("acne");
+
   const sensitivityData = {
     redness: {
-      value: sensitivity.redness,
+      value: rednessScore,
       maxValue: 5,
       color: "bg-red-500",
     },
     acne: {
-      value: sensitivity.acne,
+      value: acneScore,
       maxValue: 5,
       color: "bg-purple-500",
     },
@@ -144,19 +166,30 @@ function SensitivityCard({ sensitivity }: { sensitivity: { redness: number, acne
   );
 }
 
-export function SummaryOverview({ summary, sensitivity, skinTypeDescription }: any) {
+export function SummaryOverview({ analysis, charts }: any) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div className="col-span-1 sm:col-span-2">
-        <SkinTypeCard skinType={summary.skinType} description={skinTypeDescription} />
+        <InfoCard
+          label="SUMMARY"
+          value={
+            <p className="text-sm font-light text-muted-foreground">
+              {analysis.overview_explanation}
+            </p>
+          }
+          fullWidth
+        />
+      </div>
+      <div className="col-span-1 sm:col-span-2">
+        <SkinTypeCard skinType={analysis.skin_type.label} description={analysis.skin_type.rationale} />
       </div>
       <div className="grid gap-4">
-        <SkinAgeCard skinAge={summary.skinAge} />
-        <SkinToneCard fitzpatrickTone={summary.fitzpatrickTone} />
+        <SkinAgeCard ageRange={analysis.skin_age_range} />
+        <SkinToneCard fitzpatrickTone={analysis.skin_tone_fitzpatrick.label} />
       </div>
       <div className="grid gap-4">
-        <TopConcernsCard topConcerns={summary.topConcerns} />
-        <SensitivityCard sensitivity={sensitivity} />
+        <TopConcernsCard topConcerns={analysis.top_concerns} />
+        <SensitivityCard radarData={charts.overview_radar} />
       </div>
     </div>
   );

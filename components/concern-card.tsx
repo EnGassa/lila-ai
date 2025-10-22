@@ -4,7 +4,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { analysis } from "@/lib/mock-data";
 import {
   ChevronRight,
   Eye,
@@ -16,34 +15,36 @@ import {
 } from "lucide-react";
 
 interface ConcernCardProps {
-  concern: (typeof analysis.concerns)[0];
+  concern: {
+    name: string;
+    score: number;
+    description: string;
+  };
 }
 
-const iconMap = {
-  "Under Eye": Eye,
+const iconMap: { [key: string]: React.ElementType } = {
+  "Under_eye": Eye,
   Pores: Dot,
   Wrinkles: Wind,
   Pigmentation: Droplets,
   Redness: Shield,
-  "Skin Texture": Paperclip,
+  Texture: Paperclip,
   Acne: Dot,
 };
 
 export function ConcernCard({ concern }: ConcernCardProps) {
-  const Icon = iconMap[concern.name as keyof typeof iconMap] || Dot;
-  const rygColor = {
-    Green: "border-green-500",
-    Yellow: "border-yellow-500",
-    Red: "border-red-500",
-  };
-  const rygTextColor = {
-    Green: "text-green-500",
-    Yellow: "text-yellow-500",
-    Red: "text-red-500",
+  const Icon = iconMap[concern.name] || Dot;
+
+  const getSeverityColor = (score: number) => {
+    if (score < 33) return "border-green-500 text-green-500";
+    if (score < 66) return "border-yellow-500 text-yellow-500";
+    return "border-red-500 text-red-500";
   };
 
+  const severityColor = getSeverityColor(concern.score);
+
   return (
-    <Card className={`border ${rygColor[concern.ryg as keyof typeof rygColor]}`}>
+    <Card className={`border ${severityColor.split(' ')[0]}`}>
       <CardHeader className="flex flex-row items-start justify-between">
         <div className="flex items-center gap-2">
           <div
@@ -52,18 +53,16 @@ export function ConcernCard({ concern }: ConcernCardProps) {
             <Icon className="h-5 w-5 text-gray-500" />
           </div>
           <CardTitle className="text-lg font-regular">
-            {concern.name}
+            {concern.name.replace(/_/g, ' ')}
           </CardTitle>
         </div>
         <div className="text-right">
           <p
-            className={`text-2xl font-bold ${
-              rygTextColor[concern.ryg as keyof typeof rygTextColor]
-            }`}
+            className={`text-2xl font-bold ${severityColor.split(' ')[1]}`}
           >
-            {concern.score.toFixed(1)}
+            {concern.score.toFixed(0)}
           </p>
-          <p className="text-xs text-muted-foreground">Severity: 1-5</p>
+          <p className="text-xs text-muted-foreground">Severity: 0-100</p>
         </div>
       </CardHeader>
       <CardContent className="flex items-center justify-between">

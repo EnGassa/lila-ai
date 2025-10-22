@@ -1,6 +1,5 @@
 "use client";
 
-import { analysis } from "@/lib/mock-data";
 import {
   PolarAngleAxis,
   PolarGrid,
@@ -24,14 +23,26 @@ const renderPolarAngleAxis = ({ payload, x, y, cx, cy, ...rest }: any) => {
   );
 };
 
-export function SeverityRadar() {
+interface SeverityRadarProps {
+  radarData: {
+    axis_order: string[];
+    values_0_100: number[];
+  };
+}
+
+export function SeverityRadar({ radarData }: SeverityRadarProps) {
+  const chartData = radarData.axis_order.map((axis, index) => ({
+    name: axis.charAt(0).toUpperCase() + axis.slice(1),
+    score: radarData.values_0_100[index],
+  }));
+
   return (
     <ResponsiveContainer width="100%" height={350}>
       <RadarChart
         cx="50%"
         cy="50%"
         outerRadius="80%"
-        data={analysis.concerns}
+        data={chartData}
       >
         <PolarGrid />
         <PolarAngleAxis dataKey="name" tick={renderPolarAngleAxis} />
