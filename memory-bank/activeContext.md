@@ -8,9 +8,13 @@
 
 *   Initialized the project with Next.js, TypeScript, and Tailwind CSS.
 *   Created the initial file structure for the application.
+*   Updated the primary data source (`radhika.json`) to a more detailed, nested structure. The new structure includes a `concerns` object with detailed breakdowns for each concern, including regional scores and citations.
 
 ## Next Steps
 
+*   Refactor the UI components to align with the new data structure.
+*   Ensure all data is dynamically pulled from the JSON file with no hardcoded values.
+*   Verify that the application correctly displays the updated data, including the new `skin_age_range`.
 *   Build the user profile creation and display components.
 *   Implement the main dashboard layout.
-*   Set up a mock data source for initial development.
+*   Move the 'Regional Breakdown' card to the bottom of the skincare dashboard.

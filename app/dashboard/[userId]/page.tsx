@@ -20,8 +20,8 @@ export async function generateStaticParams() {
 }
 
 // This is the main page component for the dynamic dashboard route.
-export default async function DashboardPage({ params: { userId } }: { params: { userId: string } }) {
-  const filePath = path.join(process.cwd(), 'data', `${userId}.json`);
+export default async function DashboardPage({ params }: { params: { userId: string } }) {
+  const filePath = path.join(process.cwd(), 'data', `${params.userId}.json`);
 
   let userData;
   try {
@@ -32,5 +32,5 @@ export default async function DashboardPage({ params: { userId } }: { params: { 
     notFound();
   }
 
-  return <SkincareDashboard data={userData} userId={userId} />;
+  return <SkincareDashboard data={userData} userId={params.userId} />;
 }

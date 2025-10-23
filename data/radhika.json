@@ -1,309 +1,259 @@
 {
   "session": {
-    "id": "ls-2025-10-22-uh1",
-    "timestamp_iso": "2025-10-22T15:58:00+05:30",
-    "poses_received": ["front","left_45","right_45","chin_up","chin_down","cheek_left_close","cheek_right_close","nose_close","under_eye_left_close","under_eye_right_close"],
+    "id": "radhika_s_2025-10-23_panji_goa_session01",
+    "timestamp_iso": "2025-10-23T10:00:00+05:30",
+    "poses_received": [
+      "front",
+      "left_45",
+      "right_45",
+      "chin_up",
+      "chin_down",
+      "cheek_left_close",
+      "cheek_right_close",
+      "nose_close",
+      "under_eye_left_close",
+      "under_eye_right_close"
+    ],
     "device_model": null
   },
   "qc": {
     "status": "pass",
     "fail_reasons": [],
-    "notes": "All required poses present; lighting/focus acceptable; minor occlusions not blocking key regions."
+    "notes": "10 poses received with bright indirect light, default lens. No filters or heavy makeup. Minor exposure variation between rooms."
   },
   "analysis": {
     "skin_type": {
       "label": "combination",
-      "rationale": "The center of the face (nose/medial cheeks) shows visible pores and a slight natural sheen, while the sides look more matte. This points to oilier T-zone with relatively normal-to-dry cheeks. The pattern is consistent across angles.",
-      "confidence_0_1": 0.7
+      "rationale": "T-zone shows mild shine and more visible pores while cheeks/jaw appear matte with small pores. Texture is smooth overall, consistent with balanced oil in most areas.",
+      "confidence_0_1": 0.74
     },
     "skin_tone_fitzpatrick": {
       "label": "IV",
-      "note": "Estimated visually from medium-brown complexion under indoor light and dark hair/eyes. Exact skin reactivity to sun is not measured here."
+      "note": "Estimated from overall medium-brown baseline across multiple angles; indoor daylight may slightly affect perceived depth."
     },
     "skin_age_range": {
-      "low": 32,
-      "high": 34,
-      "rationale": "Fine lines are minimal, texture is mostly smooth, and pore prominence plus under-eye darkness align with early-30s skin. Camera angles and lighting can shift apparent age by a couple of years, so this is an estimate.",
-      "confidence_0_1": 0.55
+      "low": 36,
+      "high": 39,
+      "rationale": "Minimal static lines and smooth texture suggest a late-30s appearance. Mild under-eye darkening and T-zone pores add minor age signals.",
+      "confidence_0_1": 0.60
     },
-    "top_concerns": ["pores","under_eye","pigmentation"],
-    "overview_explanation": "Findings suggest a healthy combination skin with central pore visibility and mild cheek mottling. Under-eye darkness is the most noticeable contrast area but skin texture and lines are generally mild. No escalation features are seen in these images.",
-    "per_region": [
-      {
-        "region_key": "forehead",
-        "region_summary": {
-          "summary_plain": "Smooth and even with fine pores; only faint expression lines are detectable. Tone is uniform with subtle mottling.",
-          "possible_causes": ["Lower oil output here keeps pores fine.", "Regular cleansing and sun protection help maintain even tone."]
-        },
-        "metrics": {
-          "pores": {"score_1_5": 2, "confidence_0_1": 0.7, "cannot_estimate": false, "evidence": "Fine, small pores; no dense clusters.", "rationale_plain": "Pores are small and mostly unnoticeable except very close up. Distribution is even without spread onto hairline.", "possible_causes": ["Lower sebum in this zone.", "Consistent cleansing limits buildup."]},
-          "wrinkles": {"score_1_5": 2, "confidence_0_1": 0.6, "cannot_estimate": false, "evidence": "Very faint horizontal lines only on strong brow movement.", "rationale_plain": "At rest, lines are minimal and short. This indicates low wrinkle prominence in this area.", "possible_causes": ["Good hydration and sun care reduce visible lines.", "Limited repetitive expressions while photos were taken."]},
-          "pigmentation": {"score_1_5": 2, "confidence_0_1": 0.6, "cannot_estimate": false, "evidence": "Very light mottling; few tiny macules.", "rationale_plain": "Tone appears even with only faint scattered spots. Contrast is low.", "possible_causes": ["Incidental UV over time.", "Healed minor blemishes."]},
-          "redness": {"score_1_5": 2, "confidence_0_1": 0.6, "cannot_estimate": false, "evidence": "Trace, localized redness only.", "rationale_plain": "The area looks calm without diffuse redness. Any color shift is faint.", "possible_causes": ["Heat or brief friction.", "Natural vascular tone."]},
-          "texture": {"score_1_5": 2, "confidence_0_1": 0.7, "cannot_estimate": false, "evidence": "Fine micro-relief; no flaking.", "rationale_plain": "Surface is smooth with only slight grain visible in bright light. No coarse roughness is seen.", "possible_causes": ["Balanced moisturization.", "Gentle exfoliation from routine cleansing."]},
-          "acne": {"score_1_5": 1, "confidence_0_1": 0.75, "cannot_estimate": false, "evidence": "1–2 tiny comedones; no inflamed lesions.", "rationale_plain": "Only a couple of small clogged pores are visible. No red or tender spots are present.", "possible_causes": ["Normal turnover causing occasional blocked pores.", "Sweat/oil during the day."], "lesion_counts": {"inflammatory": 0, "comedonal": 2}},
-          "under_eye": {"score_1_5": 3, "confidence_0_1": 0.0, "cannot_estimate": true, "evidence": "Region not evaluated for under-eye here.", "rationale_plain": "Under-eye scoring does not apply to the forehead.", "possible_causes": ["Not applicable.","Not applicable."]}
-        }
+    "top_concerns": ["under_eye", "pores", "pigmentation"],
+    "overview_explanation": "Skin appears healthy and balanced with few lines. Primary opportunities are refining pores of the nose/medial cheeks, softening faint mottled spots on the cheeks/nose, and addressing mild under-eye darkness.",
+    "concerns": {
+      "pores": {
+        "score_1_5": 2.4,
+        "confidence_0_1": 0.68,
+        "rationale_plain": "Pores are most visible on the nose and nearby medial cheeks. Elsewhere they remain small and sparse with a largely matte finish.",
+        "possible_causes": [
+          "Natural T-zone oil can enlarge the appearance of pore openings under bright light.",
+          "Humid climate and product residue can emphasize pore edges.",
+          "Gradual elasticity changes with age may make pores look slightly more prominent."
+        ],
+        "regional_breakdown": [
+          {"region_key":"forehead","score_1_5":2.0},
+          {"region_key":"glabella","score_1_5":2.0},
+          {"region_key":"periorbital_left","score_1_5":1.5},
+          {"region_key":"periorbital_right","score_1_5":1.5},
+          {"region_key":"cheek_left","score_1_5":2.3},
+          {"region_key":"cheek_right","score_1_5":2.4},
+          {"region_key":"nose","score_1_5":3.0},
+          {"region_key":"upper_lip","score_1_5":1.6},
+          {"region_key":"chin","score_1_5":2.2},
+          {"region_key":"jaw_left","score_1_5":1.8},
+          {"region_key":"jaw_right","score_1_5":1.8}
+        ],
+        "citations": [
+          {"title":"Enlarged Facial Pores review (Cutis, 2016)","url":"https://cdn.mdedge.com/files/s3fs-public/issues/articles/CT098007033.PDF"},
+          {"title":"AI grading of enlarged pores (Dermatol Ther, 2024)","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC11411701/"}
+        ]
       },
-      {
-        "region_key": "glabella",
-        "region_summary": {
-          "summary_plain": "Clear skin with fine pores and no deep frown lines. Slight central redness near the bridge is noted.",
-          "possible_causes": ["Friction from touching or glasses can add redness.", "Oil control is generally good here."]
-        },
-        "metrics": {
-          "pores": {"score_1_5": 2, "confidence_0_1": 0.65, "cannot_estimate": false, "evidence": "Small pores; sparse density.", "rationale_plain": "Pores are visible only at close range and are not clustered.", "possible_causes": ["Moderate sebum in the midline.", "Regular cleansing."]},
-          "wrinkles": {"score_1_5": 2, "confidence_0_1": 0.6, "cannot_estimate": false, "evidence": "No prominent vertical '11' lines at rest.", "rationale_plain": "Lines are faint and short, appearing mainly with expression.", "possible_causes": ["Limited repetitive frowning captured.", "Hydration and sun care."]},
-          "pigmentation": {"score_1_5": 2, "confidence_0_1": 0.55, "cannot_estimate": false, "evidence": "Even tone with minimal spots.", "rationale_plain": "Only subtle unevenness is present.", "possible_causes": ["Incidental sun exposure.", "Prior minor blemishes."]},
-          "redness": {"score_1_5": 2, "confidence_0_1": 0.7, "cannot_estimate": false, "evidence": "Mild central redness near nasal bridge.", "rationale_plain": "Color is slightly warmer centrally but not diffuse.", "possible_causes": ["Friction or glasses nose pads.", "Transient flush."]},
-          "texture": {"score_1_5": 2, "confidence_0_1": 0.65, "cannot_estimate": false, "evidence": "Even surface; fine micro-relief.", "rationale_plain": "No coarse grain or flaking is seen.", "possible_causes": ["Balanced moisturization.", "Gentle cleansing."]},
-          "acne": {"score_1_5": 1, "confidence_0_1": 0.75, "cannot_estimate": false, "evidence": "Single tiny comedone; no redness.", "rationale_plain": "Breakouts are essentially absent in this spot.", "possible_causes": ["Low oil buildup here.", "Minimal pore congestion."], "lesion_counts": {"inflammatory": 0, "comedonal": 1}},
-          "under_eye": {"score_1_5": 3, "confidence_0_1": 0.0, "cannot_estimate": true, "evidence": "Not an under-eye region.", "rationale_plain": "Under-eye scoring is not applicable here.", "possible_causes": ["Not applicable.","Not applicable."]}
-        }
+      "wrinkles": {
+        "score_1_5": 2.0,
+        "confidence_0_1": 0.62,
+        "rationale_plain": "Fine lines are faint on the forehead and at the outer eye with no deep or continuous tracks at rest. Expression lines do not persist strongly after movement.",
+        "possible_causes": [
+          "Normal facial expressions create dynamic lines that can look visible in strong side lighting.",
+          "Sun exposure over time can gradually emphasize fine lines.",
+          "Natural elasticity changes with age make fine creases easier to see."
+        ],
+        "regional_breakdown": [
+          {"region_key":"forehead","score_1_5":2.2},
+          {"region_key":"glabella","score_1_5":2.0},
+          {"region_key":"periorbital_left","score_1_5":2.1},
+          {"region_key":"periorbital_right","score_1_5":2.0},
+          {"region_key":"cheek_left","score_1_5":1.6},
+          {"region_key":"cheek_right","score_1_5":1.6},
+          {"region_key":"nose","score_1_5":1.2},
+          {"region_key":"upper_lip","score_1_5":1.6},
+          {"region_key":"chin","score_1_5":1.5},
+          {"region_key":"jaw_left","score_1_5":1.3},
+          {"region_key":"jaw_right","score_1_5":1.3}
+        ],
+        "citations": [
+          {"title":"Wrinkle Severity Rating Scale validation","url":"https://pubmed.ncbi.nlm.nih.gov/14979743/"},
+          {"title":"Lemperle wrinkle classification","url":"https://pubmed.ncbi.nlm.nih.gov/11711957/"}
+        ]
       },
-      {
-        "region_key": "periorbital_left",
-        "region_summary": {
-          "summary_plain": "Moderate under-eye darkening within the eyelid area; texture is smooth with faint fine lines. No redness or flaking.",
-          "possible_causes": ["Anatomical hollowing and genetics drive most of the contrast.", "Sleep/screen habits can accentuate shadows."]
-        },
-        "metrics": {
-          "pores": {"score_1_5": 1, "confidence_0_1": 0.7, "cannot_estimate": false, "evidence": "No visible pore prominence.", "rationale_plain": "Skin under the eyes is fine-grained and shows minimal pores.", "possible_causes": ["Thin skin here naturally has few visible pores.", "Lower oil output in this zone."]},
-          "wrinkles": {"score_1_5": 2, "confidence_0_1": 0.65, "cannot_estimate": false, "evidence": "Fine lines close to the lash line.", "rationale_plain": "Lines are short and shallow, typical for normal expressions.", "possible_causes": ["Frequent smiling/squinting.", "Natural skin folding with age."]},
-          "pigmentation": {"score_1_5": 2, "confidence_0_1": 0.6, "cannot_estimate": false, "evidence": "Mild darker tone versus cheek.", "rationale_plain": "Contrast is present but not severe and stays within the lower lid.", "possible_causes": ["Genetic tendency to under-eye contrast.", "Shadowing from tear-trough anatomy."]},
-          "redness": {"score_1_5": 2, "confidence_0_1": 0.55, "cannot_estimate": false, "evidence": "Little to no erythema.", "rationale_plain": "Color looks calm without patchy redness.", "possible_causes": ["Low irritation here.", "Gentle products."]},
-          "texture": {"score_1_5": 2, "confidence_0_1": 0.7, "cannot_estimate": false, "evidence": "Even surface; fine micro-relief.", "rationale_plain": "No coarse grain or flaking.", "possible_causes": ["Hydration is adequate.", "Thin skin naturally shows fine texture."]},
-          "acne": {"score_1_5": 1, "confidence_0_1": 0.85, "cannot_estimate": false, "evidence": "No lesions.", "rationale_plain": "Breakouts are not seen in this area.", "possible_causes": ["Very low oil activity under the eyes.", "Area is not prone to comedones."], "lesion_counts": {"inflammatory": 0, "comedonal": 0}},
-          "under_eye": {"score_1_5": 3, "confidence_0_1": 0.75, "cannot_estimate": false, "evidence": "Visible darkening across the lower lid with slight hollow.", "rationale_plain": "The lid appears darker than adjacent cheek, with a mild shadow from contour. Extent stays within the eyelid zone.", "possible_causes": ["Genetics/anatomy.", "Sleep/screen strain accentuating shadows."]}
-        }
+      "pigmentation": {
+        "score_1_5": 2.4,
+        "confidence_0_1": 0.66,
+        "rationale_plain": "Small, scattered brown macules and light mottling are visible on the cheeks and nose. Overall tone is even across forehead and jaw.",
+        "possible_causes": [
+          "Regular sun exposure can lead to scattered sun spots on exposed areas.",
+          "Past minor blemishes may leave faint marks that take longer to fade on Fitzpatrick IV skin.",
+          "Intermittent heat and UV can slightly deepen contrast of existing spots."
+        ],
+        "regional_breakdown": [
+          {"region_key":"forehead","score_1_5":1.8},
+          {"region_key":"glabella","score_1_5":1.9},
+          {"region_key":"periorbital_left","score_1_5":2.2},
+          {"region_key":"periorbital_right","score_1_5":2.1},
+          {"region_key":"cheek_left","score_1_5":2.4},
+          {"region_key":"cheek_right","score_1_5":2.3},
+          {"region_key":"nose","score_1_5":2.3},
+          {"region_key":"upper_lip","score_1_5":2.2},
+          {"region_key":"chin","score_1_5":2.0},
+          {"region_key":"jaw_left","score_1_5":2.1},
+          {"region_key":"jaw_right","score_1_5":2.1}
+        ],
+        "citations": [
+          {"title":"MASI reliability/validation (JAAD)","url":"https://www.jaad.org/article/S0190-9622(09)02302-0/pdf"},
+          {"title":"mMASI interpretability (JAMA Dermatology)","url":"https://jamanetwork.com/journals/jamadermatology/fullarticle/2519450"}
+        ]
       },
-      {
-        "region_key": "periorbital_right",
-        "region_summary": {
-          "summary_plain": "Darkness similar to the left side with faint fine lines and smooth texture. No flaking or strong redness.",
-          "possible_causes": ["Symmetry suggests constitutional causes.", "Lifestyle factors (sleep/screens) may amplify shadows."]
-        },
-        "metrics": {
-          "pores": {"score_1_5": 1, "confidence_0_1": 0.7, "cannot_estimate": false, "evidence": "No notable pores.", "rationale_plain": "Under-eye skin lacks visible pores in normal photos.", "possible_causes": ["Thin skin here has few visible pores.", "Low oil output."]},
-          "wrinkles": {"score_1_5": 2, "confidence_0_1": 0.65, "cannot_estimate": false, "evidence": "Short fine lines near outer corner.", "rationale_plain": "Lines are mild and typical for age and expression.", "possible_causes": ["Smiling/squinting.", "Natural folding."]},
-          "pigmentation": {"score_1_5": 2, "confidence_0_1": 0.6, "cannot_estimate": false, "evidence": "Mild darker tone vs cheek.", "rationale_plain": "Contrast is present but moderate.", "possible_causes": ["Genetic tendency.", "Shadowing from tear-trough." ]},
-          "redness": {"score_1_5": 2, "confidence_0_1": 0.55, "cannot_estimate": false, "evidence": "Calm color overall.", "rationale_plain": "No clear patchy redness.", "possible_causes": ["Low irritation.", "Gentle products."]},
-          "texture": {"score_1_5": 2, "confidence_0_1": 0.7, "cannot_estimate": false, "evidence": "Even surface; fine grain.", "rationale_plain": "Texture remains smooth here.", "possible_causes": ["Adequate hydration.", "Thin skin with fine micro-relief."]},
-          "acne": {"score_1_5": 1, "confidence_0_1": 0.85, "cannot_estimate": false, "evidence": "No lesions.", "rationale_plain": "No comedones or inflamed spots are visible.", "possible_causes": ["Very low oil activity.", "Area not prone to acne."], "lesion_counts": {"inflammatory": 0, "comedonal": 0}},
-          "under_eye": {"score_1_5": 3, "confidence_0_1": 0.75, "cannot_estimate": false, "evidence": "Darkening across lower lid similar to left; mild hollow.", "rationale_plain": "Darkness is moderate and symmetric with confined extent.", "possible_causes": ["Genetics/anatomy.", "Sleep/screen-related shadowing."]}
-        }
+      "redness": {
+        "score_1_5": 2.0,
+        "confidence_0_1": 0.63,
+        "rationale_plain": "Mild, focal pinkness is present on the nose/alar area with neutral tones elsewhere. Pattern is localized and non-confluent.",
+        "possible_causes": [
+          "Heat, rubbing, or cleansing can cause temporary central pinkness.",
+          "Humidity and temperature changes may accentuate capillary flush on the nose.",
+          "Products with fragrance or actives can occasionally cause short-lived redness."
+        ],
+        "regional_breakdown": [
+          {"region_key":"forehead","score_1_5":1.6},
+          {"region_key":"glabella","score_1_5":1.7},
+          {"region_key":"periorbital_left","score_1_5":1.6},
+          {"region_key":"periorbital_right","score_1_5":1.6},
+          {"region_key":"cheek_left","score_1_5":1.9},
+          {"region_key":"cheek_right","score_1_5":1.9},
+          {"region_key":"nose","score_1_5":2.4},
+          {"region_key":"upper_lip","score_1_5":1.7},
+          {"region_key":"chin","score_1_5":1.7},
+          {"region_key":"jaw_left","score_1_5":1.4},
+          {"region_key":"jaw_right","score_1_5":1.4}
+        ],
+        "citations": [
+          {"title":"NRS standard grading system overview","url":"https://www.rosacea.org/physicians/professional-materials"},
+          {"title":"2017 JAAD update (abstract)","url":"https://www.jaad.org/article/S0190-9622(17)32297-1/abstract"}
+        ]
       },
-      {
-        "region_key": "cheek_left",
-        "region_summary": {
-          "summary_plain": "Moderate pores with fine surface grain and light mottling of tone. A tiny pink spot is present.",
-          "possible_causes": ["Central-face oil and past blemishes.", "Sun exposure contributing to small spots."]
-        },
-        "metrics": {
-          "pores": {"score_1_5": 3, "confidence_0_1": 0.75, "cannot_estimate": false, "evidence": "Noticeable pores on medial cheek near nose.", "rationale_plain": "Pore openings are visible and more clustered near the center.", "possible_causes": ["Higher sebum near the T-zone.", "Makeup/sunscreen residue can collect here."]},
-          "wrinkles": {"score_1_5": 2, "confidence_0_1": 0.6, "cannot_estimate": false, "evidence": "No persistent lines; only faint expression creases.", "rationale_plain": "Cheek skin stays smooth at rest.", "possible_causes": ["Good hydration.", "Low repetitive folding here."]},
-          "pigmentation": {"score_1_5": 3, "confidence_0_1": 0.65, "cannot_estimate": false, "evidence": "Scattered light-brown macules; mottled pattern.", "rationale_plain": "Contrast is moderate and limited to small areas.", "possible_causes": ["Sun exposure over time.", "Healed blemishes leaving mild marks."]},
-          "redness": {"score_1_5": 2, "confidence_0_1": 0.6, "cannot_estimate": false, "evidence": "Faint central cheek warmth.", "rationale_plain": "Redness is mild and localized.", "possible_causes": ["Heat or touch.", "Underlying vascular tone."]},
-          "texture": {"score_1_5": 3, "confidence_0_1": 0.7, "cannot_estimate": false, "evidence": "Fine grain and mild unevenness.", "rationale_plain": "Surface is not coarse but shows a visible micro-relief.", "possible_causes": ["Pore prominence contributes to texture.", "Daily buildup before cleansing."]},
-          "acne": {"score_1_5": 2, "confidence_0_1": 0.75, "cannot_estimate": false, "evidence": "Several comedones and one small pink papule.", "rationale_plain": "Mostly non-inflamed clogged pores with a single mild inflamed spot.", "possible_causes": ["Oil and sweat around mask or hands contact.", "Residual product within pores."], "lesion_counts": {"inflammatory": 1, "comedonal": 6}},
-          "under_eye": {"score_1_5": 3, "confidence_0_1": 0.0, "cannot_estimate": true, "evidence": "Under-eye not evaluated in cheek region.", "rationale_plain": "Not applicable to the cheek.", "possible_causes": ["Not applicable.","Not applicable."]}
-        }
+      "texture": {
+        "score_1_5": 2.2,
+        "confidence_0_1": 0.66,
+        "rationale_plain": "Surface is smooth with a fine grain overall. Slight coarseness aligns with the T-zone and medial cheeks; no flaking is visible.",
+        "possible_causes": [
+          "Sebum patterns and environmental humidity emphasize micro-relief in the T-zone.",
+          "Residue from sunscreen or cosmetics may accentuate grain if not fully removed.",
+          "Mild dehydration on certain days can highlight cross-hatching."
+        ],
+        "regional_breakdown": [
+          {"region_key":"forehead","score_1_5":2.2},
+          {"region_key":"glabella","score_1_5":2.1},
+          {"region_key":"periorbital_left","score_1_5":1.8},
+          {"region_key":"periorbital_right","score_1_5":1.8},
+          {"region_key":"cheek_left","score_1_5":2.3},
+          {"region_key":"cheek_right","score_1_5":2.3},
+          {"region_key":"nose","score_1_5":2.3},
+          {"region_key":"upper_lip","score_1_5":2.0},
+          {"region_key":"chin","score_1_5":2.1},
+          {"region_key":"jaw_left","score_1_5":2.0},
+          {"region_key":"jaw_right","score_1_5":2.0}
+        ],
+        "citations": [
+          {"title":"Photonumeric scale for facial texture (PMC)","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC5671791/"},
+          {"title":"Global photonumeric skin quality scale (Wiley OA)","url":"https://onlinelibrary.wiley.com/doi/10.1111/jocd.14058"}
+        ]
       },
-      {
-        "region_key": "cheek_right",
-        "region_summary": {
-          "summary_plain": "Moderate medial-cheek pores and light mottling similar to the left. Texture shows fine grain.",
-          "possible_causes": ["T-zone adjacency and natural oil flow.", "Cumulative sun exposure."]
-        },
-        "metrics": {
-          "pores": {"score_1_5": 3, "confidence_0_1": 0.75, "cannot_estimate": false, "evidence": "Visible pores on inner cheek near nose.", "rationale_plain": "Clustering appears near the center with fewer pores laterally.", "possible_causes": ["Higher sebum in this area.", "Daily residue collecting in pores."]},
-          "wrinkles": {"score_1_5": 2, "confidence_0_1": 0.6, "cannot_estimate": false, "evidence": "No continuous lines at rest.", "rationale_plain": "Cheek skin is smooth.", "possible_causes": ["Hydration and less movement here.", "Regular sun protection limiting photo-lines."]},
-          "pigmentation": {"score_1_5": 3, "confidence_0_1": 0.65, "cannot_estimate": false, "evidence": "Scattered small macules; mild contrast.", "rationale_plain": "Tone is slightly uneven with small, discrete spots.", "possible_causes": ["Sun exposure.", "Healed breakouts."]},
-          "redness": {"score_1_5": 2, "confidence_0_1": 0.6, "cannot_estimate": false, "evidence": "Faint central warmth.", "rationale_plain": "No diffuse or intense redness.", "possible_causes": ["Heat or rubbing.", "Natural vascular tone."]},
-          "texture": {"score_1_5": 3, "confidence_0_1": 0.7, "cannot_estimate": false, "evidence": "Fine textural grain over medial cheek.", "rationale_plain": "Texture is subtly uneven rather than coarse.", "possible_causes": ["Pore prominence contributes to texture.", "Daily buildup before cleansing."]},
-          "acne": {"score_1_5": 2, "confidence_0_1": 0.75, "cannot_estimate": false, "evidence": "Several comedones and one tiny pink papule.", "rationale_plain": "Mostly non-inflamed comedones with a single mild inflamed spot.", "possible_causes": ["Sebum and sweat around mid-face.", "Product residue in pores."], "lesion_counts": {"inflammatory": 1, "comedonal": 5}},
-          "under_eye": {"score_1_5": 3, "confidence_0_1": 0.0, "cannot_estimate": true, "evidence": "Under-eye not evaluated in cheek region.", "rationale_plain": "Not applicable to the cheek.", "possible_causes": ["Not applicable.","Not applicable."]}
-        }
+      "acne": {
+        "score_1_5": 1.6,
+        "confidence_0_1": 0.64,
+        "rationale_plain": "No clear inflammatory lesions are seen. A few tiny comedonal candidates are present on the nose and chin in close views.",
+        "possible_causes": [
+          "Occlusion, sweat, and sunscreen in humid weather can lead to occasional clogged pores.",
+          "Product residues left after cleansing may contribute to small comedones.",
+          "Normal hormonal fluctuations can cause intermittent comedone formation."
+        ],
+        "regional_breakdown": [
+          {"region_key":"forehead","score_1_5":1.4},
+          {"region_key":"glabella","score_1_5":1.4},
+          {"region_key":"periorbital_left","score_1_5":1.1},
+          {"region_key":"periorbital_right","score_1_5":1.1},
+          {"region_key":"cheek_left","score_1_5":1.5},
+          {"region_key":"cheek_right","score_1_5":1.6},
+          {"region_key":"nose","score_1_5":1.8},
+          {"region_key":"upper_lip","score_1_5":1.2},
+          {"region_key":"chin","score_1_5":1.7},
+          {"region_key":"jaw_left","score_1_5":1.4},
+          {"region_key":"jaw_right","score_1_5":1.4}
+        ],
+        "citations": [
+          {"title":"Severity of acne & GAGS comparison (PMC)","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC7532287/"},
+          {"title":"Review of acne grading scales (PMC)","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC10995619/"}
+        ]
       },
-      {
-        "region_key": "nose",
-        "region_summary": {
-          "summary_plain": "Pores are prominent with visible dotted blackheads. Mild central redness and a slightly coarser texture are present.",
-          "possible_causes": ["Higher oil output and pore density on the nose.", "Touching or glasses pressure can increase redness."]
-        },
-        "metrics": {
-          "pores": {"score_1_5": 4, "confidence_0_1": 0.85, "cannot_estimate": false, "evidence": "Medium, dense pores across bridge and tip.", "rationale_plain": "Pore openings are clearly visible and widespread over the nose.", "possible_causes": ["High sebum with larger pore structure.", "Residue accumulation within pores."]},
-          "wrinkles": {"score_1_5": 1, "confidence_0_1": 0.9, "cannot_estimate": false, "evidence": "No static lines.", "rationale_plain": "Nasal skin does not show wrinkle lines at rest.", "possible_causes": ["Skin thickness and minimal folding.", "Lower movement creates fewer lines."]},
-          "pigmentation": {"score_1_5": 2, "confidence_0_1": 0.6, "cannot_estimate": false, "evidence": "Mostly even color with small freckles/dots from pores.", "rationale_plain": "Tone differences are minor; dots relate more to pores than pigment patches.", "possible_causes": ["Sun exposure is modest here.", "Pore oxidization can mimic spots."]},
-          "redness": {"score_1_5": 3, "confidence_0_1": 0.7, "cannot_estimate": false, "evidence": "Definite central redness on bridge and tip.", "rationale_plain": "Color is warmer centrally compared to adjacent cheeks.", "possible_causes": ["Heat, friction, or glasses.", "Baseline vascularity of the nose."]},
-          "texture": {"score_1_5": 3, "confidence_0_1": 0.8, "cannot_estimate": false, "evidence": "Uneven micro-relief with coarse grain.", "rationale_plain": "Texture looks rougher due to dense pores and comedones.", "possible_causes": ["Oil and residue within pores.", "Environmental humidity/sweat."]},
-          "acne": {"score_1_5": 2, "confidence_0_1": 0.85, "cannot_estimate": false, "evidence": "Multiple open comedones; no inflamed papules.", "rationale_plain": "Lesions are mainly blackheads without redness or swelling.", "possible_causes": ["High sebum and pore size.", "Incomplete removal of daily residues."], "lesion_counts": {"inflammatory": 0, "comedonal": 12}},
-          "under_eye": {"score_1_5": 3, "confidence_0_1": 0.0, "cannot_estimate": true, "evidence": "Under-eye not relevant here.", "rationale_plain": "Not applicable to the nose.", "possible_causes": ["Not applicable.","Not applicable."]}
-        }
-      },
-      {
-        "region_key": "upper_lip",
-        "region_summary": {
-          "summary_plain": "Even tone and smooth texture with tiny pores only. No active blemishes are visible.",
-          "possible_causes": ["Lower oil output in this zone.", "Consistent cleansing."]
-        },
-        "metrics": {
-          "pores": {"score_1_5": 2, "confidence_0_1": 0.65, "cannot_estimate": false, "evidence": "Fine pores; sparse.", "rationale_plain": "Pores are only faintly visible at close range.", "possible_causes": ["Low sebum in this area.", "Minimal residue retention."]},
-          "wrinkles": {"score_1_5": 2, "confidence_0_1": 0.55, "cannot_estimate": false, "evidence": "No etched vertical lines at rest.", "rationale_plain": "Only subtle movement lines appear with expression.", "possible_causes": ["Hydration and sun protection.", "Less repetitive puckering."]},
-          "pigmentation": {"score_1_5": 2, "confidence_0_1": 0.55, "cannot_estimate": false, "evidence": "Uniform color with minimal mottling.", "rationale_plain": "No strong contrast patches are seen.", "possible_causes": ["Limited sun impact here.", "Few prior blemishes."]},
-          "redness": {"score_1_5": 2, "confidence_0_1": 0.55, "cannot_estimate": false, "evidence": "Calm color.", "rationale_plain": "No obvious redness.", "possible_causes": ["Low irritation.", "Minimal friction."]},
-          "texture": {"score_1_5": 2, "confidence_0_1": 0.65, "cannot_estimate": false, "evidence": "Smooth surface.", "rationale_plain": "No coarse grain or flaking.", "possible_causes": ["Adequate moisturization.", "Gentle products."]},
-          "acne": {"score_1_5": 1, "confidence_0_1": 0.8, "cannot_estimate": false, "evidence": "No inflamed spots; one tiny comedone at most.", "rationale_plain": "Breakouts are essentially absent.", "possible_causes": ["Low oil activity.", "Limited occlusion."], "lesion_counts": {"inflammatory": 0, "comedonal": 1}},
-          "under_eye": {"score_1_5": 3, "confidence_0_1": 0.0, "cannot_estimate": true, "evidence": "Not an under-eye area.", "rationale_plain": "Under-eye scoring does not apply.", "possible_causes": ["Not applicable.","Not applicable."]}
-        }
-      },
-      {
-        "region_key": "chin",
-        "region_summary": {
-          "summary_plain": "Small pores and even tone with a few tiny comedones. Texture remains smooth.",
-          "possible_causes": ["Balanced oil and routine cleansing.", "Occasional congestion from touch or masks."]
-        },
-        "metrics": {
-          "pores": {"score_1_5": 2, "confidence_0_1": 0.65, "cannot_estimate": false, "evidence": "Fine pores; sparse clustering.", "rationale_plain": "Only small pore openings are visible.", "possible_causes": ["Moderate sebum.", "Regular cleansing."]},
-          "wrinkles": {"score_1_5": 1, "confidence_0_1": 0.75, "cannot_estimate": false, "evidence": "No static lines.", "rationale_plain": "Skin is smooth without etched lines.", "possible_causes": ["Low repetitive folding.", "Adequate hydration."]},
-          "pigmentation": {"score_1_5": 2, "confidence_0_1": 0.55, "cannot_estimate": false, "evidence": "Uniform tone.", "rationale_plain": "No notable contrast patches.", "possible_causes": ["Less sun exposure.", "Few prior blemishes here."]},
-          "redness": {"score_1_5": 2, "confidence_0_1": 0.55, "cannot_estimate": false, "evidence": "Calm color.", "rationale_plain": "Only trace redness if any.", "possible_causes": ["Low irritation.", "Minimal friction."]},
-          "texture": {"score_1_5": 2, "confidence_0_1": 0.65, "cannot_estimate": false, "evidence": "Even micro-relief.", "rationale_plain": "Texture looks smooth overall.", "possible_causes": ["Balanced moisturization.", "Gentle products."]},
-          "acne": {"score_1_5": 2, "confidence_0_1": 0.7, "cannot_estimate": false, "evidence": "Few tiny comedones; no inflamed spots.", "rationale_plain": "Mild congestion without redness.", "possible_causes": ["Touching the chin or mask wear.", "Oil buildup late in the day."], "lesion_counts": {"inflammatory": 0, "comedonal": 3}},
-          "under_eye": {"score_1_5": 3, "confidence_0_1": 0.0, "cannot_estimate": true, "evidence": "Not applicable.", "rationale_plain": "Under-eye scoring is not relevant here.", "possible_causes": ["Not applicable.","Not applicable."]}
-        }
-      },
-      {
-        "region_key": "jaw_left",
-        "region_summary": {
-          "summary_plain": "Smooth skin with very fine pores and even tone. No active blemishes.",
-          "possible_causes": ["Low oil flow along the jaw.", "Limited sun catchment here."]
-        },
-        "metrics": {
-          "pores": {"score_1_5": 2, "confidence_0_1": 0.7, "cannot_estimate": false, "evidence": "Fine pores only.", "rationale_plain": "Pores are not prominent.", "possible_causes": ["Lower sebum output.", "Regular cleansing."]},
-          "wrinkles": {"score_1_5": 1, "confidence_0_1": 0.7, "cannot_estimate": false, "evidence": "No lines at rest.", "rationale_plain": "Area remains smooth.", "possible_causes": ["Low folding.", "Adequate moisturization."]},
-          "pigmentation": {"score_1_5": 2, "confidence_0_1": 0.55, "cannot_estimate": false, "evidence": "Even tone.", "rationale_plain": "No focal dark patches.", "possible_causes": ["Less sun exposure.", "Few prior blemishes."]},
-          "redness": {"score_1_5": 2, "confidence_0_1": 0.55, "cannot_estimate": false, "evidence": "Calm color.", "rationale_plain": "Minimal to no redness.", "possible_causes": ["Low irritation.", "Minimal friction." ]},
-          "texture": {"score_1_5": 2, "confidence_0_1": 0.65, "cannot_estimate": false, "evidence": "Even micro-relief.", "rationale_plain": "Surface is smooth.", "possible_causes": ["Balanced hydration.", "Gentle routine."]},
-          "acne": {"score_1_5": 1, "confidence_0_1": 0.75, "cannot_estimate": false, "evidence": "No active lesions; maybe one tiny comedone.", "rationale_plain": "Essentially clear of acne.", "possible_causes": ["Low oil activity.", "Limited occlusion."], "lesion_counts": {"inflammatory": 0, "comedonal": 1}},
-          "under_eye": {"score_1_5": 3, "confidence_0_1": 0.0, "cannot_estimate": true, "evidence": "Not applicable.", "rationale_plain": "Under-eye metric does not apply here.", "possible_causes": ["Not applicable.","Not applicable."]}
-        }
-      },
-      {
-        "region_key": "jaw_right",
-        "region_summary": {
-          "summary_plain": "Similar to the left jaw: fine pores, smooth surface, even tone. No active blemishes.",
-          "possible_causes": ["Low oil flow along jawline.", "Limited sun exposure here."]
-        },
-        "metrics": {
-          "pores": {"score_1_5": 2, "confidence_0_1": 0.7, "cannot_estimate": false, "evidence": "Fine pores.", "rationale_plain": "Pores are small and not clustered.", "possible_causes": ["Lower sebum.", "Consistent cleansing."]},
-          "wrinkles": {"score_1_5": 1, "confidence_0_1": 0.7, "cannot_estimate": false, "evidence": "No static lines.", "rationale_plain": "Area is smooth.", "possible_causes": ["Low movement/folding.", "Hydration."]},
-          "pigmentation": {"score_1_5": 2, "confidence_0_1": 0.55, "cannot_estimate": false, "evidence": "Even tone.", "rationale_plain": "No strong discoloration.", "possible_causes": ["Less sun exposure.", "Few previous blemishes."]},
-          "redness": {"score_1_5": 2, "confidence_0_1": 0.55, "cannot_estimate": false, "evidence": "Calm color.", "rationale_plain": "Minimal redness noted.", "possible_causes": ["Low irritation.", "Minimal friction."]},
-          "texture": {"score_1_5": 2, "confidence_0_1": 0.65, "cannot_estimate": false, "evidence": "Even micro-relief.", "rationale_plain": "Texture looks smooth.", "possible_causes": ["Balanced hydration.", "Gentle routine."]},
-          "acne": {"score_1_5": 1, "confidence_0_1": 0.75, "cannot_estimate": false, "evidence": "No active lesions; possibly one tiny comedone.", "rationale_plain": "Jawline is essentially clear.", "possible_causes": ["Low oil activity.", "Limited occlusion."], "lesion_counts": {"inflammatory": 0, "comedonal": 1}},
-          "under_eye": {"score_1_5": 3, "confidence_0_1": 0.0, "cannot_estimate": true, "evidence": "Not applicable.", "rationale_plain": "Under-eye metric not relevant here.", "possible_causes": ["Not applicable.","Not applicable."]}
-        }
+      "under_eye": {
+        "score_1_5": 2.6,
+        "confidence_0_1": 0.72,
+        "rationale_plain": "Clear but mild under-eye darkening is present, slightly more on the left. Borders remain within the eyelid area and there is minimal puffiness.",
+        "possible_causes": [
+          "Genetic anatomy and tear-trough shadowing commonly contribute to darkness.",
+          "Sleep quality, screen time, and hydration can make the area appear darker on some days."
+        ],
+        "regional_breakdown": [
+          {"region_key":"periorbital_left","score_1_5":2.7},
+          {"region_key":"periorbital_right","score_1_5":2.5}
+        ],
+        "citations": [
+          {"title":"Validated photonumeric scale for infraorbital dark circles (PMC)","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC7898348/"},
+          {"title":"Periorbital hyperpigmentation study (PubMed)","url":"https://pubmed.ncbi.nlm.nih.gov/24700933/"}
+        ]
       }
+    },
+    "region_summaries": [
+      {"region_key":"forehead","summary_plain":"Fine micro-relief with minimal lines and small pores. Tone is even and matte."},
+      {"region_key":"glabella","summary_plain":"Calm skin with subtle expression creases only when moving. No focal discoloration."},
+      {"region_key":"periorbital_left","summary_plain":"Mild under-eye darkness with smooth texture; crow’s-feet minimal at rest."},
+      {"region_key":"periorbital_right","summary_plain":"Similar to left but slightly lighter; texture is smooth and even."},
+      {"region_key":"cheek_left","summary_plain":"Even surface and mild mottling near the center; pores increase slightly toward the nose."},
+      {"region_key":"cheek_right","summary_plain":"Mirrors the left cheek with small spots and modest pores medially; lateral cheek is smoother."},
+      {"region_key":"nose","summary_plain":"Most visible pores and slight pinkness; small comedonal candidates are present."},
+      {"region_key":"upper_lip","summary_plain":"Even tone and very fine texture; lines at rest are minimal."},
+      {"region_key":"chin","summary_plain":"Generally smooth with small pores; occasional tiny comedonal candidates."},
+      {"region_key":"jaw_left","summary_plain":"Low pore visibility and even tone; area appears calm."},
+      {"region_key":"jaw_right","summary_plain":"Matches the left jaw—matte and even with low concern."}
     ],
     "escalation_flags": []
   },
   "charts": {
-    "area_vs_pore_count": [
-      {"region_key": "forehead", "value": 25},
-      {"region_key": "glabella", "value": 25},
-      {"region_key": "periorbital_left", "value": 0},
-      {"region_key": "periorbital_right", "value": 0},
-      {"region_key": "cheek_left", "value": 50},
-      {"region_key": "cheek_right", "value": 50},
-      {"region_key": "nose", "value": 75},
-      {"region_key": "upper_lip", "value": 25},
-      {"region_key": "chin", "value": 25},
-      {"region_key": "jaw_left", "value": 25},
-      {"region_key": "jaw_right", "value": 25}
-    ],
-    "area_vs_wrinkle_index": [
-      {"region_key": "forehead", "value": 25},
-      {"region_key": "glabella", "value": 25},
-      {"region_key": "periorbital_left", "value": 25},
-      {"region_key": "periorbital_right", "value": 25},
-      {"region_key": "cheek_left", "value": 25},
-      {"region_key": "cheek_right", "value": 25},
-      {"region_key": "nose", "value": 0},
-      {"region_key": "upper_lip", "value": 25},
-      {"region_key": "chin", "value": 0},
-      {"region_key": "jaw_left", "value": 0},
-      {"region_key": "jaw_right", "value": 0}
-    ],
-    "area_vs_pigmentation_index": [
-      {"region_key": "forehead", "value": 25},
-      {"region_key": "glabella", "value": 25},
-      {"region_key": "periorbital_left", "value": 25},
-      {"region_key": "periorbital_right", "value": 25},
-      {"region_key": "cheek_left", "value": 50},
-      {"region_key": "cheek_right", "value": 50},
-      {"region_key": "nose", "value": 25},
-      {"region_key": "upper_lip", "value": 25},
-      {"region_key": "chin", "value": 25},
-      {"region_key": "jaw_left", "value": 25},
-      {"region_key": "jaw_right", "value": 25}
-    ],
-    "area_vs_redness_index": [
-      {"region_key": "forehead", "value": 25},
-      {"region_key": "glabella", "value": 25},
-      {"region_key": "periorbital_left", "value": 25},
-      {"region_key": "periorbital_right", "value": 25},
-      {"region_key": "cheek_left", "value": 25},
-      {"region_key": "cheek_right", "value": 25},
-      {"region_key": "nose", "value": 50},
-      {"region_key": "upper_lip", "value": 25},
-      {"region_key": "chin", "value": 25},
-      {"region_key": "jaw_left", "value": 25},
-      {"region_key": "jaw_right", "value": 25}
-    ],
-    "area_vs_texture_index": [
-      {"region_key": "forehead", "value": 25},
-      {"region_key": "glabella", "value": 25},
-      {"region_key": "periorbital_left", "value": 25},
-      {"region_key": "periorbital_right", "value": 25},
-      {"region_key": "cheek_left", "value": 50},
-      {"region_key": "cheek_right", "value": 50},
-      {"region_key": "nose", "value": 50},
-      {"region_key": "upper_lip", "value": 25},
-      {"region_key": "chin", "value": 25},
-      {"region_key": "jaw_left", "value": 25},
-      {"region_key": "jaw_right", "value": 25}
-    ],
-    "area_vs_acne_count": [
-      {"region_key": "forehead", "value": 2},
-      {"region_key": "glabella", "value": 1},
-      {"region_key": "periorbital_left", "value": 0},
-      {"region_key": "periorbital_right", "value": 0},
-      {"region_key": "cheek_left", "value": 7},
-      {"region_key": "cheek_right", "value": 6},
-      {"region_key": "nose", "value": 12},
-      {"region_key": "upper_lip", "value": 1},
-      {"region_key": "chin", "value": 3},
-      {"region_key": "jaw_left", "value": 1},
-      {"region_key": "jaw_right", "value": 1}
-    ],
-    "under_eye_darkness_left_right": [
-      {"side": "left", "value": 50},
-      {"side": "right", "value": 50}
-    ],
     "overview_radar": {
       "axis_order": ["pores","wrinkles","pigmentation","redness","texture","acne","under_eye"],
-      "values_0_100": [30,16,30,27,32,50,50],
-      "scale": {"min": 0, "max": 100, "direction": "higher_is_worse", "formula": "Indices mapped from 1–5 scores using (score−1)/4×100; acne uses face-level class (3→50), under-eye is the side-average index."}
+      "values_1_5": [2.4, 2.0, 2.4, 2.0, 2.2, 1.6, 2.6],
+      "scale": {
+        "min": 1,
+        "max": 5,
+        "direction": "higher_is_worse",
+        "formula": "identity (score_1_5)"
+      }
     }
   },
   "audit": {
-    "prompt_version": "skin_v2_poc",
+    "prompt_version": "skin_v2_poc_2025-10-23",
     "model_hint": "vision_llm_only",
     "limitations": [
-      "Visual analysis only; no diagnoses or device colorimetry.",
-      "Indoor lighting and camera angles can change appearance of pores, redness, and tone.",
-      "Under-eye darkness influenced by anatomy and lighting; photos cannot separate these fully."
+      "Indoor daylight can shift color balance slightly, affecting redness and pigmentation perception.",
+      "Nose ring mildly occludes a small area of the left nostril.",
+      "Under-eye depth and dynamic wrinkles are harder to judge without relaxed and smiling expression pairs."
     ]
   }
 }

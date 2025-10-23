@@ -60,14 +60,14 @@ const renderPolarAngleAxis = ({ payload, x, y, cx, cy, ...rest }: any) => {
 interface SeverityRadarProps {
   radarData: {
     axis_order: string[];
-    values_0_100: number[];
+    values_1_5: number[];
   };
 }
 
 export function SeverityRadar({ radarData }: SeverityRadarProps) {
   const chartData = radarData.axis_order.map((axis, index) => ({
     name: axis.charAt(0).toUpperCase() + axis.slice(1),
-    score: radarData.values_0_100[index],
+    score: radarData.values_1_5[index],
   }));
 
   return (

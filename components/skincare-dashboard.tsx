@@ -6,6 +6,7 @@ import { SeverityRadar } from "@/components/severity-radar";
 import { ConcernCard } from "@/components/concern-card";
 import { ConcernDetailPage } from "@/components/concern-detail-page";
 import { RecommendationsSection } from "@/components/recommendations-section";
+import { RegionWiseBreakdown } from "./region-wise-breakdown";
 import { TabsContent } from "@/components/ui/tabs";
 import {
   Sheet,
@@ -30,11 +31,11 @@ export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
   const [selectedConcern, setSelectedConcern] = useState<Concern | null>(null);
   const { analysis, charts } = data;
 
-  const concerns: Concern[] = charts.overview_radar.axis_order.map((concernName: string, index: number) => ({
-    name: concernName.charAt(0).toUpperCase() + concernName.slice(1),
-    score: charts.overview_radar.values_0_100[index],
-    description: `A summary for ${concernName} will be shown here.`,
-    areas: [],
+  const concerns: Concern[] = Object.entries(analysis.concerns).map(([key, value]: [string, any]) => ({
+    name: key.charAt(0).toUpperCase() + key.slice(1),
+    score: value.score_1_5,
+    description: value.rationale_plain,
+    areas: value.regional_breakdown,
   }));
 
   return (
@@ -48,7 +49,7 @@ export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
               SEVERITY RADAR
             </h2>
             <p className="text-xs text-muted-foreground mt-1">
-              Severity is on a 0–100 scale. Radar shows overall severity: Larger
+              Severity is on a 1–5 scale. Radar shows overall severity: Larger
               filled area = more severe concerns across dimensions.
             </p>
             <div className="h-[350px] w-full">
@@ -67,12 +68,15 @@ export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
               {concerns
                 .sort((a, b) => b.score - a.score)
                 .map((concern) => (
-                  <div key={concern.name} onClick={() => setSelectedConcern(concern)}>
-                    <ConcernCard concern={concern} />
-                  </div>
+                  <ConcernCard
+                    key={concern.name}
+                    concern={concern}
+                    onClick={() => setSelectedConcern(concern)}
+                  />
                 ))}
             </div>
           </div>
+          <RegionWiseBreakdown regionSummaries={analysis.region_summaries} />
         </TabsContent>
       </RecommendationsSection>
       <Sheet open={!!selectedConcern} onOpenChange={(isOpen) => !isOpen && setSelectedConcern(null)}>

@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { DotChart } from "./dot-chart";
+import { RegionWiseBreakdown } from "./region-wise-breakdown";
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -45,7 +46,7 @@ function SkinTypeCard({ skinType, description }: { skinType: string, description
   );
 }
 
-function SkinAgeCard({ ageRange }: { ageRange: { low: number; high: number } }) {
+function SkinAgeCard({ ageRange, rationale }: { ageRange: { low: number; high: number }, rationale?: string }) {
   return (
     <InfoCard
       label="SKIN AGE"
@@ -54,6 +55,7 @@ function SkinAgeCard({ ageRange }: { ageRange: { low: number; high: number } }) 
           {ageRange.low} - {ageRange.high}
         </p>
       }
+      description={rationale}
     />
   );
 }
@@ -119,12 +121,9 @@ function TopConcernsCard({ topConcerns }: { topConcerns: string[] }) {
   );
 }
 
-function SensitivityCard({ radarData }: { radarData: any }) {
+function SensitivityCard({ analysis }: { analysis: any }) {
   const getScore = (name: string) => {
-    const index = radarData.axis_order.indexOf(name);
-    if (index === -1) return 0;
-    // Convert 0-100 scale to 0-5 scale for display
-    return Math.round((radarData.values_0_100[index] / 100) * 5);
+    return analysis.concerns[name]?.score_1_5 || 0;
   };
 
   const rednessScore = getScore("redness");
@@ -186,11 +185,11 @@ export function SummaryOverview({ analysis, charts }: any) {
         description={analysis.skin_type.rationale}
       />
       <div className="col-span-1 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <SkinAgeCard ageRange={analysis.skin_age_range} />
+        <SkinAgeCard ageRange={analysis.skin_age_range} rationale={analysis.skin_age_range.rationale} />
         <SkinToneCard fitzpatrickTone={analysis.skin_tone_fitzpatrick.label} />
       </div>
-      {/* <TopConcernsCard topConcerns={analysis.top_concerns} /> */}
-      <SensitivityCard radarData={charts.overview_radar} />
+      <TopConcernsCard topConcerns={analysis.top_concerns} />
+      <SensitivityCard analysis={analysis} />
     </div>
   );
 }

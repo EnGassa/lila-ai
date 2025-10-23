@@ -4,9 +4,11 @@
 
 *   The basic Next.js application is set up and running.
 *   The initial file structure is in place.
+*   A detailed, nested data structure for skin analysis has been defined in `radhika.json`.
 
 ## What's Left to Build
 
+*   Refactor all UI components to align with the new data structure.
 *   User authentication.
 *   User profile creation and management.
 *   Skin analysis functionality.
@@ -15,4 +17,5 @@
 
 ## Known Issues
 
-*   No known issues at this time.
+*   The UI is currently out of sync with the data model and requires a full refactor.
+*   The application may be experiencing caching issues that prevent the latest data from being displayed.

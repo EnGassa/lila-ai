@@ -21,6 +21,7 @@ interface ConcernCardProps {
     score: number;
     description: string;
   };
+  onClick: () => void;
 }
 
 const iconMap: { [key: string]: React.ElementType } = {
@@ -33,19 +34,22 @@ const iconMap: { [key: string]: React.ElementType } = {
   Acne: CircleDotDashed,
 };
 
-export function ConcernCard({ concern }: ConcernCardProps) {
+export function ConcernCard({ concern, onClick }: ConcernCardProps) {
   const Icon = iconMap[concern.name] || Grip;
 
   const getSeverityColor = (score: number) => {
-    if (score < 33) return "border-green-500 text-green-500";
-    if (score < 66) return "border-yellow-500 text-yellow-500";
+    if (score < 2.5) return "border-green-500 text-green-500";
+    if (score < 4) return "border-yellow-500 text-yellow-500";
     return "border-red-500 text-red-500";
   };
 
   const severityColor = getSeverityColor(concern.score);
 
   return (
-    <Card className={`border ${severityColor.split(' ')[0]} cursor-pointer`}>
+    <Card
+      className={`border ${severityColor.split(' ')[0]} cursor-pointer`}
+      onClick={onClick}
+    >
       <CardHeader className="flex flex-row items-start justify-between">
         <div className="flex items-center gap-2">
           <div
@@ -61,9 +65,9 @@ export function ConcernCard({ concern }: ConcernCardProps) {
           <p
             className={`text-2xl font-bold ${severityColor.split(' ')[1]}`}
           >
-            {concern.score.toFixed(0)}
+            {concern.score.toFixed(1)}
           </p>
-          <p className="text-xs text-muted-foreground">Severity: 0-100</p>
+          <p className="text-xs text-muted-foreground">Severity: 1-5</p>
         </div>
       </CardHeader>
       <CardContent className="flex items-center justify-between">
