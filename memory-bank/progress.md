@@ -5,6 +5,7 @@
 *   The basic Next.js application is set up and running.
 *   The initial file structure is in place.
 *   A detailed, nested data structure for skin analysis has been defined in `radhika.json`.
+*   The `UserProfile` component now displays a larger profile picture and the user's name.
 
 ## What's Left to Build
 
