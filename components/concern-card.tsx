@@ -8,10 +8,11 @@ import {
   ChevronRight,
   Eye,
   Droplets,
-  Dot,
-  Paperclip,
-  Shield,
-  Wind,
+  Grip,
+  CircleDotDashed,
+  Menu,
+  SunMoon,
+  SquareDashedBottom,
 } from "lucide-react";
 
 interface ConcernCardProps {
@@ -24,16 +25,16 @@ interface ConcernCardProps {
 
 const iconMap: { [key: string]: React.ElementType } = {
   "Under_eye": Eye,
-  Pores: Dot,
-  Wrinkles: Wind,
+  Pores: Grip,
+  Wrinkles: Menu,
   Pigmentation: Droplets,
-  Redness: Shield,
-  Texture: Paperclip,
-  Acne: Dot,
+  Redness: SunMoon,
+  Texture: SquareDashedBottom,
+  Acne: CircleDotDashed,
 };
 
 export function ConcernCard({ concern }: ConcernCardProps) {
-  const Icon = iconMap[concern.name] || Dot;
+  const Icon = iconMap[concern.name] || Grip;
 
   const getSeverityColor = (score: number) => {
     if (score < 33) return "border-green-500 text-green-500";
