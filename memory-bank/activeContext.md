@@ -10,6 +10,7 @@
 *   Created the initial file structure for the application.
 *   Updated the primary data source (`radhika.json`) to a more detailed, nested structure. The new structure includes a `concerns` object with detailed breakdowns for each concern, including regional scores and citations.
 *   Updated the `UserProfile` component to display a larger profile picture and the user's name, with a fallback to the user ID.
+*   Adjusted the text font color in `app/globals.css` to be slightly darker for better readability.
 
 ## Next Steps
 

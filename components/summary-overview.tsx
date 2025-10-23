@@ -180,14 +180,14 @@ export function SummaryOverview({ analysis, charts }: any) {
         }
         className="col-span-1 sm:col-span-2"
       />
-      <SkinTypeCard
-        skinType={analysis.skin_type.label}
-        description={analysis.skin_type.rationale}
-      />
       <div className="col-span-1 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
         <SkinAgeCard ageRange={analysis.skin_age_range} rationale={analysis.skin_age_range.rationale} />
         <SkinToneCard fitzpatrickTone={analysis.skin_tone_fitzpatrick.label} />
       </div>
+      <SkinTypeCard
+        skinType={analysis.skin_type.label}
+        description={analysis.skin_type.rationale}
+      />
       <TopConcernsCard topConcerns={analysis.top_concerns} />
       <SensitivityCard analysis={analysis} />
     </div>
