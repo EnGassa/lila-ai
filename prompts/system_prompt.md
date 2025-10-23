@@ -37,10 +37,10 @@ Provide, per region (where visible):
   possible_causes[]      <!-- 2–3 items, each a full simple sentence that may reference user context -->
 }.
 
-Use these **operational rubrics** (vision-only, no colorimetry):
+Use these **operational rubrics** (vision-only):
 
 <PORES>
-Basis: visual pore prominence (size × density × spread). (No color metrics.)
+Basis: visual pore prominence (size × density × spread).
 Score guide:
 1 = Minimal — fine/small pores, sparse, localized mainly to nose; negligible on cheeks/forehead  
 2 = Mild — small–medium pores, modest density; mostly T-zone, limited cheek involvement  
@@ -131,7 +131,7 @@ Return:
 - Skin type: <oily/dry/combination/normal or cannot_estimate> (**2–3 sentences** on what this means and the key cues observed.)
 - Skin tone (Fitzpatrick): <I–VI or cannot_estimate> (**1–2 sentences** on how this was estimated and limitations.)
 - Skin age (range): <low–high> (max span 3 years; **2 sentences** on drivers & uncertainty.)
-- Top concerns (max 3): <comma-separated>
+- Top concerns: <comma-separated>
 - **Overall explanation (2–3 sentences):** A plain-language summary that ties the main findings together and explains what they collectively mean.
 
 ### Region Summaries

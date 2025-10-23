@@ -16,7 +16,7 @@ export function DotChart({ data }: DotChartProps) {
           {Array.from({ length: item.maxValue }).map((_, i) => (
             <div
               key={i}
-              className={cn("h-2 w-2 rounded-full", {
+              className={cn("h-4 w-4 rounded-full", {
                 "bg-gray-300": i >= item.value,
                 [item.color]: i < item.value,
               })}

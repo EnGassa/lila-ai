@@ -17,14 +17,12 @@ interface InfoCardProps {
   label: string;
   value: React.ReactNode;
   description?: string;
-  fullWidth?: boolean;
+  className?: string;
 }
 
-function InfoCard({ label, value, description, fullWidth }: InfoCardProps) {
+function InfoCard({ label, value, description, className }: InfoCardProps) {
   return (
-    <Card
-      className={`p-4 rounded-lg bg-white ${fullWidth ? "col-span-2" : ""}`}
-    >
+    <Card className={`p-4 rounded-lg bg-white ${className}`}>
       <p className="text-sm font-light text-muted-foreground">{label}</p>
       <div>{value}</div>
       {description && (
@@ -42,7 +40,7 @@ function SkinTypeCard({ skinType, description }: { skinType: string, description
       label="SKIN TYPE"
       value={<p className="text-lg font-medium">{capitalize(skinType)}</p>}
       description={description}
-      fullWidth
+      className="col-span-1 sm:col-span-2"
     />
   );
 }
@@ -72,7 +70,7 @@ function SkinToneCard({ fitzpatrickTone }: { fitzpatrickTone: keyof typeof FITZP
       <div className="mt-3 space-y-2">
         <div className="relative">
           <div className="absolute top-[12px] left-0 right-0 h-px bg-border -translate-y-1/2 pointer-events-none" />
-          <div className="relative flex w-full justify-between items-start">
+          <div className="relative flex w-full justify-between items-start flex-wrap">
             {Object.entries(FITZPATRICK_TONES).map(([key, tone], index) => (
               <div key={key} className="flex flex-col items-center gap-2 text-center">
                 <div
@@ -82,7 +80,13 @@ function SkinToneCard({ fitzpatrickTone }: { fitzpatrickTone: keyof typeof FITZP
                       : `${tone.color} border-transparent`
                   }`}
                 />
-                <div className="text-xs text-muted-foreground w-16">
+                <div
+                  className={`text-xs ${
+                    index + 1 === fitzpatrickLevel
+                      ? "font-semibold text-foreground"
+                      : "text-muted-foreground"
+                  }`}
+                >
                   <p>{key}</p>
                   <p>{tone.name}</p>
                 </div>
@@ -90,7 +94,6 @@ function SkinToneCard({ fitzpatrickTone }: { fitzpatrickTone: keyof typeof FITZP
             ))}
           </div>
         </div>
-        <p className="text-muted-foreground text-sm text-center">{fitzpatrickInfo.name}</p>
       </div>
     </div>
   );
@@ -111,7 +114,7 @@ function TopConcernsCard({ topConcerns }: { topConcerns: string[] }) {
           ))}
         </div>
       }
-      fullWidth
+      className="col-span-1 sm:col-span-2"
     />
   );
 }
@@ -131,12 +134,12 @@ function SensitivityCard({ radarData }: { radarData: any }) {
     redness: {
       value: rednessScore,
       maxValue: 5,
-      color: "bg-red-500",
+      color: "bg-indigo-300",
     },
     acne: {
       value: acneScore,
       maxValue: 5,
-      color: "bg-purple-500",
+      color: "bg-indigo-300",
     },
   };
 
@@ -161,7 +164,7 @@ function SensitivityCard({ radarData }: { radarData: any }) {
           </div>
         </div>
       }
-      fullWidth
+      className="col-span-1 sm:col-span-2"
     />
   );
 }
@@ -169,28 +172,25 @@ function SensitivityCard({ radarData }: { radarData: any }) {
 export function SummaryOverview({ analysis, charts }: any) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div className="col-span-1 sm:col-span-2">
-        <InfoCard
-          label="SUMMARY"
-          value={
-            <p className="text-sm font-light text-muted-foreground">
-              {analysis.overview_explanation}
-            </p>
-          }
-          fullWidth
-        />
-      </div>
-      <div className="col-span-1 sm:col-span-2">
-        <SkinTypeCard skinType={analysis.skin_type.label} description={analysis.skin_type.rationale} />
-      </div>
-      <div className="grid gap-4">
+      <InfoCard
+        label="SUMMARY"
+        value={
+          <p className="text-sm font-light text-muted-foreground">
+            {analysis.overview_explanation}
+          </p>
+        }
+        className="col-span-1 sm:col-span-2"
+      />
+      <SkinTypeCard
+        skinType={analysis.skin_type.label}
+        description={analysis.skin_type.rationale}
+      />
+      <div className="col-span-1 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
         <SkinAgeCard ageRange={analysis.skin_age_range} />
         <SkinToneCard fitzpatrickTone={analysis.skin_tone_fitzpatrick.label} />
       </div>
-      <div className="grid gap-4">
-        <TopConcernsCard topConcerns={analysis.top_concerns} />
-        <SensitivityCard radarData={charts.overview_radar} />
-      </div>
+      {/* <TopConcernsCard topConcerns={analysis.top_concerns} /> */}
+      <SensitivityCard radarData={charts.overview_radar} />
     </div>
   );
 }
