@@ -1,9 +1,18 @@
+"use client";
+import { useState } from "react";
 import { UserProfile } from "@/components/user-profile";
 import { SummaryOverview } from "@/components/summary-overview";
 import { SeverityRadar } from "@/components/severity-radar";
 import { ConcernCard } from "@/components/concern-card";
+import { ConcernDetailPage } from "@/components/concern-detail-page";
 import { RecommendationsSection } from "@/components/recommendations-section";
 import { TabsContent } from "@/components/ui/tabs";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 interface SkincareDashboardProps {
   data: any;
@@ -18,6 +27,7 @@ interface Concern {
 }
 
 export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
+  const [selectedConcern, setSelectedConcern] = useState<Concern | null>(null);
   const { analysis, charts } = data;
 
   const concerns: Concern[] = charts.overview_radar.axis_order.map((concernName: string, index: number) => ({
@@ -57,12 +67,30 @@ export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
               {concerns
                 .sort((a, b) => b.score - a.score)
                 .map((concern) => (
-                  <ConcernCard key={concern.name} concern={concern} />
+                  <div key={concern.name} onClick={() => setSelectedConcern(concern)}>
+                    <ConcernCard concern={concern} />
+                  </div>
                 ))}
             </div>
           </div>
         </TabsContent>
       </RecommendationsSection>
+      <Sheet open={!!selectedConcern} onOpenChange={(isOpen) => !isOpen && setSelectedConcern(null)}>
+        <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+          {selectedConcern && (
+            <>
+              <SheetHeader>
+                <SheetTitle>{selectedConcern.name.replace(/_/g, ' ')}</SheetTitle>
+              </SheetHeader>
+              <ConcernDetailPage
+                userId={userId}
+                concernName={selectedConcern.name}
+                onClose={() => setSelectedConcern(null)}
+              />
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

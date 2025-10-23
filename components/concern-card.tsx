@@ -45,7 +45,7 @@ export function ConcernCard({ concern }: ConcernCardProps) {
   const severityColor = getSeverityColor(concern.score);
 
   return (
-    <Card className={`border ${severityColor.split(' ')[0]}`}>
+    <Card className={`border ${severityColor.split(' ')[0]} cursor-pointer`}>
       <CardHeader className="flex flex-row items-start justify-between">
         <div className="flex items-center gap-2">
           <div
