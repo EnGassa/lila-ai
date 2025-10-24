@@ -90,6 +90,7 @@ export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
                 userId={userId}
                 concernName={selectedConcern.name}
                 onClose={() => setSelectedConcern(null)}
+                userData={data}
               />
             </>
           )}

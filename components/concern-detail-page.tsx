@@ -2,13 +2,13 @@
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { ChevronLeft } from 'lucide-react';
-import userData from '@/data/radhika.json';
 import { Button } from "@/components/ui/button";
 
 interface ConcernDetailPageProps {
   userId: string;
   concernName: string;
   onClose: () => void;
+  userData: any;
 }
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -27,7 +27,7 @@ function InfoCard({ label, value, description, className }: { label: string; val
   );
 }
 
-export function ConcernDetailPage({ userId, concernName, onClose }: ConcernDetailPageProps) {
+export function ConcernDetailPage({ userId, concernName, onClose, userData }: ConcernDetailPageProps) {
   const concernKey = concernName.toLowerCase() as keyof typeof userData.analysis.concerns;
   const concernData = userData.analysis.concerns[concernKey];
 
@@ -64,7 +64,7 @@ export function ConcernDetailPage({ userId, concernName, onClose }: ConcernDetai
           label="POSSIBLE CAUSES"
           value={
             <ul className="list-disc list-inside text-sm font-light text-muted-foreground">
-              {concernData.possible_causes.map((cause, index) => (
+              {concernData.possible_causes.map((cause: string, index: number) => (
                 <li key={index}>{cause}</li>
               ))}
             </ul>
@@ -75,7 +75,7 @@ export function ConcernDetailPage({ userId, concernName, onClose }: ConcernDetai
       <Card className="p-4 rounded-lg bg-white">
         <p className="text-sm font-light text-muted-foreground">CITATIONS</p>
         <div className="mt-2 flex flex-col space-y-2">
-          {concernData.citations.map((citation, index) => (
+          {concernData.citations.map((citation: { title: string; url: string }, index: number) => (
             <a
               key={index}
               href={citation.url}
