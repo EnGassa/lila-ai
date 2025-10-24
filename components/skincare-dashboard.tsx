@@ -7,7 +7,12 @@ import { ConcernCard } from "@/components/concern-card";
 import { ConcernDetailPage } from "@/components/concern-detail-page";
 import { RecommendationsSection } from "@/components/recommendations-section";
 import { RegionWiseBreakdown } from "./region-wise-breakdown";
-import { TabsContent } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import {
   Sheet,
   SheetContent,
@@ -31,17 +36,23 @@ export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
   const [selectedConcern, setSelectedConcern] = useState<Concern | null>(null);
   const { analysis, charts } = data;
 
-  const concerns: Concern[] = Object.entries(analysis.concerns).map(([key, value]: [string, any]) => ({
-    name: key.charAt(0).toUpperCase() + key.slice(1),
-    score: value.score_1_5,
-    description: value.rationale_plain,
-    areas: value.regional_breakdown,
-  }));
+  const concerns: Concern[] = Object.entries(analysis.concerns).map(
+    ([key, value]: [string, any]) => ({
+      name: key.charAt(0).toUpperCase() + key.slice(1),
+      score: value.score_1_5,
+      description: value.rationale_plain,
+      areas: value.regional_breakdown,
+    }),
+  );
 
   return (
     <div className="p-4 space-y-6 bg-gray-50">
       <UserProfile userData={data} userId={userId} />
-      <RecommendationsSection>
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
+        </TabsList>
         <TabsContent value="overview" className="space-y-6">
           <SummaryOverview analysis={analysis} charts={charts} />
           <div className="p-4 rounded-lg bg-white">
@@ -78,8 +89,14 @@ export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
           </div>
           <RegionWiseBreakdown regionSummaries={analysis.region_summaries} />
         </TabsContent>
-      </RecommendationsSection>
-      <Sheet open={!!selectedConcern} onOpenChange={(isOpen) => !isOpen && setSelectedConcern(null)}>
+        <TabsContent value="recommendations">
+          <RecommendationsSection />
+        </TabsContent>
+      </Tabs>
+      <Sheet
+        open={!!selectedConcern}
+        onOpenChange={(isOpen) => !isOpen && setSelectedConcern(null)}
+      >
         <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
           {selectedConcern && (
             <>
