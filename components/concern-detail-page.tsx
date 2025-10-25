@@ -27,6 +27,33 @@ function InfoCard({ label, value, description, className }: { label: string; val
   );
 }
 
+function SubtypeCard({ subtype }: { subtype: any }) {
+  return (
+    <div className="p-4 rounded-lg bg-gray-50 border border-gray-200">
+      <p className="text-md font-semibold text-foreground">{capitalize(subtype.key.replace(/_/g, ' '))}</p>
+      <p className="text-sm font-light text-muted-foreground mt-1">{subtype.explanation}</p>
+      
+      <div className="mt-4">
+        <p className="text-sm font-medium text-foreground">Possible Explanation</p>
+        <ul className="list-disc list-inside text-sm font-light text-muted-foreground mt-1">
+          {subtype.likely_causes.map((cause: string, index: number) => (
+            <li key={index}>{cause}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="mt-4">
+        <p className="text-sm font-medium text-foreground">Care Education</p>
+        <ul className="list-disc list-inside text-sm font-light text-muted-foreground mt-1">
+          {subtype.care_education.map((tip: string, index: number) => (
+            <li key={index}>{tip}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 export function ConcernDetailPage({ userId, concernName, onClose, userData }: ConcernDetailPageProps) {
   const concernKey = concernName.toLowerCase() as keyof typeof userData.analysis.concerns;
   const concernData = userData.analysis.concerns[concernKey];
@@ -71,6 +98,17 @@ export function ConcernDetailPage({ userId, concernName, onClose, userData }: Co
           }
         />
       </div>
+
+      {concernData.identified_subtypes && concernData.identified_subtypes.length > 0 && (
+        <Card className="p-4 rounded-lg bg-white">
+          <p className="text-sm font-light text-muted-foreground">TYPE</p>
+          <div className="mt-2 space-y-4">
+            {concernData.identified_subtypes.map((subtype: any, index: number) => (
+              <SubtypeCard key={index} subtype={subtype} />
+            ))}
+          </div>
+        </Card>
+      )}
 
       <Card className="p-4 rounded-lg bg-white">
         <p className="text-sm font-light text-muted-foreground">CITATIONS</p>
