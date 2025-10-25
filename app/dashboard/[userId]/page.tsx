@@ -2,6 +2,28 @@ import { SkincareDashboard } from '@/components/skincare-dashboard';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
+
+export async function generateMetadata({ params }: { params: { userId: string } }): Promise<Metadata> {
+  const filePath = path.join(process.cwd(), 'data', `${params.userId}.json`);
+
+  try {
+    const fileContents = await fs.readFile(filePath, 'utf8');
+    const userData = JSON.parse(fileContents);
+    const userName = userData.name || params.userId;
+
+    return {
+      title: userName,
+      openGraph: {
+        title: userName,
+      },
+    };
+  } catch (error) {
+    return {
+      title: 'User Dashboard',
+    };
+  }
+}
 
 // This function generates the static paths for each user dashboard.
 export async function generateStaticParams() {
