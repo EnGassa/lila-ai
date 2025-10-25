@@ -6,6 +6,7 @@
 
 ## Recent Changes
 
+*   Created the `lila.skin/guidelines` page to provide instructions on how to take photos for skin analysis.
 *   Initialized the project with Next.js, TypeScript, and Tailwind CSS.
 *   Created the initial file structure for the application.
 *   Updated the primary data source (`radhika.json`) to a more detailed, nested structure. The new structure includes a `concerns` object with detailed breakdowns for each concern, including regional scores and citations.

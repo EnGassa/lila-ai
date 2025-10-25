@@ -2,6 +2,7 @@
 
 ## What Works
 
+*   The `lila.skin/guidelines` page has been created with content and styling from the Figma design.
 *   The basic Next.js application is set up and running.
 *   The initial file structure is in place.
 *   A detailed, nested data structure for skin analysis has been defined in `radhika.json`.
