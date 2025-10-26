@@ -11,6 +11,7 @@
 *   The descriptions on the concern cards have been restored.
 *   The "Care Education" section has been removed from the concern detail page.
 *   The "Possible Causes" section has been removed from the concern detail page.
+*   The "Recommendations" tab has been hidden from the main dashboard.
 
 ## What's Left to Build
 

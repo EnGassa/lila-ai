@@ -50,7 +50,6 @@ export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
       <Tabs defaultValue="overview" className="w-full">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
         </TabsList>
         <TabsContent value="overview" className="space-y-6">
           <SummaryOverview analysis={analysis} charts={charts} />
@@ -86,9 +85,6 @@ export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
                 ))}
             </div>
           </div>
-        </TabsContent>
-        <TabsContent value="recommendations">
-          <RecommendationsSection />
         </TabsContent>
       </Tabs>
       <Sheet

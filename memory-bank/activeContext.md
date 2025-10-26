@@ -17,6 +17,7 @@
 *   Restored the descriptions on the concern cards.
 *   Removed the "Care Education" section from the concern detail page.
 *   Removed the "Possible Causes" section from the concern detail page.
+*   Hid the "Recommendations" tab from the main dashboard.
 
 ## Next Steps
 

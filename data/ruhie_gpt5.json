@@ -1,0 +1,457 @@
+{
+  "name": "Ruhie Kumar",
+  "session": {
+    "id": "rk-2025-10-25-01",
+    "timestamp_iso": "2025-10-25T15:30:00+05:30",
+    "poses_received": [
+      "front","left_45","right_45","chin_up","chin_down",
+      "cheek_left_close","cheek_right_close",
+      "nose_close","under_eye_left_close","under_eye_right_close"
+    ],
+    "device_model": null,
+    "user_reported_symptoms": null
+  },
+  "qc": {
+    "status": "pass",
+    "fail_reasons": [],
+    "notes": "Good focus and indirect daylight. A small metallic sticker partially occludes one nasal area but does not prevent assessment."
+  },
+  "analysis": {
+    "skin_type": {
+      "label": "combination",
+      "rationale": "Visible pores and slight shine on the T-zone with smoother, more matte outer cheeks and jaw.",
+      "confidence_0_1": 0.68
+    },
+    "skin_tone_fitzpatrick": {
+      "label": "III",
+      "note": "Estimated from light–medium baseline in natural light; camera/lighting can shift appearance."
+    },
+    "skin_age_range": {
+      "low": 31,
+      "high": 34,
+      "rationale": "Few static lines, smooth texture, and mild under-eye changes suggest early 30s appearance.",
+      "confidence_0_1": 0.55
+    },
+    "top_concerns": ["pores","under_eye","pigmentation"],
+    "overview_explanation": "Balanced skin with T-zone-focused pores, mild under-eye darkness, and light scattered pigmentation. Texture is mostly smooth and acne activity is low.",
+    "concerns": {
+      "pores": {
+        "score_1_5": 3.1,
+        "confidence_0_1": 0.78,
+        "rationale_plain": "Pores are clearly visible on the nose and extend to the medial cheeks. Forehead and jaw show smaller, less dense pores, fitting a T-zone predominant pattern.",
+        "possible_causes": [
+          "Genetic pore size with higher T-zone oil output.",
+          "Heat, UV and urban pollution can oxidize sebum and accentuate pore edges.",
+          "Harsh cleansing can trigger rebound oil and make pores appear larger."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "t_zone_predominant",
+            "explanation": "Greatest pore prominence on the nose with spillover onto the inner cheeks.",
+            "likely_causes": [
+              "Sebaceous gland density is highest in the T-zone.",
+              "Heat and humidity increase oil flow."
+            ],
+            "care_education": [
+              "Use a gentle daily cleanser and avoid harsh scrubs.",
+              "Add a leave-on BHA (salicylic acid 0.5–2%) several nights per week and use daily broad-spectrum sunscreen."
+            ],
+            "confidence_0_1": 0.8
+          },
+          {
+            "key": "high_density",
+            "explanation": "Many closely spaced openings on the nasal tip/dorsum.",
+            "likely_causes": [
+              "Genetic baseline of pore number.",
+              "Oxidized sebum highlighting openings."
+            ],
+            "care_education": [
+              "Stay consistent with BHA and gentle moisturization.",
+              "Expect gradual changes rather than abrupt shrinking."
+            ],
+            "confidence_0_1": 0.75
+          },
+          {
+            "key": "clogging_likelihood_high",
+            "explanation": "Blackhead-like dots on the nose and a small nearby papule imply intermittent clogging.",
+            "likely_causes": [
+              "Incomplete removal of sunscreen/makeup and daily pollutants.",
+              "Touching or picking increases debris retention."
+            ],
+            "care_education": [
+              "Double cleanse at night when needed and alternate BHA with a retinoid once tolerated.",
+              "Avoid manual extraction at home to minimize marks."
+            ],
+            "confidence_0_1": 0.65
+          }
+        ],
+        "regional_breakdown": [
+          {"region_key":"forehead","score_1_5":2.3},
+          {"region_key":"glabella","score_1_5":2.6},
+          {"region_key":"periorbital_left","score_1_5":1.2},
+          {"region_key":"periorbital_right","score_1_5":1.2},
+          {"region_key":"cheek_left","score_1_5":2.8},
+          {"region_key":"cheek_right","score_1_5":3.0},
+          {"region_key":"nose","score_1_5":4.0},
+          {"region_key":"upper_lip","score_1_5":1.5},
+          {"region_key":"chin","score_1_5":2.4},
+          {"region_key":"jaw_left","score_1_5":1.8},
+          {"region_key":"jaw_right","score_1_5":1.8}
+        ],
+        "citations": [
+          {"title":"Enlarged Facial Pores review (Cutis, 2016)","url":"https://cdn.mdedge.com/files/s3fs-public/issues/articles/CT098007033.PDF"},
+          {"title":"AI grading of enlarged pores (Dermatol Ther, 2024)","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC11411701/"}
+        ],
+        "uncertainty_notes": "Small metallic sticker occludes a limited nasal area."
+      },
+      "wrinkles": {
+        "score_1_5": 1.7,
+        "confidence_0_1": 0.72,
+        "rationale_plain": "No deep or long lines at rest on the forehead or between the brows. Only fine creasing under the eyes is visible.",
+        "possible_causes": [
+          "Intrinsic aging begins fine peri-ocular lines in the 30s.",
+          "UV and squinting can advance lines even when not yet visible at rest."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "superficial_fine_lines",
+            "explanation": "Very fine creases under the eyes without deep folds.",
+            "likely_causes": [
+              "Thin periorbital skin shows fine lines earlier.",
+              "Mild dehydration from AC or environment."
+            ],
+            "care_education": [
+              "Use hydrating eye products and SPF; wear sunglasses outdoors.",
+              "Consider gradual introduction of a retinoid at night if tolerated."
+            ],
+            "confidence_0_1": 0.7
+          },
+          {
+            "key": "dynamic_expression",
+            "explanation": "Static lines are absent; dynamic lines were not tested but are likely minimal.",
+            "likely_causes": [
+              "Normal expression patterns.",
+              "Good baseline skin quality."
+            ],
+            "care_education": [
+              "Sun protection and moisturization help delay static lines.",
+              "Avoid over-drying products that accentuate fine lines."
+            ],
+            "confidence_0_1": 0.4
+          }
+        ],
+        "regional_breakdown": [
+          {"region_key":"forehead","score_1_5":1.6},
+          {"region_key":"glabella","score_1_5":1.5},
+          {"region_key":"periorbital_left","score_1_5":2.0},
+          {"region_key":"periorbital_right","score_1_5":2.1},
+          {"region_key":"cheek_left","score_1_5":1.4},
+          {"region_key":"cheek_right","score_1_5":1.4},
+          {"region_key":"nose","score_1_5":1.0},
+          {"region_key":"upper_lip","score_1_5":1.6},
+          {"region_key":"chin","score_1_5":1.4},
+          {"region_key":"jaw_left","score_1_5":1.4},
+          {"region_key":"jaw_right","score_1_5":1.4}
+        ],
+        "citations": [
+          {"title":"Wrinkle Severity Rating Scale validation","url":"https://pubmed.ncbi.nlm.nih.gov/14979743/"},
+          {"title":"Lemperle wrinkle classification","url":"https://pubmed.ncbi.nlm.nih.gov/11711957/"}
+        ],
+        "uncertainty_notes": "No expression photos; lighting may soften faint lines."
+      },
+      "pigmentation": {
+        "score_1_5": 2.2,
+        "confidence_0_1": 0.68,
+        "rationale_plain": "Light speckled macules on the nose/upper cheeks and a few small darker spots on the chin consistent with post-blemish change. No large patches.",
+        "possible_causes": [
+          "Cumulative sun exposure in a bright climate.",
+          "Marks from prior minor breakouts and occasional picking."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "freckles",
+            "explanation": "Small, speckled macules over the nose and upper cheeks.",
+            "likely_causes": [
+              "UV exposure darkens these spots.",
+              "Genetic tendency toward freckling."
+            ],
+            "care_education": [
+              "Daily broad-spectrum SPF 30+ and shade/hat use.",
+              "Brightening with vitamin C, azelaic acid or niacinamide can help even tone."
+            ],
+            "confidence_0_1": 0.55
+          },
+          {
+            "key": "post_inflammatory_hyperpigmentation",
+            "explanation": "A few residual dark spots on the chin track the pattern of prior blemishes.",
+            "likely_causes": [
+              "Inflammation from pimples leaves lingering pigment.",
+              "Manipulation/picking slows fading."
+            ],
+            "care_education": [
+              "Hands-off approach and gentle routine.",
+              "Night retinoid and/or azelaic acid with strict SPF to prevent re-darkening."
+            ],
+            "confidence_0_1": 0.6
+          }
+        ],
+        "regional_breakdown": [
+          {"region_key":"forehead","score_1_5":1.8},
+          {"region_key":"glabella","score_1_5":1.6},
+          {"region_key":"periorbital_left","score_1_5":2.0},
+          {"region_key":"periorbital_right","score_1_5":2.0},
+          {"region_key":"cheek_left","score_1_5":2.0},
+          {"region_key":"cheek_right","score_1_5":2.1},
+          {"region_key":"nose","score_1_5":2.3},
+          {"region_key":"upper_lip","score_1_5":1.7},
+          {"region_key":"chin","score_1_5":2.1},
+          {"region_key":"jaw_left","score_1_5":1.7},
+          {"region_key":"jaw_right","score_1_5":1.7}
+        ],
+        "citations": [
+          {"title":"MASI reliability/validation","url":"https://www.jaad.org/article/S0190-9622(09)02302-0/pdf"},
+          {"title":"mMASI interpretability","url":"https://jamanetwork.com/journals/jamadermatology/fullarticle/2519450"}
+        ],
+        "uncertainty_notes": "Reflections can mask very faint differences."
+      },
+      "redness": {
+        "score_1_5": 2.0,
+        "confidence_0_1": 0.64,
+        "rationale_plain": "Mild central redness focused at the sides of the nose and inner cheeks, without confluent spread.",
+        "possible_causes": [
+          "Heat, exercise or spicy food can temporarily increase facial redness.",
+          "Over-exfoliation or fragrance can irritate and sustain a mild flush."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "central_persistent",
+            "explanation": "Warmer tone mainly on nose and central cheeks.",
+            "likely_causes": [
+              "Baseline vascularity accentuated by climate.",
+              "UV exposure and heat."
+            ],
+            "care_education": [
+              "Use gentle, fragrance-light products and daily SPF.",
+              "Track personal triggers and avoid rubbing."
+            ],
+            "confidence_0_1": 0.5
+          },
+          {
+            "key": "patchy_localized",
+            "explanation": "More visible around nasal creases than across cheeks.",
+            "likely_causes": [
+              "Friction from masks or wiping.",
+              "Residue build-up in creases."
+            ],
+            "care_education": [
+              "Pat products on and cleanse gently around creases.",
+              "Support barrier with a light moisturizer."
+            ],
+            "confidence_0_1": 0.6
+          }
+        ],
+        "regional_breakdown": [
+          {"region_key":"forehead","score_1_5":1.5},
+          {"region_key":"glabella","score_1_5":1.7},
+          {"region_key":"periorbital_left","score_1_5":1.5},
+          {"region_key":"periorbital_right","score_1_5":1.5},
+          {"region_key":"cheek_left","score_1_5":2.1},
+          {"region_key":"cheek_right","score_1_5":2.2},
+          {"region_key":"nose","score_1_5":2.4},
+          {"region_key":"upper_lip","score_1_5":1.7},
+          {"region_key":"chin","score_1_5":1.8},
+          {"region_key":"jaw_left","score_1_5":1.5},
+          {"region_key":"jaw_right","score_1_5":1.5}
+        ],
+        "citations": [
+          {"title":"NRS standard grading system overview","url":"https://www.rosacea.org/physicians/professional-materials"}
+        ],
+        "uncertainty_notes": "Single lighting and time; momentary flush varies."
+      },
+      "texture": {
+        "score_1_5": 2.1,
+        "confidence_0_1": 0.74,
+        "rationale_plain": "Mostly smooth surface with a fine grain around the nose and inner cheeks. No coarse roughness or flaking was seen.",
+        "possible_causes": [
+          "Micro-comedone and dead-skin buildup in the T-zone.",
+          "Environmental pollutants and sunscreen residues if not fully removed."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "grainy",
+            "explanation": "Fine bumps and micro-relief irregularity near the nose/medial cheeks.",
+            "likely_causes": [
+              "Keratin/dead-skin buildup mixing with sebum.",
+              "Pollution interacting with surface oils."
+            ],
+            "care_education": [
+              "Use BHA 3–5 nights/week or a gentle PHA if sensitive.",
+              "Keep cleanser gentle; moisturize to protect barrier."
+            ],
+            "confidence_0_1": 0.7
+          },
+          {
+            "key": "normal",
+            "explanation": "Outer cheeks and jaw appear smooth and even.",
+            "likely_causes": [
+              "Balanced oil production outside the T-zone.",
+              "Current routine provides adequate hydration."
+            ],
+            "care_education": [
+              "Maintain simple cleanse–treat–moisturize–SPF routine.",
+              "Avoid stacking multiple exfoliants on the same night."
+            ],
+            "confidence_0_1": 0.6
+          }
+        ],
+        "regional_breakdown": [
+          {"region_key":"forehead","score_1_5":2.0},
+          {"region_key":"glabella","score_1_5":2.0},
+          {"region_key":"periorbital_left","score_1_5":1.3},
+          {"region_key":"periorbital_right","score_1_5":1.3},
+          {"region_key":"cheek_left","score_1_5":2.2},
+          {"region_key":"cheek_right","score_1_5":2.2},
+          {"region_key":"nose","score_1_5":2.5},
+          {"region_key":"upper_lip","score_1_5":1.8},
+          {"region_key":"chin","score_1_5":2.2},
+          {"region_key":"jaw_left","score_1_5":1.8},
+          {"region_key":"jaw_right","score_1_5":1.8}
+        ],
+        "citations": [
+          {"title":"Photonumeric scale for facial texture","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC5671791/"}
+        ],
+        "uncertainty_notes": "Specular highlights can exaggerate or hide grain."
+      },
+      "acne": {
+        "score_1_5": 1.6,
+        "confidence_0_1": 0.70,
+        "rationale_plain": "A few comedonal candidates on the nose and one small inflammatory papule near the mid-face; no nodules/cysts or clusters.",
+        "possible_causes": [
+          "T-zone oil and periodic occlusion from sweat or masks.",
+          "Incomplete removal of sunscreen/makeup or cycle-related flares."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "comedonal_blackheads",
+            "explanation": "Dark-centered dots on the nose suggest open comedones.",
+            "likely_causes": [
+              "Oxidized sebum in widened pores.",
+              "Build-up of dead skin and debris."
+            ],
+            "care_education": [
+              "Nightly or near-nightly BHA and gentle double cleansing on makeup/sunscreen days.",
+              "Avoid squeezing to reduce risk of marks."
+            ],
+            "confidence_0_1": 0.75
+          },
+          {
+            "key": "inflammatory_papules",
+            "explanation": "One small red bump near the nose is visible.",
+            "likely_causes": [
+              "Pore blockage with bacterial overgrowth.",
+              "Friction or sweat may aggravate lesions."
+            ],
+            "care_education": [
+              "Use a low-strength benzoyl peroxide as a short-contact or spot treatment.",
+              "Seek a clinician if lesions become frequent, painful, or start scarring."
+            ],
+            "confidence_0_1": 0.55
+          }
+        ],
+        "regional_breakdown": [
+          {"region_key":"forehead","score_1_5":1.2},
+          {"region_key":"glabella","score_1_5":1.1},
+          {"region_key":"periorbital_left","score_1_5":1.0},
+          {"region_key":"periorbital_right","score_1_5":1.0},
+          {"region_key":"cheek_left","score_1_5":1.3},
+          {"region_key":"cheek_right","score_1_5":1.3},
+          {"region_key":"nose","score_1_5":1.6},
+          {"region_key":"upper_lip","score_1_5":1.1},
+          {"region_key":"chin","score_1_5":1.7},
+          {"region_key":"jaw_left","score_1_5":1.2},
+          {"region_key":"jaw_right","score_1_5":1.2}
+        ],
+        "citations": [
+          {"title":"Review of acne grading scales incl. GAGS","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC10995619/"}
+        ],
+        "uncertainty_notes": "Single-day snapshot; cycle timing not provided."
+      },
+      "under_eye": {
+        "score_1_5": 2.9,
+        "confidence_0_1": 0.8,
+        "rationale_plain": "Under-eye regions are darker than adjacent cheek with a mild hollow/shadow; right side is slightly deeper.",
+        "possible_causes": [
+          "Thin, transparent eyelid skin revealing underlying vessels.",
+          "Anatomical tear-trough shaping that casts shadows."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "vascular_transparent",
+            "explanation": "Hue and translucency suggest vessel show-through more than brown pigment.",
+            "likely_causes": [
+              "Naturally thin eyelid skin.",
+              "Fatigue or allergies can intensify coloration."
+            ],
+            "care_education": [
+              "Hydrate gently, apply daily SPF, and consider cool compresses and caffeine-type topicals.",
+              "Avoid rubbing; consult a clinician if dark circles are long-standing or worsening."
+            ],
+            "confidence_0_1": 0.7
+          },
+          {
+            "key": "structural_hollow_shadow",
+            "explanation": "Subtle tear-trough depth creates shadowing especially on the right.",
+            "likely_causes": [
+              "Normal anatomic contour and soft-tissue distribution.",
+              "Lighting direction accentuates hollows."
+            ],
+            "care_education": [
+              "Topicals improve skin quality but cannot fill hollows.",
+              "In-person consultation can discuss procedural options if desired."
+            ],
+            "confidence_0_1": 0.6
+          }
+        ],
+        "regional_breakdown": [
+          {"region_key":"periorbital_left","score_1_5":2.8},
+          {"region_key":"periorbital_right","score_1_5":3.0}
+        ],
+        "citations": [
+          {"title":"Validated photonumeric scale for infraorbital dark circles","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC7898348/"}
+        ],
+        "uncertainty_notes": "Under-eye shadows vary with head tilt and time of day."
+      }
+    },
+    "region_summaries": [
+      {"region_key":"forehead","summary_plain":"Smooth, minimal lines and fine pores. Tone looks even without notable spots."},
+      {"region_key":"glabella","summary_plain":"Calm skin between brows with small pores and no visible lines at rest."},
+      {"region_key":"periorbital_left","summary_plain":"Clear under-eye darkening with fine superficial lines; no puffiness."},
+      {"region_key":"periorbital_right","summary_plain":"Similar to left but slightly deeper shadowing along the tear trough."},
+      {"region_key":"cheek_left","summary_plain":"Mostly smooth; mild pore grain near the nose and a few faint marks."},
+      {"region_key":"cheek_right","summary_plain":"Slightly more visible pores than the left near the nose; otherwise even."},
+      {"region_key":"nose","summary_plain":"Most prominent pores and a few blackhead-like dots with mild localized redness."},
+      {"region_key":"upper_lip","summary_plain":"Quiet, smooth area with minimal texture or color change."},
+      {"region_key":"chin","summary_plain":"Smooth with a couple of faint post-blemish marks; pores mild."},
+      {"region_key":"jaw_left","summary_plain":"Clear and even; pores are small and texture is smooth."},
+      {"region_key":"jaw_right","summary_plain":"Similarly clear with smooth texture and minimal markings."}
+    ],
+    "escalation_flags": []
+  },
+  "charts": {
+    "overview_radar": {
+      "axis_order": ["pores","wrinkles","pigmentation","redness","texture","acne","under_eye"],
+      "values_1_5": [3.1,1.7,2.2,2.0,2.1,1.6,2.9],
+      "scale": {"min": 1, "max": 5, "direction":"higher_is_worse", "formula":"identity (score_1_5)"}
+    }
+  },
+  "audit": {
+    "prompt_version": "skin_v2_poc",
+    "model_hint": "vision_llm_only",
+    "limitations": [
+      "Single lighting setup; color rendering can vary across sessions.",
+      "No expression photos; dynamic lines not assessed.",
+      "Small nasal area occluded by a metallic sticker.",
+      "Photos are a single-day snapshot and do not capture cycle or seasonal variation."
+    ]
+  }
+}
