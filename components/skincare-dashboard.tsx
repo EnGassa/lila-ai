@@ -6,7 +6,6 @@ import { SeverityRadar } from "@/components/severity-radar";
 import { ConcernCard } from "@/components/concern-card";
 import { ConcernDetailPage } from "@/components/concern-detail-page";
 import { RecommendationsSection } from "@/components/recommendations-section";
-import { RegionWiseBreakdown } from "./region-wise-breakdown";
 import {
   Tabs,
   TabsContent,
@@ -87,7 +86,6 @@ export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
                 ))}
             </div>
           </div>
-          <RegionWiseBreakdown regionSummaries={analysis.region_summaries} />
         </TabsContent>
         <TabsContent value="recommendations">
           <RecommendationsSection />

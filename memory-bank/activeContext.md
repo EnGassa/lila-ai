@@ -13,6 +13,10 @@
 *   Updated the `UserProfile` component to display a larger profile picture and the user's name, with a fallback to the user ID.
 *   Adjusted the text font color in `app/globals.css` to be slightly darker for better readability.
 *   Added dynamic social share titles to user dashboard pages.
+*   Removed the "Regional Breakdown" section from the main dashboard.
+*   Restored the descriptions on the concern cards.
+*   Removed the "Care Education" section from the concern detail page.
+*   Removed the "Possible Causes" section from the concern detail page.
 
 ## Next Steps
 
@@ -21,4 +25,3 @@
 *   Verify that the application correctly displays the updated data, including the new `skin_age_range`.
 *   Build the user profile creation and display components.
 *   Implement the main dashboard layout.
-*   Move the 'Regional Breakdown' card to the bottom of the skincare dashboard.

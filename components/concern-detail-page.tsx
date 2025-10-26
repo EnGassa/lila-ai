@@ -41,15 +41,6 @@ function SubtypeCard({ subtype }: { subtype: any }) {
           ))}
         </ul>
       </div>
-
-      <div className="mt-4">
-        <p className="text-sm font-medium text-foreground">Care Education</p>
-        <ul className="list-disc list-inside text-sm font-light text-muted-foreground mt-1">
-          {subtype.care_education.map((tip: string, index: number) => (
-            <li key={index}>{tip}</li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 }
@@ -81,21 +72,10 @@ export function ConcernDetailPage({ userId, concernName, onClose, userData }: Co
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4">
         <InfoCard
           label="RATIONALE"
           value={<p className="text-sm font-light text-muted-foreground">{concernData.rationale_plain}</p>}
-        />
-
-        <InfoCard
-          label="POSSIBLE CAUSES"
-          value={
-            <ul className="list-disc list-inside text-sm font-light text-muted-foreground">
-              {concernData.possible_causes.map((cause: string, index: number) => (
-                <li key={index}>{cause}</li>
-              ))}
-            </ul>
-          }
         />
       </div>
 
