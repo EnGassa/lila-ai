@@ -1,0 +1,420 @@
+{
+  "session": {
+    "id": "76e93817-4589-4b68-8de1-d57c7402a3a5",
+    "timestamp_iso": "2025-10-28T10:23:00Z",
+    "poses_received": [
+      "front",
+      "chin_up",
+      "left_45",
+      "cheek_left_close",
+      "under_eye_left_close",
+      "nose_close",
+      "right_45",
+      "cheek_right_close",
+      "chin_down",
+      "under_eye_right_close"
+    ],
+    "device_model": null,
+    "user_reported_symptoms": null
+  },
+  "qc": {
+    "status": "pass",
+    "fail_reasons": [],
+    "notes": "Image quality is sufficient for analysis. Ten poses were provided, meeting all requirements. Some minor specular glare is present but does not significantly impede assessment."
+  },
+  "analysis": {
+    "skin_type": {
+      "label": "combination",
+      "rationale": "Your T-zone (forehead, nose) shows a slightly higher level of surface sheen compared to your U-zone (cheeks), which appear more matte. This suggests a combination skin type, where oil production is more concentrated in the central part of the face. There are no visible signs of excessive dryness, like flaking, on the cheeks.",
+      "confidence_0_1": 0.8
+    },
+    "skin_tone_fitzpatrick": {
+      "label": "IV",
+      "note": "This is an estimation based on visual assessment of your skin's likely response to sun exposure (tans easily, rarely burns)."
+    },
+    "skin_age_range": {
+      "low": 26,
+      "high": 28,
+      "rationale": "The visual assessment of skin aligns with the user's reported age of 27. There is a notable absence of significant static wrinkles, with only very fine superficial lines visible under the eyes.",
+      "confidence_0_1": 0.9
+    },
+    "top_concerns": [
+      "under_eye",
+      "pores",
+      "texture"
+    ],
+    "overview_explanation": "Your skin appears to be in good health, showing characteristics of a combination type with visible pores and mild texture in the T-zone. The most prominent concern is the noticeable darkness in the under-eye area. There are very few signs of acne or significant redness.",
+    "concerns": {
+      "pores": {
+        "score_1_5": 2.5,
+        "confidence_0_1": 0.9,
+        "rationale_plain": "Your pores are visibly noticeable, primarily on and around your nose and extending to the inner parts of your cheeks. They are of a small-to-medium size but do not appear significantly enlarged or congested across the entire face.",
+        "possible_causes": [
+          "Skin type plays a role, as areas with more oil production often have more visible pores.",
+          "Dead skin cells and excess sebum can accumulate around the pore opening, making it appear larger.",
+          "A genetic predisposition can also determine your natural pore size."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "t_zone_predominant",
+            "explanation": "The visibility of pores is concentrated in the T-zone (nose, inner cheeks, and to a lesser extent, forehead), which is consistent with a combination skin type. The outer cheeks and jawline have much less noticeable pores.",
+            "likely_causes": [
+              "The T-zone naturally has a higher density of sebaceous glands, leading to more oil production and more prominent pores.",
+              "Accumulation of dead skin and oil can stretch the appearance of pores in these active areas."
+            ],
+            "care_education": [
+              "Regular, gentle cleansing can help remove excess oil and debris that can accumulate in pores.",
+              "Using products with ingredients like salicylic acid can help to exfoliate inside the pore lining, which may improve their appearance.",
+              "Maintaining skin hydration is important, as dehydrated skin can sometimes lead to increased oil production."
+            ],
+            "confidence_0_1": 0.9
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "forehead",
+            "score_1_5": 2
+          },
+          {
+            "region_key": "cheek_left",
+            "score_1_5": 2.5
+          },
+          {
+            "region_key": "cheek_right",
+            "score_1_5": 2.5
+          },
+          {
+            "region_key": "nose",
+            "score_1_5": 3
+          },
+          {
+            "region_key": "chin",
+            "score_1_5": 2
+          }
+        ],
+        "citations": [
+          {
+            "title": "Enlarged Facial Pores review (Cutis, 2016)",
+            "url": "https://cdn.mdedge.com/files/s3fs-public/issues/articles/CT098007033.PDF"
+          }
+        ],
+        "uncertainty_notes": ""
+      },
+      "wrinkles": {
+        "score_1_5": 1.5,
+        "confidence_0_1": 0.9,
+        "rationale_plain": "Your skin is largely free of wrinkles. No static lines are visible on the forehead or between the brows. There are some very fine, superficial lines in the under-eye area, which are common and may be related to the thin skin in that region.",
+        "possible_causes": [
+          "The natural movement and expression of the face can lead to the formation of very fine lines over time.",
+          "Dehydration can temporarily make these fine lines appear more obvious."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "superficial_fine_lines",
+            "explanation": "The lines observed are very shallow and primarily located under the eyes. These are not deep folds or creases and are considered an early sign of skin aging or a result of dehydration.",
+            "likely_causes": [
+              "The skin around the eyes is thinner and more delicate, often showing the earliest signs of fine lines.",
+              "Repetitive facial expressions, like squinting, can contribute to their formation."
+            ],
+            "care_education": [
+              "Using a dedicated eye cream can provide targeted hydration to this delicate area, which can help soften the look of fine lines.",
+              "Wearing sunglasses helps to reduce squinting in bright light, which can help prevent the deepening of lines around the eyes.",
+              "Daily sunscreen use is the most effective way to prevent premature aging caused by sun exposure."
+            ],
+            "confidence_0_1": 0.8
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "forehead",
+            "score_1_5": 1
+          },
+          {
+            "region_key": "glabella",
+            "score_1_5": 1
+          },
+          {
+            "region_key": "periorbital_left",
+            "score_1_5": 2
+          },
+          {
+            "region_key": "periorbital_right",
+            "score_1_5": 2
+          }
+        ],
+        "citations": [],
+        "uncertainty_notes": ""
+      },
+      "pigmentation": {
+        "score_1_5": 2,
+        "confidence_0_1": 0.8,
+        "rationale_plain": "Aside from the significant under-eye pigmentation, the rest of your facial skin shows only very subtle signs of uneven tone. There is some faint mottling on the cheeks and forehead, but no distinct dark spots or patches are visible.",
+        "possible_causes": [
+          "Sun exposure, especially in a high-UV environment like New Delhi, is a primary driver of subtle, uneven skin tone.",
+          "Inflammation from previous minor skin irritations or breakouts can sometimes leave behind faint, darker marks (post-inflammatory hyperpigmentation)."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "post_inflammatory_hyperpigmentation",
+            "explanation": "The very faint, scattered unevenness on the cheeks could potentially be residual marks from minor, resolved skin blemishes. This pattern is diffuse rather than forming distinct spots.",
+            "likely_causes": [
+              "Any form of skin inflammation, including minor acne or irritation, can trigger melanin production, leaving a temporary or persistent mark.",
+              "Sun exposure can darken these marks and make them last longer."
+            ],
+            "care_education": [
+              "Vigilant use of broad-spectrum sunscreen daily is the most effective way to prevent these marks from darkening and to help them fade faster.",
+              "Ingredients like niacinamide, vitamin C, or retinoids can help to even out skin tone over time with consistent use.",
+              "Avoiding picking or squeezing any blemishes can help prevent the inflammation that leads to these marks."
+            ],
+            "confidence_0_1": 0.6
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "forehead",
+            "score_1_5": 2
+          },
+          {
+            "region_key": "cheek_left",
+            "score_1_5": 2
+          },
+          {
+            "region_key": "cheek_right",
+            "score_1_5": 2
+          }
+        ],
+        "citations": [
+          {
+            "title": "Skin Pigmentation Types, Causes and Treatment—A Review (PMC)",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10304091/"
+          }
+        ],
+        "uncertainty_notes": "The subtle nature of the pigmentation makes definitive sub-typing challenging. The assessment of post-inflammatory hyperpigmentation is based on a faint, mottled pattern without clear evidence of preceding lesions."
+      },
+      "redness": {
+        "score_1_5": 1,
+        "confidence_0_1": 0.95,
+        "rationale_plain": "There are no visible signs of persistent redness, flushing, or broken capillaries on your face. Your skin tone appears calm and even.",
+        "possible_causes": [
+          "Not applicable, as no significant redness is observed."
+        ],
+        "identified_subtypes": [],
+        "regional_breakdown": [
+          {
+            "region_key": "cheek_left",
+            "score_1_5": 1
+          },
+          {
+            "region_key": "cheek_right",
+            "score_1_5": 1
+          },
+          {
+            "region_key": "nose",
+            "score_1_5": 1
+          },
+          {
+            "region_key": "chin",
+            "score_1_5": 1
+          }
+        ],
+        "citations": [],
+        "uncertainty_notes": ""
+      },
+      "texture": {
+        "score_1_5": 2.5,
+        "confidence_0_1": 0.85,
+        "rationale_plain": "The close-up images reveal a slightly uneven skin surface, particularly on the cheeks. This is not coarse or rough, but rather a fine graininess to the micro-relief of the skin. The overall texture is not perfectly smooth.",
+        "possible_causes": [
+          "An accumulation of dead skin cells on the surface can interfere with light reflection, leading to a less smooth appearance.",
+          "Small, clogged pores (micro-comedones) can contribute to a slightly grainy or bumpy feel.",
+          "Dehydration can sometimes accentuate surface irregularities."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "uneven",
+            "explanation": "The skin surface has minor irregularities and is not completely uniform. This is most visible on the cheeks in the close-up views.",
+            "likely_causes": [
+              "A buildup of dead skin cells is a common reason for an uneven skin texture.",
+              "Past minor breakouts or environmental factors can also affect the skin's surface smoothness over time."
+            ],
+            "care_education": [
+              "Gentle exfoliation, using either chemical exfoliants (like AHAs or BHAs) or physical methods, can help to smooth the skin's surface.",
+              "Ensuring the skin is properly moisturized helps to support a healthy skin barrier, which contributes to a smoother appearance.",
+              "Sunscreen is important to protect the skin from sun damage, which can lead to textural changes over time."
+            ],
+            "confidence_0_1": 0.8
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "forehead",
+            "score_1_5": 2
+          },
+          {
+            "region_key": "cheek_left",
+            "score_1_5": 2.5
+          },
+          {
+            "region_key": "cheek_right",
+            "score_1_5": 2.5
+          },
+          {
+            "region_key": "nose",
+            "score_1_5": 2
+          },
+          {
+            "region_key": "chin",
+            "score_1_5": 2
+          }
+        ],
+        "citations": [
+          {
+            "title": "Photonumeric scale for facial texture (PMC)",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5671791/"
+          }
+        ],
+        "uncertainty_notes": ""
+      },
+      "acne": {
+        "score_1_5": 1.5,
+        "confidence_0_1": 0.95,
+        "rationale_plain": "Your skin is very clear of acne lesions. Only a few, very small bumps are visible upon close inspection, such as one on the forehead and one near the eyebrow. There are no signs of inflammatory acne like red papules or pustules.",
+        "possible_causes": [
+          "Pores can occasionally become clogged with a mixture of oil and dead skin cells, leading to small, non-inflammatory blemishes."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "comedonal_whiteheads",
+            "explanation": "The few visible lesions are small, skin-colored or whitish bumps, which are consistent with closed comedones (whiteheads) or possibly milia. These are formed when a pore becomes fully blocked.",
+            "likely_causes": [
+              "A blockage of the pore opening with sebum and skin cells causes the formation of a closed comedone.",
+              "Certain skincare or hair care products can sometimes be comedogenic, meaning they have a tendency to clog pores."
+            ],
+            "care_education": [
+              "Maintaining a consistent cleansing routine helps to keep pores clear of debris.",
+              "Incorporating a gentle exfoliant, such as one with salicylic acid, can help to prevent the blockages that form these lesions.",
+              "If a bump is persistent and hard, it could be a milium, which is best addressed by a dermatologist or esthetician for safe removal."
+            ],
+            "confidence_0_1": 0.8
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "forehead",
+            "score_1_5": 2
+          },
+          {
+            "region_key": "cheek_left",
+            "score_1_5": 1.5
+          },
+          {
+            "region_key": "cheek_right",
+            "score_1_5": 1.5
+          }
+        ],
+        "citations": [],
+        "uncertainty_notes": ""
+      },
+      "under_eye": {
+        "score_1_5": 3.5,
+        "confidence_0_1": 0.95,
+        "rationale_plain": "There is a distinct and noticeable darkening of the skin on the entire lower eyelid on both sides. The color has a brownish tone, which stands in contrast to the surrounding cheek skin, making it a prominent feature.",
+        "possible_causes": [
+          "Genetic predisposition is a very common cause for darker pigmentation around the eyes, particularly in individuals with South Asian heritage.",
+          "Chronic eye rubbing, allergies, or lack of sleep can sometimes contribute to or worsen the appearance of dark circles.",
+          "Sun exposure can also stimulate melanin production, making pigmentation in this delicate area more pronounced over time."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "pigmentary",
+            "explanation": "The dark circles present with a distinct brown hue, which is characteristic of increased melanin deposition in the skin (hyperpigmentation). This type of darkening is often related to genetics and constitutional factors.",
+            "likely_causes": [
+              "Genetics often play the primary role in periorbital hyperpigmentation.",
+              "Chronic sun exposure without protection can lead to a gradual darkening of the skin around the eyes."
+            ],
+            "care_education": [
+              "Consistent use of a broad-spectrum sunscreen is crucial to prevent the sun from making the pigmentation darker.",
+              "Using a gentle, hydrating eye cream can help support the health of the delicate skin in this area.",
+              "For persistent concerns, a dermatologist can discuss various professional treatment options."
+            ],
+            "confidence_0_1": 0.9
+          },
+          {
+            "key": "structural_hollow_shadow",
+            "explanation": "In addition to pigmentation, there appears to be a slight depression or tear trough, which can create a shadow that enhances the dark appearance. This is a subtle feature but may contribute to the overall look.",
+            "likely_causes": [
+              "The natural anatomy of the bone and fat pads around the eye socket can create hollows.",
+              "Facial structure is largely determined by genetics."
+            ],
+            "care_education": [
+              "Keeping the skin well-hydrated with products containing ingredients like hyaluronic acid can sometimes help to subtly plump the skin.",
+              "Lifestyle factors like getting adequate sleep can improve the overall appearance of the eye area.",
+              "Cosmetic procedures performed by a qualified dermatologist or plastic surgeon are typically required to address structural hollows directly."
+            ],
+            "confidence_0_1": 0.6
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "periorbital_left",
+            "score_1_5": 3.5
+          },
+          {
+            "region_key": "periorbital_right",
+            "score_1_5": 3.5
+          }
+        ],
+        "citations": [
+          {
+            "title": "Validated photonumeric scale for infraorbital dark circles (PMC)",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7898348/"
+          },
+          {
+            "title": "Periorbital hyperpigmentation study (PubMed)",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/24700933/"
+          }
+        ],
+        "uncertainty_notes": ""
+      }
+    },
+    "region_summaries": [],
+    "escalation_flags": []
+  },
+  "charts": {
+    "overview_radar": {
+      "axis_order": [
+        "pores",
+        "wrinkles",
+        "pigmentation",
+        "redness",
+        "texture",
+        "acne",
+        "under_eye"
+      ],
+      "values_1_5": [
+        2.5,
+        1.5,
+        2,
+        1,
+        2.5,
+        1.5,
+        3.5
+      ],
+      "scale": {
+        "min": 1,
+        "max": 5,
+        "direction": "higher_is_worse",
+        "formula": "identity (score_1_5)"
+      }
+    }
+  },
+  "audit": {
+    "prompt_version": "skin_v2_poc",
+    "model_hint": "vision_llm_only",
+    "limitations": [
+      "Analysis is based on 2D images and cannot assess skin feel, elasticity, or hydration levels directly.",
+      "Lighting conditions can affect the appearance of some skin features; this analysis is based on the lighting in the provided photos.",
+      "This is an educational, non-diagnostic tool. For any medical concerns, please consult a board-certified dermatologist."
+    ]
+  }
+}
