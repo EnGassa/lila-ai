@@ -1,0 +1,440 @@
+{
+  "name": "Ruth Elwin",
+  "session": {
+    "id": "c1f7b8e0-a9b3-4f2c-8d1e-6a5b4c3d2e1f",
+    "timestamp_iso": "2025-10-30T05:37:00Z",
+    "poses_received": [
+      "chin_down",
+      "chin_up",
+      "cheek_left_close",
+      "nose_close",
+      "right_45",
+      "cheek_right_close",
+      "front",
+      "left_45"
+    ],
+    "device_model": null,
+    "user_reported_symptoms": null
+  },
+  "qc": {
+    "status": "pass",
+    "fail_reasons": [],
+    "notes": "Sufficient poses (8/10) including all core views were provided. Image quality is good and suitable for analysis."
+  },
+  "analysis": {
+    "skin_type": {
+      "label": "combination",
+      "rationale": "The analysis indicates a combination skin type, evidenced by a mild gloss and prominent pores in the T-zone (forehead, nose) and a more matte, textured appearance on the cheeks.",
+      "confidence_0_1": 0.85
+    },
+    "skin_tone_fitzpatrick": {
+      "label": "IV",
+      "note": "This is an estimation based on visual cues. The skin is a light brown tone that likely tans easily."
+    },
+    "skin_age_range": {
+      "low": 37,
+      "high": 39,
+      "rationale": "The visible skin characteristics, such as mild textural changes and minimal fine lines, are consistent with the user-provided age.",
+      "confidence_0_1": 0.9
+    },
+    "top_concerns": [
+      "pigmentation",
+      "pores",
+      "texture"
+    ],
+    "overview_explanation": "Your skin appears to be in good condition, showing a combination profile with oiliness concentrated in the T-zone. The primary opportunities for care relate to addressing uneven skin tone and texture, which are common concerns influenced by factors like sun exposure and natural aging. Fine lines are minimal for your age.",
+    "concerns": {
+      "pores": {
+        "score_1_5": 3,
+        "confidence_0_1": 0.9,
+        "rationale_plain": "Your pores are visibly prominent, particularly on and around the nose and extending to the inner cheeks. While not severely enlarged across the entire face, their concentration and size in the T-zone are noticeable and contribute to skin texture.",
+        "possible_causes": [
+          "Pore size is largely determined by genetics.",
+          "Increased sebum (oil) production can make pores appear larger.",
+          "A loss of skin elasticity over time can also affect pore appearance."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "t_zone_predominant",
+            "explanation": "The most visible pores are clustered on your nose, forehead, and chin. This pattern is very common, especially with combination or oily skin types.",
+            "likely_causes": [
+              "This area of the face naturally has a higher density of sebaceous glands, leading to more oil production and more prominent pores.",
+              "Environmental factors and skincare habits can also influence their appearance."
+            ],
+            "care_education": [
+              "Consistent cleansing helps remove excess oil and debris that can stretch pores.",
+              "Using products with ingredients that promote cell turnover can also help minimize their appearance over time."
+            ],
+            "confidence_0_1": 0.95
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "forehead",
+            "score_1_5": 2.5
+          },
+          {
+            "region_key": "cheek_left",
+            "score_1_5": 3
+          },
+          {
+            "region_key": "cheek_right",
+            "score_1_5": 3
+          },
+          {
+            "region_key": "nose",
+            "score_1_5": 3.5
+          },
+          {
+            "region_key": "chin",
+            "score_1_5": 2.5
+          }
+        ],
+        "citations": [
+          {
+            "title": "Enlarged Facial Pores review (Cutis, 2016)",
+            "url": "https://cdn.mdedge.com/files/s3fs-public/issues/articles/CT098007033.PDF"
+          }
+        ],
+        "uncertainty_notes": ""
+      },
+      "wrinkles": {
+        "score_1_5": 2,
+        "confidence_0_1": 0.9,
+        "rationale_plain": "Your skin shows very few static lines at rest. Some fine, superficial lines are visible in the delicate periorbital (under-eye) area. Your forehead and the area between the brows appear smooth in the provided photos.",
+        "possible_causes": [
+          "Natural collagen and elastin decline is a primary factor in the formation of lines.",
+          "Repetitive facial expressions contribute to dynamic lines that can become static over time.",
+          "Sun exposure is a major accelerator of skin aging, breaking down supportive collagen fibers."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "superficial_fine_lines",
+            "explanation": "These are very fine lines visible on the skin's surface, most apparent under the eyes. They are not deep creases or folds.",
+            "likely_causes": [
+              "These initial lines often form in areas with thin skin, like the eye contour, and can be related to both intrinsic aging and external factors like dehydration or sun exposure."
+            ],
+            "care_education": [
+              "Keeping the skin well-hydrated can help plump the surface and make these lines less apparent.",
+              "Consistent sun protection is the most effective strategy to prevent the worsening of fine lines."
+            ],
+            "confidence_0_1": 0.9
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "forehead",
+            "score_1_5": 1.5
+          },
+          {
+            "region_key": "glabella",
+            "score_1_5": 1
+          },
+          {
+            "region_key": "periorbital_left",
+            "score_1_5": 2.5
+          },
+          {
+            "region_key": "periorbital_right",
+            "score_1_5": 2.5
+          }
+        ],
+        "citations": [
+          {
+            "title": "Lemperle wrinkle classification (PubMed)",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/11711957/"
+          }
+        ],
+        "uncertainty_notes": ""
+      },
+      "pigmentation": {
+        "score_1_5": 3.2,
+        "confidence_0_1": 0.85,
+        "rationale_plain": "Your skin displays a noticeable degree of uneven tone, with scattered darker macules (spots) and diffuse, mottled hyperpigmentation on the cheeks and forehead. This suggests an overproduction of melanin in certain areas.",
+        "possible_causes": [
+          "Chronic sun exposure is the most common cause of hyperpigmentation, leading to sun spots and uneven tone.",
+          "Post-inflammatory hyperpigmentation (PIH) can occur after acne blemishes or other skin irritation.",
+          "Hormonal fluctuations can sometimes trigger or worsen patchy pigmentation."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "sun_spots",
+            "explanation": "Several small, discrete, darker spots are visible on your cheeks. These are consistent with solar lentigines, often called sun or age spots.",
+            "likely_causes": [
+              "These are a direct result of cumulative exposure to ultraviolet (UV) radiation from the sun over many years.",
+              "Your location in New Delhi suggests high sun exposure is likely."
+            ],
+            "care_education": [
+              "Strict, daily use of a broad-spectrum sunscreen is crucial to prevent new spots from forming and existing ones from darkening.",
+              "Certain topical ingredients may help lighten their appearance over time with consistent use."
+            ],
+            "confidence_0_1": 0.9
+          },
+          {
+            "key": "post_inflammatory_hyperpigmentation",
+            "explanation": "Some of the darker marks, particularly those that are not sharply defined, may be remnants of past blemishes or minor skin inflammation.",
+            "likely_causes": [
+              "When the skin is inflamed (e.g., from a pimple), it can trigger excess melanin production, leaving a dark mark behind after the initial issue has healed."
+            ],
+            "care_education": [
+              "Preventing inflammation by gently caring for your skin can help reduce the chances of PIH.",
+              "Sun protection is also vital, as UV light can make these marks darker and more persistent."
+            ],
+            "confidence_0_1": 0.75
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "forehead",
+            "score_1_5": 3
+          },
+          {
+            "region_key": "cheek_left",
+            "score_1_5": 3.5
+          },
+          {
+            "region_key": "cheek_right",
+            "score_1_5": 3.5
+          },
+          {
+            "region_key": "chin",
+            "score_1_5": 2.5
+          },
+          {
+            "region_key": "jaw_left",
+            "score_1_5": 2.5
+          },
+          {
+            "region_key": "jaw_right",
+            "score_1_5": 2.5
+          }
+        ],
+        "citations": [
+          {
+            "title": "Skin Pigmentation Types, Causes and Treatment—A Review (PMC)",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10304091/"
+          }
+        ],
+        "uncertainty_notes": "The exact cause of hyperpigmentation (e.g., sun damage vs. PIH vs. melasma-like) can be difficult to distinguish from photos alone and is best confirmed by a dermatologist."
+      },
+      "redness": {
+        "score_1_5": 1.5,
+        "confidence_0_1": 0.9,
+        "rationale_plain": "There is no significant or widespread redness visible on your face. A very faint, localized hint of redness may be present around the base of the nose, but this is minor and not indicative of a broader concern.",
+        "possible_causes": [
+          "Mild, localized redness can be caused by minor irritation or sensitivity in thin-skinned areas.",
+          "It can be a normal feature around the nasal folds for many individuals."
+        ],
+        "identified_subtypes": [],
+        "regional_breakdown": [
+          {
+            "region_key": "cheek_left",
+            "score_1_5": 1.5
+          },
+          {
+            "region_key": "cheek_right",
+            "score_1_5": 1.5
+          },
+          {
+            "region_key": "nose",
+            "score_1_5": 2
+          },
+          {
+            "region_key": "chin",
+            "score_1_5": 1.5
+          }
+        ],
+        "citations": [
+          {
+            "title": "NRS standard grading system overview",
+            "url": "https://www.rosacea.org/physicians/professional-materials"
+          }
+        ],
+        "uncertainty_notes": ""
+      },
+      "texture": {
+        "score_1_5": 3,
+        "confidence_0_1": 0.9,
+        "rationale_plain": "Your skin's surface appears somewhat uneven and grainy, especially on the cheeks and forehead. This indicates that the microrelief is not perfectly smooth, which can be due to a combination of visible pores and a buildup of dead skin cells.",
+        "possible_causes": [
+          "Slower rates of natural skin cell turnover can lead to a rougher-feeling surface.",
+          "Dehydration can accentuate textural irregularities and fine lines.",
+          "Congestion within pores can contribute to a bumpy or grainy feel."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "uneven",
+            "explanation": "This describes a skin surface that has rougher patches and is not uniformly smooth. In your case, this is driven by the combination of visible pores and fine surface irregularities.",
+            "likely_causes": [
+              "This can result from cumulative sun damage, decreased cell turnover with age, and clogged pores."
+            ],
+            "care_education": [
+              "Gentle exfoliation can help to smooth the skin surface by removing the buildup of dead cells.",
+              "Ensuring the skin is properly hydrated is also key to improving its texture."
+            ],
+            "confidence_0_1": 0.9
+          },
+          {
+            "key": "grainy",
+            "explanation": "This refers to the presence of many tiny, subtle bumps that contribute to a less smooth appearance, particularly visible on the cheeks in certain lighting.",
+            "likely_causes": [
+              "A grainy texture is often caused by micro-comedones (small clogged pores) or a general buildup of keratin and dead skin cells around hair follicles."
+            ],
+            "care_education": [
+              "A consistent cleansing routine and the use of ingredients that help keep pores clear can address the underlying causes of a grainy texture."
+            ],
+            "confidence_0_1": 0.85
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "forehead",
+            "score_1_5": 3
+          },
+          {
+            "region_key": "cheek_left",
+            "score_1_5": 3
+          },
+          {
+            "region_key": "cheek_right",
+            "score_1_5": 3
+          },
+          {
+            "region_key": "nose",
+            "score_1_5": 2.5
+          },
+          {
+            "region_key": "chin",
+            "score_1_5": 2.5
+          }
+        ],
+        "citations": [
+          {
+            "title": "Photonumeric scale for facial texture (PMC)",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5671791/"
+          }
+        ],
+        "uncertainty_notes": ""
+      },
+      "acne": {
+        "score_1_5": 1.5,
+        "confidence_0_1": 0.9,
+        "rationale_plain": "Your skin is largely clear of active acne lesions. There are only a few very small, scattered bumps visible, primarily on the chin, which could be minor comedones or small papules. This does not represent a significant acne concern.",
+        "possible_causes": [
+          "Occasional minor breakouts can be caused by hormonal fluctuations, stress, or skincare products.",
+          "Clogged pores from oil and dead skin cells are the primary origin of most acne lesions."
+        ],
+        "identified_subtypes": [],
+        "regional_breakdown": [
+          {
+            "region_key": "cheek_right",
+            "score_1_5": 1.5
+          },
+          {
+            "region_key": "chin",
+            "score_1_5": 2
+          }
+        ],
+        "citations": [
+          {
+            "title": "Review of acne grading scales incl. GAGS (PMC)",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10995619/"
+          }
+        ],
+        "uncertainty_notes": ""
+      },
+      "under_eye": {
+        "score_1_5": 3,
+        "confidence_0_1": 0.85,
+        "rationale_plain": "There is a clear, visible darkening of the skin on your lower eyelids. This discoloration creates a contrast with your cheek skin, resulting in noticeable under-eye circles. The appearance seems to be caused by a combination of factors.",
+        "possible_causes": [
+          "Genetics play a major role in the predisposition to under-eye circles.",
+          "Hyperpigmentation in this area can be caused by sun exposure or genetics, common in certain skin tones.",
+          "The natural aging process involves volume loss under the eyes, which can create shadowing."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "pigmentary",
+            "explanation": "The under-eye area has a distinct brownish hue, which suggests an excess of melanin (pigment) in the skin. This is a common form of periorbital hyperpigmentation.",
+            "likely_causes": [
+              "This can be genetic or worsened by factors like sun exposure and rubbing the eyes."
+            ],
+            "care_education": [
+              "Gentle handling of the eye area is important.",
+              "Sun protection is key to prevent further darkening, and specific topical ingredients may help brighten the area over time."
+            ],
+            "confidence_0_1": 0.85
+          },
+          {
+            "key": "structural_hollow_shadow",
+            "explanation": "In addition to the color, there is a mild indentation or tear trough visible. This slight hollowing can cast a shadow that contributes to the overall dark appearance.",
+            "likely_causes": [
+              "Facial anatomy and the natural loss of fat padding under the eye with age are the primary causes of structural hollows."
+            ],
+            "care_education": [
+              "While topical products can help with skin quality and pigmentation, they cannot change the physical structure.",
+              "Addressing shadows caused by volume loss typically requires in-office procedures."
+            ],
+            "confidence_0_1": 0.7
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "periorbital_left",
+            "score_1_5": 3
+          },
+          {
+            "region_key": "periorbital_right",
+            "score_1_5": 3
+          }
+        ],
+        "citations": [
+          {
+            "title": "Validated photonumeric scale for infraorbital dark circles (PMC)",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7898348/"
+          }
+        ],
+        "uncertainty_notes": "Distinguishing between pigmentary and structural causes of under-eye circles from 2D photos can be challenging; an in-person assessment is more accurate."
+      }
+    },
+    "region_summaries": [],
+    "escalation_flags": []
+  },
+  "charts": {
+    "overview_radar": {
+      "axis_order": [
+        "pigmentation",
+        "pores",
+        "texture",
+        "under_eye",
+        "wrinkles",
+        "acne",
+        "redness"
+      ],
+      "values_1_5": [
+        3.2,
+        3,
+        3,
+        3,
+        2,
+        1.5,
+        1.5
+      ],
+      "scale": {
+        "min": 1,
+        "max": 5,
+        "direction": "higher_is_worse",
+        "formula": "identity (score_1_5)"
+      }
+    }
+  },
+  "audit": {
+    "prompt_version": "skin_v2_poc",
+    "model_hint": "vision_llm_only",
+    "limitations": [
+      "This is a non-diagnostic, educational analysis based on visual information from smartphone photos only.",
+      "Lighting conditions, camera quality, and photo angles can affect the results.",
+      "The analysis did not have information about your current skincare routine or specific goals."
+    ]
+  }
+}

@@ -1,0 +1,439 @@
+{
+  "session": {
+    "id": "7f1c9c5a-52a1-4d1a-828e-3d84a7e9e6a0",
+    "timestamp_iso": "2025-10-30T05:39:12.842Z",
+    "poses_received": [
+      "chin_down",
+      "cheek_right_close",
+      "chin_up",
+      "front",
+      "front",
+      "left_45",
+      "front",
+      "right_45",
+      "right_45",
+      "cheek_right_close"
+    ],
+    "device_model": null,
+    "user_reported_symptoms": null
+  },
+  "qc": {
+    "status": "pass",
+    "fail_reasons": [],
+    "notes": "The image set is complete and of good quality. However, dedicated close-up views of the left cheek and left under-eye were not provided, which may limit the confidence of symmetric assessment for those specific regions. Analysis was performed using the available right-side close-ups and angled views."
+  },
+  "analysis": {
+    "skin_type": {
+      "label": "combination",
+      "rationale": "Your skin shows visual cues consistent with a combination skin type. There is a noticeable gloss and larger pores across your T-zone (forehead and nose), suggesting higher oil production in this area. In contrast, your cheeks appear more matte with less shine, indicating a classic combination pattern.",
+      "confidence_0_1": 0.85
+    },
+    "skin_tone_fitzpatrick": {
+      "label": "IV",
+      "note": "This is a visual estimation based on your skin's appearance in the photos and does not confirm your skin's reaction to UV light."
+    },
+    "skin_age_range": {
+      "low": 37,
+      "high": 40,
+      "rationale": "The estimate is based on the presence of mild-to-moderate static forehead lines, textural changes consistent with cumulative sun exposure and past acne, and moderate under-eye characteristics. These factors align with typical skin changes in the late 30s.",
+      "confidence_0_1": 0.8
+    },
+    "top_concerns": [
+      "texture",
+      "pores",
+      "under_eye"
+    ],
+    "overview_explanation": "Your skin analysis indicates a combination skin type, with oiliness concentrated in the T-zone. The main concerns identified are uneven skin texture, primarily on the cheeks from past acne scarring, along with moderately prominent pores and under-eye darkening. Additionally, fine, static lines are visible on the forehead.",
+    "concerns": {
+      "pores": {
+        "score_1_5": 3,
+        "confidence_0_1": 0.9,
+        "rationale_plain": "You have moderately prominent pores that are most concentrated in the T-zone. On your nose and the areas of your cheeks closest to your nose, pores appear medium in size and are densely clustered. This contributes to the overall texture of your skin.",
+        "possible_causes": [
+          "Genetics are a primary determinant of baseline pore size.",
+          "Excess sebum (oil) production can cause pores to expand and appear larger.",
+          "Debris, such as dead skin cells and oil, can clog pores, stretching them and making them more visible."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "t_zone_predominant",
+            "explanation": "Your enlarged pores are most noticeable and numerous on your forehead, nose, and chin, which is the classic T-zone distribution.",
+            "likely_causes": [
+              "The T-zone typically has a higher concentration of sebaceous glands than other parts of the face, leading to more oil production and more visible pores.",
+              "This pattern is very common in individuals with combination or oily skin types."
+            ],
+            "care_education": [
+              "Regular cleansing can help remove excess oil and debris that can make pores appear larger.",
+              "Ingredients like salicylic acid (a BHA) can exfoliate inside the pore lining, helping to keep them clear.",
+              "Non-comedogenic products are less likely to clog pores."
+            ],
+            "confidence_0_1": 0.9
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "nose",
+            "score_1_5": 3.5
+          },
+          {
+            "region_key": "cheek_left",
+            "score_1_5": 3
+          },
+          {
+            "region_key": "cheek_right",
+            "score_1_5": 3
+          },
+          {
+            "region_key": "forehead",
+            "score_1_5": 2.5
+          },
+          {
+            "region_key": "chin",
+            "score_1_5": 2.5
+          }
+        ],
+        "citations": [
+          {
+            "title": "Enlarged Facial Pores review (Cutis, 2016)",
+            "url": "https://cdn.mdedge.com/files/s3fs-public/issues/articles/CT098007033.PDF"
+          }
+        ],
+        "uncertainty_notes": ""
+      },
+      "wrinkles": {
+        "score_1_5": 2.5,
+        "confidence_0_1": 0.9,
+        "rationale_plain": "The analysis shows mild to moderate fine lines, most notably on your forehead. These appear as static horizontal lines, meaning they are visible even when your face is at rest. There are also some very fine lines beginning to form around the eyes.",
+        "possible_causes": [
+          "Repeated facial expressions, like raising the eyebrows, cause dynamic lines that can become permanent static lines over time.",
+          "Intrinsic aging leads to a natural decrease in collagen and elastin, reducing skin firmness.",
+          "Extrinsic factors, especially cumulative sun exposure, are a major contributor to the premature formation of wrinkles."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "static_at_rest",
+            "explanation": "The horizontal lines across your forehead are visible in photos where your facial muscles are relaxed, indicating they have become etched into the skin.",
+            "likely_causes": [
+              "These lines result from years of repeated muscle movements combined with age-related skin changes.",
+              "Sun damage significantly accelerates the process of static lines forming."
+            ],
+            "care_education": [
+              "Daily use of broad-spectrum sunscreen is the most effective way to prevent wrinkles from deepening and new ones from forming.",
+              "Ingredients like retinoids are well-studied for their ability to improve the appearance of fine lines by supporting collagen production.",
+              "Keeping skin well-hydrated with moisturizers can help temporarily plump the skin and make lines look less obvious."
+            ],
+            "confidence_0_1": 0.9
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "forehead",
+            "score_1_5": 2.5
+          },
+          {
+            "region_key": "glabella",
+            "score_1_5": 2
+          },
+          {
+            "region_key": "periorbital_left",
+            "score_1_5": 2
+          },
+          {
+            "region_key": "periorbital_right",
+            "score_1_5": 2
+          }
+        ],
+        "citations": [
+          {
+            "title": "Lemperle wrinkle classification (PubMed)",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/11711957/"
+          }
+        ],
+        "uncertainty_notes": ""
+      },
+      "pigmentation": {
+        "score_1_5": 2,
+        "confidence_0_1": 0.8,
+        "rationale_plain": "Your overall skin tone is fairly even, but there are mild signs of pigmentation. This is most apparent as dark circles in the under-eye area. Additionally, there are some subtle, scattered darker marks on the cheeks, which may be related to past sun exposure or healed acne blemishes.",
+        "possible_causes": [
+          "Sun exposure is the most common cause of hyperpigmentation, as UV rays stimulate melanin production.",
+          "Inflammation from acne or other skin injuries can leave behind dark spots known as post-inflammatory hyperpigmentation (PIH).",
+          "Hormonal fluctuations and genetic predisposition can also play a role."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "post_inflammatory_hyperpigmentation",
+            "explanation": "Some of the faint, discrete dark spots on your cheeks appear in areas with textural scarring, suggesting they are the residual marks left behind after inflammatory acne has healed.",
+            "likely_causes": [
+              "This is a direct result of the skin's inflammatory response to an injury like an acne lesion.",
+              "Squeezing or picking at blemishes can increase the likelihood and severity of PIH."
+            ],
+            "care_education": [
+              "Sunscreen is crucial, as UV exposure can significantly darken these spots and make them last longer.",
+              "Topical ingredients that can help fade the appearance of PIH include retinoids, azelaic acid, and niacinamide.",
+              "It is important to treat any active acne gently to prevent new spots from forming."
+            ],
+            "confidence_0_1": 0.7
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "periorbital_left",
+            "score_1_5": 3
+          },
+          {
+            "region_key": "periorbital_right",
+            "score_1_5": 3
+          },
+          {
+            "region_key": "cheek_left",
+            "score_1_5": 2
+          },
+          {
+            "region_key": "cheek_right",
+            "score_1_5": 2
+          }
+        ],
+        "citations": [
+          {
+            "title": "Skin Pigmentation Types, Causes and Treatment—A Review (PMC)",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10304091/"
+          }
+        ],
+        "uncertainty_notes": "The primary form of pigmentation is under-eye darkening, which is assessed separately. The pigmentation score for other facial regions is mild."
+      },
+      "redness": {
+        "score_1_5": 1,
+        "confidence_0_1": 0.95,
+        "rationale_plain": "Your skin shows no significant signs of persistent or widespread redness. The skin tone appears calm and uniform, with redness only being a minor component of the few small blemishes present. There is no evidence of diffuse facial redness or visible capillaries.",
+        "possible_causes": [
+          "Not applicable, as significant redness is not observed.",
+          "Localized redness is associated with minor, transient inflammation from a few acne papules."
+        ],
+        "identified_subtypes": [],
+        "regional_breakdown": [
+          {
+            "region_key": "cheek_right",
+            "score_1_5": 1.5
+          },
+          {
+            "region_key": "forehead",
+            "score_1_5": 1
+          },
+          {
+            "region_key": "cheek_left",
+            "score_1_5": 1
+          },
+          {
+            "region_key": "nose",
+            "score_1_5": 1
+          },
+          {
+            "region_key": "chin",
+            "score_1_5": 1
+          }
+        ],
+        "citations": [],
+        "uncertainty_notes": ""
+      },
+      "texture": {
+        "score_1_5": 3.5,
+        "confidence_0_1": 0.95,
+        "rationale_plain": "Your skin texture appears moderately uneven, which is most evident in the close-up images of your cheeks. This is characterized by visible depressions and irregularities in the skin's surface, consistent with atrophic scarring from previous acne. This scarring contributes to a rougher overall appearance and feel.",
+        "possible_causes": [
+          "Scarring is a common result of past inflammatory acne, where the healing process alters the skin's collagen structure.",
+          "A buildup of dead skin cells can also contribute to a less smooth skin surface.",
+          "Natural aging and cumulative sun exposure can impact skin texture over time."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "uneven",
+            "explanation": "The surface of your skin, especially on the cheeks, shows noticeable atrophic scars (often called \"ice pick\" or \"boxcar\" scars) and enlarged pores, which create an uneven microrelief.",
+            "likely_causes": [
+              "This type of texture is most commonly a long-term effect of moderate to severe inflammatory acne experienced in the past.",
+              "The natural decline in collagen production with age can make these textural irregularities more apparent.",
+              "Chronic sun exposure can further degrade collagen and worsen the appearance of uneven texture."
+            ],
+            "care_education": [
+              "Professional treatments like microneedling, laser resurfacing, or chemical peels are often used to improve the appearance of acne scarring.",
+              "Using products with ingredients like retinoids can help promote cell turnover and improve skin smoothness over the long term.",
+              "Consistent daily use of broad-spectrum sunscreen is crucial to prevent further collagen damage that can accentuate texture."
+            ],
+            "confidence_0_1": 0.9
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "cheek_left",
+            "score_1_5": 3.5
+          },
+          {
+            "region_key": "cheek_right",
+            "score_1_5": 3.5
+          },
+          {
+            "region_key": "forehead",
+            "score_1_5": 2
+          },
+          {
+            "region_key": "chin",
+            "score_1_5": 2
+          }
+        ],
+        "citations": [
+          {
+            "title": "Photonumeric scale for facial texture (PMC)",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5671791/"
+          }
+        ],
+        "uncertainty_notes": "Assessment of the left cheek texture is inferred from angled views due to the absence of a direct close-up photo."
+      },
+      "acne": {
+        "score_1_5": 1.5,
+        "confidence_0_1": 0.9,
+        "rationale_plain": "There is very little active acne visible in your photos. A few small, isolated red bumps (inflammatory papules) can be seen on the right cheek. The main concern in this category is not active breakouts but rather the after-effects of past acne, such as scarring and pigmentation.",
+        "possible_causes": [
+          "Acne develops when hair follicles become clogged with oil and dead skin cells.",
+          "Bacteria can trigger inflammation, leading to red papules and pustules.",
+          "Even in adults, hormonal fluctuations and stress can contribute to occasional breakouts."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "inflammatory_papules",
+            "explanation": "The few spots visible are small, raised red bumps without a visible white center, which are characteristic of inflammatory papules.",
+            "likely_causes": [
+              "These form when a breakdown in the follicle wall due to clogging leads to an inflammatory response in the surrounding skin.",
+              "They are a common feature of mild inflammatory acne."
+            ],
+            "care_education": [
+              "It is best to avoid picking or squeezing these spots to reduce the risk of scarring and post-inflammatory hyperpigmentation.",
+              "Gentle cleansing and using non-comedogenic products can help prevent future clogged pores.",
+              "For persistent spots, over-the-counter treatments containing ingredients like salicylic acid or benzoyl peroxide can be effective."
+            ],
+            "confidence_0_1": 0.85
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "cheek_right",
+            "score_1_5": 1.5
+          },
+          {
+            "region_key": "jaw_right",
+            "score_1_5": 1.5
+          }
+        ],
+        "citations": [
+          {
+            "title": "Severity of acne & GAGS comparison (PMC)",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7532287/"
+          }
+        ],
+        "uncertainty_notes": ""
+      },
+      "under_eye": {
+        "score_1_5": 3,
+        "confidence_0_1": 0.85,
+        "rationale_plain": "There is a moderate degree of darkening visible under your eyes, giving the area a tired appearance. This is accompanied by some small, skin-colored bumps under the right eye. A slight depression along the tear trough also contributes a shadowing effect.",
+        "possible_causes": [
+          "Genetics often play a significant role in the development of dark circles.",
+          "Hyperpigmentation in the thin skin under the eyes can be caused by sun exposure or genetics.",
+          "Volume loss under the eye creates a hollow, known as a tear trough, which can cast a shadow."
+        ],
+        "identified_subtypes": [
+          {
+            "key": "pigmentary",
+            "explanation": "The discoloration under your eyes has a brownish tone, which suggests it may be due to an excess of melanin (pigment) in the skin.",
+            "likely_causes": [
+              "This can be a genetically inherited trait.",
+              "Chronic sun exposure can stimulate melanin production in this delicate area.",
+              "Allergies and rubbing the eyes can sometimes lead to post-inflammatory hyperpigmentation."
+            ],
+            "care_education": [
+              "Strict sun protection, including sunscreen and sunglasses, is essential to prevent the darkening from worsening.",
+              "Topical ingredients like Vitamin C, retinoids, or niacinamide may help to brighten the skin's appearance over time.",
+              "It is important to be gentle with the skin around the eyes and avoid excessive rubbing."
+            ],
+            "confidence_0_1": 0.8
+          },
+          {
+            "key": "structural_hollow_shadow",
+            "explanation": "In addition to the color change, there is a visible indentation or hollow where the cheek meets the under-eye area, which casts a shadow and enhances the dark appearance.",
+            "likely_causes": [
+              "This is related to the natural anatomy of the face and can become more pronounced with age due to changes in facial fat pads.",
+              "Dehydration can sometimes temporarily accentuate the appearance of hollows."
+            ],
+            "care_education": [
+              "While topical products can help with skin quality, they cannot change the underlying facial structure.",
+              "Maintaining good hydration by drinking enough water can support overall skin plumpness.",
+              "Dermal fillers are a clinical option used by dermatologists to address volume loss in this area."
+            ],
+            "confidence_0_1": 0.75
+          }
+        ],
+        "regional_breakdown": [
+          {
+            "region_key": "periorbital_left",
+            "score_1_5": 3
+          },
+          {
+            "region_key": "periorbital_right",
+            "score_1_5": 3
+          }
+        ],
+        "citations": [
+          {
+            "title": "Validated photonumeric scale for infraorbital dark circles (PMC)",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7898348/"
+          }
+        ],
+        "uncertainty_notes": "Small, skin-colored papules are noted under the right eye. Visual analysis cannot determine their nature. An in-person dermatological assessment is recommended for proper identification."
+      }
+    },
+    "region_summaries": [],
+    "escalation_flags": [
+      {
+        "flag": "Unidentified periorbital papules",
+        "reason": "Multiple small, persistent, skin-colored bumps are visible under the right eye. This app cannot identify the nature of these lesions.",
+        "action": "book_dermatology_within_2_weeks"
+      }
+    ]
+  },
+  "charts": {
+    "overview_radar": {
+      "axis_order": [
+        "texture",
+        "pores",
+        "under_eye",
+        "wrinkles",
+        "pigmentation",
+        "acne",
+        "redness"
+      ],
+      "values_1_5": [
+        3.5,
+        3,
+        3,
+        2.5,
+        2,
+        1.5,
+        1
+      ],
+      "scale": {
+        "min": 1,
+        "max": 5,
+        "direction": "higher_is_worse",
+        "formula": "identity (score_1_5)"
+      }
+    }
+  },
+  "audit": {
+    "prompt_version": "skin_v2_poc",
+    "model_hint": "vision_llm_only",
+    "limitations": [
+      "The analysis is based on visual information from photos only and is not a substitute for a medical diagnosis.",
+      "Lighting conditions and image quality can affect the accuracy of the assessment.",
+      "Missing close-up views of the left cheek and left under-eye reduce confidence in assessing symmetry for those specific regions."
+    ]
+  }
+}
