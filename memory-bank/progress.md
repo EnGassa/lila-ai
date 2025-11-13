@@ -15,12 +15,13 @@
 
 ## What's Left to Build
 
-*   Refactor all UI components to align with the new data structure.
-*   User authentication.
-*   User profile creation and management.
-*   Skin analysis functionality.
-*   Product recommendation engine.
-*   Progress tracking and visualization.
+*   **UI Refactor:** Complete the refactoring of all UI components to consume data from the new nested JSON structure.
+*   **User Authentication:** Implement a full user authentication system, including sign-up, login, and session management.
+*   **User Profile Management:** Build out the UI and functionality for users to create, view, and edit their profiles.
+*   **Dynamic Data Pipeline:** Replace the static JSON file data source with a dynamic data pipeline that can process new user data and skin analyses.
+*   **Product Recommendation Engine:** Design and implement the product recommendation engine, including the UI to display recommendations.
+*   **Progress Tracking:** Develop features for users to track their skin progress over time, including data visualization components.
+*   **Recommendations Tab:** Implement the "Recommendations" tab on the dashboard, which is currently hidden.
 
 ## Known Issues
 

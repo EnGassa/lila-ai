@@ -4,8 +4,10 @@
 
 *   **Language:** TypeScript
 *   **Framework:** Next.js
-*   **UI Library:** React
+*   **UI Library:** React, with a component library built on Radix UI (likely via `shadcn/ui`).
 *   **Styling:** Tailwind CSS
+*   **Charting:** Recharts
+*   **Form Management:** React Hook Form with Zod for validation
 *   **Package Manager:** pnpm
 
 ## Development Setup
@@ -16,4 +18,4 @@
 
 ## Dependencies
 
-*   A list of dependencies can be found in the `package.json` file.
+*   A comprehensive list of dependencies can be found in the `package.json` file. Key libraries include `recharts` for data visualization and `react-hook-form` for managing forms.
