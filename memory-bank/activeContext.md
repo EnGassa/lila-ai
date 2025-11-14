@@ -6,6 +6,11 @@
 
 ## Recent Changes
 
+*   **Developed AI Skin Analysis Script (`scripts/analyse_skin.py`):**
+    *   Created a new Python script to perform skin analysis using multimodal LLMs.
+    *   Initially built with `litellm`, the script was completely refactored to use the `pydantic-ai` framework for more robust, structured, and validated output.
+    *   Iteratively debugged and resolved a series of issues, including Python import errors, incorrect library usage, API limitations (Google's schema complexity), and data handling (local images vs. URLs).
+    *   The final script uses a comprehensive set of Pydantic models to define the output, explicitly instantiates providers for reliable API key handling, and includes a post-processing step to format the data to match the application's existing JSON structure.
 *   Created the `lila.skin/guidelines` page to provide instructions on how to take photos for skin analysis.
 *   Initialized the project with Next.js, TypeScript, and Tailwind CSS.
 *   Created the initial file structure for the application.
@@ -21,6 +26,7 @@
 
 ## Next Steps
 
+*   **Integrate Analysis Script:** Plan and implement a dynamic data pipeline that utilizes the new `scripts/analyse_skin.py` to process user images and generate analysis data.
 *   Refactor the UI components to align with the new data structure.
 *   Ensure all data is dynamically pulled from the JSON file with no hardcoded values.
 *   Verify that the application correctly displays the updated data, including the new `skin_age_range`.
