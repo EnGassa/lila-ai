@@ -134,6 +134,27 @@ class Audit(BaseModel):
     model_hint: str
     limitations: List[str]
 
+# --- Pydantic Output Models for Recommendations ---
+
+class ProductRecommendation(BaseModel):
+    product_id: str = Field(..., description="The unique identifier for the product.")
+    name: str = Field(..., description="The name of the product.")
+    brand: str = Field(..., description="The brand of the product.")
+    rationale: str = Field(..., description="Explanation for why this product is recommended.")
+
+class RoutineStep(BaseModel):
+    step: Literal["cleanse", "treat", "hydrate", "protect", "boost"]
+    products: List[ProductRecommendation]
+    instructions: str
+
+class Routine(BaseModel):
+    am: List[RoutineStep]
+    pm: List[RoutineStep]
+
+class Recommendations(BaseModel):
+    routine: Routine
+    general_advice: List[str]
+
 # The root model for the entire JSON output
 class FullSkinAnalysis(BaseModel):
     session: Session
@@ -141,6 +162,10 @@ class FullSkinAnalysis(BaseModel):
     analysis: Analysis
     charts: Charts
     audit: Audit
+
+class SkinAnalysisAndRecommendations(BaseModel):
+    analysis: FullSkinAnalysis
+    recommendations: Recommendations
 
 # --- Helper Functions ---
 
@@ -176,10 +201,22 @@ def load_json_context(file_path: Optional[str]) -> Dict[str, Any]:
         print(f"Error reading or parsing context file {file_path}: {e}", file=sys.stderr)
         raise
 
+def load_product_catalog(file_path: str) -> List[Dict[str, Any]]:
+    """Load product catalog from a JSONL file."""
+    products = []
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            for line in f:
+                products.append(json.loads(line))
+    except (IOError, json.JSONDecodeError) as e:
+        print(f"Error reading or parsing product catalog file {file_path}: {e}", file=sys.stderr)
+        raise
+    return products
+
 def main():
     """Main function to run the skin analysis."""
     parser = argparse.ArgumentParser(
-        description="Analyze skin images using Pydantic AI."
+        description="Analyze skin images and generate recommendations using Pydantic AI."
     )
     parser.add_argument(
         "--model",
@@ -205,10 +242,22 @@ def main():
         help="Optional path to save the output JSON. Prints to stdout if not provided.",
     )
     parser.add_argument(
-        "--prompt-file",
+        "--analysis-prompt",
         type=str,
         default="prompts/01_analyse_images_prompt.md",
-        help="Path to the system prompt file.",
+        help="Path to the analysis prompt file.",
+    )
+    parser.add_argument(
+        "--recommendation-prompt",
+        type=str,
+        default="prompts/02_generate_recommendations_prompt.md",
+        help="Path to the recommendation prompt file.",
+    )
+    parser.add_argument(
+        "--product-catalog",
+        type=str,
+        default="data/products.jsonl",
+        help="Path to the product catalog JSONL file.",
     )
     parser.add_argument(
         "--reasoning-effort",
@@ -238,8 +287,10 @@ def main():
             print("Error: No valid image files found.", file=sys.stderr)
             sys.exit(1)
 
-        system_prompt = load_system_prompt(args.prompt_file)
+        analysis_prompt = load_system_prompt(args.analysis_prompt)
+        recommendation_prompt = load_system_prompt(args.recommendation_prompt)
         context = load_json_context(args.context_file)
+        product_catalog = load_product_catalog(args.product_catalog)
 
         # --- Construct User Message ---
         message_content = []
@@ -288,31 +339,52 @@ def main():
         if model is None:
             raise ValueError(f"Unsupported provider: {provider_name}")
 
-        agent = Agent(
+        # --- Run Analysis ---
+        print("Running skin analysis...")
+        analysis_agent = Agent(
             model,
             output_type=FullSkinAnalysis,
-            instructions=system_prompt,
+            instructions=analysis_prompt,
         )
-
-        # --- Run Analysis ---
-        print(f"Sending request to model: {args.model}...")
-        result = agent.run_sync(
+        analysis_result = analysis_agent.run_sync(
             message_content,
             model_settings=model_settings
         )
 
-        # --- Output Handling ---
-        output_data = result.output.model_dump()
+        # --- Run Recommendation Generation ---
+        print("Generating recommendations...")
+        recommendation_message_content = [
+            "Here is the skin analysis:",
+            json.dumps(analysis_result.output.model_dump(), indent=2),
+            "Here is the product catalog:",
+            json.dumps(product_catalog, indent=2),
+        ]
+        recommendation_agent = Agent(
+            model,
+            output_type=Recommendations,
+            instructions=recommendation_prompt,
+        )
+        recommendation_result = recommendation_agent.run_sync(
+            recommendation_message_content,
+            model_settings=model_settings
+        )
+
+        # --- Combine and Output ---
+        full_result = SkinAnalysisAndRecommendations(
+            analysis=analysis_result.output,
+            recommendations=recommendation_result.output,
+        )
+
+        output_data = full_result.model_dump()
 
         # Transform the 'concerns' list into a dictionary to match the old structure
-        if 'analysis' in output_data and 'concerns' in output_data['analysis']:
-            concerns_list = output_data['analysis']['concerns']
+        if 'analysis' in output_data and 'analysis' in output_data['analysis'] and 'concerns' in output_data['analysis']['analysis']:
+            concerns_list = output_data['analysis']['analysis']['concerns']
             concerns_dict = {}
             for concern in concerns_list:
-                # Use .pop() to get the name and remove it from the dict
                 concern_name = concern.pop('name', 'unknown').lower()
                 concerns_dict[concern_name] = concern
-            output_data['analysis']['concerns'] = concerns_dict
+            output_data['analysis']['analysis']['concerns'] = concerns_dict
 
         output_json = json.dumps(output_data, indent=2)
 

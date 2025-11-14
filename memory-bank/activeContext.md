@@ -6,9 +6,14 @@
 
 ## Recent Changes
 
+*   **Extended AI Skin Analysis Script (`scripts/analyse_skin.py`):**
+    *   The script was extended to include a two-step LLM chain for generating personalized skincare recommendations.
+    *   New Pydantic models were added to define the structure of the recommendation output, including product details, routine steps, and general advice.
+    *   A new prompt (`prompts/02_generate_recommendations_prompt.md`) was created to guide the LLM in generating the routine.
+    *   The main script logic was updated to orchestrate the two-step process, first running the analysis and then using that output to generate the recommendations.
 *   **Developed AI Skin Analysis Script (`scripts/analyse_skin.py`):**
     *   Created a new Python script to perform skin analysis using multimodal LLMs.
-    *   Initially built with `litellm`, the script was completely refactored to use the `pydantic-ai` framework for more robust, structured, and validated output.
+    *   Initially built with `litellm`, the script was completely refocused to use the `pydantic-ai` framework for more robust, structured, and validated output.
     *   Iteratively debugged and resolved a series of issues, including Python import errors, incorrect library usage, API limitations (Google's schema complexity), and data handling (local images vs. URLs).
     *   The final script uses a comprehensive set of Pydantic models to define the output, explicitly instantiates providers for reliable API key handling, and includes a post-processing step to format the data to match the application's existing JSON structure.
 *   Created the `lila.skin/guidelines` page to provide instructions on how to take photos for skin analysis.
