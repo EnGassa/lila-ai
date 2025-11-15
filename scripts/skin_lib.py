@@ -144,6 +144,7 @@ class RoutineStep(BaseModel):
 class Routine(BaseModel):
     am: List[RoutineStep]
     pm: List[RoutineStep]
+    weekly: Optional[List[RoutineStep]] = Field(None, description="Optional weekly treatments like masks or exfoliants.")
 
 class Recommendations(BaseModel):
     routine: Routine
@@ -188,17 +189,13 @@ def distill_analysis_for_prompt(analysis_data: dict) -> str:
     concerns_details = analysis.get("concerns", {})
     
     for i, concern_name in enumerate(top_concerns, 1):
-        # Handle the key mismatch between "under_eye" and "under-eye"
-        concern_key = "under-eye" if concern_name == "under_eye" else concern_name
-        concern_info = concerns_details.get(concern_key, {})
+        concern_info = concerns_details.get(concern_name, {})
         score = concern_info.get('score_1_5', 'N/A')
         summary_parts.append(f"{i}.  **{concern_name.replace('_', ' ').title()}** (Score: {score}/5)")
 
     summary_parts.append("\n**Detailed Analysis:**")
     for concern_name in top_concerns:
-        # Handle the key mismatch
-        concern_key = "under-eye" if concern_name == "under_eye" else concern_name
-        concern_info = concerns_details.get(concern_key, {})
+        concern_info = concerns_details.get(concern_name, {})
         rationale = concern_info.get('rationale_plain', 'No details provided.')
         summary_parts.append(f"*   **{concern_name.replace('_', ' ').title()}:** {rationale}")
         

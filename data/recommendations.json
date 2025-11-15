@@ -1,0 +1,105 @@
+{
+  "routine": {
+    "am": [
+      {
+        "step": "cleanse",
+        "products": [
+          {
+            "product_id": "prd_anua__anua_gentle_facial_cleanser",
+            "name": "Heartleaf Gentle Facial Cleanser",
+            "brand": "Anua",
+            "rationale": "This is a gentle cleanser suitable for your combination skin. It effectively cleanses without stripping the skin's moisture barrier, which is important for overall skin health. The heartleaf extract also provides a soothing effect."
+          }
+        ],
+        "instructions": "Every morning, dispense a dime-sized amount into your wet hands and lather. Gently massage onto your face for 60 seconds, then rinse thoroughly with lukewarm water and pat dry."
+      },
+      {
+        "step": "treat",
+        "products": [
+          {
+            "product_id": "prd_jumiso__jumiso_all_day_vitamin_brightening_balancing_facial_serum",
+            "name": "All Day Vitamin Brightening & Balancing Facial Serum",
+            "brand": "JUMISO",
+            "rationale": "This serum is chosen to target your pigmentation concerns. It contains Ascorbic Acid (a potent form of Vitamin C) and Niacinamide, which work together to brighten dark spots and even out skin tone. Niacinamide also helps to regulate oil production and improve the appearance of pores."
+          }
+        ],
+        "instructions": "After cleansing, apply 2-3 drops to your dry face and neck. Gently pat it into the skin until fully absorbed. Let it absorb for a minute before your next step."
+      },
+      {
+        "step": "hydrate",
+        "products": [
+          {
+            "product_id": "prd_tirtir__tirtir_milk_skin_toner",
+            "name": "Milk Skin Toner",
+            "brand": "Tirtir",
+            "rationale": "This toner provides deep hydration to balance the combination skin type. It contains Niacinamide to support your brightening goals and soothing ingredients like Chamomile and Centella Asiatica to keep skin calm and comfortable."
+          }
+        ],
+        "instructions": "Pour a quarter-sized amount into your palms and gently press and pat into your skin until absorbed. You can apply a second layer for extra hydration if your skin feels dry."
+      }
+    ],
+    "pm": [
+      {
+        "step": "cleanse",
+        "products": [
+          {
+            "product_id": "prd_skin1004__skin1004_light_cleansing_centella_oil",
+            "name": "Light Cleansing Centella Oil",
+            "brand": "Skin1004",
+            "rationale": "Using an oil cleanser first ensures the complete removal of sunscreen and daily grime, which can otherwise clog pores. This one is lightweight and effective for your skin type."
+          },
+          {
+            "product_id": "prd_anua__anua_gentle_facial_cleanser",
+            "name": "Heartleaf Gentle Facial Cleanser",
+            "brand": "Anua",
+            "rationale": "Following the oil cleanse with this gentle water-based cleanser ensures your skin is perfectly clean and ready for treatment products, without causing dryness."
+          }
+        ],
+        "instructions": "Begin your evening routine with dry hands and a dry face. Dispense 2-3 pumps of the oil cleanser and gently massage it over your skin for about a minute to dissolve sunscreen and impurities. Add a little water to emulsify, massage again, then rinse completely. Follow with a dime-sized amount of the Heartleaf Gentle Facial Cleanser, massaging for 60 seconds before rinsing."
+      },
+      {
+        "step": "treat",
+        "products": [
+          {
+            "product_id": "prd_mediheal__mediheal_retinol_collagen_lifting_pad",
+            "name": "Retinol Collagen Lifting Pad",
+            "brand": "Mediheal",
+            "rationale": "These pads contain Retinol, a highly effective ingredient for improving skin texture and minimizing the appearance of pores. By promoting cell turnover, it helps to keep pores clear and skin smooth. Introducing retinol will also help address fine lines."
+          }
+        ],
+        "instructions": "On alternating nights (start with 2-3 nights a week), after cleansing, take one pad and gently swipe the embossed side across your face, focusing on the T-zone and areas with visible pores. Avoid the immediate eye and mouth area. Pat in any remaining essence."
+      },
+      {
+        "step": "treat",
+        "products": [
+          {
+            "product_id": "prd_skin1004__skin1004_tone_brightening_capsule_ampoule",
+            "name": "Tone Brightening Capsule Ampoule",
+            "brand": "Skin1004",
+            "rationale": "This ampoule is specifically selected to target your pigmentation and under-eye darkening. It features a powerful combination of Niacinamide, Tranexamic Acid, and a Vitamin C derivative, all of which are excellent for fading dark spots and evening out skin tone."
+          }
+        ],
+        "instructions": "On nights you are not using the Retinol Pads, apply 2-3 drops of this ampoule to your dry face after cleansing. Gently pat into the skin, including carefully around the under-eye area, until absorbed."
+      },
+      {
+        "step": "hydrate",
+        "products": [
+          {
+            "product_id": "prd_tirtir__tirtir_milk_skin_toner",
+            "name": "Milk Skin Toner",
+            "brand": "Tirtir",
+            "rationale": "Using this hydrating toner at night helps to replenish moisture and support your skin barrier, which is especially important when using active ingredients like retinol. It ensures your skin stays balanced and hydrated overnight."
+          }
+        ],
+        "instructions": "As the final step in your evening routine, pour a quarter-sized amount into your palms and gently press and pat into your skin. This will provide hydration and help buffer the active treatment products."
+      }
+    ],
+    "weekly": null
+  },
+  "general_advice": [
+    "Sunscreen is your most important step. Because your concerns include pigmentation and sun spots, daily use of a separate broad-spectrum sunscreen with SPF 30 or higher is essential to see results and prevent new spots from forming. Apply it every morning as the last step of your routine.",
+    "Introduce new active ingredients slowly. The Retinol pads should be used only 2-3 times per week at first. Pay attention to how your skin responds before increasing the frequency to avoid irritation.",
+    "Consistency is key for visible results. It can take 8-12 weeks of consistent use to notice improvements in pigmentation and pore appearance. Stick with the routine to see the best results.",
+    "Be gentle with the eye area. When applying products, gently pat them around the orbital bone. The ingredients in your treatment serums can help with the brownish pigmentation under your eyes, but they will not affect the darkness caused by the natural hollow structure."
+  ]
+}
