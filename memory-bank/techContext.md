@@ -27,8 +27,8 @@
     *   **Framework**: Uses `pydantic-ai` to interface with various multimodal LLM providers (e.g., Google Gemini, OpenAI GPT) and enforce a reliable output schema.
     *   **Execution**: Designed to be run via `uv run`, which manages its Python dependencies.
 *   **`scripts/generate_recommendations.py`**: A Python script for generating personalized skincare recommendations.
-    *   **Purpose**: Takes a skin analysis JSON file and a product catalog to generate a personalized skincare routine.
-    *   **Framework**: Uses `pydantic-ai` to interface with LLM providers and enforce a reliable output schema.
+    *   **Purpose**: Implements an in-memory RAG workflow to generate personalized skincare routines. It takes a skin analysis JSON file, dynamically filters the product catalog using semantic search, and passes a curated list of products to the LLM.
+    *   **Framework**: Uses `pydantic-ai` for interfacing with LLMs, `sentence-transformers` for creating embeddings, and `faiss-cpu` for efficient similarity search.
     *   **Execution**: Designed to be run via `uv run`, which manages its Python dependencies.
 *   **`scripts/skin_lib.py`**: A shared Python library for the analysis and recommendation scripts.
     *   **Purpose**: Contains all shared code, including Pydantic models, helper functions, and agent configuration.

@@ -3,7 +3,9 @@
 # requires-python = ">=3.10"
 # dependencies = [
 #     "pydantic-ai",
-#     "python-dotenv"
+#     "python-dotenv",
+#     "sentence-transformers",
+#     "faiss-cpu"
 # ]
 # ///
 """
@@ -15,6 +17,9 @@ import argparse
 import json
 import sys
 import traceback
+import numpy as np
+import faiss
+from sentence_transformers import SentenceTransformer
 
 from dotenv import load_dotenv
 from pydantic_ai import Agent
@@ -28,6 +33,36 @@ from skin_lib import (
 
 # Load environment variables from .env file
 load_dotenv()
+
+def find_relevant_products(analysis_data: dict, product_catalog: list, top_k: int = 10) -> list:
+    """
+    Finds the most relevant products from the catalog based on the analysis.
+    """
+    # 1. Create a query string from the analysis
+    concerns = ", ".join(analysis_data.get("analysis", {}).get("top_concerns", []))
+    skin_type = analysis_data.get("analysis", {}).get("skin_type", {}).get("label", "")
+    query = f"Skincare for {skin_type} skin with concerns of {concerns}."
+
+    # 2. Create embeddings for the product catalog
+    product_texts = [
+        f"{p.get('brand', '')} {p.get('name', '')}: {p.get('description', '')}"
+        for p in product_catalog
+    ]
+    
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+    product_embeddings = model.encode(product_texts, convert_to_tensor=True)
+
+    # 3. Create a FAISS index
+    index = faiss.IndexFlatL2(product_embeddings.shape[1])
+    index.add(product_embeddings.cpu().detach().numpy())
+
+    # 4. Embed the query and search the index
+    query_embedding = model.encode([query], convert_to_tensor=True)
+    _, top_indices = index.search(query_embedding.cpu().detach().numpy(), top_k)
+
+    # 5. Return the top_k most relevant products
+    relevant_products = [product_catalog[i] for i in top_indices[0]]
+    return relevant_products
 
 def main():
     """Main function to generate recommendations."""
@@ -87,12 +122,16 @@ def main():
     recommendation_prompt = load_system_prompt(args.recommendation_prompt)
     product_catalog = load_product_catalog(args.product_catalog)
 
+    # --- Find Relevant Products ---
+    print("Finding relevant products...")
+    relevant_products = find_relevant_products(analysis_data, product_catalog)
+
     # --- Construct User Message ---
     message_content = [
         "Here is the skin analysis:",
         json.dumps(analysis_data, indent=2),
-        "Here is the product catalog:",
-        json.dumps(product_catalog, indent=2),
+        "Here is a curated list of relevant products:",
+        json.dumps(relevant_products, indent=2),
     ]
 
     # --- Agent Configuration ---
