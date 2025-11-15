@@ -3,7 +3,8 @@
 # requires-python = ">=3.10"
 # dependencies = [
 #     "pydantic-ai",
-#     "python-dotenv"
+#     "python-dotenv",
+#     "loguru"
 # ]
 # ///
 """
@@ -17,6 +18,7 @@ import json
 import os
 import sys
 import traceback
+import time
 
 from dotenv import load_dotenv
 from pydantic_ai import Agent
@@ -28,6 +30,7 @@ from skin_lib import (
     get_media_type,
     load_json_context,
     load_system_prompt,
+    setup_logger,
 )
 
 # Load environment variables from .env file
@@ -35,6 +38,7 @@ load_dotenv()
 
 def main():
     """Main function to run the skin analysis."""
+    logger = setup_logger()
     parser = argparse.ArgumentParser(
         description="Analyze skin images using Pydantic AI."
     )
@@ -79,8 +83,10 @@ def main():
         help="API key for the LLM provider. Overrides environment variables.",
     )
     args = parser.parse_args()
+    logger.info(f"Starting analysis with arguments: {args}")
 
     # --- Image and Context Loading ---
+    logger.info("Loading images and context...")
     image_paths = []
     for path in args.images:
         if os.path.isdir(path):
@@ -92,13 +98,16 @@ def main():
             image_paths.append(path)
 
     if not image_paths:
-        print("Error: No valid image files found.", file=sys.stderr)
+        logger.error("No valid image files found.")
         sys.exit(1)
+    logger.info(f"Found {len(image_paths)} images to analyze.")
 
     analysis_prompt = load_system_prompt(args.analysis_prompt)
     context = load_json_context(args.context_file)
+    logger.success("Images and context loaded successfully.")
 
     # --- Construct User Message ---
+    logger.info("Constructing payload for LLM...")
     message_content = []
     text_parts = []
     if context:
@@ -113,12 +122,18 @@ def main():
             image_data = f.read()
         media_type = get_media_type(image_path)
         message_content.append(BinaryContent(data=image_data, media_type=media_type))
+    
+    logger.debug(f"LLM Payload (text parts): {''.join(text_parts)}")
+    logger.info(f"LLM Payload includes {len(image_paths)} images.")
 
     # --- Agent Configuration ---
+    logger.info(f"Configuring agent with model: {args.model}")
     model, model_settings = create_agent(args.model, args.api_key, args.reasoning_effort)
+    logger.success("Agent configured.")
 
     # --- Run Analysis ---
-    print("Running skin analysis...")
+    logger.info("Running skin analysis agent...")
+    start_time = time.time()
     analysis_agent = Agent(
         model,
         output_type=FullSkinAnalysis,
@@ -128,10 +143,13 @@ def main():
         message_content,
         model_settings=model_settings
     )
+    end_time = time.time()
+    logger.success(f"Skin analysis completed in {end_time - start_time:.2f} seconds.")
 
     output_data = analysis_result.output.model_dump()
 
     # Transform the 'concerns' list into a dictionary
+    logger.info("Post-processing analysis output...")
     if 'analysis' in output_data and 'concerns' in output_data['analysis']:
         concerns_list = output_data['analysis']['concerns']
         concerns_dict = {}
@@ -139,21 +157,27 @@ def main():
             concern_name = concern.pop('name', 'unknown').lower()
             concerns_dict[concern_name] = concern
         output_data['analysis']['concerns'] = concerns_dict
+    logger.success("Post-processing complete.")
 
     output_json = json.dumps(output_data, indent=2)
 
     if args.output:
+        logger.info(f"Saving output to {args.output}...")
         with open(args.output, "w", encoding="utf-8") as f:
             f.write(output_json)
-        print(f"Successfully saved JSON output to {args.output}")
+        logger.success(f"Successfully saved JSON output to {args.output}")
     else:
+        logger.info("Printing output to stdout.")
         print("\n--- Model Output ---")
         print(output_json)
 
 if __name__ == "__main__":
     try:
         main()
-    except Exception:
-        print(f"An error occurred:", file=sys.stderr)
-        traceback.print_exc()
+    except Exception as e:
+        try:
+            logger.exception("An unexpected error occurred.")
+        except NameError:
+            print(f"An error occurred:", file=sys.stderr)
+            traceback.print_exc()
         sys.exit(1)

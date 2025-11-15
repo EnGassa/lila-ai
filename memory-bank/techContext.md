@@ -6,6 +6,7 @@
 *   **Framework:** Next.js
 *   **UI Library:** React, with a component library built on Radix UI (likely via `shadcn/ui`).
 *   **Styling:** Tailwind CSS
+*   **Logging:** Loguru
 *   **Charting:** Recharts
 *   **Form Management:** React Hook Form with Zod for validation
 *   **Package Manager:** pnpm
@@ -31,6 +32,6 @@
     *   **Framework**: Uses `pydantic-ai` for interfacing with LLMs, `sentence-transformers` for creating embeddings, and `faiss-cpu` for efficient similarity search.
     *   **Execution**: Designed to be run via `uv run`, which manages its Python dependencies.
 *   **`scripts/skin_lib.py`**: A shared Python library for the analysis and recommendation scripts.
-    *   **Purpose**: Contains all shared code, including Pydantic models, helper functions, and agent configuration.
+    *   **Purpose**: Contains all shared code, including Pydantic models, helper functions, agent configuration, and a centralized logger setup.
 *   **`prompts/01_analyse_images_prompt.md`**: The system prompt used for the skin analysis step.
 *   **`prompts/02_generate_recommendations_prompt.md`**: The system prompt used for the recommendation generation step.

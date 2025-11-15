@@ -9,6 +9,7 @@
 
 ## Key Technical Decisions
 
+*   **Centralized Logging:** The Python scripts use a centralized logging system configured in the `skin_lib.py` shared library. This system uses `loguru` to provide detailed, colored console output and structured logging to a rotating file (`logs/ai_scripts.log`).
 *   **Component-Based Architecture:** The UI will be built using a modular, component-based architecture to promote reusability and maintainability.
 *   **Static Site Generation (SSG):** Next.js is used for its SSG capabilities to pre-render pages at build time, resulting in fast load times and improved SEO.
 *   **Local Data:** The application currently uses local JSON files as its data source, with no external API integration.

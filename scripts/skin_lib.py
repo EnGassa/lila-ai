@@ -8,6 +8,7 @@ import json
 import os
 import sys
 from typing import Any, Dict, List, Optional, Literal
+from loguru import logger
 
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent
@@ -149,6 +150,23 @@ class Recommendations(BaseModel):
     general_advice: List[str]
 
 # --- Helper Functions ---
+
+def setup_logger():
+    """Sets up a centralized logger."""
+    logger.remove()
+    logger.add(
+        sys.stderr,
+        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+        colorize=True,
+    )
+    logger.add(
+        "logs/ai_scripts.log",
+        rotation="10 MB",
+        retention="10 days",
+        format="{time} {level} {message}",
+        serialize=True, # for structured logging
+    )
+    return logger
 
 def get_media_type(file_path: str) -> str:
     """Determine the media type of a file based on its extension."""
