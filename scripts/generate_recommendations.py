@@ -38,26 +38,52 @@ from skin_lib import (
 # Load environment variables from .env file
 load_dotenv()
 
+# Setup logger instance to be used throughout the script
+logger = setup_logger()
+
+
 def find_relevant_products(analysis_data: dict, product_catalog: list, top_k: int = 10) -> list:
     """
     Finds the most relevant products from the catalog based on the analysis.
     """
-    logger = setup_logger()
     logger.info(f"Starting product retrieval for top {top_k} products.")
     start_time = time.time()
 
-    # 1. Create a query string from the analysis
-    concerns = ", ".join(analysis_data.get("analysis", {}).get("top_concerns", []))
-    skin_type = analysis_data.get("analysis", {}).get("skin_type", {}).get("label", "")
-    query = f"Skincare for {skin_type} skin with concerns of {concerns}."
+    # 1. Create a detailed query string from the analysis
+    analysis = analysis_data.get("analysis", {})
+    skin_type = analysis.get("skin_type", {}).get("label", "unknown")
+    
+    query_parts = [f"Skincare for {skin_type} skin."]
+    
+    top_concerns = analysis.get("top_concerns", [])
+    concerns_details = analysis.get("concerns", {})
+    
+    if top_concerns:
+        query_parts.append("Key concerns are:")
+        for concern_name in top_concerns:
+            concern_info = concerns_details.get(concern_name, {})
+            if concern_info:
+                rationale = concern_info.get('rationale_plain', '')
+                query_parts.append(f"- {concern_name.replace('_', ' ').title()}: {rationale}")
+
+    query = " ".join(query_parts)
     logger.debug(f"Generated search query: {query}")
 
-    # 2. Create embeddings for the product catalog
+    # 2. Create rich embeddings for the product catalog
     logger.info("Generating embeddings for product catalog...")
-    product_texts = [
-        f"{p.get('brand', '')} {p.get('name', '')}: {p.get('description', '')}"
-        for p in product_catalog
-    ]
+    product_texts = []
+    for p in product_catalog:
+        parts = [
+            f"Product: {p.get('brand', '')} {p.get('name', '')}",
+            f"Category: {p.get('category', 'N/A')}",
+            f"Description: {p.get('description', '') or p.get('metadata', {}).get('details_blurb', '')}"
+        ]
+        actives = p.get('actives', [])
+        if actives:
+            active_ingredients = sorted(list(set([a['inci'] for a in actives])))
+            parts.append(f"Key Actives: {', '.join(active_ingredients)}")
+        
+        product_texts.append(". ".join(parts))
     
     model = SentenceTransformer('all-MiniLM-L6-v2')
     product_embeddings = model.encode(product_texts, convert_to_tensor=True)
@@ -85,7 +111,6 @@ def find_relevant_products(analysis_data: dict, product_catalog: list, top_k: in
 
 def main():
     """Main function to generate recommendations."""
-    logger = setup_logger()
     parser = argparse.ArgumentParser(
         description="Generate skin care recommendations from an analysis file."
     )
