@@ -16,6 +16,7 @@
 
 ## AI and Data Processing
 
+*   **Prompt Distillation:** To improve the quality and efficiency of LLM-generated recommendations, the system uses a prompt distillation strategy. Instead of passing a large, noisy JSON object to the model, the `distill_analysis_for_prompt` function in `skin_lib.py` pre-processes the analysis data into a concise, human-readable Markdown summary. This focuses the LLM's attention on the most clinically relevant information, reducing token costs and improving the consistency of the output.
 *   **Retrieval-Augmented Generation (RAG) for Recommendations:** To ensure high-quality and scalable product recommendations, the system uses an in-memory RAG approach.
     *   **Dynamic Retrieval:** Instead of passing the entire product catalog to the LLM, the `generate_recommendations.py` script first dynamically filters the catalog to find the most relevant products.
     *   **Semantic Search:** It uses the `sentence-transformers` library to create vector embeddings for the user's skin analysis and all products in the catalog. A `faiss` index is then used to perform a semantic search, retrieving the top N most relevant products.

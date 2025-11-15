@@ -168,6 +168,60 @@ def setup_logger():
     )
     return logger
 
+def distill_analysis_for_prompt(analysis_data: dict) -> str:
+    """
+    Converts the detailed analysis JSON into a concise, clinically relevant summary for the LLM.
+    """
+    analysis = analysis_data.get("analysis", {})
+    
+    summary_parts = ["**Patient Skin Analysis Summary**\n"]
+    
+    if "skin_type" in analysis:
+        summary_parts.append(f"*   **Skin Type:** {analysis['skin_type'].get('label', 'N/A')}")
+    if "skin_tone_fitzpatrick" in analysis:
+        summary_parts.append(f"*   **Fitzpatrick Skin Tone:** {analysis['skin_tone_fitzpatrick'].get('label', 'N/A')}")
+    if "skin_age_range" in analysis:
+        summary_parts.append(f"*   **Estimated Age Range:** {analysis['skin_age_range'].get('low', 'N/A')}-{analysis['skin_age_range'].get('high', 'N/A')}")
+        
+    summary_parts.append("\n**Top Concerns:**")
+    top_concerns = analysis.get("top_concerns", [])
+    concerns_details = analysis.get("concerns", {})
+    
+    for i, concern_name in enumerate(top_concerns, 1):
+        # Handle the key mismatch between "under_eye" and "under-eye"
+        concern_key = "under-eye" if concern_name == "under_eye" else concern_name
+        concern_info = concerns_details.get(concern_key, {})
+        score = concern_info.get('score_1_5', 'N/A')
+        summary_parts.append(f"{i}.  **{concern_name.replace('_', ' ').title()}** (Score: {score}/5)")
+
+    summary_parts.append("\n**Detailed Analysis:**")
+    for concern_name in top_concerns:
+        # Handle the key mismatch
+        concern_key = "under-eye" if concern_name == "under_eye" else concern_name
+        concern_info = concerns_details.get(concern_key, {})
+        rationale = concern_info.get('rationale_plain', 'No details provided.')
+        summary_parts.append(f"*   **{concern_name.replace('_', ' ').title()}:** {rationale}")
+        
+        subtypes = concern_info.get("identified_subtypes", [])
+        if subtypes:
+            for subtype in subtypes:
+                subtype_key = subtype.get('key', 'N/A').replace('_', ' ').title()
+                subtype_exp = subtype.get('explanation', 'N/A')
+                summary_parts.append(f"    *   **Subtype: {subtype_key}:** {subtype_exp}")
+
+    escalation_flags = analysis.get("escalation_flags", [])
+    summary_parts.append("\n**Escalation Flags:**")
+    if escalation_flags:
+        for flag in escalation_flags:
+            summary_parts.append(f"*   {flag.get('flag', 'N/A')}: {flag.get('reason', 'N/A')}")
+    else:
+        summary_parts.append("*   None")
+
+    if "overview_explanation" in analysis:
+        summary_parts.append(f"\n**Overall Overview:**\n{analysis['overview_explanation']}")
+        
+    return "\n".join(summary_parts)
+
 def get_media_type(file_path: str) -> str:
     """Determine the media type of a file based on its extension."""
     ext = os.path.splitext(file_path)[1].lower()

@@ -29,6 +29,7 @@ from pydantic_ai import Agent
 from skin_lib import (
     Recommendations,
     create_agent,
+    distill_analysis_for_prompt,
     load_product_catalog,
     load_system_prompt,
     setup_logger,
@@ -149,13 +150,15 @@ def main():
 
     # --- Construct User Message ---
     logger.info("Constructing payload for LLM...")
+    analysis_summary = distill_analysis_for_prompt(analysis_data)
+    
     message_content = [
         "Here is the skin analysis:",
-        json.dumps(analysis_data, indent=2),
+        analysis_summary,
         "Here is a curated list of relevant products:",
         json.dumps(relevant_products, indent=2),
     ]
-    logger.debug(f"LLM Payload: {json.dumps(message_content, indent=2)}")
+    logger.debug(f"LLM Payload: {analysis_summary}")
 
     # --- Agent Configuration ---
     logger.info(f"Configuring agent with model: {args.model}")
