@@ -2,6 +2,10 @@
 
 ## What Works
 
+*   **Modular AI Scripts:** The AI-powered skin analysis and recommendation functionality is now split into three distinct scripts:
+    *   `scripts/skin_lib.py`: A shared library for common code.
+    *   `scripts/run_analysis.py`: Generates the skin analysis.
+    *   `scripts/generate_recommendations.py`: Generates recommendations from an analysis file.
 *   **AI Skin Analysis and Recommendation Script:** The Python script (`scripts/analyse_skin.py`) now generates both a detailed skin analysis and a personalized skincare routine with product recommendations.
 *   **AI Skin Analysis Script:** A functional Python script (`scripts/analyse_skin.py`) now exists that can take user images and generate a detailed, structured JSON analysis using `pydantic-ai` and various LLM providers.
 *   The `lila.skin/guidelines` page has been created with content and styling from the Figma design.

@@ -6,6 +6,11 @@
 
 ## Recent Changes
 
+*   **Refactored AI Scripts:**
+    *   The monolithic `scripts/analyse_skin.py` was refactored into a modular, three-file structure to separate concerns and improve maintainability.
+    *   `scripts/skin_lib.py` was created to house all shared code, including Pydantic models and helper functions.
+    *   `scripts/run_analysis.py` is now dedicated to generating the skin analysis from images.
+    *   `scripts/generate_recommendations.py` is now dedicated to generating recommendations from an existing analysis file.
 *   **Extended AI Skin Analysis Script (`scripts/analyse_skin.py`):**
     *   The script was extended to include a two-step LLM chain for generating personalized skincare recommendations.
     *   New Pydantic models were added to define the structure of the recommendation output, including product details, routine steps, and general advice.

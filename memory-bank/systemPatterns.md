@@ -15,6 +15,10 @@
 
 ## AI and Data Processing
 
+*   **Modular Scripting Pipeline:** The AI processing is now handled by a series of scripts that form a clear pipeline:
+    *   `scripts/run_analysis.py`: Takes user images and context to generate a detailed skin analysis JSON file.
+    *   `scripts/generate_recommendations.py`: Takes the analysis JSON file and a product catalog to generate a personalized skincare routine and product recommendations.
+    *   `scripts/skin_lib.py`: A shared library containing all Pydantic models and helper functions used by the other scripts.
 *   **Two-Step LLM Chain:** The `scripts/analyse_skin.py` script implements a two-step process for generating skin analysis and recommendations.
     1.  **Analysis Step:** The first LLM call takes user images and context to generate a detailed skin analysis, outputting a `FullSkinAnalysis` object.
     2.  **Recommendation Step:** The generated analysis object, along with a product catalog, is passed to a second LLM call, which generates a personalized skincare routine and product recommendations, outputting a `Recommendations` object.

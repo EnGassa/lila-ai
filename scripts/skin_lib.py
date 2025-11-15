@@ -1,0 +1,227 @@
+"""
+skin_lib.py
+
+A shared library for skin analysis scripts, containing Pydantic models,
+helper functions, and agent configuration.
+"""
+import json
+import os
+import sys
+from typing import Any, Dict, List, Optional, Literal
+
+from pydantic import BaseModel, Field
+from pydantic_ai import Agent
+from pydantic_ai.messages import BinaryContent
+from pydantic_ai.models.google import GoogleModel, GoogleModelSettings
+from pydantic_ai.providers.google import GoogleProvider
+from pydantic_ai.models.openai import OpenAIChatModel, OpenAIModelSettings
+from pydantic_ai.providers.openai import OpenAIProvider
+from pydantic_ai.settings import ModelSettings
+
+# --- Simplified Pydantic Output Models ---
+
+class IdentifiedSubtype(BaseModel):
+    key: str
+    explanation: str
+    likely_causes: List[str]
+    care_education: List[str]
+    confidence_0_1: float
+
+class RegionalBreakdown(BaseModel):
+    region_key: str
+    score_1_5: float
+
+class Citation(BaseModel):
+    title: str
+    url: str
+
+class ConcernBlock(BaseModel):
+    name: str # e.g., "pores", "wrinkles"
+    score_1_5: float
+    confidence_0_1: float
+    rationale_plain: str
+    possible_causes: List[str]
+    identified_subtypes: List[IdentifiedSubtype]
+    regional_breakdown: List[RegionalBreakdown]
+    citations: List[Citation]
+    uncertainty_notes: str
+
+class UserReportedSymptoms(BaseModel):
+    itch: Optional[str] = None
+    pain_tenderness: Optional[str] = None
+    duration_weeks: Optional[int] = None
+    cycle_hormonal_changes: Optional[str] = None
+    photosensitivity: Optional[str] = None
+    friction_occlusion: Optional[str] = None
+    recent_products: Optional[str] = None
+
+class Session(BaseModel):
+    id: str
+    timestamp_iso: str
+    poses_received: List[str]
+    device_model: Optional[str] = None
+    user_reported_symptoms: Optional[UserReportedSymptoms] = None
+
+class QC(BaseModel):
+    status: str
+    fail_reasons: List[str]
+    notes: str
+
+class SkinType(BaseModel):
+    label: str
+    rationale: str
+    confidence_0_1: float
+
+class SkinToneFitzpatrick(BaseModel):
+    label: str
+    note: str
+
+class SkinAgeRange(BaseModel):
+    low: int
+    high: int
+    rationale: str
+    confidence_0_1: float
+
+class RegionSummary(BaseModel):
+    region_key: str
+    summary_plain: str
+
+class EscalationFlag(BaseModel):
+    flag: str
+    reason: str
+    action: str
+
+class Analysis(BaseModel):
+    skin_type: SkinType
+    skin_tone_fitzpatrick: SkinToneFitzpatrick
+    skin_age_range: SkinAgeRange
+    top_concerns: List[str]
+    overview_explanation: str
+    concerns: List[ConcernBlock]
+    region_summaries: List[RegionSummary]
+    escalation_flags: List[EscalationFlag]
+
+class OverviewRadarScale(BaseModel):
+    min: int
+    max: int
+    direction: str
+    formula: str
+
+class OverviewRadar(BaseModel):
+    axis_order: List[str]
+    values_1_5: List[float]
+    scale: OverviewRadarScale
+
+class Charts(BaseModel):
+    overview_radar: OverviewRadar
+
+class Audit(BaseModel):
+    prompt_version: str
+    model_hint: str
+    limitations: List[str]
+
+class FullSkinAnalysis(BaseModel):
+    session: Session
+    qc: QC
+    analysis: Analysis
+    charts: Charts
+    audit: Audit
+
+# --- Pydantic Output Models for Recommendations ---
+
+class ProductRecommendation(BaseModel):
+    product_id: str = Field(..., description="The unique identifier for the product.")
+    name: str = Field(..., description="The name of the product.")
+    brand: str = Field(..., description="The brand of the product.")
+    rationale: str = Field(..., description="Explanation for why this product is recommended.")
+
+class RoutineStep(BaseModel):
+    step: Literal["cleanse", "treat", "hydrate", "protect", "boost"]
+    products: List[ProductRecommendation]
+    instructions: str
+
+class Routine(BaseModel):
+    am: List[RoutineStep]
+    pm: List[RoutineStep]
+
+class Recommendations(BaseModel):
+    routine: Routine
+    general_advice: List[str]
+
+# --- Helper Functions ---
+
+def get_media_type(file_path: str) -> str:
+    """Determine the media type of a file based on its extension."""
+    ext = os.path.splitext(file_path)[1].lower()
+    if ext in ['.jpg', '.jpeg']:
+        return 'image/jpeg'
+    elif ext == '.png':
+        return 'image/png'
+    elif ext == '.webp':
+        return 'image/webp'
+    else:
+        return 'application/octet-stream' # Fallback
+
+def load_system_prompt(prompt_path: str) -> str:
+    """Load the system prompt from a file."""
+    try:
+        with open(prompt_path, "r", encoding="utf-8") as f:
+            return f.read()
+    except IOError as e:
+        print(f"Error reading prompt file {prompt_path}: {e}", file=sys.stderr)
+        raise
+
+def load_json_context(file_path: Optional[str]) -> Dict[str, Any]:
+    """Load user context from a JSON file if provided."""
+    if not file_path:
+        return {}
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (IOError, json.JSONDecodeError) as e:
+        print(f"Error reading or parsing context file {file_path}: {e}", file=sys.stderr)
+        raise
+
+def load_product_catalog(file_path: str) -> List[Dict[str, Any]]:
+    """Load product catalog from a JSONL file."""
+    products = []
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            for line in f:
+                products.append(json.loads(line))
+    except (IOError, json.JSONDecodeError) as e:
+        print(f"Error reading or parsing product catalog file {file_path}: {e}", file=sys.stderr)
+        raise
+    return products
+
+def create_agent(model_str: str, api_key: Optional[str], reasoning_effort: Optional[str]):
+    """Configure and initialize the AI agent."""
+    provider_name, model_name = model_str.split(':', 1)
+    
+    model = None
+    model_settings = None
+
+    settings_kwargs = {}
+    if api_key:
+        settings_kwargs['api_key'] = api_key
+
+    if provider_name in ('google-gla', 'google-vertex'):
+        provider = GoogleProvider(api_key=api_key, vertexai=(provider_name == 'google-vertex'))
+        model = GoogleModel(model_name, provider=provider)
+        if reasoning_effort:
+            settings_kwargs['google_thinking_config'] = {'include_thoughts': True}
+        model_settings = GoogleModelSettings(**settings_kwargs)
+    elif provider_name == 'openai':
+        provider = OpenAIProvider(api_key=api_key)
+        model = OpenAIChatModel(model_name, provider=provider)
+        if reasoning_effort:
+            settings_kwargs['openai_reasoning_effort'] = reasoning_effort
+        model_settings = OpenAIModelSettings(**settings_kwargs)
+    else:
+        model = model_str
+        model_settings = ModelSettings(**settings_kwargs)
+
+    if model is None:
+        raise ValueError(f"Unsupported provider: {provider_name}")
+
+    return model, model_settings

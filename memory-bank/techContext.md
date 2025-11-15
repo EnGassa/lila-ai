@@ -22,10 +22,15 @@
 
 ## Scripts and Tooling
 
-*   **`scripts/analyse_skin.py`**: A Python script for AI-powered skin analysis and recommendation generation.
-    *   **Purpose**: Implements a two-step LLM chain. First, it takes a set of user images and generates a structured JSON analysis of skin concerns. Second, it uses that analysis and a product catalog to generate a personalized skincare routine.
-    *   **Framework**: Uses `pydantic-ai` to interface with various multimodal LLM providers (e.g., Google Gemini, OpenAI GPT) and enforce a reliable output schema for both the analysis and recommendation steps.
-    *   **Execution**: Designed to be run via `uv run`, which manages its Python dependencies (`pydantic-ai`, `python-dotenv`).
-    *   **Interface**: Command-line arguments allow for specifying the model, image paths, API key, and other parameters.
+*   **`scripts/run_analysis.py`**: A Python script for AI-powered skin analysis.
+    *   **Purpose**: Takes a set of user images and generates a structured JSON analysis of skin concerns.
+    *   **Framework**: Uses `pydantic-ai` to interface with various multimodal LLM providers (e.g., Google Gemini, OpenAI GPT) and enforce a reliable output schema.
+    *   **Execution**: Designed to be run via `uv run`, which manages its Python dependencies.
+*   **`scripts/generate_recommendations.py`**: A Python script for generating personalized skincare recommendations.
+    *   **Purpose**: Takes a skin analysis JSON file and a product catalog to generate a personalized skincare routine.
+    *   **Framework**: Uses `pydantic-ai` to interface with LLM providers and enforce a reliable output schema.
+    *   **Execution**: Designed to be run via `uv run`, which manages its Python dependencies.
+*   **`scripts/skin_lib.py`**: A shared Python library for the analysis and recommendation scripts.
+    *   **Purpose**: Contains all shared code, including Pydantic models, helper functions, and agent configuration.
 *   **`prompts/01_analyse_images_prompt.md`**: The system prompt used for the skin analysis step.
 *   **`prompts/02_generate_recommendations_prompt.md`**: The system prompt used for the recommendation generation step.
