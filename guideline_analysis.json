@@ -1,0 +1,661 @@
+{
+  "analysis": {
+    "session": {
+      "id": "80b06b3a-5a9e-4c74-8b67-e98401314603",
+      "timestamp_iso": "2024-05-23T18:00:15.890Z",
+      "poses_received": [
+        "front",
+        "left_45",
+        "right_45",
+        "chin_up",
+        "chin_down",
+        "cheek_left_close",
+        "cheek_right_close",
+        "nose_close",
+        "under_eye_left_close",
+        "under_eye_right_close"
+      ],
+      "device_model": null,
+      "user_reported_symptoms": null
+    },
+    "qc": {
+      "status": "pass",
+      "fail_reasons": [],
+      "notes": "All 10 required poses were provided and are of good quality."
+    },
+    "analysis": {
+      "skin_type": {
+        "label": "combination",
+        "rationale": "Your skin shows signs of being the combination type. This is suggested by visible glossiness and more prominent pores in the T-zone (forehead, nose), while the cheeks appear less oily and have a more balanced texture. This difference in oil production between the central and outer parts of the face is characteristic of combination skin.",
+        "confidence_0_1": 0.7
+      },
+      "skin_tone_fitzpatrick": {
+        "label": "IV",
+        "note": "This is a visual estimation based on skin color in the photos. An in-person assessment or user-reported reaction to sun exposure provides a more accurate classification."
+      },
+      "skin_age_range": {
+        "low": 31,
+        "high": 33,
+        "rationale": "The age estimation is based on the presence of only very superficial fine lines around the eyes, good overall skin firmness, and mild signs of sun-related pigmentation.",
+        "confidence_0_1": 0.8
+      },
+      "top_concerns": [
+        "under_eye",
+        "pores",
+        "texture"
+      ],
+      "overview_explanation": "Your skin analysis reveals a combination skin type, with your top concerns being under-eye circles, visible pores in the T-zone, and a mildly uneven texture. Overall, your skin shows very few signs of acne or significant wrinkles, indicating good fundamental health.",
+      "concerns": {
+        "pores": {
+          "score_1_5": 3.0,
+          "confidence_0_1": 0.9,
+          "rationale_plain": "Your analysis shows moderately prominent pores, which are most concentrated in your T-zone, particularly on the nose and the areas of your cheeks beside it. While visible, they do not appear to be severely enlarged or widespread across the entire face.",
+          "possible_causes": [
+            "Genetics is a primary factor in determining the baseline size of your pores.",
+            "Increased oil production, common in combination skin, can make pores appear more prominent.",
+            "Debris and dead skin cells can accumulate in pores, causing them to stretch and become more visible."
+          ],
+          "identified_subtypes": [
+            {
+              "key": "t_zone_predominant",
+              "explanation": "The visibility and density of your pores are most noticeable on your nose, the central part of your forehead, and your chin, which together form the T-zone.",
+              "likely_causes": [
+                "The T-zone of the face naturally has a higher concentration of oil-producing glands than other areas.",
+                "Increased sebum production can cause the pore lining to expand, making pores appear more prominent."
+              ],
+              "care_education": [
+                "Using a gentle cleanser regularly can help manage the surface oil and debris that can accumulate in pores.",
+                "Look for non-comedogenic products that are formulated not to clog pores."
+              ],
+              "confidence_0_1": 0.9
+            },
+            {
+              "key": "large_size",
+              "explanation": "Some individual pores, particularly on your nose and the parts of your cheeks closest to it, are visibly enlarged compared to surrounding areas.",
+              "likely_causes": [
+                "Genetics is the primary determinant of baseline pore size.",
+                "Over time, a loss of skin elasticity can also contribute to pores appearing more dilated."
+              ],
+              "care_education": [
+                "Ingredients like salicylic acid can exfoliate inside the pore lining, which may help reduce the appearance of clogging and make pores look smaller.",
+                "Avoid harsh scrubs or extraction methods, which can irritate the skin and potentially worsen the appearance of pores."
+              ],
+              "confidence_0_1": 0.8
+            }
+          ],
+          "regional_breakdown": [
+            {
+              "region_key": "forehead",
+              "score_1_5": 2.5
+            },
+            {
+              "region_key": "nose",
+              "score_1_5": 3.5
+            },
+            {
+              "region_key": "cheek_left",
+              "score_1_5": 2.8
+            },
+            {
+              "region_key": "cheek_right",
+              "score_1_5": 2.8
+            },
+            {
+              "region_key": "chin",
+              "score_1_5": 2.5
+            }
+          ],
+          "citations": [
+            {
+              "title": "Enlarged Facial Pores review (Cutis, 2016)",
+              "url": "https://cdn.mdedge.com/files/s3fs-public/issues/articles/CT098007033.PDF"
+            },
+            {
+              "title": "AI grading of enlarged pores (Dermatol Ther, 2024, PMC)",
+              "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11411701/"
+            }
+          ],
+          "uncertainty_notes": ""
+        },
+        "wrinkles": {
+          "score_1_5": 2.0,
+          "confidence_0_1": 0.9,
+          "rationale_plain": "Your skin shows mild signs of wrinkles, with only faint, fine lines visible at rest around the eyes. The forehead and other areas appear smooth, suggesting these lines are primarily superficial and in their early stages.",
+          "possible_causes": [
+            "Repetitive facial expressions, such as smiling or squinting, are a primary cause of lines forming around the eyes.",
+            "Sun exposure is a major contributor to the breakdown of collagen and elastin, which leads to the formation of wrinkles.",
+            "The natural aging process involves a gradual decrease in skin elasticity and firmness over time."
+          ],
+          "identified_subtypes": [
+            {
+              "key": "static_at_rest",
+              "explanation": "Even when your face is at rest, some faint, shallow lines are visible under and around the outer corners of your eyes.",
+              "likely_causes": [
+                "The skin around the eyes is very thin and delicate, making it one of the first places to show signs of aging.",
+                "A gradual, age-related loss of collagen and elastin reduces the skin's ability to bounce back from expressions."
+              ],
+              "care_education": [
+                "Consistent daily use of a broad-spectrum sunscreen is the most effective way to prevent the premature development of lines.",
+                "Keeping the delicate skin around the eyes well-hydrated can temporarily plump the skin and soften the look of fine lines."
+              ],
+              "confidence_0_1": 0.8
+            },
+            {
+              "key": "superficial_fine_lines",
+              "explanation": "The lines observed are very thin and do not have significant depth or create shadows, indicating they are in the early stages.",
+              "likely_causes": [
+                "Dehydration can often make superficial lines appear more pronounced than they are.",
+                "These lines originate from repeated facial movements like smiling and squinting over many years."
+              ],
+              "care_education": [
+                "A dedicated eye cream can provide targeted hydration to this delicate area.",
+                "Ensure you are gentle when applying or removing products around the eyes to avoid unnecessary tugging on the skin."
+              ],
+              "confidence_0_1": 0.9
+            }
+          ],
+          "regional_breakdown": [
+            {
+              "region_key": "periorbital_left",
+              "score_1_5": 2.2
+            },
+            {
+              "region_key": "periorbital_right",
+              "score_1_5": 2.2
+            },
+            {
+              "region_key": "forehead",
+              "score_1_5": 1.5
+            }
+          ],
+          "citations": [
+            {
+              "title": "Wrinkle Severity Rating Scale validation (PubMed)",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/14979743/"
+            }
+          ],
+          "uncertainty_notes": "Dynamic wrinkles that appear with expression cannot be fully assessed from static photos."
+        },
+        "pigmentation": {
+          "score_1_5": 2.2,
+          "confidence_0_1": 0.8,
+          "rationale_plain": "The analysis indicates mild, scattered areas of hyperpigmentation, primarily seen as small, distinct spots on your cheeks. There is also some subtle, uneven tone and visible darkening in the under-eye area, which contributes to the overall score.",
+          "possible_causes": [
+            "Sun exposure is the most common cause of hyperpigmentation, as it stimulates melanin production.",
+            "Inflammation from past blemishes, irritation, or sensitivity can leave behind darker marks on the skin.",
+            "Hormonal fluctuations and genetic predisposition can also play a significant role in how your skin produces pigment."
+          ],
+          "identified_subtypes": [
+            {
+              "key": "sun_spots",
+              "explanation": "The images show several small, distinct, and relatively light brown spots, primarily located on the cheeks, which are areas that receive significant sun exposure.",
+              "likely_causes": [
+                "These spots are typically the result of cumulative sun exposure over many years.",
+                "Your skin type may be genetically predisposed to developing this type of sun-induced pigmentation."
+              ],
+              "care_education": [
+                "Diligent, daily use of a broad-spectrum sunscreen is the most important step to prevent new spots and keep existing ones from darkening.",
+                "Topical ingredients like Vitamin C, niacinamide, or retinoids may help to gradually lighten the appearance of sun spots over time."
+              ],
+              "confidence_0_1": 0.7
+            },
+            {
+              "key": "post_inflammatory_hyperpigmentation",
+              "explanation": "While less distinct than the sun spots, some of the subtle, scattered marks on the cheeks could potentially be post-inflammatory hyperpigmentation (PIH) left behind by previous minor blemishes or irritation.",
+              "likely_causes": [
+                "This type of pigmentation is a direct result of the skin's healing process following any form of inflammation.",
+                "Even minor, non-acne irritation can sometimes trigger a pigment response in the skin."
+              ],
+              "care_education": [
+                "Avoid picking or squeezing any blemishes, as this increases the inflammation that leads to these marks.",
+                "Look for gentle products containing ingredients known to help with pigmentation, such as azelaic acid or niacinamide.",
+                "Always wear sunscreen, as UV exposure can significantly darken and prolong the life of these marks."
+              ],
+              "confidence_0_1": 0.5
+            }
+          ],
+          "regional_breakdown": [
+            {
+              "region_key": "cheek_left",
+              "score_1_5": 2.5
+            },
+            {
+              "region_key": "cheek_right",
+              "score_1_5": 2.5
+            },
+            {
+              "region_key": "forehead",
+              "score_1_5": 2.0
+            },
+            {
+              "region_key": "periorbital_left",
+              "score_1_5": 3.0
+            },
+            {
+              "region_key": "periorbital_right",
+              "score_1_5": 3.0
+            }
+          ],
+          "citations": [
+            {
+              "title": "Skin Pigmentation Types, Causes and Treatment\u2014A Review (PMC)",
+              "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10304091/"
+            }
+          ],
+          "uncertainty_notes": "The exact type of pigmentation can be difficult to distinguish from photos alone and is best confirmed by a dermatologist."
+        },
+        "redness": {
+          "score_1_5": 2.0,
+          "confidence_0_1": 0.9,
+          "rationale_plain": "Mild redness is visible, but it is highly localized to the skin around your nostrils. The rest of your face, including your cheeks and forehead, shows a calm and even tone.",
+          "possible_causes": [
+            "The skin around the nostrils is naturally more sensitive and prone to minor irritation.",
+            "Friction, in this case potentially from a nose piercing, can cause localized, low-grade redness.",
+            "Some individuals have more prominent capillaries in this specific area, making it appear slightly redder."
+          ],
+          "identified_subtypes": [
+            {
+              "key": "patchy_localized",
+              "explanation": "The visible redness is not widespread but is instead confined to the creases on both sides of your nose (the alar folds).",
+              "likely_causes": [
+                "This area is naturally prone to sensitivity and can be easily irritated by environmental factors or friction.",
+                "The nose piercing may be contributing some minor, localized redness to the immediate surrounding skin."
+              ],
+              "care_education": [
+                "Using gentle, non-stripping cleansers can help prevent irritation in this sensitive area.",
+                "When applying products, be mindful not to rub vigorously around the nose."
+              ],
+              "confidence_0_1": 0.9
+            }
+          ],
+          "regional_breakdown": [
+            {
+              "region_key": "nose",
+              "score_1_5": 2.5
+            },
+            {
+              "region_key": "cheek_left",
+              "score_1_5": 1.5
+            },
+            {
+              "region_key": "cheek_right",
+              "score_1_5": 1.5
+            }
+          ],
+          "citations": [
+            {
+              "title": "NRS standard grading system overview",
+              "url": "https://www.rosacea.org/physicians/professional-materials"
+            }
+          ],
+          "uncertainty_notes": "Transient flushing cannot be assessed from photos; this analysis is based only on persistent visible redness."
+        },
+        "texture": {
+          "score_1_5": 2.5,
+          "confidence_0_1": 0.85,
+          "rationale_plain": "Your skin texture appears generally smooth, but there is some mild unevenness and a 'grainy' quality, particularly on and around the nose. This corresponds to the areas where pores are more visible and is likely related to pore congestion.",
+          "possible_causes": [
+            "An accumulation of dead skin cells can interfere with light reflection, leading to a duller and rougher appearance.",
+            "Congestion within pores, even without forming inflamed acne, can create tiny bumps that affect the skin's smoothness.",
+            "Variations in oil production across the face can contribute to different textural qualities in the T-zone versus the cheeks."
+          ],
+          "identified_subtypes": [
+            {
+              "key": "uneven",
+              "explanation": "The skin's surface, particularly on the central parts of the face, shows some minor irregularity rather than being perfectly smooth and uniform.",
+              "likely_causes": [
+                "This is often linked to the presence of visible pores, which naturally create a less uniform surface.",
+                "Slight variations in the rate of dead skin cell shedding across the face can contribute to an uneven texture."
+              ],
+              "care_education": [
+                "Gentle, regular exfoliation with an AHA (like glycolic or lactic acid) can help smooth the skin's surface by promoting cell turnover.",
+                "Ensure your skin is well-hydrated, as properly moisturized skin reflects light more evenly and appears smoother."
+              ],
+              "confidence_0_1": 0.9
+            },
+            {
+              "key": "grainy",
+              "explanation": "On and around your nose, the texture has a fine, slightly bumpy appearance that suggests the presence of very small, clogged pores or micro-comedones.",
+              "likely_causes": [
+                "This texture is often the result of excess oil mixing with dead skin cells, leading to blockages within the pores.",
+                "It can be an early stage of comedonal acne, even if no inflamed lesions are present."
+              ],
+              "care_education": [
+                "Using a chemical exfoliant with salicylic acid (a BHA) can be effective as it works inside the pores to clear out congestion.",
+                "Avoid over-exfoliating or using harsh physical scrubs, which can cause irritation and disrupt the skin barrier."
+              ],
+              "confidence_0_1": 0.7
+            }
+          ],
+          "regional_breakdown": [
+            {
+              "region_key": "nose",
+              "score_1_5": 3.0
+            },
+            {
+              "region_key": "cheek_left",
+              "score_1_5": 2.5
+            },
+            {
+              "region_key": "cheek_right",
+              "score_1_5": 2.5
+            },
+            {
+              "region_key": "forehead",
+              "score_1_5": 2.0
+            }
+          ],
+          "citations": [
+            {
+              "title": "Photonumeric scale for facial texture (PMC)",
+              "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5671791/"
+            }
+          ],
+          "uncertainty_notes": "Tactile roughness or smoothness cannot be determined from images alone."
+        },
+        "acne": {
+          "score_1_5": 1.5,
+          "confidence_0_1": 0.9,
+          "rationale_plain": "Your skin appears to be very clear of acne. Only a single, small blemish was noted near the nose, and there are no signs of widespread comedones or inflammatory lesions.",
+          "possible_causes": [
+            "Even in very clear skin, occasional blemishes can arise due to normal fluctuations in hormones or oil production.",
+            "Minor blockages in pores from a mix of oil and dead skin cells are the root cause of most blemishes.",
+            "Localized friction or contact with uncleaned surfaces (like phones or hands) can sometimes introduce bacteria and trigger a spot."
+          ],
+          "identified_subtypes": [
+            {
+              "key": "inflammatory_papules",
+              "explanation": "A single, small, reddish bump (papule) is visible on the skin next to one of your nostrils.",
+              "likely_causes": [
+                "This can be caused by a minor blockage in a single pore that leads to a localized inflammatory response.",
+                "Friction or pressure in the area, possibly related to the nearby piercing, can sometimes contribute to a small blemish."
+              ],
+              "care_education": [
+                "For an isolated spot, a targeted spot treatment can be effective.",
+                "It is important to avoid picking or squeezing the area to prevent worsening inflammation or causing a post-inflammatory mark."
+              ],
+              "confidence_0_1": 0.6
+            }
+          ],
+          "regional_breakdown": [
+            {
+              "region_key": "nose",
+              "score_1_5": 2.0
+            },
+            {
+              "region_key": "chin",
+              "score_1_5": 1.5
+            }
+          ],
+          "citations": [
+            {
+              "title": "Review of acne grading scales incl. GAGS (PMC)",
+              "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10995619/"
+            }
+          ],
+          "uncertainty_notes": "The analysis is based on a single point in time and may not reflect cyclical or intermittent breakouts."
+        },
+        "under-eye": {
+          "score_1_5": 3.0,
+          "confidence_0_1": 0.9,
+          "rationale_plain": "There is a moderate degree of visible darkening under your eyes. The discoloration appears as a brownish tone concentrated on the lower eyelid skin, which creates a noticeable contrast with the skin on your cheeks.",
+          "possible_causes": [
+            "Genetics is a very common and significant factor in the development of under-eye circles.",
+            "The skin in the under-eye area is exceptionally thin, which can make underlying pigment and blood vessels more visible.",
+            "Lifestyle factors, such as lack of sleep, allergies, or even sun exposure, can contribute to and worsen their appearance."
+          ],
+          "identified_subtypes": [
+            {
+              "key": "pigmentary",
+              "explanation": "The skin under your eyes has a distinct brownish discoloration, which suggests an excess of melanin pigment in the skin itself, rather than just shadowing.",
+              "likely_causes": [
+                "A genetic predisposition to having more melanin in the periorbital area is the most common cause.",
+                "Chronic rubbing due to allergies or habit can cause a form of post-inflammatory hyperpigmentation."
+              ],
+              "care_education": [
+                "Applying a broad-spectrum sunscreen around the eyes every day is crucial, as UV exposure can worsen pigmentation.",
+                "Topical ingredients like Vitamin C, retinoids, or niacinamide may help to brighten the skin over a long period of consistent use.",
+                "Be very gentle with the skin in this area, as rubbing from allergies or makeup removal can contribute to darkening."
+              ],
+              "confidence_0_1": 0.9
+            },
+            {
+              "key": "vascular_transparent",
+              "explanation": "There may be a subtle blue or purple undertone beneath the brown pigment, which could indicate that some of the darkness is also due to underlying blood vessels being visible through the thin skin.",
+              "likely_causes": [
+                "The skin under the eyes is the thinnest on the body, making the underlying vasculature more apparent.",
+                "Factors like fatigue or dehydration can temporarily make this vascular component more noticeable."
+              ],
+              "care_education": [
+                "Getting adequate sleep and managing stress can sometimes help improve circulation and reduce the prominence of vascular circles.",
+                "If allergies are a concern, managing them can reduce congestion and subsequent darkness in this area."
+              ],
+              "confidence_0_1": 0.4
+            }
+          ],
+          "regional_breakdown": [
+            {
+              "region_key": "periorbital_left",
+              "score_1_5": 3.0
+            },
+            {
+              "region_key": "periorbital_right",
+              "score_1_5": 3.0
+            }
+          ],
+          "citations": [
+            {
+              "title": "Validated photonumeric scale for infraorbital dark circles (PMC)",
+              "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7898348/"
+            },
+            {
+              "title": "Periorbital hyperpigmentation study (PubMed)",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/24700933/"
+            }
+          ],
+          "uncertainty_notes": "The contribution of structural shadowing from tear troughs is difficult to assess definitively without in-person evaluation."
+        }
+      },
+      "region_summaries": [
+        {
+          "region_key": "forehead",
+          "summary_plain": "Your forehead appears smooth with minimal signs of wrinkles. Pores are mildly visible, and the texture is generally even, with a slight sheen suggesting normal to slightly oily skin in this area."
+        },
+        {
+          "region_key": "glabella",
+          "summary_plain": "The area between your eyebrows is smooth and clear, with no visible lines at rest or signs of redness or texture."
+        },
+        {
+          "region_key": "periorbital_left",
+          "summary_plain": "This area shows moderate brownish pigmentation on the lower lid, creating a visible under-eye circle. There are also some superficial fine lines at the outer corner and underneath the eye."
+        },
+        {
+          "region_key": "periorbital_right",
+          "summary_plain": "Similar to the left side, there is moderate brown-toned darkening under the eye. Faint, superficial fine lines are also visible here, consistent with the early stages of expression lines."
+        },
+        {
+          "region_key": "cheek_left",
+          "summary_plain": "Your left cheek has a relatively even texture and tone, though some mild, scattered pigmentation spots are visible. Pores are more noticeable on the part of the cheek closer to your nose."
+        },
+        {
+          "region_key": "cheek_right",
+          "summary_plain": "The right cheek is consistent with the left, showing a smooth texture with some minor hyperpigmentation spots. There are no signs of significant redness or irritation."
+        },
+        {
+          "region_key": "nose",
+          "summary_plain": "Your nose has the most prominent pores on your face and a slightly grainy texture. Mild, localized redness is visible in the creases around your nostrils."
+        },
+        {
+          "region_key": "upper_lip",
+          "summary_plain": "The skin on your upper lip appears clear and even-toned, with no visible concerns."
+        },
+        {
+          "region_key": "chin",
+          "summary_plain": "Your chin shows a mostly even texture with mildly visible pores. There are no signs of acne or significant pigmentation in this region."
+        },
+        {
+          "region_key": "jaw_left",
+          "summary_plain": "The left jawline is smooth and clear, with no visible blemishes, textural irregularities, or pigmentation concerns."
+        },
+        {
+          "region_key": "jaw_right",
+          "summary_plain": "Your right jawline appears clear and well-defined, consistent with the left side, showing no visible skin concerns."
+        }
+      ],
+      "escalation_flags": []
+    },
+    "charts": {
+      "overview_radar": {
+        "axis_order": [
+          "pores",
+          "wrinkles",
+          "pigmentation",
+          "redness",
+          "texture",
+          "acne",
+          "under_eye"
+        ],
+        "values_1_5": [
+          3.0,
+          2.0,
+          2.2,
+          2.0,
+          2.5,
+          1.5,
+          3.0
+        ],
+        "scale": {
+          "min": 1,
+          "max": 5,
+          "direction": "higher_is_worse",
+          "formula": "identity (score_1_5)"
+        }
+      }
+    },
+    "audit": {
+      "prompt_version": "skin_v2_poc",
+      "model_hint": "vision_llm_only",
+      "limitations": [
+        "This is a non-diagnostic visual analysis based on photos and not a substitute for a dermatologist's assessment.",
+        "Skin type assessment confidence is reduced as the time since cleansing is unknown.",
+        "The analysis is based on RGB photos and cannot measure biophysical properties of the skin."
+      ]
+    }
+  },
+  "recommendations": {
+    "routine": {
+      "am": [
+        {
+          "step": "cleanse",
+          "products": [
+            {
+              "product_id": "prd_cosrx__cosrx_low_ph_good_morning",
+              "name": "Low pH Good Morning Cleanser",
+              "brand": "COSRX",
+              "rationale": "This gentle, low-pH cleanser is perfect for your combination skin. It effectively cleanses morning oiliness in the T-zone without stripping the drier areas of your face, helping to maintain a healthy skin barrier. The tea tree oil content also helps with minor blemishes and oil control."
+            }
+          ],
+          "instructions": "Gently massage a small amount of the cleanser onto a damp face, focusing on the T-zone. Rinse thoroughly with lukewarm water and pat dry."
+        },
+        {
+          "step": "treat",
+          "products": [
+            {
+              "product_id": "prd_numbuzin__numbuzin_no_5_vitamin_concentrated_serum",
+              "name": "No.5 Vitamin Concentrated Serum",
+              "brand": "numbuzin",
+              "rationale": "This potent serum is packed with a cocktail of brightening ingredients, including Vitamin C derivatives, Niacinamide, Tranexamic Acid, and Glutathione. It directly targets your concerns of pigmentation, sun spots, and the brownish tone of your under-eye circles, while providing antioxidant protection."
+            }
+          ],
+          "instructions": "After cleansing, apply 2-3 drops of the serum to your dry face, gently patting it in until fully absorbed. Pay special attention to areas with pigmentation and gently pat the remainder around the orbital bone to help with under-eye circles."
+        },
+        {
+          "step": "hydrate",
+          "products": [
+            {
+              "product_id": "prd_cosrx__cosrx_advanced_snail_96_mucin_power_essence_3",
+              "name": "Advanced Snail 96 Mucin Power Essence",
+              "brand": "COSRX",
+              "rationale": "Chosen for its incredible ability to hydrate and repair the skin without being heavy or clogging pores. This essence will help to smooth your skin's texture and provide a hydrated base, which is beneficial for your combination skin type."
+            }
+          ],
+          "instructions": "Apply a pump of the essence to your entire face, gently patting for full absorption. This will provide a lightweight layer of hydration before your moisturizer."
+        },
+        {
+          "step": "protect",
+          "products": [
+            {
+              "product_id": "prd_k_secret__k_secret_seoul_1988_cream_snail_mucin_93_rice",
+              "name": "Seoul 1988 Cream : Snail Mucin 93% + Rice",
+              "brand": "K-Secret",
+              "rationale": "This cream contains Ceramide NP and Snail Mucin to strengthen and protect your skin barrier throughout the day. Its hydrating yet non-greasy formula is ideal for your combination skin, providing moisture without contributing to oiliness in the T-zone."
+            }
+          ],
+          "instructions": "Apply a pea-sized amount to the face and neck. IMPORTANT: This step helps protect and strengthen your skin barrier. However, it is NOT a sunscreen. You must follow this with a separate broad-spectrum sunscreen of SPF 30 or higher to protect against UV damage."
+        }
+      ],
+      "pm": [
+        {
+          "step": "cleanse",
+          "products": [
+            {
+              "product_id": "prd_anua__anua_heartleaf_oil_cleanser",
+              "name": "Heartleaf Oil Cleanser",
+              "brand": "Anua",
+              "rationale": "An oil cleanser is crucial for a deep clean, especially in the PM. It will effectively melt away sunscreen, makeup, and excess sebum, which is key to addressing your concerns of prominent pores and grainy texture in the T-zone. The heartleaf extract also provides a soothing benefit."
+            },
+            {
+              "product_id": "prd_cosrx__cosrx_low_ph_good_morning",
+              "name": "Low pH Good Morning Cleanser",
+              "brand": "COSRX",
+              "rationale": "Using the same gentle cleanser from your morning routine ensures a thorough cleanse after the oil step without irritating or over-stripping your skin, perfectly prepping it for treatment."
+            }
+          ],
+          "instructions": "Start with dry hands and a dry face. Massage 1-2 pumps of the oil cleanser all over your face to dissolve makeup and sunscreen. Emulsify with a little water, then rinse. Follow with the COSRX Low pH Good Morning Cleanser on your damp face to remove any remaining residue. Pat dry."
+        },
+        {
+          "step": "treat",
+          "products": [
+            {
+              "product_id": "prd_needly__needly_daily_toner_pad",
+              "name": "Daily Toner Pad",
+              "brand": "Needly",
+              "rationale": "This is your key step for tackling pores and texture. These pads contain Salicylic Acid (BHA) to exfoliate within the pores to clear congestion, and Gluconolactone (PHA) for gentle surface exfoliation. This combination will directly improve the grainy texture and reduce the appearance of pores."
+            }
+          ],
+          "instructions": "After cleansing, take one pad and gently wipe it across your face, starting with the embossed side to exfoliate the T-zone and areas with texture, then flip to the smooth side to wipe the rest of the face. Start with using this 2-3 times per week and increase as tolerated."
+        },
+        {
+          "step": "hydrate",
+          "products": [
+            {
+              "product_id": "prd_cosrx__cosrx_advanced_snail_96_mucin_power_essence_3",
+              "name": "Advanced Snail 96 Mucin Power Essence",
+              "brand": "COSRX",
+              "rationale": "Applying this after your exfoliating pad will provide intense hydration and aid in skin repair. Snail mucin is excellent for soothing the skin and improving overall texture, supporting the work of the BHA/PHA pads."
+            }
+          ],
+          "instructions": "After the toner pad, apply a pump of the essence to your face and neck. This will replenish hydration and soothe the skin after exfoliation."
+        },
+        {
+          "step": "protect",
+          "products": [
+            {
+              "product_id": "prd_k_secret__k_secret_seoul_1988_cream_snail_mucin_93_rice",
+              "name": "Seoul 1988 Cream : Snail Mucin 93% + Rice",
+              "brand": "K-Secret",
+              "rationale": "This cream serves as a protective final layer for your nighttime routine. It seals in moisture and the benefits of your treatment products, while the Ceramide NP and Snail Mucin work overnight to repair and strengthen your skin barrier."
+            }
+          ],
+          "instructions": "As the final step in your routine, apply a pea-sized amount of cream to your face and neck to lock in all the hydration and active ingredients from the previous steps."
+        }
+      ]
+    },
+    "general_advice": [
+      "Sunscreen is non-negotiable. Your top concerns, pigmentation and fine lines, are primarily caused and worsened by sun exposure. Apply a broad-spectrum sunscreen with at least SPF 30 every single morning as the last step of your routine.",
+      "Introduce new products slowly. Especially with active ingredients like Vitamin C and exfoliating acids, start by using them 2-3 times a week and increase frequency as your skin builds tolerance. This helps prevent irritation.",
+      "Be gentle with your skin. Avoid harsh scrubbing, especially around the delicate eye area and the slightly red zones near your nostrils. When cleansing and applying products, use gentle, patting motions.",
+      "Consistency is key to seeing results. It can take several weeks or even months to notice significant improvements in texture, pore appearance, and pigmentation. Stick with your routine consistently."
+    ]
+  }
+}
