@@ -2,7 +2,10 @@ import { Card } from "@/components/ui/card";
 import { DotChart } from "./dot-chart";
 import { RegionWiseBreakdown } from "./region-wise-breakdown";
 
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const capitalize = (s: string | undefined | null): string => {
+  if (!s) return '';
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
 
 // Fitzpatrick tone names and descriptions
 const FITZPATRICK_TONES = {
@@ -35,7 +38,7 @@ function InfoCard({ label, value, description, className }: InfoCardProps) {
   );
 }
 
-function SkinTypeCard({ skinType, description }: { skinType: string, description: string }) {
+function SkinTypeCard({ skinType, description }: { skinType?: string, description?: string }) {
   return (
     <InfoCard
       label="SKIN TYPE"
@@ -46,13 +49,13 @@ function SkinTypeCard({ skinType, description }: { skinType: string, description
   );
 }
 
-function SkinAgeCard({ ageRange, rationale }: { ageRange: { low: number; high: number }, rationale?: string }) {
+function SkinAgeCard({ ageRange, rationale }: { ageRange?: { low: number; high: number }, rationale?: string }) {
   return (
     <InfoCard
       label="SKIN AGE"
       value={
         <p className="text-lg font-medium">
-          {ageRange.low} - {ageRange.high}
+          {ageRange?.low} - {ageRange?.high}
         </p>
       }
       description={rationale}
@@ -103,13 +106,13 @@ function SkinToneCard({ fitzpatrickTone }: { fitzpatrickTone: keyof typeof FITZP
 
 import { Badge } from "@/components/ui/badge";
 
-function TopConcernsCard({ topConcerns }: { topConcerns: string[] }) {
+function TopConcernsCard({ topConcerns }: { topConcerns?: string[] }) {
   return (
     <InfoCard
       label="TOP CONCERNS"
       value={
         <div className="flex flex-wrap gap-2">
-          {topConcerns.map((concern) => (
+          {topConcerns?.map((concern) => (
             <Badge key={concern} variant="outline" className="text-lg font-medium">
               {capitalize(concern.replace(/_/g, ' '))}
             </Badge>
@@ -123,7 +126,7 @@ function TopConcernsCard({ topConcerns }: { topConcerns: string[] }) {
 
 function SensitivityCard({ analysis }: { analysis: any }) {
   const getScore = (name: string) => {
-    return analysis.concerns[name]?.score_1_5 || 0;
+    return analysis?.concerns?.[name]?.score_1_5 || 0;
   };
 
   const rednessScore = getScore("redness");
@@ -175,20 +178,20 @@ export function SummaryOverview({ analysis, charts }: any) {
         label="SUMMARY"
         value={
           <p className="text-sm font-light text-muted-foreground">
-            {analysis.overview_explanation}
+            {analysis?.overview_explanation}
           </p>
         }
         className="col-span-1 sm:col-span-2"
       />
       <div className="col-span-1 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <SkinAgeCard ageRange={analysis.skin_age_range} rationale={analysis.skin_age_range.rationale} />
-        <SkinToneCard fitzpatrickTone={analysis.skin_tone_fitzpatrick.label} />
+        <SkinAgeCard ageRange={analysis?.skin_age_range} rationale={analysis?.skin_age_range?.rationale} />
+        <SkinToneCard fitzpatrickTone={analysis?.skin_tone_fitzpatrick?.label} />
       </div>
       <SkinTypeCard
-        skinType={analysis.skin_type.label}
-        description={analysis.skin_type.rationale}
+        skinType={analysis?.skin_type?.label}
+        description={analysis?.skin_type?.rationale}
       />
-      <TopConcernsCard topConcerns={analysis.top_concerns} />
+      <TopConcernsCard topConcerns={analysis?.top_concerns} />
       <SensitivityCard analysis={analysis} />
     </div>
   );

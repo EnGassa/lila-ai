@@ -20,7 +20,8 @@ import {
 } from "@/components/ui/sheet";
 
 interface SkincareDashboardProps {
-  data: any;
+  analysis: any;
+  recommendations: any;
   userId: string;
 }
 
@@ -31,11 +32,11 @@ interface Concern {
   areas: any[];
 }
 
-export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
+export function SkincareDashboard({ analysis, recommendations, userId }: SkincareDashboardProps) {
   const [selectedConcern, setSelectedConcern] = useState<Concern | null>(null);
-  const { analysis, charts } = data;
+  const { charts } = analysis;
 
-  const concerns: Concern[] = Object.entries(analysis.concerns).map(
+  const concerns: Concern[] = Object.entries(analysis.concerns || {}).map(
     ([key, value]: [string, any]) => ({
       name: key.charAt(0).toUpperCase() + key.slice(1),
       score: value.score_1_5,
@@ -46,7 +47,7 @@ export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
 
   return (
     <div className="p-4 space-y-6 bg-gray-50">
-      <UserProfile userData={data} userId={userId} />
+      <UserProfile userData={analysis} userId={userId} />
       <Tabs defaultValue="overview" className="w-full">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -88,7 +89,7 @@ export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
           </div>
         </TabsContent>
         <TabsContent value="recommendations">
-          <RecommendationsTab />
+          <RecommendationsTab recommendations={recommendations} />
         </TabsContent>
       </Tabs>
       <Sheet
@@ -105,7 +106,7 @@ export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
                 userId={userId}
                 concernName={selectedConcern.name}
                 onClose={() => setSelectedConcern(null)}
-                userData={data}
+                userData={analysis}
               />
             </>
           )}

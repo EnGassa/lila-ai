@@ -32,5 +32,6 @@
 
 ## Known Issues
 
+*   **Technical Debt - Softer Data Checks:** The UI components (`SkincareDashboard`, `SummaryOverview`) have been modified with defensive code (optional chaining, default empty objects) to handle inconsistencies in older user data JSON files. This prevents build failures but masks underlying data quality issues. These softer checks should be removed once all data files are migrated to the latest, consistent schema.
 *   The UI is currently out of sync with the data model and requires a full refactor.
 *   The application may be experiencing caching issues that prevent the latest data from being displayed.

@@ -33,9 +33,14 @@
 *   Removed the "Care Education" section from the concern detail page.
 *   Removed the "Possible Causes" section from the concern detail page.
 *   Implemented the "Recommendations" tab on the main dashboard, including a static version of the UI based on the Figma design.
+*   **Fixed Build Errors by Refactoring Data and Adding Softer Checks:**
+    *   Restructured the user data from a flat file structure in `data/` to a nested structure at `data/users/[userId]/analysis.json`.
+    *   Updated the data fetching logic in `app/dashboard/[userId]/page.tsx` to use the new, standardized directory structure.
+    *   Added defensive coding (optional chaining and default empty objects) to the `SkincareDashboard` and `SummaryOverview` components. This makes the UI more resilient to inconsistencies in older JSON files, preventing build failures.
 
 ## Next Steps
 
+*   **Remove Softer Data Checks:** Once all user JSON files are updated to a consistent, modern schema, refactor the UI components to remove the temporary defensive checks and enforce stricter data validation.
 *   **Dynamic Recommendations Tab**: Refactor the `RecommendationsTab` component to dynamically pull data from the user's JSON file.
 *   **Integrate Analysis Script:** Plan and implement a dynamic data pipeline that utilizes the new `scripts/analyse_skin.py` to process user images and generate analysis data.
 *   Refactor the UI components to align with the new data structure.

@@ -5,12 +5,12 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 
 export async function generateMetadata({ params }: { params: { userId: string } }): Promise<Metadata> {
-  const filePath = path.join(process.cwd(), 'data', `${params.userId}.json`);
+  const filePath = path.join(process.cwd(), 'data', 'users', params.userId, 'analysis.json');
 
   try {
     const fileContents = await fs.readFile(filePath, 'utf8');
-    const userData = JSON.parse(fileContents);
-    const userName = userData.name || params.userId;
+    const analysisData = JSON.parse(fileContents);
+    const userName = analysisData.name || params.userId;
 
     return {
       title: userName,
@@ -27,32 +27,44 @@ export async function generateMetadata({ params }: { params: { userId: string } 
 
 // This function generates the static paths for each user dashboard.
 export async function generateStaticParams() {
-  // For now, we can hardcode the user IDs or read them from the data directory.
-  // In a real application, this would likely come from a database.
-  const dataDirectory = path.join(process.cwd(), 'data');
+  const usersDirectory = path.join(process.cwd(), 'data', 'users');
   try {
-    const files = await fs.readdir(dataDirectory);
-    return files.map((file) => ({
-      userId: file.replace(/\.json$/, ''),
-    }));
+    const userDirs = await fs.readdir(usersDirectory);
+    // Filter out any non-directory files like .DS_Store
+    const validUserIds = (await Promise.all(userDirs.map(async (dir) => {
+      const stat = await fs.stat(path.join(usersDirectory, dir));
+      return stat.isDirectory() ? { userId: dir } : null;
+    }))).filter(Boolean);
+
+    return validUserIds;
   } catch (error) {
-    // If the data directory doesn't exist, return an empty array.
+    // If the users directory doesn't exist, return an empty array.
     return [];
   }
 }
 
 // This is the main page component for the dynamic dashboard route.
 export default async function DashboardPage({ params }: { params: { userId: string } }) {
-  const filePath = path.join(process.cwd(), 'data', `${params.userId}.json`);
+  const analysisFilePath = path.join(process.cwd(), 'data', 'users', params.userId, 'analysis.json');
+  const recommendationsFilePath = path.join(process.cwd(), 'data', 'users', params.userId, 'recommendations.json');
 
-  let userData;
+  let analysisData;
+  let recommendationsData = null; // Default to null if not found
+
   try {
-    const fileContents = await fs.readFile(filePath, 'utf8');
-    userData = JSON.parse(fileContents);
+    const analysisFileContents = await fs.readFile(analysisFilePath, 'utf8');
+    analysisData = JSON.parse(analysisFileContents);
   } catch (error) {
-    // If the file doesn't exist or there's an error reading it, show a 404 page.
+    // If the analysis file doesn't exist, show a 404 page.
     notFound();
   }
 
-  return <SkincareDashboard data={userData} userId={params.userId} />;
+  try {
+    const recommendationsFileContents = await fs.readFile(recommendationsFilePath, 'utf8');
+    recommendationsData = JSON.parse(recommendationsFileContents);
+  } catch (error) {
+    // Recommendations are optional, so we can ignore errors here.
+  }
+
+  return <SkincareDashboard analysis={analysisData} recommendations={recommendationsData} userId={params.userId} />;
 }

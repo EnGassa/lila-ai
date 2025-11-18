@@ -80,7 +80,11 @@ function InfoCard({ label, value, description, className }: { label: string, val
   );
 }
 
-export function RecommendationsTab() {
+interface RecommendationsTabProps {
+  recommendations: any;
+}
+
+export function RecommendationsTab({ recommendations }: RecommendationsTabProps) {
   const [activeTab, setActiveTab] = useState('AM');
 
   return (
