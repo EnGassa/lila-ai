@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -36,6 +36,33 @@ const products = [
     tags: ["Vegan", "Fragrance Free"],
     why: "The Salicylic Acid is clinically proven to be effective for unclogging pores.",
     image: "/ingredients/product-placeholder.png"
+  },
+  {
+    step: "Step 2: Treat",
+    name: "Product B",
+    price: "₹799",
+    compatibility: "92%",
+    tags: ["Vegan"],
+    why: "This is why you should use this product.",
+    image: "/ingredients/product-placeholder.png"
+  },
+  {
+    step: "Step 3: Hydrate",
+    name: "Product C",
+    price: "₹899",
+    compatibility: "95%",
+    tags: ["Fragrance Free"],
+    why: "This is why you should use this product.",
+    image: "/ingredients/product-placeholder.png"
+  },
+  {
+    step: "Step 4: Protect",
+    name: "Product D",
+    price: "₹999",
+    compatibility: "98%",
+    tags: ["Vegan", "Fragrance Free"],
+    why: "This is why you should use this product.",
+    image: "/ingredients/product-placeholder.png"
   }
 ];
 
@@ -54,6 +81,8 @@ function InfoCard({ label, value, description, className }: { label: string, val
 }
 
 export function RecommendationsTab() {
+  const [activeTab, setActiveTab] = useState('AM');
+
   return (
     <div className="space-y-6">
       <InfoCard
@@ -98,44 +127,64 @@ export function RecommendationsTab() {
         </h2>
         <div className="p-4 bg-white rounded-b-lg">
         <div className="flex space-x-2 mb-4">
-          <Button className="bg-brown-500 text-white">AM</Button>
-          <Button variant="outline" className="border-brown-500 text-brown-500">PM</Button>
-          <Button variant="outline" className="border-brown-500 text-brown-500">Weekly</Button>
-        </div>
+            <Button
+              onClick={() => setActiveTab('AM')}
+              className={activeTab === 'AM' ? "bg-brown-500 text-white" : "border-brown-500 text-brown-500"}
+              variant={activeTab === 'AM' ? "default" : "outline"}
+            >
+              AM
+            </Button>
+            <Button
+              onClick={() => setActiveTab('PM')}
+              className={activeTab === 'PM' ? "bg-brown-500 text-white" : "border-brown-500 text-brown-500"}
+              variant={activeTab === 'PM' ? "default" : "outline"}
+            >
+              PM
+            </Button>
+            <Button
+              onClick={() => setActiveTab('Weekly')}
+              className={activeTab === 'Weekly' ? "bg-brown-500 text-white" : "border-brown-500 text-brown-500"}
+              variant={activeTab === 'Weekly' ? "default" : "outline"}
+            >
+              Weekly
+            </Button>
+          </div>
 
         <Accordion type="single" collapsible defaultValue="item-0">
             {products.map((product, index) => (
               <AccordionItem value={`item-${index}`} key={index} className="border-b-2 border-brown-500">
                 <AccordionTrigger className="text-lg font-semibold text-gray-800">{product.step}</AccordionTrigger>
                 <AccordionContent>
-                  <Card className="shadow-sm border">
-                    <CardContent className="p-4">
-                      <div className="flex gap-4">
-                        <div className="w-24 h-24 bg-gray-100 rounded-md flex-shrink-0">
-                          <img src={product.image} alt={product.name} className="w-full h-full object-cover rounded-md" />
-                        </div>
-                        <div className="flex-grow">
-                          <h3 className="font-bold">{product.name}</h3>
-                          <p className="text-sm text-muted-foreground">Compatibility: {product.compatibility}</p>
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {product.tags.map((tag, i) => (
-                              <Badge key={i} variant="outline">{tag}</Badge>
-                            ))}
+                  <div className="p-4">
+                    <Card className="shadow-sm border">
+                      <CardContent className="p-4">
+                        <div className="flex gap-4">
+                          <div className="w-24 h-24 bg-gray-100 rounded-md flex-shrink-0">
+                            <img src={product.image} alt={product.name} className="w-full h-full object-cover rounded-md" />
+                          </div>
+                          <div className="flex-grow">
+                            <h3 className="font-bold">{product.name}</h3>
+                            <p className="text-sm text-muted-foreground">Compatibility: {product.compatibility}</p>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {product.tags.map((tag, i) => (
+                                <Badge key={i} variant="outline">{tag}</Badge>
+                              ))}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <p className="text-sm mt-4">
-                        <span className="font-semibold">Why:</span> {product.why}
-                      </p>
-                      <div className="flex justify-between items-center mt-4">
-                        <span className="text-lg font-bold">{product.price}</span>
-                        <div className="flex space-x-2">
-                          <Button variant="outline" size="sm" className="border-brown-500 text-brown-500">View Details</Button>
-                          <Button size="sm" className="bg-brown-500 text-white">Add to Cart</Button>
+                        <p className="text-sm mt-4">
+                          <span className="font-semibold">Why:</span> {product.why}
+                        </p>
+                        <div className="flex justify-between items-center mt-4">
+                          <span className="text-lg font-bold">{product.price}</span>
+                          <div className="flex space-x-2">
+                            <Button variant="outline" size="sm" className="border-brown-500 text-brown-500">View Details</Button>
+                            <Button size="sm" className="bg-brown-500 text-white">Add to Cart</Button>
+                          </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </AccordionContent>
               </AccordionItem>
             ))}

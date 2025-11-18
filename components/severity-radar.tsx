@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import { useEffect, useState } from "react";
 
-const renderPolarAngleAxis = ({ payload, x, y, cx, cy, ...rest }: any) => {
+const renderPolarAngleAxis = ({ payload, x, y, cx, cy, verticalAnchor, ...rest }: any) => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
