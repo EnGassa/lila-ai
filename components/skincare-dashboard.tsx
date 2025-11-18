@@ -5,7 +5,7 @@ import { SummaryOverview } from "@/components/summary-overview";
 import { SeverityRadar } from "@/components/severity-radar";
 import { ConcernCard } from "@/components/concern-card";
 import { ConcernDetailPage } from "@/components/concern-detail-page";
-import { RecommendationsSection } from "@/components/recommendations-section";
+import { RecommendationsTab } from "@/components/recommendations-tab";
 import {
   Tabs,
   TabsContent,
@@ -50,6 +50,7 @@ export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
       <Tabs defaultValue="overview" className="w-full">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="recommendations">Recommendation</TabsTrigger>
         </TabsList>
         <TabsContent value="overview" className="space-y-6">
           <SummaryOverview analysis={analysis} charts={charts} />
@@ -85,6 +86,9 @@ export function SkincareDashboard({ data, userId }: SkincareDashboardProps) {
                 ))}
             </div>
           </div>
+        </TabsContent>
+        <TabsContent value="recommendations">
+          <RecommendationsTab />
         </TabsContent>
       </Tabs>
       <Sheet

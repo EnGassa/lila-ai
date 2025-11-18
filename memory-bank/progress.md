@@ -17,10 +17,11 @@
 *   The descriptions on the concern cards have been restored.
 *   The "Care Education" section has been removed from the concern detail page.
 *   The "Possible Causes" section has been removed from the concern detail page.
-*   The "Recommendations" tab has been hidden from the main dashboard.
+*   The "Recommendations" tab has been implemented on the main dashboard with a static UI based on the Figma design.
 
 ## What's Left to Build
 
+*   **Dynamic Recommendations Tab**: Refactor the `RecommendationsTab` component to dynamically pull data from the user's JSON file.
 *   **UI Refactor:** Complete the refactoring of all UI components to consume data from the new nested JSON structure.
 *   **User Authentication:** Implement a full user authentication system, including sign-up, login, and session management.
 *   **User Profile Management:** Build out the UI and functionality for users to create, view, and edit their profiles.

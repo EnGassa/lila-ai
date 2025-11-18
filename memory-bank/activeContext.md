@@ -32,10 +32,11 @@
 *   Restored the descriptions on the concern cards.
 *   Removed the "Care Education" section from the concern detail page.
 *   Removed the "Possible Causes" section from the concern detail page.
-*   Hid the "Recommendations" tab from the main dashboard.
+*   Implemented the "Recommendations" tab on the main dashboard, including a static version of the UI based on the Figma design.
 
 ## Next Steps
 
+*   **Dynamic Recommendations Tab**: Refactor the `RecommendationsTab` component to dynamically pull data from the user's JSON file.
 *   **Integrate Analysis Script:** Plan and implement a dynamic data pipeline that utilizes the new `scripts/analyse_skin.py` to process user images and generate analysis data.
 *   Refactor the UI components to align with the new data structure.
 *   Ensure all data is dynamically pulled from the JSON file with no hardcoded values.
