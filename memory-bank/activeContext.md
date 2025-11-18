@@ -2,49 +2,27 @@
 
 ## Current Focus
 
-*   The current focus is on building out the core UI components and establishing the basic application structure.
+*   The project has just completed a major architectural overhaul, migrating from a local JSON file-based system to a full-stack application with a Supabase backend. The current focus is on ensuring the stability of the new architecture and planning the next phase of development.
 
 ## Recent Changes
 
-*   **Refactored AI Scripts:**
-    *   The monolithic `scripts/analyse_skin.py` was refactored into a modular, three-file structure to separate concerns and improve maintainability.
-    *   `scripts/skin_lib.py` was created to house all shared code, including Pydantic models and helper functions.
-    *   `scripts/run_analysis.py` is now dedicated to generating the skin analysis from images.
-    *   `scripts/generate_recommendations.py` is now dedicated to generating recommendations from an existing analysis file.
-*   **Extended AI Skin Analysis Script (`scripts/analyse_skin.py`):**
-    *   The script was extended to include a two-step LLM chain for generating personalized skincare recommendations.
-    *   New Pydantic models were added to define the structure of the recommendation output, including product details, routine steps, and general advice.
-    *   A new prompt (`prompts/02_generate_recommendations_prompt.md`) was created to guide the LLM in generating the routine.
-    *   The main script logic was updated to orchestrate the two-step process, first running the analysis and then using that output to generate the recommendations.
-*   **Developed AI Skin Analysis Script (`scripts/analyse_skin.py`):**
-    *   Created a new Python script to perform skin analysis using multimodal LLMs.
-    *   Initially built with `litellm`, the script was completely refocused to use the `pydantic-ai` framework for more robust, structured, and validated output.
-    *   Iteratively debugged and resolved a series of issues, including Python import errors, incorrect library usage, API limitations (Google's schema complexity), and data handling (local images vs. URLs).
-    *   The final script uses a comprehensive set of Pydantic models to define the output, explicitly instantiates providers for reliable API key handling, and includes a post-processing step to format the data to match the application's existing JSON structure.
-*   Created the `lila.skin/guidelines` page to provide instructions on how to take photos for skin analysis.
-*   Initialized the project with Next.js, TypeScript, and Tailwind CSS.
-*   Created the initial file structure for the application.
-*   Updated the primary data source (`radhika.json`) to a more detailed, nested structure. The new structure includes a `concerns` object with detailed breakdowns for each concern, including regional scores and citations.
-*   Updated the `UserProfile` component to display a larger profile picture and the user's name, with a fallback to the user ID.
-*   Adjusted the text font color in `app/globals.css` to be slightly darker for better readability.
-*   Added dynamic social share titles to user dashboard pages.
-*   Removed the "Regional Breakdown" section from the main dashboard.
-*   Restored the descriptions on the concern cards.
-*   Removed the "Care Education" section from the concern detail page.
-*   Removed the "Possible Causes" section from the concern detail page.
-*   Implemented the "Recommendations" tab on the main dashboard, including a static version of the UI based on the Figma design.
-*   **Fixed Build Errors by Refactoring Data and Adding Softer Checks:**
-    *   Restructured the user data from a flat file structure in `data/` to a nested structure at `data/users/[userId]/analysis.json`.
-    *   Updated the data fetching logic in `app/dashboard/[userId]/page.tsx` to use the new, standardized directory structure.
-    *   Added defensive coding (optional chaining and default empty objects) to the `SkincareDashboard` and `SummaryOverview` components. This makes the UI more resilient to inconsistencies in older JSON files, preventing build failures.
+*   **Supabase Integration:**
+    *   The entire application was migrated to use a Supabase (PostgreSQL) database.
+    *   The database schema was defined in `schema.sql`, including tables for `users`, `products`, `skin_analyses`, and `recommendations`.
+    *   Data migration scripts were created to move product and user data from local files to the database.
+*   **Frontend Refactoring:**
+    *   The frontend was completely refactored to fetch data from Supabase using a server-side client (`lib/supabase/server.ts`).
+    *   The dashboard page at `app/dashboard/[userId]` is now fully dynamic and server-rendered.
+*   **Next.js 16 Upgrade:**
+    *   The application was upgraded from Next.js 15 to 16.0.3.
+    *   The codebase was updated to be compatible with the new async APIs (`cookies()` and `params`).
+    *   The application was migrated to use Next.js 16's Cache Components, with Suspense boundaries for loading states.
+*   **Debugging and Stabilization:**
+    *   Resolved a series of issues related to the Supabase integration, including data structure mismatches and incorrect data fetching logic.
+    *   Fixed rendering errors caused by the Next.js 16 upgrade.
 
 ## Next Steps
 
-*   **Remove Softer Data Checks:** Once all user JSON files are updated to a consistent, modern schema, refactor the UI components to remove the temporary defensive checks and enforce stricter data validation.
-*   **Dynamic Recommendations Tab**: Refactor the `RecommendationsTab` component to dynamically pull data from the user's JSON file.
-*   **Integrate Analysis Script:** Plan and implement a dynamic data pipeline that utilizes the new `scripts/analyse_skin.py` to process user images and generate analysis data.
-*   Refactor the UI components to align with the new data structure.
-*   Ensure all data is dynamically pulled from the JSON file with no hardcoded values.
-*   Verify that the application correctly displays the updated data, including the new `skin_age_range`.
-*   Build the user profile creation and display components.
-*   Implement the main dashboard layout.
+*   **User Authentication:** Implement a full user authentication system.
+*   **Dynamic Data Pipeline:** Integrate the AI scripts to create a dynamic pipeline for generating and storing skin analyses and recommendations.
+*   **User Profile Management:** Build out the UI and functionality for users to manage their profiles.

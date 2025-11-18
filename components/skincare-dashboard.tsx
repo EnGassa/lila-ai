@@ -34,9 +34,12 @@ interface Concern {
 
 export function SkincareDashboard({ analysis, recommendations, userId }: SkincareDashboardProps) {
   const [selectedConcern, setSelectedConcern] = useState<Concern | null>(null);
-  const { charts } = analysis;
+  
+  // Extract nested analysis and charts from the database structure
+  const analysisData = analysis.analysis || analysis;
+  const charts = analysis.charts || {};
 
-  const concerns: Concern[] = Object.entries(analysis.concerns || {}).map(
+  const concerns: Concern[] = Object.entries(analysisData.concerns || {}).map(
     ([key, value]: [string, any]) => ({
       name: key.charAt(0).toUpperCase() + key.slice(1),
       score: value.score_1_5,
@@ -54,7 +57,7 @@ export function SkincareDashboard({ analysis, recommendations, userId }: Skincar
           <TabsTrigger value="recommendations">Recommendation</TabsTrigger>
         </TabsList>
         <TabsContent value="overview" className="space-y-6">
-          <SummaryOverview analysis={analysis} charts={charts} />
+          <SummaryOverview analysis={analysisData} charts={charts} />
           <div className="p-4 rounded-lg bg-white">
             <h2 className="text-base font-light text-muted-foreground">
               SEVERITY RADAR

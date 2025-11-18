@@ -2,36 +2,20 @@
 
 ## What Works
 
-*   **Modular AI Scripts:** The AI-powered skin analysis and recommendation functionality is now split into three distinct scripts:
-    *   `scripts/skin_lib.py`: A shared library for common code.
-    *   `scripts/run_analysis.py`: Generates the skin analysis.
-    *   `scripts/generate_recommendations.py`: Generates recommendations from an analysis file.
-*   **AI Skin Analysis and Recommendation Script:** The Python script (`scripts/analyse_skin.py`) now generates both a detailed skin analysis and a personalized skincare routine with product recommendations.
-*   **AI Skin Analysis Script:** A functional Python script (`scripts/analyse_skin.py`) now exists that can take user images and generate a detailed, structured JSON analysis using `pydantic-ai` and various LLM providers.
-*   The `lila.skin/guidelines` page has been created with content and styling from the Figma design.
-*   The basic Next.js application is set up and running.
-*   The initial file structure is in place.
-*   A detailed, nested data structure for skin analysis has been defined in `radhika.json`.
-*   The `UserProfile` component now displays a larger profile picture and the user's name.
-*   The main dashboard has been updated to remove the "Regional Breakdown" section.
-*   The descriptions on the concern cards have been restored.
-*   The "Care Education" section has been removed from the concern detail page.
-*   The "Possible Causes" section has been removed from the concern detail page.
-*   The "Recommendations" tab has been implemented on the main dashboard with a static UI based on the Figma design.
+*   **Database Integration:** The application is now fully integrated with a Supabase (PostgreSQL) database, replacing the local JSON file system.
+*   **Data Migration:** Product, user, and skin analysis data has been successfully migrated to the database.
+*   **Frontend Refactoring:** The entire frontend has been refactored to fetch data from Supabase using a server-side client.
+*   **Next.js 16 Upgrade:** The application has been upgraded to Next.js 16, including the migration to Cache Components and the new async APIs.
+*   **Modular AI Scripts:** The AI-powered skin analysis and recommendation functionality is split into a modular, maintainable pipeline.
+*   **Dynamic Dashboard:** The user dashboard at `/dashboard/[userId]` is now fully dynamic, rendering data from the database for each user.
 
 ## What's Left to Build
 
-*   **Dynamic Recommendations Tab**: Refactor the `RecommendationsTab` component to dynamically pull data from the user's JSON file.
-*   **UI Refactor:** Complete the refactoring of all UI components to consume data from the new nested JSON structure.
 *   **User Authentication:** Implement a full user authentication system, including sign-up, login, and session management.
 *   **User Profile Management:** Build out the UI and functionality for users to create, view, and edit their profiles.
-*   **Dynamic Data Pipeline:** Replace the static JSON file data source with a dynamic data pipeline that integrates the new `scripts/analyse_skin.py` to process user images and generate analysis data on the fly.
-*   **Product Recommendation Engine:** Design and implement the product recommendation engine, including the UI to display recommendations.
+*   **Dynamic Data Pipeline:** Integrate the `scripts/run_analysis.py` and `scripts/generate_recommendations.py` scripts into a dynamic pipeline to process user images and generate analysis data on the fly.
 *   **Progress Tracking:** Develop features for users to track their skin progress over time, including data visualization components.
-*   **Recommendations Tab:** Implement the "Recommendations" tab on the dashboard, which is currently hidden.
 
 ## Known Issues
 
-*   **Technical Debt - Softer Data Checks:** The UI components (`SkincareDashboard`, `SummaryOverview`) have been modified with defensive code (optional chaining, default empty objects) to handle inconsistencies in older user data JSON files. This prevents build failures but masks underlying data quality issues. These softer checks should be removed once all data files are migrated to the latest, consistent schema.
-*   The UI is currently out of sync with the data model and requires a full refactor.
-*   The application may be experiencing caching issues that prevent the latest data from being displayed.
+*   There are no known issues at this time.

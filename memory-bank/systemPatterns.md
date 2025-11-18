@@ -2,17 +2,19 @@
 
 ## Architecture
 
-*   **Frontend:** A Next.js application using TypeScript and React.
+*   **Frontend:** A Next.js 16 application using TypeScript and React.
+*   **Backend:** Supabase (PostgreSQL) for data storage.
 *   **Styling:** Tailwind CSS for styling, with a component library for UI elements.
-*   **State Management:** React Context or a similar lightweight state management solution.
-*   **Data Fetching:** Data is read from local JSON files at build time using Next.js's Static Site Generation (SSG) capabilities.
+*   **State Management:** React Context and Server Components.
+*   **Data Fetching:** Server-side data fetching from Supabase using a dedicated server client (`lib/supabase/server.ts`).
 
 ## Key Technical Decisions
 
+*   **Database Integration:** The application has been migrated from a local JSON file-based data source to a full database-backed system using Supabase.
+*   **Server-Side Rendering (SSR):** The application now uses server-side rendering to fetch data from Supabase on every request, ensuring the data is always up-to-date.
+*   **Cache Components:** The application has been upgraded to use Next.js 16's Cache Components, with Suspense boundaries for handling loading states.
+*   **Session Management:** A `proxy.ts` file (formerly `middleware.ts`) is used to manage user sessions and refresh auth tokens.
 *   **Centralized Logging:** The Python scripts use a centralized logging system configured in the `skin_lib.py` shared library. This system uses `loguru` to provide detailed, colored console output and structured logging to a rotating file (`logs/ai_scripts.log`).
-*   **Component-Based Architecture:** The UI will be built using a modular, component-based architecture to promote reusability and maintainability.
-*   **Static Site Generation (SSG):** Next.js is used for its SSG capabilities to pre-render pages at build time, resulting in fast load times and improved SEO.
-*   **Local Data:** The application currently uses local JSON files as its data source, with no external API integration.
 
 ## AI and Data Processing
 

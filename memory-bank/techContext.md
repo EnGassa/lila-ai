@@ -3,12 +3,15 @@
 ## Technologies
 
 *   **Language:** TypeScript
-*   **Framework:** Next.js
+*   **Framework:** Next.js v16
+*   **Database:** Supabase (PostgreSQL)
 *   **UI Library:** React, with a component library built on Radix UI (likely via `shadcn/ui`).
 *   **Styling:** Tailwind CSS
+*   **Key Libraries:**
+    *   `@supabase/ssr` and `@supabase/supabase-js` for database interaction.
+    *   `recharts` for data visualization.
+    *   `react-hook-form` for form management.
 *   **Logging:** Loguru
-*   **Charting:** Recharts
-*   **Form Management:** React Hook Form with Zod for validation
 *   **Package Manager:** pnpm
 
 ## Development Setup
