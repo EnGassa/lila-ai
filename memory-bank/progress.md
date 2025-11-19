@@ -8,6 +8,7 @@
 *   **Next.js 16 Upgrade:** The application has been upgraded to Next.js 16, including the migration to Cache Components and the new async APIs.
 *   **Modular AI Scripts:** The AI-powered skin analysis and recommendation functionality is split into a modular, maintainable pipeline.
 *   **Dynamic Dashboard:** The user dashboard at `/dashboard/[userId]` is now fully dynamic, rendering data from the database for each user.
+*   **Project Management:** Implemented GitHub MCP integration to manage project backlog and tasks using GitHub Issues.
 
 ## What's Left to Build
 

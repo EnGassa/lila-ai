@@ -19,6 +19,10 @@
 *   **Local Environment:** A local development server will be run using `pnpm dev`.
 *   **Version Control:** Git will be used for version control, with a repository hosted on GitHub.
 *   **Code Quality:** ESLint and Prettier will be used to enforce code quality and consistency.
+*   **Project Management:**
+    *   **Tool:** GitHub Issues (via GitHub MCP).
+    *   **Requirement:** The project backlog and tasks must be managed using GitHub Issues.
+    *   **Instruction:** Always use the GitHub MCP to read and manage issues. If the GitHub MCP is not available or connected, instruct the user to set it up immediately.
 
 ## Dependencies
 

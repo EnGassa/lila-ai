@@ -20,6 +20,8 @@
 *   **Debugging and Stabilization:**
     *   Resolved a series of issues related to the Supabase integration, including data structure mismatches and incorrect data fetching logic.
     *   Fixed rendering errors caused by the Next.js 16 upgrade.
+*   **Project Management:**
+    *   Implemented the GitHub MCP to manage the project backlog and tasks as GitHub issues.
 
 ## Next Steps
 
