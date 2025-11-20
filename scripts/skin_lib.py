@@ -9,6 +9,8 @@ import os
 import sys
 from typing import Any, Dict, List, Optional, Literal
 from loguru import logger
+from dotenv import load_dotenv
+from supabase import create_client, Client
 
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent
@@ -168,6 +170,19 @@ def setup_logger():
         serialize=True, # for structured logging
     )
     return logger
+
+def get_supabase_client() -> Client:
+    """Initialize and return a Supabase client."""
+    load_dotenv('.env.local')
+    
+    supabase_url = os.getenv('NEXT_PUBLIC_SUPABASE_URL')
+    # Prioritize Service Role Key for backend scripts to bypass RLS, fallback to Anon Key
+    supabase_key = os.getenv('SUPABASE_SERVICE_ROLE_KEY') or os.getenv('NEXT_PUBLIC_SUPABASE_ANON_KEY')
+
+    if not supabase_url or not supabase_key:
+        raise ValueError("Missing Supabase credentials in .env.local")
+
+    return create_client(supabase_url, supabase_key)
 
 def distill_analysis_for_prompt(analysis_data: dict) -> str:
     """

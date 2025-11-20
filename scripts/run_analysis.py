@@ -4,7 +4,8 @@
 # dependencies = [
 #     "pydantic-ai",
 #     "python-dotenv",
-#     "loguru"
+#     "loguru",
+#     "supabase"
 # ]
 # ///
 """
@@ -31,6 +32,7 @@ from skin_lib import (
     load_json_context,
     load_system_prompt,
     setup_logger,
+    get_supabase_client
 )
 
 # Load environment variables from .env file
@@ -54,6 +56,11 @@ def main():
         nargs="+",
         required=True,
         help="One or more paths to input images or directories.",
+    )
+    parser.add_argument(
+        "--user-id",
+        type=str,
+        help="The user ID to save the analysis for in the database.",
     )
     parser.add_argument(
         "--context-file",
@@ -161,12 +168,41 @@ def main():
 
     output_json = json.dumps(output_data, indent=2)
 
+    # --- Database Saving ---
+    if args.user_id:
+        try:
+            logger.info(f"Saving analysis to Supabase for user {args.user_id}...")
+            supabase = get_supabase_client()
+            
+            # Check if analysis already exists for this user
+            existing = supabase.table('skin_analyses').select('id').eq('user_id', args.user_id).execute()
+            
+            if existing.data:
+                analysis_id = existing.data[0]['id']
+                logger.info(f"Updating existing analysis {analysis_id}...")
+                supabase.table('skin_analyses').update({
+                    'analysis_data': output_data
+                }).eq('id', analysis_id).execute()
+            else:
+                logger.info("Inserting new analysis...")
+                supabase.table('skin_analyses').insert({
+                    'user_id': args.user_id,
+                    'analysis_data': output_data
+                }).execute()
+                
+            logger.success(f"Successfully saved analysis for user {args.user_id} to Supabase.")
+            
+        except Exception as e:
+            logger.error(f"Failed to save to database: {e}")
+            # Don't exit, still try to save to file/stdout
+
     if args.output:
         logger.info(f"Saving output to {args.output}...")
         with open(args.output, "w", encoding="utf-8") as f:
             f.write(output_json)
         logger.success(f"Successfully saved JSON output to {args.output}")
-    else:
+    elif not args.user_id:
+        # Only print to stdout if not saving to DB or file (avoid cluttering logs in automated runs)
         logger.info("Printing output to stdout.")
         print("\n--- Model Output ---")
         print(output_json)

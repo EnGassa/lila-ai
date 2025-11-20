@@ -5,8 +5,9 @@
 #     "pydantic-ai",
 #     "python-dotenv",
 #     "sentence-transformers",
-#     "faiss-cpu",
-#     "loguru"
+#     "loguru",
+#     "supabase",
+#     "numpy"
 # ]
 # ///
 """
@@ -20,7 +21,6 @@ import sys
 import traceback
 import time
 import numpy as np
-import faiss
 from sentence_transformers import SentenceTransformer
 
 from dotenv import load_dotenv
@@ -30,9 +30,9 @@ from skin_lib import (
     Recommendations,
     create_agent,
     distill_analysis_for_prompt,
-    load_product_catalog,
     load_system_prompt,
     setup_logger,
+    get_supabase_client
 )
 
 # Load environment variables from .env file
@@ -42,17 +42,16 @@ load_dotenv()
 logger = setup_logger()
 
 
-def find_relevant_products(analysis_data: dict, product_catalog: list, top_k: int = 10) -> list:
+def find_relevant_products_db(analysis_data: dict, top_k: int = 15) -> list:
     """
-    Finds the most relevant products from the catalog based on the analysis.
+    Finds the most relevant products from the Supabase DB using embeddings.
     """
-    logger.info(f"Starting product retrieval for top {top_k} products.")
+    logger.info(f"Starting product retrieval for top {top_k} products...")
     start_time = time.time()
-
-    # 1. Create a detailed query string from the analysis
+    
+    # 1. Create query string
     analysis = analysis_data.get("analysis", {})
     skin_type = analysis.get("skin_type", {}).get("label", "unknown")
-    
     query_parts = [f"Skincare for {skin_type} skin."]
     
     top_concerns = analysis.get("top_concerns", [])
@@ -65,54 +64,78 @@ def find_relevant_products(analysis_data: dict, product_catalog: list, top_k: in
             if concern_info:
                 rationale = concern_info.get('rationale_plain', '')
                 query_parts.append(f"- {concern_name.replace('_', ' ').title()}: {rationale}")
-
+    
     query = " ".join(query_parts)
     logger.debug(f"Generated search query: {query}")
 
-    # 2. Create rich embeddings for the product catalog
-    logger.info("Generating embeddings for product catalog...")
-    product_texts = []
-    for p in product_catalog:
-        parts = [
-            f"Product: {p.get('brand', '')} {p.get('name', '')}",
-            f"Category: {p.get('category', 'N/A')}",
-            f"Description: {p.get('description', '') or p.get('metadata', {}).get('details_blurb', '')}"
-        ]
-        actives = p.get('actives', [])
-        if actives:
-            active_ingredients = sorted(list(set([a['inci'] for a in actives])))
-            parts.append(f"Key Actives: {', '.join(active_ingredients)}")
-        
-        product_texts.append(". ".join(parts))
-    
+    # 2. Embed query
     model = SentenceTransformer('all-MiniLM-L6-v2')
-    product_embeddings = model.encode(product_texts, convert_to_tensor=True)
-    logger.success("Product embeddings generated.")
+    query_embedding = model.encode(query) # shape (384,)
+    
+    # 3. Fetch products + embeddings from DB
+    supabase = get_supabase_client()
+    # Removed 'description' as it is not in the schema
+    response = supabase.table('products').select('id, name, brand, category, metadata, ingredients, embedding').not_.is_('embedding', 'null').execute()
+    products = response.data
+    
+    if not products:
+        logger.warning("No products found in database with embeddings.")
+        return []
 
-    # 3. Create a FAISS index
-    logger.info("Building FAISS index...")
-    index = faiss.IndexFlatL2(product_embeddings.shape[1])
-    index.add(product_embeddings.cpu().detach().numpy())
-    logger.success("FAISS index built.")
+    # 4. Calculate Similarities (in-memory cosine similarity)
+    # Parse embeddings from list/string to numpy array
+    embeddings = []
+    valid_products = []
+    
+    for p in products:
+        emb = p.get('embedding')
+        if emb:
+            try:
+                if isinstance(emb, str):
+                     emb = json.loads(emb)
+                embeddings.append(emb)
+                valid_products.append(p)
+            except:
+                continue
+    
+    if not embeddings:
+        return []
 
-    # 4. Embed the query and search the index
-    logger.info("Performing semantic search...")
-    query_embedding = model.encode([query], convert_to_tensor=True)
-    _, top_indices = index.search(query_embedding.cpu().detach().numpy(), top_k)
-    logger.success("Semantic search complete.")
-
-    # 5. Return the top_k most relevant products
-    relevant_products = [product_catalog[i] for i in top_indices[0]]
+    # Stack into matrix (N, D)
+    product_matrix = np.array(embeddings)
+    
+    # Normalize query and product vectors for cosine similarity
+    # norm(v) = sqrt(sum(v^2))
+    query_norm = np.linalg.norm(query_embedding)
+    product_norms = np.linalg.norm(product_matrix, axis=1)
+    
+    # Avoid division by zero
+    product_norms[product_norms == 0] = 1e-9
+    if query_norm == 0: query_norm = 1e-9
+    
+    # Cosine Sim = (A . B) / (|A| * |B|)
+    similarities = np.dot(product_matrix, query_embedding) / (product_norms * query_norm)
+    
+    # 5. Get Top K
+    # argsort returns indices that would sort the array (ascending), so take last k and reverse
+    top_indices = np.argsort(similarities)[-top_k:][::-1]
+    
+    relevant_products = []
+    for i in top_indices:
+        p = valid_products[i]
+        # Clean up embedding from output to save space
+        if 'embedding' in p:
+            del p['embedding']
+        relevant_products.append(p)
+        
     end_time = time.time()
     logger.success(f"Found {len(relevant_products)} relevant products in {end_time - start_time:.2f} seconds.")
-    logger.debug(f"Relevant product IDs: {[p.get('product_id') for p in relevant_products]}")
-    
     return relevant_products
 
 def main():
     """Main function to generate recommendations."""
     parser = argparse.ArgumentParser(
-        description="Generate skin care recommendations from an analysis file."
+        description="Generate skin care recommendations from an analysis."
     )
     parser.add_argument(
         "--model",
@@ -121,16 +144,10 @@ def main():
         help="The model to use (e.g., 'google:gemini-1.5-pro', 'openai:gpt-4o').",
     )
     parser.add_argument(
-        "--analysis-file",
+        "--user-id",
         type=str,
         required=True,
-        help="Path to the JSON file containing the skin analysis.",
-    )
-    parser.add_argument(
-        "--product-catalog",
-        type=str,
-        default="data/products.jsonl",
-        help="Path to the product catalog JSONL file.",
+        help="The user ID to fetch analysis for and save recommendations to.",
     )
     parser.add_argument(
         "--recommendation-prompt",
@@ -141,7 +158,7 @@ def main():
     parser.add_argument(
         "--output",
         type=str,
-        help="Optional path to save the output JSON. Prints to stdout if not provided.",
+        help="Optional path to save the output JSON.",
     )
     parser.add_argument(
         "--reasoning-effort",
@@ -155,23 +172,30 @@ def main():
         help="API key for the LLM provider. Overrides environment variables.",
     )
     args = parser.parse_args()
-    logger.info(f"Starting recommendations generation with arguments: {args}")
+    logger.info(f"Starting recommendations generation for User: {args.user_id}")
 
-    # --- Load Data ---
-    logger.info(f"Loading analysis data from {args.analysis_file}...")
-    try:
-        with open(args.analysis_file, "r", encoding="utf-8") as f:
-            analysis_data = json.load(f)
-    except (IOError, json.JSONDecodeError) as e:
-        logger.error(f"Error reading or parsing analysis file {args.analysis_file}: {e}")
+    # --- Load Data from DB ---
+    supabase = get_supabase_client()
+    
+    # Fetch latest analysis for user
+    logger.info(f"Fetching analysis for user {args.user_id}...")
+    analysis_response = supabase.table('skin_analyses').select('*').eq('user_id', args.user_id).order('created_at', desc=True).limit(1).execute()
+    
+    if not analysis_response.data:
+        logger.error(f"No skin analysis found for user {args.user_id}.")
         sys.exit(1)
-    logger.success("Analysis data loaded.")
+        
+    # The 'analysis_data' column contains the JSON blob we need
+    full_analysis_record = analysis_response.data[0]
+    analysis_id = full_analysis_record['id']
+    analysis_data = full_analysis_record['analysis_data']
+    
+    logger.success(f"Loaded analysis {analysis_id}.")
 
     recommendation_prompt = load_system_prompt(args.recommendation_prompt)
-    product_catalog = load_product_catalog(args.product_catalog)
 
     # --- Find Relevant Products ---
-    relevant_products = find_relevant_products(analysis_data, product_catalog)
+    relevant_products = find_relevant_products_db(analysis_data)
 
     # --- Construct User Message ---
     logger.info("Constructing payload for LLM...")
@@ -208,15 +232,32 @@ def main():
     output_data = recommendation_result.output.model_dump()
     output_json = json.dumps(output_data, indent=2)
 
+    # --- Save to DB ---
+    try:
+        logger.info(f"Saving recommendations to Supabase for analysis {analysis_id}...")
+        
+        # Check if recommendations already exist for this analysis
+        # Upsert is cleaner
+        supabase.table('recommendations').upsert({
+            'skin_analysis_id': analysis_id,
+            'recommendations_data': output_data
+        }, on_conflict='skin_analysis_id').execute()
+        
+        logger.success(f"Successfully saved recommendations to Supabase.")
+        
+    except Exception as e:
+        logger.error(f"Failed to save to database: {e}")
+
     if args.output:
         logger.info(f"Saving output to {args.output}...")
         with open(args.output, "w", encoding="utf-8") as f:
             f.write(output_json)
         logger.success(f"Successfully saved JSON output to {args.output}")
     else:
-        logger.info("Printing output to stdout.")
-        print("\n--- Model Output ---")
-        print(output_json)
+        # Optional: print to stdout if user wants to see it
+        # logger.info("Printing output to stdout.")
+        # print(output_json)
+        pass
 
 if __name__ == "__main__":
     try:

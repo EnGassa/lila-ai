@@ -2,27 +2,26 @@
 
 ## Current Focus
 
-*   The project has just completed a major architectural overhaul, migrating from a local JSON file-based system to a full-stack application with a Supabase backend. The current focus is on ensuring the stability of the new architecture and planning the next phase of development.
+*   **Beta Launch Preparation:** The primary focus is enabling a manual beta program where users submit photos, and the system generates personalized skin analysis and recommendations.
+*   **AI Pipeline Integration:** Integrating the AI analysis and recommendation scripts directly with the Supabase database to automate the workflow.
 
 ## Recent Changes
 
+*   **Beta Onboarding Automation:**
+    *   Created `scripts/onboard_beta_user.py`: A master script that creates a user in Supabase, runs the skin analysis, and generates recommendations in a single command.
+    *   Updated `scripts/run_analysis.py`: Now accepts a `user_id` and saves the analysis output directly to the `skin_analyses` table in Supabase.
+    *   Updated `scripts/generate_recommendations.py`: Now fetches analysis data from the database, performs product retrieval using DB embeddings, and saves recommendations to the `recommendations` table.
+*   **Product Embeddings:**
+    *   Created and ran `scripts/generate_embeddings.py` to populate the `embedding` column in the `products` table using `sentence-transformers` (all-MiniLM-L6-v2).
+*   **Frontend Updates:**
+    *   Wired up the `RecommendationsTab` component (`components/recommendations-tab.tsx`) to display real recommendation data fetched from the database.
+    *   The component now renders the AM, PM, and Weekly routines dynamically based on the AI output.
 *   **Supabase Integration:**
-    *   The entire application was migrated to use a Supabase (PostgreSQL) database.
-    *   The database schema was defined in `schema.sql`, including tables for `users`, `products`, `skin_analyses`, and `recommendations`.
-    *   Data migration scripts were created to move product and user data from local files to the database.
-*   **Frontend Refactoring:**
-    *   The frontend was completely refactored to fetch data from Supabase using a server-side client (`lib/supabase/server.ts`).
-    *   The dashboard page at `app/dashboard/[userId]` is now fully dynamic and server-rendered.
-*   **Next.js 16 Upgrade:**
-    *   The application was upgraded from Next.js 15 to 16.0.3.
-    *   The codebase was updated to be compatible with the new async APIs (`cookies()` and `params`).
-    *   The application was migrated to use Next.js 16's Cache Components, with Suspense boundaries for loading states.
-*   **Debugging and Stabilization:**
-    *   Resolved a series of issues related to the Supabase integration, including data structure mismatches and incorrect data fetching logic.
-    *   Fixed rendering errors caused by the Next.js 16 upgrade.
-*   **Project Management:**
-    *   Implemented the GitHub MCP to manage the project backlog and tasks as GitHub issues.
+    *   Updated `scripts/skin_lib.py` to include a shared `get_supabase_client()` helper for all Python scripts.
 
 ## Next Steps
 
-*   The project's backlog and active tasks are managed exclusively in GitHub Issues. Please refer to the repository's issues tab for the most up-to-date information on the development roadmap and current work.
+*   **Run Beta Onboarding:** Use the `onboard_beta_user.py` script to onboard the initial batch of beta users.
+*   **User Feedback:** Monitor user feedback from the beta to identify areas for improvement in both the AI analysis and the UI.
+*   **GitHub Issues:** Update and close issues related to the beta launch preparation.
+*   **Commit Changes:** Commit all the recent work to the repository.
