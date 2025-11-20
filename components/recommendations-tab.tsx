@@ -25,30 +25,17 @@ interface Routine {
   weekly?: Step[];
 }
 
-interface Recommendations {
-  routine: Routine;
+interface KeyIngredient {
+  name: string;
+  description: string;
+  concerns: string[];
+  image_url?: string;
 }
 
-const ingredients = [
-  {
-    name: "Salicylic Acid 1.5-2%",
-    description: "Unclogs pores and removes oil and debris.",
-    concerns: ["Unclog oily pores", "Remove blackheads"],
-    image: "/ingredients/ingredient-placeholder.png"
-  },
-  {
-    name: "Niacinamide 5-10%",
-    description: "Improves skin barrier and reduces redness.",
-    concerns: ["Reduce redness", "Improve texture"],
-    image: "/ingredients/ingredient-placeholder.png"
-  },
-  {
-    name: "Hyaluronic Acid",
-    description: "Hydrates and plumps the skin.",
-    concerns: ["Hydration", "Plumping"],
-    image: "/ingredients/ingredient-placeholder.png"
-  },
-];
+interface Recommendations {
+  key_ingredients: KeyIngredient[];
+  routine: Routine;
+}
 
 const products = [
   {
@@ -119,32 +106,33 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
 
   return (
     <div className="space-y-6">
-      <InfoCard
-        label="YOUR PERSONALIZED ROUTINE"
-        value={
-          <p className="text-sm font-light text-muted-foreground">
-            Based on your skin analysis, here is a tailored routine to address your specific concerns.
-          </p>
-        }
-        className="col-span-1 sm:col-span-2 text-center"
-      />
-
-      {/* Ingredients Section Hidden for Beta
       <div>
         <h2 className="text-base font-light text-muted-foreground p-4 bg-white rounded-t-lg">
           KEY INGREDIENTS FOR YOUR CONCERNS
         </h2>
         <div className="flex space-x-4 overflow-x-auto p-4 bg-white rounded-b-lg">
-          {ingredients.map((ingredient, index) => (
+          {recommendations.key_ingredients.map((ingredient, index) => (
             <Card key={index} className="min-w-[280px] shadow-sm border">
               <CardContent className="p-4">
-                ...
+                <div className="flex items-center gap-4">
+                  <img src={ingredient.image_url || "/ingredients/ingredient-placeholder.png"} alt={ingredient.name} className="w-16 h-16 rounded-md object-cover" />
+                  <div>
+                    <h3 className="font-bold text-base text-[#1C1B1F]">{ingredient.name}</h3>
+                    <p className="text-sm text-muted-foreground mt-1">{ingredient.description}</p>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {ingredient.concerns.map((concern, cIndex) => (
+                      <Badge key={cIndex} variant="secondary">{concern}</Badge>
+                    ))}
+                  </div>
+                </div>
               </CardContent>
             </Card>
           ))}
         </div>
       </div>
-      */}
 
       <div>
         <h2 className="text-base font-light text-muted-foreground p-4 bg-white rounded-t-lg">

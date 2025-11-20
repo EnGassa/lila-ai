@@ -27,7 +27,25 @@ export async function Dashboard({ params }: { params: Promise<{ userId: string }
     .single();
 
   // Extract the recommendations data from the JSONB column
-  const recommendationsData = recommendationsRecord?.recommendations_data || null;
+  let recommendationsData = recommendationsRecord?.recommendations_data || null;
+
+  // If we have recommendations and key ingredients, enrich them with image URLs
+  if (recommendationsData && recommendationsData.key_ingredients) {
+    const ingredientNames = recommendationsData.key_ingredients.map((ing: any) => ing.name);
+    
+    const { data: ingredientsDetails } = await supabase
+      .from('ingredients')
+      .select('name, image_url')
+      .in('name', ingredientNames);
+
+    if (ingredientsDetails) {
+      const imageUrlMap = new Map(ingredientsDetails.map(ing => [ing.name, ing.image_url]));
+      recommendationsData.key_ingredients = recommendationsData.key_ingredients.map((ing: any) => ({
+        ...ing,
+        image_url: imageUrlMap.get(ing.name) || null,
+      }));
+    }
+  }
 
   return <SkincareDashboard analysis={analysisData} recommendations={recommendationsData} userId={userId} />;
 }

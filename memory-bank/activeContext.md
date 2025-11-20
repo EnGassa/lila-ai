@@ -13,6 +13,13 @@
     *   Updated `scripts/generate_recommendations.py`: Now fetches analysis data from the database, performs product retrieval using DB embeddings, and saves recommendations to the `recommendations` table.
 *   **Product Embeddings:**
     *   Created and ran `scripts/generate_embeddings.py` to populate the `embedding` column in the `products` table using `sentence-transformers` (all-MiniLM-L6-v2).
+*   **Key Ingredients Feature:**
+    *   Re-implemented the "Key Ingredients" section in the UI.
+    *   Updated the `Recommendations` Pydantic model in `scripts/skin_lib.py` to include a `key_ingredients` field.
+    *   Modified `prompts/02_generate_recommendations_prompt.md` to instruct the LLM to populate the new field.
+    *   Updated `scripts/generate_recommendations.py` to pass the necessary data to the LLM.
+    *   Modified `app/dashboard/[userId]/components/dashboard.tsx` to fetch ingredient image URLs from the database.
+    *   Updated `components/recommendations-tab.tsx` to display the key ingredients with horizontal scrolling and dynamic images.
 *   **Frontend Updates:**
     *   Wired up the `RecommendationsTab` component (`components/recommendations-tab.tsx`) to display real recommendation data fetched from the database.
     *   The component now renders the AM, PM, and Weekly routines dynamically based on the AI output.

@@ -130,7 +130,27 @@ class FullSkinAnalysis(BaseModel):
     charts: Charts
     audit: Audit
 
+class Ingredient(BaseModel):
+    id: str
+    name: str
+    what_it_does: Optional[List[str]] = None
+    description: Optional[str] = None
+    cosing_info: Optional[Dict[str, Any]] = None
+    source_url: str
+    our_take: Optional[str] = None
+    quick_facts: Optional[List[str]] = None
+    image_url: Optional[str] = None
+    embedding: Optional[List[float]] = None
+    created_at: str
+    updated_at: str
+
 # --- Pydantic Output Models for Recommendations ---
+
+class KeyIngredient(BaseModel):
+    name: str = Field(..., description="The name of the key ingredient.")
+    description: str = Field(..., description="A brief description of what the ingredient does.")
+    concerns: List[str] = Field(..., description="List of concerns this ingredient helps address.")
+    image_url: Optional[str] = Field(None, description="The URL of the ingredient image.")
 
 class ProductRecommendation(BaseModel):
     product_id: str = Field(..., description="The unique identifier for the product.")
@@ -149,6 +169,7 @@ class Routine(BaseModel):
     weekly: Optional[List[RoutineStep]] = Field(None, description="Optional weekly treatments like masks or exfoliants.")
 
 class Recommendations(BaseModel):
+    key_ingredients: List[KeyIngredient]
     routine: Routine
     general_advice: List[str]
 

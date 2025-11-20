@@ -13,7 +13,8 @@
 """
 generate_recommendations.py
 
-A script to generate skin care recommendations based on a skin analysis report.
+A script to generate skin care recommendations based on a skin analysis report
+using a two-step RAG process.
 """
 import argparse
 import json
@@ -22,12 +23,14 @@ import traceback
 import time
 import numpy as np
 from sentence_transformers import SentenceTransformer
+from typing import List, Dict, Any
 
 from dotenv import load_dotenv
 from pydantic_ai import Agent
 
 from skin_lib import (
     Recommendations,
+    Ingredient,
     create_agent,
     distill_analysis_for_prompt,
     load_system_prompt,
@@ -41,15 +44,49 @@ load_dotenv()
 # Setup logger instance to be used throughout the script
 logger = setup_logger()
 
-
-def find_relevant_products_db(analysis_data: dict, top_k: int = 15) -> list:
+def load_data_from_db(table_name: str, columns: str) -> List[Dict[str, Any]]:
     """
-    Finds the most relevant products from the Supabase DB using embeddings.
+    Generic function to fetch data from a Supabase table and parse string embeddings.
     """
-    logger.info(f"Starting product retrieval for top {top_k} products...")
-    start_time = time.time()
+    logger.info(f"Loading {table_name} from database...")
+    supabase = get_supabase_client()
+    response = supabase.table(table_name).select(columns).not_.is_('embedding', 'null').execute()
+    data = response.data
     
-    # 1. Create query string
+    if not data:
+        logger.warning(f"No data found in {table_name} with embeddings.")
+        return []
+    
+    # Parse string representation of embeddings into lists of floats
+    for item in data:
+        emb_str = item.get('embedding')
+        if isinstance(emb_str, str):
+            try:
+                # The string looks like '[...]', which is valid JSON
+                item['embedding'] = json.loads(emb_str)
+            except json.JSONDecodeError:
+                logger.warning(f"Could not parse embedding for item {item.get('id')} in {table_name}.")
+                item['embedding'] = None # Or handle as an error
+    
+    # Filter out items where embedding could not be parsed
+    parsed_data = [item for item in data if item.get('embedding') is not None]
+    
+    logger.success(f"Successfully loaded and parsed {len(parsed_data)} items from {table_name}.")
+    return parsed_data
+
+def calculate_similarity(query_embedding: np.ndarray, item_embeddings: np.ndarray) -> np.ndarray:
+    """Calculates cosine similarity between a query and a matrix of item embeddings."""
+    query_norm = np.linalg.norm(query_embedding)
+    item_norms = np.linalg.norm(item_embeddings, axis=1)
+    
+    # Avoid division by zero
+    item_norms[item_norms == 0] = 1e-9
+    if query_norm == 0: query_norm = 1e-9
+    
+    return np.dot(item_embeddings, query_embedding) / (item_norms * query_norm)
+
+def generate_analysis_query(analysis_data: dict) -> str:
+    """Generates a descriptive query string from the skin analysis data."""
     analysis = analysis_data.get("analysis", {})
     skin_type = analysis.get("skin_type", {}).get("label", "unknown")
     query_parts = [f"Skincare for {skin_type} skin."]
@@ -65,67 +102,65 @@ def find_relevant_products_db(analysis_data: dict, top_k: int = 15) -> list:
                 rationale = concern_info.get('rationale_plain', '')
                 query_parts.append(f"- {concern_name.replace('_', ' ').title()}: {rationale}")
     
-    query = " ".join(query_parts)
-    logger.debug(f"Generated search query: {query}")
+    return " ".join(query_parts)
 
-    # 2. Embed query
-    model = SentenceTransformer('all-MiniLM-L6-v2')
-    query_embedding = model.encode(query) # shape (384,)
+def find_relevant_ingredients(analysis_data: dict, ingredients: List[Dict[str, Any]], model: SentenceTransformer, top_k: int = 10) -> List[Dict[str, Any]]:
+    """
+    Step 1: Finds the most relevant ingredients based on the skin analysis.
+    """
+    logger.info(f"Step 1: Starting concern-to-ingredient retrieval for top {top_k}...")
+    start_time = time.time()
     
-    # 3. Fetch products + embeddings from DB
-    supabase = get_supabase_client()
-    # Removed 'description' as it is not in the schema
-    response = supabase.table('products').select('id, name, brand, category, metadata, ingredients, embedding').not_.is_('embedding', 'null').execute()
-    products = response.data
+    query = generate_analysis_query(analysis_data)
+    logger.debug(f"Generated ingredient search query: {query}")
+    query_embedding = model.encode(query)
     
-    if not products:
-        logger.warning("No products found in database with embeddings.")
-        return []
+    ingredient_embeddings = np.array([ing['embedding'] for ing in ingredients])
+    
+    similarities = calculate_similarity(query_embedding, ingredient_embeddings)
+    top_indices = np.argsort(similarities)[-top_k:][::-1]
+    
+    relevant_ingredients = [ingredients[i] for i in top_indices]
+    
+    end_time = time.time()
+    logger.success(f"Found {len(relevant_ingredients)} relevant ingredients in {end_time - start_time:.2f} seconds.")
+    return relevant_ingredients
 
-    # 4. Calculate Similarities (in-memory cosine similarity)
-    # Parse embeddings from list/string to numpy array
-    embeddings = []
-    valid_products = []
-    
-    for p in products:
-        emb = p.get('embedding')
-        if emb:
-            try:
-                if isinstance(emb, str):
-                     emb = json.loads(emb)
-                embeddings.append(emb)
-                valid_products.append(p)
-            except:
-                continue
-    
-    if not embeddings:
-        return []
 
-    # Stack into matrix (N, D)
-    product_matrix = np.array(embeddings)
+def find_relevant_products_two_step(analysis_data: dict, top_ingredients: List[Dict[str, Any]], products: List[Dict[str, Any]], model: SentenceTransformer, top_k: int = 15) -> list:
+    """
+    Step 2: Finds the most relevant products using an enriched query from the analysis and top ingredients.
+    """
+    logger.info(f"Step 2: Starting ingredient-to-product retrieval for top {top_k}...")
+    start_time = time.time()
     
-    # Normalize query and product vectors for cosine similarity
-    # norm(v) = sqrt(sum(v^2))
-    query_norm = np.linalg.norm(query_embedding)
-    product_norms = np.linalg.norm(product_matrix, axis=1)
+    # 1. Create enriched query
+    base_query = generate_analysis_query(analysis_data)
+    ingredient_descriptors = []
+    for ing in top_ingredients:
+        desc = f"{ing['name']}"
+        if ing.get('what_it_does'):
+            desc += f" which helps with {', '.join(ing['what_it_does'])}"
+        ingredient_descriptors.append(desc)
     
-    # Avoid division by zero
-    product_norms[product_norms == 0] = 1e-9
-    if query_norm == 0: query_norm = 1e-9
+    enriched_query = base_query + " The ideal products should contain ingredients like: " + ", ".join(ingredient_descriptors)
+    logger.debug(f"Generated enriched product search query: {enriched_query}")
+
+    # 2. Embed enriched query
+    query_embedding = model.encode(enriched_query)
     
-    # Cosine Sim = (A . B) / (|A| * |B|)
-    similarities = np.dot(product_matrix, query_embedding) / (product_norms * query_norm)
+    # 3. Calculate Similarities
+    product_embeddings = np.array([p['embedding'] for p in products])
+    similarities = calculate_similarity(query_embedding, product_embeddings)
     
-    # 5. Get Top K
-    # argsort returns indices that would sort the array (ascending), so take last k and reverse
+    # 4. Get Top K
     top_indices = np.argsort(similarities)[-top_k:][::-1]
     
     relevant_products = []
     for i in top_indices:
-        p = valid_products[i]
-        # Clean up embedding from output to save space
+        p = products[i]
         if 'embedding' in p:
-            del p['embedding']
+            del p['embedding'] # Clean up for smaller payload to LLM
         relevant_products.append(p)
         
     end_time = time.time()
@@ -137,47 +172,27 @@ def main():
     parser = argparse.ArgumentParser(
         description="Generate skin care recommendations from an analysis."
     )
-    parser.add_argument(
-        "--model",
-        type=str,
-        required=True,
-        help="The model to use (e.g., 'google:gemini-1.5-pro', 'openai:gpt-4o').",
-    )
-    parser.add_argument(
-        "--user-id",
-        type=str,
-        required=True,
-        help="The user ID to fetch analysis for and save recommendations to.",
-    )
-    parser.add_argument(
-        "--recommendation-prompt",
-        type=str,
-        default="prompts/02_generate_recommendations_prompt.md",
-        help="Path to the recommendation prompt file.",
-    )
-    parser.add_argument(
-        "--output",
-        type=str,
-        help="Optional path to save the output JSON.",
-    )
-    parser.add_argument(
-        "--reasoning-effort",
-        type=str,
-        choices=["low", "medium", "high", "auto"],
-        help="Set the reasoning effort for the model (provider-specific).",
-    )
-    parser.add_argument(
-        "--api-key",
-        type=str,
-        help="API key for the LLM provider. Overrides environment variables.",
-    )
+    # ... (parser arguments remain the same)
+    parser.add_argument("--model",type=str,required=True,help="The model to use (e.g., 'google:gemini-1.5-pro', 'openai:gpt-4o').",)
+    parser.add_argument("--user-id",type=str,required=True,help="The user ID to fetch analysis for and save recommendations to.",)
+    parser.add_argument("--recommendation-prompt",type=str,default="prompts/02_generate_recommendations_prompt.md",help="Path to the recommendation prompt file.",)
+    parser.add_argument("--output",type=str,help="Optional path to save the output JSON.",)
+    parser.add_argument("--reasoning-effort",type=str,choices=["low", "medium", "high", "auto"],help="Set the reasoning effort for the model (provider-specific).",)
+    parser.add_argument("--api-key",type=str,help="API key for the LLM provider. Overrides environment variables.",)
     args = parser.parse_args()
     logger.info(f"Starting recommendations generation for User: {args.user_id}")
 
-    # --- Load Data from DB ---
-    supabase = get_supabase_client()
+    # --- Pre-load all data ---
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+    products = load_data_from_db('products', 'id, name, brand, category, metadata, ingredients, embedding')
+    ingredients = load_data_from_db('ingredients', 'id, name, what_it_does, image_url, embedding')
     
-    # Fetch latest analysis for user
+    if not products or not ingredients:
+        logger.error("Missing products or ingredients data. Exiting.")
+        sys.exit(1)
+
+    # --- Load User Analysis from DB ---
+    supabase = get_supabase_client()
     logger.info(f"Fetching analysis for user {args.user_id}...")
     analysis_response = supabase.table('skin_analyses').select('*').eq('user_id', args.user_id).order('created_at', desc=True).limit(1).execute()
     
@@ -185,40 +200,44 @@ def main():
         logger.error(f"No skin analysis found for user {args.user_id}.")
         sys.exit(1)
         
-    # The 'analysis_data' column contains the JSON blob we need
     full_analysis_record = analysis_response.data[0]
     analysis_id = full_analysis_record['id']
     analysis_data = full_analysis_record['analysis_data']
-    
     logger.success(f"Loaded analysis {analysis_id}.")
 
-    recommendation_prompt = load_system_prompt(args.recommendation_prompt)
+    # --- Two-Step RAG ---
+    top_ingredients = find_relevant_ingredients(analysis_data, ingredients, model)
+    relevant_products = find_relevant_products_two_step(analysis_data, top_ingredients, products, model)
 
-    # --- Find Relevant Products ---
-    relevant_products = find_relevant_products_db(analysis_data)
-
-    # --- Construct User Message ---
+    # --- Construct User Message for LLM ---
     logger.info("Constructing payload for LLM...")
     analysis_summary = distill_analysis_for_prompt(analysis_data)
     
+    # Clean up ingredients for a smaller payload
+    for ing in top_ingredients:
+        if 'embedding' in ing:
+            del ing['embedding']
+            
     message_content = [
         "Here is the skin analysis:",
         analysis_summary,
-        "Here is a curated list of relevant products:",
+        "Here is a curated list of the most relevant ingredients for this analysis:",
+        json.dumps(top_ingredients, indent=2),
+        "Here is a curated list of products containing these or similar ingredients:",
         json.dumps(relevant_products, indent=2),
     ]
-    logger.debug(f"LLM Payload: {analysis_summary}")
+    logger.debug(f"LLM Payload Summary: {analysis_summary}")
 
-    # --- Agent Configuration ---
+    # --- Agent Configuration & Execution ---
+    recommendation_prompt = load_system_prompt(args.recommendation_prompt)
     logger.info(f"Configuring agent with model: {args.model}")
-    model, model_settings = create_agent(args.model, args.api_key, args.reasoning_effort)
+    llm, model_settings = create_agent(args.model, args.api_key, args.reasoning_effort)
     logger.success("Agent configured.")
 
-    # --- Run Recommendation Generation ---
     logger.info("Running recommendation generation agent...")
     start_time = time.time()
     recommendation_agent = Agent(
-        model,
+        llm,
         output_type=Recommendations,
         instructions=recommendation_prompt,
     )
@@ -232,19 +251,14 @@ def main():
     output_data = recommendation_result.output.model_dump()
     output_json = json.dumps(output_data, indent=2)
 
-    # --- Save to DB ---
+    # --- Save to DB and File ---
     try:
         logger.info(f"Saving recommendations to Supabase for analysis {analysis_id}...")
-        
-        # Check if recommendations already exist for this analysis
-        # Upsert is cleaner
         supabase.table('recommendations').upsert({
             'skin_analysis_id': analysis_id,
             'recommendations_data': output_data
         }, on_conflict='skin_analysis_id').execute()
-        
         logger.success(f"Successfully saved recommendations to Supabase.")
-        
     except Exception as e:
         logger.error(f"Failed to save to database: {e}")
 
@@ -253,19 +267,10 @@ def main():
         with open(args.output, "w", encoding="utf-8") as f:
             f.write(output_json)
         logger.success(f"Successfully saved JSON output to {args.output}")
-    else:
-        # Optional: print to stdout if user wants to see it
-        # logger.info("Printing output to stdout.")
-        # print(output_json)
-        pass
 
 if __name__ == "__main__":
     try:
         main()
     except Exception as e:
-        try:
-            logger.exception("An unexpected error occurred.")
-        except NameError:
-            print(f"An error occurred:", file=sys.stderr)
-            traceback.print_exc()
+        logger.exception("An unexpected error occurred.")
         sys.exit(1)

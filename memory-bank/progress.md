@@ -25,4 +25,4 @@
 
 ## Known Issues
 
-*   **Recommendations UI:** The "Key Ingredients" section in the recommendations tab is currently hidden/placeholder as the AI model does not yet output structured ingredient data linked to concerns.
+(None at the moment)
