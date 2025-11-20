@@ -10,12 +10,9 @@
 *   **Dynamic Dashboard:** The user dashboard at `/dashboard/[userId]` is now fully dynamic, rendering data from the database for each user.
 *   **Project Management:** Implemented GitHub MCP integration to manage project backlog and tasks using GitHub Issues.
 
-## What's Left to Build
+## What's Next
 
-*   **User Authentication:** Implement a full user authentication system, including sign-up, login, and session management.
-*   **User Profile Management:** Build out the UI and functionality for users to create, view, and edit their profiles.
-*   **Dynamic Data Pipeline:** Integrate the `scripts/run_analysis.py` and `scripts/generate_recommendations.py` scripts into a dynamic pipeline to process user images and generate analysis data on the fly.
-*   **Progress Tracking:** Develop features for users to track their skin progress over time, including data visualization components.
+*   The project's development roadmap and active tasks are managed in GitHub Issues. Refer to the repository's issues for a detailed and up-to-date backlog.
 
 ## Known Issues
 

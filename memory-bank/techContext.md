@@ -21,7 +21,7 @@
 *   **Code Quality:** ESLint and Prettier will be used to enforce code quality and consistency.
 *   **Project Management:**
     *   **Tool:** GitHub Issues (via GitHub MCP).
-    *   **Requirement:** The project backlog and tasks must be managed using GitHub Issues.
+    *   **Requirement:** GitHub Issues is the single source of truth for all project tasks, backlog items, and development planning. The Memory Bank provides high-level context but does not track individual work items.
     *   **Instruction:** Always use the GitHub MCP to read and manage issues. If the GitHub MCP is not available or connected, instruct the user to set it up immediately.
 
 ## Dependencies

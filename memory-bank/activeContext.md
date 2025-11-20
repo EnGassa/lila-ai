@@ -25,6 +25,4 @@
 
 ## Next Steps
 
-*   **User Authentication:** Implement a full user authentication system.
-*   **Dynamic Data Pipeline:** Integrate the AI scripts to create a dynamic pipeline for generating and storing skin analyses and recommendations.
-*   **User Profile Management:** Build out the UI and functionality for users to manage their profiles.
+*   The project's backlog and active tasks are managed exclusively in GitHub Issues. Please refer to the repository's issues tab for the most up-to-date information on the development roadmap and current work.
