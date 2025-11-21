@@ -23,6 +23,7 @@
 *   **Frontend Updates:**
     *   Wired up the `RecommendationsTab` component (`components/recommendations-tab.tsx`) to display real recommendation data fetched from the database.
     *   The component now renders the AM, PM, and Weekly routines dynamically based on the AI output.
+    *   Fixed a UI bug in the recommendations tab to group products under the same routine step (e.g., "Treat") into a single accordion item.
 *   **Supabase Integration:**
     *   Updated `scripts/skin_lib.py` to include a shared `get_supabase_client()` helper for all Python scripts.
 

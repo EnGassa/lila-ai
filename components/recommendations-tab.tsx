@@ -100,6 +100,19 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
   const routine = recommendations?.routine || {};
   const currentSteps = activeTab === 'AM' ? routine.am : activeTab === 'PM' ? routine.pm : routine.weekly || [];
 
+  const processedSteps = Object.values(
+    (currentSteps || []).reduce((acc: { [key: string]: Step }, step) => {
+      if (!acc[step.step]) {
+        acc[step.step] = { ...step, products: [] };
+      }
+      acc[step.step].products.push(...step.products);
+      if (step.instructions && !acc[step.step].instructions) {
+        acc[step.step].instructions = step.instructions;
+      }
+      return acc;
+    }, {})
+  );
+
   if (!recommendations) {
     return <div className="p-4 text-center text-muted-foreground">No recommendations available yet.</div>;
   }
@@ -163,11 +176,11 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
             </Button>
           </div>
 
-        {currentSteps.length === 0 ? (
+        {processedSteps.length === 0 ? (
             <p className="text-muted-foreground p-4">No steps found for this routine.</p>
         ) : (
             <Accordion type="single" collapsible defaultValue="item-0" className="space-y-4">
-                {currentSteps.map((step: Step, index: number) => (
+                {processedSteps.map((step: Step, index: number) => (
                 <AccordionItem value={`item-${index}`} key={index} className="border-b border-[#BC8B80]">
                     <AccordionTrigger className="text-lg font-bold text-[#1C1B1F] capitalize hover:no-underline">
                         <div className="flex items-center gap-2">
