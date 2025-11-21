@@ -26,6 +26,12 @@
     *   Fixed a UI bug in the recommendations tab to group products under the same routine step (e.g., "Treat") into a single accordion item.
 *   **Supabase Integration:**
     *   Updated `scripts/skin_lib.py` to include a shared `get_supabase_client()` helper for all Python scripts.
+*   **Recommendation Engine Robustness:**
+    *   Investigated a bug where the "cleanse" step was missing from recommendations.
+    *   Confirmed via logging that the semantic search was not returning cleansers.
+    *   Implemented a safeguard function, `ensure_cleanser_is_present`, in `scripts/generate_recommendations.py` to guarantee a cleanser is always passed to the LLM.
+*   **Data Quality Scripts:**
+    *   Created `scripts/backfill_categories.py` to programmatically fill in `null` product categories based on keyword matching, addressing a root cause of recommendation gaps.
 
 ## Next Steps
 

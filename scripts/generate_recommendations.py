@@ -127,6 +127,29 @@ def find_relevant_ingredients(analysis_data: dict, ingredients: List[Dict[str, A
     return relevant_ingredients
 
 
+def ensure_cleanser_is_present(relevant_products: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """
+    Ensures at least one cleanser is in the product list.
+    If not, fetches one from the DB and adds it.
+    """
+    has_cleanser = any(p.get('category') == 'cleanser' for p in relevant_products)
+    
+    if not has_cleanser:
+        logger.warning("No cleanser found in relevant products. Fetching a default one.")
+        supabase = get_supabase_client()
+        response = supabase.table('products').select('*').eq('category', 'cleanser').limit(1).execute()
+        
+        if response.data:
+            cleanser = response.data[0]
+            if 'embedding' in cleanser:
+                del cleanser['embedding']
+            relevant_products.insert(0, cleanser)
+            logger.info(f"Added cleanser '{cleanser['name']}' to the list.")
+        else:
+            logger.error("Could not find any cleansers in the database to add.")
+            
+    return relevant_products
+
 def find_relevant_products_two_step(analysis_data: dict, top_ingredients: List[Dict[str, Any]], products: List[Dict[str, Any]], model: SentenceTransformer, top_k: int = 15) -> list:
     """
     Step 2: Finds the most relevant products using an enriched query from the analysis and top ingredients.
@@ -207,7 +230,15 @@ def main():
 
     # --- Two-Step RAG ---
     top_ingredients = find_relevant_ingredients(analysis_data, ingredients, model)
+    logger.info(f"DEBUG: Top ingredients found: {[ing['name'] for ing in top_ingredients]}")
+
     relevant_products = find_relevant_products_two_step(analysis_data, top_ingredients, products, model)
+    logger.info(f"DEBUG: Relevant products found: {[p['name'] for p in relevant_products]}")
+    logger.info(f"DEBUG: Categories of relevant products: {[p.get('category') for p in relevant_products]}")
+
+
+    # --- Ensure a cleanser is always present ---
+    relevant_products = ensure_cleanser_is_present(relevant_products)
 
     # --- Construct User Message for LLM ---
     logger.info("Constructing payload for LLM...")

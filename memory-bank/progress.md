@@ -15,6 +15,9 @@
     *   Updated to Next.js 16.
 *   **Project Management:**
     *   GitHub MCP integration for backlog management.
+*   **Recommendation Engine:**
+    *   The `generate_recommendations.py` script is now more robust, with a safeguard to ensure a cleanser is always included in the recommendation payload.
+    *   A new script, `backfill_categories.py`, has been created to improve data quality by programmatically filling in missing product categories.
 
 ## What's Next
 
