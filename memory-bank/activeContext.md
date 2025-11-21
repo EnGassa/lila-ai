@@ -33,3 +33,4 @@
 *   **User Feedback:** Monitor user feedback from the beta to identify areas for improvement in both the AI analysis and the UI.
 *   **GitHub Issues:** Update and close issues related to the beta launch preparation.
 *   **Commit Changes:** Commit all the recent work to the repository.
+*   **Data Cleanup:** Removed the obsolete `data/users` directory, which was an artifact from a previous version of the app.
