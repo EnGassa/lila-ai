@@ -34,3 +34,4 @@
 *   **GitHub Issues:** Update and close issues related to the beta launch preparation.
 *   **Commit Changes:** Commit all the recent work to the repository.
 *   **Data Cleanup:** Removed the obsolete `data/users` directory, which was an artifact from a previous version of the app.
+*   **Scraper Update:** Modified `scripts/scrape_ingredients.py` to be additive, ensuring that it preserves existing data in `data/ingredient_urls.txt` and only appends new, unique URLs.

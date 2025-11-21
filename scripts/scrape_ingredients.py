@@ -13,7 +13,7 @@ scrape_ingredients.py
 A script to scrape ingredient URLs from incidecoder.com.
 """
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup # type: ignore
 import time
 from tqdm import tqdm
 import os
@@ -25,13 +25,24 @@ OUTPUT_FILE = os.path.join(OUTPUT_DIR, "ingredient_urls.txt")
 ITERATIONS = 100
 DELAY = 1
 
+def load_existing_urls():
+    """
+    Loads existing URLs from the output file into a set.
+    """
+    if not os.path.exists(OUTPUT_FILE):
+        return set()
+    with open(OUTPUT_FILE, "r") as f:
+        return {line.strip() for line in f if line.strip()}
+
 def scrape_ingredient_urls():
     """
     Scrapes ingredient URLs from incidecoder.com by repeatedly fetching the ingredients page.
     """
-    ingredient_urls = set()
+    ingredient_urls = load_existing_urls()
+    initial_count = len(ingredient_urls)
+    print(f"Loaded {initial_count} existing URLs from {OUTPUT_FILE}")
 
-    print(f"Scraping {BASE_URL}{INGREDIENTS_PATH} for ingredient URLs...")
+    print(f"Scraping {BASE_URL}{INGREDIENTS_PATH} for new ingredient URLs...")
     
     for _ in tqdm(range(ITERATIONS), desc="Scraping pages"):
         try:
@@ -53,17 +64,23 @@ def scrape_ingredient_urls():
 
     return ingredient_urls
 
-def save_urls_to_file(urls):
+def save_urls_to_file(urls, initial_count):
     """
-    Saves a set of URLs to a text file.
+    Saves a set of URLs to a text file, reporting new and total counts.
     """
+    total_urls = len(urls)
+    newly_added = total_urls - initial_count
+
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     with open(OUTPUT_FILE, "w") as f:
         for url in sorted(list(urls)):
             f.write(f"{url}\n")
-    print(f"Successfully saved {len(urls)} unique URLs to {OUTPUT_FILE}")
+
+    print(f"\nFound {newly_added} new URLs.")
+    print(f"Successfully saved {total_urls} total unique URLs to {OUTPUT_FILE}")
 
 if __name__ == "__main__":
-    urls = scrape_ingredient_urls()
-    if urls:
-        save_urls_to_file(urls)
+    initial_url_count = len(load_existing_urls())
+    all_urls = scrape_ingredient_urls()
+    if all_urls:
+        save_urls_to_file(all_urls, initial_url_count)
