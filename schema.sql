@@ -22,6 +22,7 @@ create table if not exists public.products (
   claims jsonb,
   links jsonb,
   metadata jsonb,
+  purpose text[],
   embedding vector(384) -- Using 384 as it's a common dimension for sentence-transformers
 );
 

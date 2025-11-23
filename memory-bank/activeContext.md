@@ -12,7 +12,9 @@
     *   Updated `scripts/run_analysis.py`: Now accepts a `user_id` and saves the analysis output directly to the `skin_analyses` table in Supabase.
     *   Updated `scripts/generate_recommendations.py`: Now fetches analysis data from the database, performs product retrieval using DB embeddings, and saves recommendations to the `recommendations` table.
 *   **Product Embeddings:**
-    *   Created and ran `scripts/generate_embeddings.py` to populate the `embedding` column in the `products` table using `sentence-transformers` (all-MiniLM-L6-v2).
+    *   Added a `purpose` column to the `products` table to improve product targeting.
+    *   Updated `scripts/generate_embeddings.py` to prioritize functional attributes (`purpose`, `details_blurb`, `ingredients`, `claims`) over brand and name in the text used for embeddings.
+    *   Added `tqdm` to provide a progress bar for the embedding generation script.
 *   **Key Ingredients Feature:**
     *   Re-implemented the "Key Ingredients" section in the UI.
     *   Updated the `Recommendations` Pydantic model in `scripts/skin_lib.py` to include a `key_ingredients` field.

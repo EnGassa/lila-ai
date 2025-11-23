@@ -4,6 +4,7 @@
 #     "python-dotenv",
 #     "supabase",
 #     "sentence-transformers",
+#     "tqdm",
 # ]
 # ///
 import os
@@ -13,6 +14,7 @@ from typing import List, Dict, Any
 from supabase import create_client, Client
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
+from tqdm import tqdm
 
 # Load environment variables
 load_dotenv('.env.local')
@@ -40,19 +42,20 @@ def get_all_products() -> List[Dict[str, Any]]:
 def create_product_text(product: Dict[str, Any]) -> str:
     """
     Create a rich text representation of the product for embedding.
-    Includes name, brand, category, and key attributes.
+    Prioritizes purpose, ingredients, and claims over brand and name.
     """
     name = product.get('name', '')
     brand = product.get('brand', '')
     category = product.get('category', '')
-    
+    purpose = product.get('purpose', [])
+
     # Handle ingredients - could be a list or string
     ingredients = product.get('ingredients', [])
     if isinstance(ingredients, list):
         ingredients_str = ", ".join(ingredients)
     else:
         ingredients_str = str(ingredients)
-        
+
     # Extract meaningful claims if available
     claims = product.get('claims', {})
     claims_str = ""
@@ -65,17 +68,30 @@ def create_product_text(product: Dict[str, Any]) -> str:
                 claims_list.append(v)
         claims_str = ", ".join(claims_list)
     
-    # Construct the text to embed
-    # We weigh the Name and Brand heavily by putting them first
-    text = f"{brand} {name}. Category: {category}. "
-    if claims_str:
-        text += f"Claims: {claims_str}. "
+    purpose_str = ', '.join(purpose) if purpose else ''
+    
+    # Safely extract details_blurb from metadata
+    metadata = product.get('metadata', {})
+    details_blurb = metadata.get('details_blurb', '') if isinstance(metadata, dict) else ''
+
+    # Construct the text to embed, prioritizing functional attributes
+    text_parts = []
+    if purpose_str:
+        text_parts.append(f"Purpose: {purpose_str}")
+    if details_blurb:
+        text_parts.append(f"Details: {details_blurb}")
     if ingredients_str:
-        # Truncate ingredients if too long to avoid diluting the embedding too much
-        # though MiniLM handles 256 tokens, so we should be reasonable.
-        text += f"Ingredients: {ingredients_str[:500]}"
-        
-    return text
+        # Truncate ingredients if too long
+        text_parts.append(f"Ingredients: {ingredients_str[:500]}")
+    if claims_str:
+        text_parts.append(f"Claims: {claims_str}")
+    if category:
+        text_parts.append(f"Category: {category}")
+
+    # De-emphasize brand and name by adding them at the end
+    text_parts.append(f"{brand} {name}")
+    
+    return ". ".join(filter(None, text_parts))
 
 def generate_embeddings():
     print("🚀 Starting product embedding generation...")
@@ -96,7 +112,7 @@ def generate_embeddings():
     error_count = 0
     
     # 3. Process each product
-    for i, product in enumerate(products):
+    for product in tqdm(products, desc="Generating product embeddings"):
         try:
             pid = product['id']
             pname = product.get('name', 'Unknown')
@@ -113,9 +129,6 @@ def generate_embeddings():
             supabase.table('products').update(data).eq('id', pid).execute()
             
             updated_count += 1
-            
-            if (i + 1) % 10 == 0:
-                print(f"   Processed {i + 1}/{len(products)} products...")
                 
         except Exception as e:
             print(f"❌ Error processing product {product.get('id')}: {e}")
