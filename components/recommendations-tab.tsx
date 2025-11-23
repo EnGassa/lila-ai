@@ -6,76 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Sun, Moon, RefreshCw } from 'lucide-react';
-
-interface Product {
-  brand: string;
-  name: string;
-  rationale: string;
-  image_url?: string;
-}
-
-interface Step {
-  step: string;
-  instructions?: string;
-  products: Product[];
-}
-
-interface Routine {
-  am: Step[];
-  pm: Step[];
-  weekly?: Step[];
-}
-
-interface KeyIngredient {
-  name: string;
-  description: string;
-  concerns: string[];
-  image_url?: string;
-}
-
-interface Recommendations {
-  key_ingredients: KeyIngredient[];
-  routine: Routine;
-}
-
-const products = [
-  {
-    step: "Step 1: Cleanse",
-    name: "ANUA Salicylic Acid Low Ph Cleanser",
-    price: "₹699",
-    compatibility: "94%",
-    tags: ["Vegan", "Fragrance Free"],
-    why: "The Salicylic Acid is clinically proven to be effective for unclogging pores.",
-    image: "/ingredients/product-placeholder.png"
-  },
-  {
-    step: "Step 2: Treat",
-    name: "Product B",
-    price: "₹799",
-    compatibility: "92%",
-    tags: ["Vegan"],
-    why: "This is why you should use this product.",
-    image: "/ingredients/product-placeholder.png"
-  },
-  {
-    step: "Step 3: Hydrate",
-    name: "Product C",
-    price: "₹899",
-    compatibility: "95%",
-    tags: ["Fragrance Free"],
-    why: "This is why you should use this product.",
-    image: "/ingredients/product-placeholder.png"
-  },
-  {
-    step: "Step 4: Protect",
-    name: "Product D",
-    price: "₹999",
-    compatibility: "98%",
-    tags: ["Vegan", "Fragrance Free"],
-    why: "This is why you should use this product.",
-    image: "/ingredients/product-placeholder.png"
-  }
-];
+import { Recommendations, Step, Product } from '@/lib/types';
 
 function InfoCard({ label, value, description, className }: { label: string, value: React.ReactNode, description?: string, className?: string }) {
   return (
@@ -102,7 +33,7 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
   const currentSteps = activeTab === 'AM' ? routine.am : activeTab === 'PM' ? routine.pm : routine.weekly || [];
 
   const processedSteps = Object.values(
-    (currentSteps || []).reduce((acc: { [key: string]: Step }, step) => {
+    (currentSteps || []).reduce((acc: { [key: string]: Step }, step: Step) => {
       if (!acc[step.step]) {
         acc[step.step] = { ...step, products: [] };
       }

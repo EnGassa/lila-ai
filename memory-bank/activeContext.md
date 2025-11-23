@@ -16,6 +16,11 @@
     *   Added an image preloader to the recommendations tab to improve perceived performance.
 *   **Data Quality:**
     *   Corrected typos in the `purpose` column of the `products` table via direct SQL queries.
+*   **Code Refactoring & Optimization:**
+    *   Refactored `app/dashboard/[userId]/components/dashboard.tsx` to parallelize image enrichment fetches, improving page load performance.
+    *   Added TypeScript types to the dashboard component to fix linter errors and improve type safety.
+    *   Removed unused hardcoded `products` array (dead code) from `components/recommendations-tab.tsx`.
+    *   Centralized shared TypeScript types into a new `lib/types.ts` file.
 
 ## Next Steps
 *   Commit and push all recent changes.

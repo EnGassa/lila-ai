@@ -17,6 +17,10 @@
     *   Refactored to fetch data from Supabase.
     *   Dashboard at `/dashboard/[userId]` is dynamic.
     *   Updated to Next.js 16.
+*   **Code Quality & Performance:**
+    *   Optimized dashboard data fetching by parallelizing requests.
+    *   Centralized TypeScript types into `lib/types.ts` for better maintainability.
+    *   Removed dead code and resolved linter errors.
 
 ## What's Next
 
