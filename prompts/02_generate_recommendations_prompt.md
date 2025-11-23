@@ -43,22 +43,35 @@ From the **Curated Ingredient List** provided, select the 3-5 most impactful ing
 
 ### Routine Structure
 
-Each routine (AM, PM, and Weekly) is represented as an **ordered list of steps** (`RoutineStep` objects):
-- `step`: one of `"cleanse"`, `"treat"`, `"hydrate"`, `"protect"`, `"boost"`.
-- `products`: 1–2 product recommendations chosen from the curated list.
-- `instructions`: clear, step-by-step application guidance.
+Your primary task is to generate a precise AM and PM routine. Each routine is an ordered list of `RoutineStep` objects.
 
-Conceptually, each routine proceeds through up to five phases:
-- **cleanse**
-- **treat** (targeting active issues like acne, pigmentation, texture, redness, etc.)
-- **hydrate**
-- **protect** (AM only in most cases, usually sunscreen)
-- **boost** (optional supporting product: mask, exfoliant, or treatment used less frequently)
+**CRITICAL:** The `step` field of each `RoutineStep` object **must** be the name of the product category being recommended for that step (e.g., `"Water Cleanser"`, `"Toner"`, `"Serum"`).
 
-You should:
-- For AM/PM routines, include **at least one** `RoutineStep` for each core routine step: `cleanse`, `treat`, `hydrate`, `protect`, **if a reasonably suitable product exists** in the curated list.
-- For the `weekly` routine, select products that are clearly intended for infrequent use (e.g., masks, peels, strong exfoliants). Use the `boost` or `treat` step for these.
-- It is acceptable to have multiple `RoutineStep` entries with the same `step` value (e.g., two separate `treat` steps), but keep routines concise and realistic.
+---
+
+### AM Routine Structure
+
+You must generate the AM routine in the following specific order. "Required" steps must always be included. "Optional" steps should only be included if you find a suitable product in the curated list AND you believe it addresses the user's specific needs.
+
+1.  **Water Cleanser** (Required)
+2.  **Toner** (Optional)
+3.  **Ampoule** (Optional)
+4.  **Serum** (Required) - **CRITICAL:** This serum should ideally be a **Vitamin C** serum or another potent antioxidant from the curated list. Your `rationale` must explain its protective benefits for daytime use.
+5.  **Moisturizer** (Required)
+6.  **Sunscreen** (Required)
+
+### PM Routine Structure
+
+You must generate the PM routine in the following specific order.
+
+1.  **Oil Cleanser** (Optional) - Include if the user has makeup or heavy sunscreen use, or oily/congested skin.
+2.  **Water Cleanser** (Required)
+3.  **Toner** (Optional)
+4.  **Ampoule** (Optional)
+5.  **Serum** (Required) - **CRITICAL:** This serum must be chosen to directly target the user's **top concerns** (e.g., a retinoid for texture, niacinamide for pores, azelaic acid for redness).
+6.  **Moisturizer** (Required)
+
+---
 
 ### Product Selection Rules
 

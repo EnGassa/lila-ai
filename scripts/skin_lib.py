@@ -159,7 +159,7 @@ class ProductRecommendation(BaseModel):
     rationale: str = Field(..., description="Explanation for why this product is recommended.")
 
 class RoutineStep(BaseModel):
-    step: Literal["cleanse", "treat", "hydrate", "protect", "boost"]
+    step: str
     products: List[ProductRecommendation]
     instructions: str
 

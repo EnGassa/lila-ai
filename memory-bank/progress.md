@@ -6,18 +6,17 @@
     *   **AI Pipeline:** Python scripts (`run_analysis.py`, `generate_recommendations.py`) now read/write directly to the DB.
     *   **Embeddings:** Product catalog now has vector embeddings stored in the `products` table.
     *   **Data Migration:** Product, user, and skin analysis data migrated to DB.
+*   **Recommendation Engine V2:**
+    *   The engine has been refactored to generate a structured, prescriptive 6-step AM/PM routine.
+    *   The AI prompt is updated to enforce this new structure, including specific targeting for Vitamin C (AM) and concern-based serums (PM).
+    *   The data retrieval process now ensures product candidates are available for all required routine steps (`ensure_category_coverage`).
 *   **Beta Readiness:**
     *   **Automated Onboarding:** `onboard_beta_user.py` script automates user creation, analysis, and recommendations.
-    *   **Recommendations UI:** The dashboard now displays personalized recommendations fetched from the database, with a polished UI matching the Figma designs.
+    *   **Recommendations UI:** The dashboard now displays personalized recommendations with dynamic product images fetched from the database, featuring performance optimizations like image preloading.
 *   **Frontend:**
     *   Refactored to fetch data from Supabase.
     *   Dashboard at `/dashboard/[userId]` is dynamic.
     *   Updated to Next.js 16.
-*   **Project Management:**
-    *   GitHub MCP integration for backlog management.
-*   **Recommendation Engine:**
-    *   The `generate_recommendations.py` script is now more robust, with a safeguard to ensure a cleanser is always included in the recommendation payload.
-    *   A new script, `backfill_categories.py`, has been created to improve data quality by programmatically filling in missing product categories.
 
 ## What's Next
 

@@ -29,21 +29,66 @@ export async function Dashboard({ params }: { params: Promise<{ userId: string }
   // Extract the recommendations data from the JSONB column
   let recommendationsData = recommendationsRecord?.recommendations_data || null;
 
-  // If we have recommendations and key ingredients, enrich them with image URLs
-  if (recommendationsData && recommendationsData.key_ingredients) {
-    const ingredientNames = recommendationsData.key_ingredients.map((ing: any) => ing.name);
-    
-    const { data: ingredientsDetails } = await supabase
-      .from('ingredients')
-      .select('name, image_url')
-      .in('name', ingredientNames);
+  if (recommendationsData) {
+    // Enrich key ingredients with images
+    if (recommendationsData.key_ingredients) {
+      const ingredientNames = recommendationsData.key_ingredients.map((ing: any) => ing.name);
+      if (ingredientNames.length > 0) {
+        const { data: ingredientsDetails } = await supabase
+          .from('ingredients')
+          .select('name, image_url')
+          .in('name', ingredientNames);
 
-    if (ingredientsDetails) {
-      const imageUrlMap = new Map(ingredientsDetails.map(ing => [ing.name, ing.image_url]));
-      recommendationsData.key_ingredients = recommendationsData.key_ingredients.map((ing: any) => ({
-        ...ing,
-        image_url: imageUrlMap.get(ing.name) || null,
-      }));
+        if (ingredientsDetails) {
+          const imageUrlMap = new Map(ingredientsDetails.map(ing => [ing.name, ing.image_url]));
+          recommendationsData.key_ingredients = recommendationsData.key_ingredients.map((ing: any) => ({
+            ...ing,
+            image_url: imageUrlMap.get(ing.name) || null,
+          }));
+        }
+      }
+    }
+
+    // Enrich products with images
+    if (recommendationsData.routine) {
+      const productIds = new Set<string>();
+      ['am', 'pm', 'weekly'].forEach(routineType => {
+        if (recommendationsData.routine[routineType]) {
+          recommendationsData.routine[routineType].forEach((step: any) => {
+            step.products.forEach((product: any) => {
+              productIds.add(product.product_id);
+            });
+          });
+        }
+      });
+
+      const uniqueProductIds = Array.from(productIds);
+      if (uniqueProductIds.length > 0) {
+        const { data: productDetails } = await supabase
+          .from('products')
+          .select('id, links')
+          .in('id', uniqueProductIds);
+
+        if (productDetails) {
+          const productUrlMap = new Map(
+            productDetails.map(p => [
+              p.id,
+              p.links?.image_url || p.links?.image_alt || null,
+            ])
+          );
+
+          ['am', 'pm', 'weekly'].forEach(routineType => {
+            if (recommendationsData.routine[routineType]) {
+              recommendationsData.routine[routineType].forEach((step: any) => {
+                step.products = step.products.map((product: any) => ({
+                  ...product,
+                  image_url: productUrlMap.get(product.product_id) || null,
+                }));
+              });
+            }
+          });
+        }
+      }
     }
   }
 

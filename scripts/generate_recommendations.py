@@ -127,51 +127,101 @@ def find_relevant_ingredients(analysis_data: dict, ingredients: List[Dict[str, A
     return relevant_ingredients
 
 
-def ensure_cleanser_is_present(relevant_products: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def ensure_category_coverage(
+    relevant_products: List[Dict[str, Any]], 
+    all_products: List[Dict[str, Any]],
+    query_embedding: np.ndarray
+) -> List[Dict[str, Any]]:
     """
-    Ensures at least one cleanser is in the product list.
-    If not, fetches one from the DB and adds it.
+    Ensures the product list has at least one high-quality candidate for each essential skincare category.
     """
-    has_cleanser = any(p.get('category') == 'cleanser' for p in relevant_products)
+    required_categories = {
+        'water cleanser', 'oil cleanser', 'toner', 'serum', 
+        'moisturizer', 'sunscreen', 'ampoule'
+    }
     
-    if not has_cleanser:
-        logger.warning("No cleanser found in relevant products. Fetching a default one.")
-        supabase = get_supabase_client()
-        response = supabase.table('products').select('*').eq('category', 'cleanser').limit(1).execute()
+    present_categories = {p['category'] for p in relevant_products if p.get('category')}
+    missing_categories = required_categories - present_categories
+    
+    if not missing_categories:
+        logger.info("All required product categories are already present in the relevant list.")
+        return relevant_products
         
-        if response.data:
-            cleanser = response.data[0]
-            if 'embedding' in cleanser:
-                del cleanser['embedding']
-            relevant_products.insert(0, cleanser)
-            logger.info(f"Added cleanser '{cleanser['name']}' to the list.")
+    logger.warning(f"Missing recommendations for categories: {', '.join(missing_categories)}. Backfilling...")
+    
+    # Create a lookup for products by category
+    products_by_category: Dict[str, List[Dict[str, Any]]] = {}
+    for p in all_products:
+        cat = p.get('category')
+        if cat:
+            if cat not in products_by_category:
+                products_by_category[cat] = []
+            products_by_category[cat].append(p)
+
+    for category in missing_categories:
+        if category in products_by_category:
+            candidates = products_by_category[category]
+            
+            # Find the best candidate based on embedding similarity
+            candidate_embeddings = np.array([p['embedding'] for p in candidates if p.get('embedding')])
+            if candidate_embeddings.size == 0:
+                logger.warning(f"No products with embeddings found for category '{category}'. Skipping.")
+                continue
+
+            similarities = calculate_similarity(query_embedding, candidate_embeddings)
+            best_candidate_index = np.argmax(similarities)
+            best_product = candidates[best_candidate_index]
+
+            # Avoid adding duplicates
+            if best_product['id'] not in {p['id'] for p in relevant_products}:
+                logger.info(f"Adding best match for '{category}': {best_product['name']}")
+                # Clean up embedding before adding
+                product_to_add = best_product.copy()
+                if 'embedding' in product_to_add:
+                    del product_to_add['embedding']
+                relevant_products.append(product_to_add)
+            else:
+                logger.info(f"Best match for '{category}' ({best_product['name']}) is already in the list.")
         else:
-            logger.error("Could not find any cleansers in the database to add.")
+            logger.warning(f"No products found in the entire catalog for category: '{category}'")
             
     return relevant_products
 
-def find_relevant_products_two_step(analysis_data: dict, top_ingredients: List[Dict[str, Any]], products: List[Dict[str, Any]], model: SentenceTransformer, top_k: int = 15) -> list:
+def find_relevant_products_two_step(
+    analysis_data: dict, 
+    top_ingredients: List[Dict[str, Any]], 
+    products: List[Dict[str, Any]], 
+    model: SentenceTransformer, 
+    top_k: int = 15,
+    enriched_query: str = None,
+    return_query: bool = False
+) -> list:
     """
     Step 2: Finds the most relevant products using an enriched query from the analysis and top ingredients.
+    Can optionally return the query and its embedding for reuse.
     """
     logger.info(f"Step 2: Starting ingredient-to-product retrieval for top {top_k}...")
     start_time = time.time()
     
-    # 1. Create enriched query
-    base_query = generate_analysis_query(analysis_data)
-    ingredient_descriptors = []
-    for ing in top_ingredients:
-        desc = f"{ing['name']}"
-        if ing.get('what_it_does'):
-            desc += f" which helps with {', '.join(ing['what_it_does'])}"
-        ingredient_descriptors.append(desc)
-    
-    enriched_query = base_query + " The ideal products should contain ingredients like: " + ", ".join(ingredient_descriptors)
-    logger.debug(f"Generated enriched product search query: {enriched_query}")
+    if not enriched_query:
+        # 1. Create enriched query
+        base_query = generate_analysis_query(analysis_data)
+        ingredient_descriptors = []
+        for ing in top_ingredients:
+            desc = f"{ing['name']}"
+            if ing.get('what_it_does'):
+                desc += f" which helps with {', '.join(ing['what_it_does'])}"
+            ingredient_descriptors.append(desc)
+        
+        enriched_query = base_query + " The ideal products should contain ingredients like: " + ", ".join(ingredient_descriptors)
+        logger.debug(f"Generated enriched product search query: {enriched_query}")
 
     # 2. Embed enriched query
     query_embedding = model.encode(enriched_query)
     
+    if return_query:
+        return enriched_query, query_embedding
+
     # 3. Calculate Similarities
     product_embeddings = np.array([p['embedding'] for p in products])
     similarities = calculate_similarity(query_embedding, product_embeddings)
@@ -182,9 +232,11 @@ def find_relevant_products_two_step(analysis_data: dict, top_ingredients: List[D
     relevant_products = []
     for i in top_indices:
         p = products[i]
-        if 'embedding' in p:
-            del p['embedding'] # Clean up for smaller payload to LLM
-        relevant_products.append(p)
+        # Make a copy to avoid modifying the original list in place
+        product_copy = p.copy()
+        if 'embedding' in product_copy:
+            del product_copy['embedding'] # Clean up for smaller payload to LLM
+        relevant_products.append(product_copy)
         
     end_time = time.time()
     logger.success(f"Found {len(relevant_products)} relevant products in {end_time - start_time:.2f} seconds.")
@@ -232,13 +284,15 @@ def main():
     top_ingredients = find_relevant_ingredients(analysis_data, ingredients, model)
     logger.info(f"DEBUG: Top ingredients found: {[ing['name'] for ing in top_ingredients]}")
 
-    relevant_products = find_relevant_products_two_step(analysis_data, top_ingredients, products, model)
+    # The enriched query is used for both finding top products and for backfilling missing categories
+    enriched_query, query_embedding = find_relevant_products_two_step(analysis_data, top_ingredients, products, model, return_query=True)
+    relevant_products = find_relevant_products_two_step(analysis_data, top_ingredients, products, model, top_k=15, enriched_query=enriched_query)
     logger.info(f"DEBUG: Relevant products found: {[p['name'] for p in relevant_products]}")
     logger.info(f"DEBUG: Categories of relevant products: {[p.get('category') for p in relevant_products]}")
 
 
-    # --- Ensure a cleanser is always present ---
-    relevant_products = ensure_cleanser_is_present(relevant_products)
+    # --- Ensure all required categories are represented ---
+    relevant_products = ensure_category_coverage(relevant_products, products, query_embedding)
 
     # --- Construct User Message for LLM ---
     logger.info("Constructing payload for LLM...")

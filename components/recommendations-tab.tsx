@@ -11,6 +11,7 @@ interface Product {
   brand: string;
   name: string;
   rationale: string;
+  image_url?: string;
 }
 
 interface Step {
@@ -117,8 +118,17 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
     return <div className="p-4 text-center text-muted-foreground">No recommendations available yet.</div>;
   }
 
+  const allImageUrls = processedSteps.flatMap(step => step.products.map(p => p.image_url).filter(Boolean));
+
   return (
     <div className="space-y-6">
+      {/* Image Preloader */}
+      <div style={{ display: 'none' }}>
+        {allImageUrls.map(url => (
+          <img key={url} src={url} alt="preloaded image" loading="eager" />
+        ))}
+      </div>
+
       <div>
         <h2 className="text-base font-light text-muted-foreground p-4 bg-white rounded-t-lg">
           KEY INGREDIENTS FOR YOUR CONCERNS
@@ -184,7 +194,7 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
                 <AccordionItem value={`item-${index}`} key={index} className="border-b border-[#BC8B80]">
                     <AccordionTrigger className="text-lg font-bold text-[#1C1B1F] capitalize hover:no-underline">
                         <div className="flex items-center gap-2">
-                          {step.step}
+                          Step {index + 1}: {step.step}
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pt-4 pb-4">
@@ -198,8 +208,8 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
                             <div key={pIndex} className="bg-[#F9F9F8] rounded-xl p-4 border border-[rgba(0,0,0,0.06)] shadow-sm">
                                 <div className="flex flex-col sm:flex-row gap-4">
                                   {/* Product Image */}
-                                  <div className="w-24 h-24 sm:w-[117px] sm:h-[141px] bg-gray-100 rounded-[9px] flex-shrink-0 overflow-hidden mx-auto sm:mx-0">
-                                      <img src="/ingredients/product-placeholder.png" alt={product.name} className="w-full h-full object-cover" />
+                                  <div className="w-32 h-32 sm:w-[117px] sm:h-[141px] bg-white rounded-[9px] flex-shrink-0 overflow-hidden mx-auto sm:mx-0 p-2 flex items-center justify-center">
+                                      <img src={product.image_url || "/ingredients/product-placeholder.png"} alt={product.name} className="w-full h-full object-contain" />
                                   </div>
                                   
                                   {/* Product Details */}
