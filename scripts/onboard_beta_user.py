@@ -19,6 +19,7 @@ import argparse
 import subprocess
 import sys
 import os
+from typing import Optional
 from loguru import logger
 from supabase import create_client, Client
 from dotenv import load_dotenv
@@ -36,7 +37,7 @@ def get_supabase_client() -> Client:
 
     return create_client(supabase_url, supabase_key)
 
-def create_user(supabase: Client, name: str, email: str = None) -> str:
+def create_user(supabase: Client, name: str, email: Optional[str] = None) -> str:
     """Creates a user in the public.users table."""
     user_id = name.lower().replace(" ", "_")
     if not email:
@@ -93,7 +94,8 @@ def main():
     analysis_args = [
         "--model", args.model,
         "--images", args.image_dir,
-        "--user-id", user_id
+        "--user-id", user_id,
+        "--reasoning-effort", "high"
     ]
     if args.api_key:
         analysis_args.extend(["--api-key", args.api_key])
@@ -103,7 +105,8 @@ def main():
     # 3. Generate Recommendations
     rec_args = [
         "--model", args.model,
-        "--user-id", user_id
+        "--user-id", user_id,
+        "--reasoning-effort", "high"
     ]
     if args.api_key:
         rec_args.extend(["--api-key", args.api_key])
