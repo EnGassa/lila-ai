@@ -12,7 +12,7 @@
     *   The system prompt is now a **dynamic template**, with the script injecting the user's top concerns and all available product categories into the instructions for each run, dramatically improving the AI's focus and context.
     *   The prompt has been fine-tuned with several expert-level rules, enabling the AI to provide safer, more comprehensive recommendations (e.g., advising on how to introduce multiple active ingredients).
     *   **Improved Personalization:** Fixed a query dilution issue in the RAG pipeline that caused recommendation homogenization. The semantic search query has been re-prioritized to focus on the user's specific analysis before the category, significantly enhancing the diversity and personalization of product recommendations.
-    *   **Safety Check Agent:** Implemented a new QA step (`scripts/review_recommendations.py`) that uses an expert AI agent to review and validate generated routines for safety and consistency, addressing GitHub Issue #18.
+    *   **Multi-Agent Recommendation System:** The recommendation engine is now a self-correcting, multi-agent system. A Generator Agent creates the routine, and a Reviewer Agent validates it. If issues are found, the system enters a feedback loop where the Generator refines the routine based on the Reviewer's feedback, ensuring a high standard of quality and safety (addresses #19, supersedes #18).
 *   **Beta Readiness:**
     *   **Automated Onboarding:** `onboard_beta_user.py` script automates user creation, analysis, and recommendations.
     *   **Recommendations UI:**

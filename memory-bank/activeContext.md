@@ -29,13 +29,14 @@
     *   The root cause was query dilution in the RAG pipeline's product retrieval step. The semantic search query was constructed as `"A product in the '{category}' category. {personalized_details}"`, which placed too much emphasis on the generic category.
     *   The query has been reordered to `"{personalized_details} The product should be from the '{category}' category."` in `scripts/generate_recommendations.py`.
     *   This change prioritizes the user's unique skin analysis first, significantly improving the personalization and diversity of the retrieved product candidates.
-*   **Feature: Safety Check Reviewer Agent (GitHub Issue #18):**
-    *   Implemented a new, critical safety-check pass for all generated skincare recommendations.
-    *   Created a new script, `scripts/review_recommendations.py`, which uses a dedicated AI agent to act as an expert reviewer.
-    *   Developed a new system prompt, `prompts/03_review_recommendations_prompt.md`, that instructs the agent to scrutinize routines for ingredient conflicts, over-exfoliation, and unsafe combinations.
-    *   Added a new `ValidatedRecommendations` Pydantic model in `skin_lib.py` to ensure the reviewer's output is structured and reliable.
-    *   This feature acts as a quality assurance gate, significantly enhancing the safety and trustworthiness of the recommendations.
+*   **Multi-Agent Recommendation Refactor (GitHub Issue #19):**
+    *   Upgraded the recommendation pipeline to a multi-agent system to enhance safety and reliability.
+    *   The `generate_recommendations.py` script now orchestrates a **Generator Agent** and a **Reviewer Agent**.
+    *   Implemented a **feedback and retry loop**: If the Reviewer Agent rejects a routine, it provides specific feedback that the Generator Agent uses to make corrections on its next attempt.
+    *   The standalone `review_recommendations.py` script has been deprecated and its logic fully integrated into the new orchestrator.
+    *   Updated `skin_lib.py` with a new `ReviewResult` Pydantic model to facilitate the structured feedback loop.
+    *   This new architecture replaces the previous single-pass safety check with a more robust, self-correcting system.
 
 ## Next Steps
-*   Commit and push all UI and documentation changes.
-*   Continue with beta testing to gather feedback on the new UI and recommendation quality.
+*   Commit and push all multi-agent refactor changes.
+*   Continue with beta testing to gather feedback on the V3 recommendation engine.

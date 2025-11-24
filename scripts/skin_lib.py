@@ -173,10 +173,13 @@ class Recommendations(BaseModel):
     routine: Routine
     general_advice: List[str]
 
-class ValidatedRecommendations(BaseModel):
-    review_status: Literal["approved", "revised"] = Field(..., description="The final status of the review.")
-    review_notes: List[str] = Field(..., description="A list of notes explaining the review findings and any changes made.")
-    validated_recommendations: Recommendations = Field(..., description="The final, safe, and effective skincare routine.")
+class ReviewResult(BaseModel):
+    """
+    Represents the outcome of the expert review agent's validation.
+    """
+    review_status: Literal["approved", "rejected"] = Field(..., description="The final outcome of the expert review. 'approved' if safe, 'rejected' if issues are found.")
+    review_notes: List[str] = Field(..., description="A list of notes explaining the review decision. If rejected, this provides actionable feedback for the generator.")
+    validated_recommendations: Optional[Recommendations] = Field(None, description="The final, validated recommendations ONLY if the status is 'approved'.")
 
 
 # --- Helper Functions ---
