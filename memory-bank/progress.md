@@ -11,6 +11,7 @@
     *   The `ensure_category_coverage` function has been deprecated, as the new architecture guarantees coverage by design.
     *   The system prompt is now a **dynamic template**, with the script injecting the user's top concerns and all available product categories into the instructions for each run, dramatically improving the AI's focus and context.
     *   The prompt has been fine-tuned with several expert-level rules, enabling the AI to provide safer, more comprehensive recommendations (e.g., advising on how to introduce multiple active ingredients).
+    *   **Improved Personalization:** Fixed a query dilution issue in the RAG pipeline that caused recommendation homogenization. The semantic search query has been re-prioritized to focus on the user's specific analysis before the category, significantly enhancing the diversity and personalization of product recommendations.
 *   **Beta Readiness:**
     *   **Automated Onboarding:** `onboard_beta_user.py` script automates user creation, analysis, and recommendations.
     *   **Recommendations UI:**

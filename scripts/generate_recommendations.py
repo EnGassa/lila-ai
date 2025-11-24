@@ -168,8 +168,8 @@ def find_relevant_products_by_category(
     all_relevant_products = {} # Use dict to avoid duplicates
 
     for category in categories:
-        # Create a category-specific query
-        category_query = f"A product in the '{category}' category. " + base_enriched_query
+        # Create a category-specific query, prioritizing the personalized details first
+        category_query = base_enriched_query + f" The product should be from the '{category}' category."
         logger.debug(f"Query for category '{category}': {category_query[:200]}...") # Log snippet
         
         query_embedding = model.encode(category_query)

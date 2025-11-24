@@ -24,6 +24,11 @@
     *   The layout now features a distinct "How to use" section, pulling the step instructions into each product card for better context.
     *   Implemented dynamic rendering for product "claims" (e.g., "alcohol_free"). The component now fetches the `claims` JSONB object from the database and displays a badge for each `true` claim, replacing the previous hardcoded badges.
     *   Updated `lib/types.ts` and the data fetching logic in `app/dashboard/[userId]/components/dashboard.tsx` to support the new `claims` data.
+*   **Improved RAG Query Personalization:**
+    *   Identified and fixed a key issue causing recommendation homogenization, where users received similar product suggestions regardless of their specific analysis.
+    *   The root cause was query dilution in the RAG pipeline's product retrieval step. The semantic search query was constructed as `"A product in the '{category}' category. {personalized_details}"`, which placed too much emphasis on the generic category.
+    *   The query has been reordered to `"{personalized_details} The product should be from the '{category}' category."` in `scripts/generate_recommendations.py`.
+    *   This change prioritizes the user's unique skin analysis first, significantly improving the personalization and diversity of the retrieved product candidates.
 
 ## Next Steps
 *   Commit and push all UI and documentation changes.
