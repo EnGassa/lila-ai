@@ -1,27 +1,26 @@
 # Active Context
 
 ## Current Focus
-*   **Recommendation Engine V2:** The recommendation engine has been overhauled to move away from flexible functional categories ("cleanse", "treat") to a more structured, prescriptive 6-step AM/PM regimen.
-*   **UI/UX Refinement:** Improving the user-facing dashboard with dynamic product images and performance optimizations.
+*   **Recommendation Engine V3:** Major architectural and prompt engineering overhaul to improve the quality, safety, and consistency of skincare recommendations.
 
 ## Recent Changes
-*   **Routine Generation Overhaul:**
-    *   Updated the core AI prompt (`prompts/02_generate_recommendations_prompt.md`) to enforce a strict 6-step AM (Water Cleanser, Toner, Ampoule, Vitamin C Serum, Moisturizer, Sunscreen) and PM (Oil Cleanser, Water Cleanser, Toner, Ampoule, Concern Serum, Moisturizer) routine.
-    *   Modified the `RoutineStep` Pydantic model (`scripts/skin_lib.py`) to support descriptive step names (e.g., "Water Cleanser").
-    *   Implemented `ensure_category_coverage` in `scripts/generate_recommendations.py` to guarantee the AI has high-quality product candidates for every required step type, backfilling from the database if necessary.
-*   **Frontend Image Handling:**
-    *   Implemented server-side enrichment in `app/dashboard/[userId]/components/dashboard.tsx` to fetch product image URLs from the database and attach them to the recommendation payload.
-    *   Updated `components/recommendations-tab.tsx` to display these dynamic images.
-    *   Fixed image display issues by switching to `object-contain` and increasing image size for better visibility.
-    *   Added an image preloader to the recommendations tab to improve perceived performance.
-*   **Data Quality:**
-    *   Corrected typos in the `purpose` column of the `products` table via direct SQL queries.
-*   **Code Refactoring & Optimization:**
-    *   Refactored `app/dashboard/[userId]/components/dashboard.tsx` to parallelize image enrichment fetches, improving page load performance.
-    *   Added TypeScript types to the dashboard component to fix linter errors and improve type safety.
-    *   Removed unused hardcoded `products` array (dead code) from `components/recommendations-tab.tsx`.
-    *   Centralized shared TypeScript types into a new `lib/types.ts` file.
+*   **Architectural Refactor (Category-Aware RAG):**
+    *   Refactored `scripts/generate_recommendations.py` to eliminate the brittle single-pass product retrieval.
+    *   Implemented a new **Category-Aware Retrieval** strategy. The script now dynamically fetches all product categories from the database.
+    *   For each category, it performs a targeted semantic search to retrieve the top 5 most relevant products, ensuring the AI always has a high-quality, diverse set of candidates to choose from.
+    *   This change has removed the need for the `ensure_category_coverage` "bandaid" function, making the entire pipeline more robust.
+
+*   **Advanced Prompt Engineering (Dynamic Templating):**
+    *   The recommendation prompt (`prompts/02_generate_recommendations_prompt.md`) is now treated as a dynamic template.
+    *   The `generate_recommendations.py` script now injects the user's specific **`top_concerns`** and the **`available_categories`** from the database directly into the prompt's instructions. This provides the AI with critical context, focusing its reasoning on what matters most.
+
+*   **Expert-Level Prompt Tuning:**
+    *   Added several new `CRITICAL` rules to the prompt to enforce expert-level logic:
+        1.  **Comprehensive Key Ingredients:** The `key_ingredients` list must now reflect the primary active ingredients from the *final chosen products*, not just the initial candidate list.
+        2.  **AM/PM Top Concern Treatment:** The AI is now required to include treatment steps for the user's top concerns in *both* the AM and PM routines.
+        3.  **Active Ingredient Safety:** The AI must now provide explicit instructions on how to safely introduce multiple potent active ingredients (e.g., advising to use them on alternate nights).
 
 ## Next Steps
-*   Commit and push all recent changes.
-*   Continue with beta testing and user feedback collection.
+*   Commit and push all recent changes to finalize the V3 engine improvements.
+*   File a new GitHub issue to track the future implementation of a "Safety Check / Reviewer Agent" for the recommendation pipeline.
+*   Continue with beta testing to gather feedback on the new, higher-quality recommendations.

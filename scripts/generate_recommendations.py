@@ -27,6 +27,7 @@ from typing import List, Dict, Any
 
 from dotenv import load_dotenv
 from pydantic_ai import Agent
+from supabase import Client
 
 from skin_lib import (
     Recommendations,
@@ -127,120 +128,74 @@ def find_relevant_ingredients(analysis_data: dict, ingredients: List[Dict[str, A
     return relevant_ingredients
 
 
-def ensure_category_coverage(
-    relevant_products: List[Dict[str, Any]], 
-    all_products: List[Dict[str, Any]],
-    query_embedding: np.ndarray
+
+def get_all_product_categories(supabase: Client) -> List[str]:
+    """Fetches all distinct product categories from the database."""
+    logger.info("Fetching distinct product categories...")
+    response = supabase.table("products").select("category").execute()
+    if not response.data:
+        logger.warning("No product categories found.")
+        return []
+    
+    categories = sorted(list(set([p['category'] for p in response.data if p.get('category')])))
+    logger.success(f"Found {len(categories)} categories: {categories}")
+    return categories
+
+def find_relevant_products_by_category(
+    analysis_data: dict,
+    top_ingredients: List[Dict[str, Any]],
+    products: List[Dict[str, Any]],
+    model: SentenceTransformer,
+    categories: List[str],
+    top_k_per_category: int = 5
 ) -> List[Dict[str, Any]]:
     """
-    Ensures the product list has at least one high-quality candidate for each essential skincare category.
+    Finds relevant products by performing a targeted search for each category.
     """
-    required_categories = {
-        'water cleanser', 'oil cleanser', 'toner', 'serum', 
-        'moisturizer', 'sunscreen', 'ampoule'
-    }
+    logger.info(f"Starting category-aware product retrieval for {len(categories)} categories...")
     
-    present_categories = {p['category'] for p in relevant_products if p.get('category')}
-    missing_categories = required_categories - present_categories
+    # 1. Create enriched query
+    base_query = generate_analysis_query(analysis_data)
+    ingredient_descriptors = []
+    for ing in top_ingredients:
+        desc = f"{ing['name']}"
+        if ing.get('what_it_does'):
+            desc += f" which helps with {', '.join(ing['what_it_does'])}"
+        ingredient_descriptors.append(desc)
     
-    if not missing_categories:
-        logger.info("All required product categories are already present in the relevant list.")
-        return relevant_products
-        
-    logger.warning(f"Missing recommendations for categories: {', '.join(missing_categories)}. Backfilling...")
-    
-    # Create a lookup for products by category
-    products_by_category: Dict[str, List[Dict[str, Any]]] = {}
-    for p in all_products:
-        cat = p.get('category')
-        if cat:
-            if cat not in products_by_category:
-                products_by_category[cat] = []
-            products_by_category[cat].append(p)
+    base_enriched_query = base_query + " The ideal products should contain ingredients like: " + ", ".join(ingredient_descriptors)
 
-    for category in missing_categories:
-        if category in products_by_category:
-            candidates = products_by_category[category]
+    all_relevant_products = {} # Use dict to avoid duplicates
+
+    for category in categories:
+        # Create a category-specific query
+        category_query = f"A product in the '{category}' category. " + base_enriched_query
+        logger.debug(f"Query for category '{category}': {category_query[:200]}...") # Log snippet
+        
+        query_embedding = model.encode(category_query)
+        
+        # Filter products for the current category
+        category_products = [p for p in products if p.get('category') == category]
+        if not category_products:
+            logger.warning(f"No products found for category '{category}'.")
+            continue
             
-            # Find the best candidate based on embedding similarity
-            candidate_embeddings = np.array([p['embedding'] for p in candidates if p.get('embedding')])
-            if candidate_embeddings.size == 0:
-                logger.warning(f"No products with embeddings found for category '{category}'. Skipping.")
-                continue
-
-            similarities = calculate_similarity(query_embedding, candidate_embeddings)
-            best_candidate_index = np.argmax(similarities)
-            best_product = candidates[best_candidate_index]
-
-            # Avoid adding duplicates
-            if best_product['id'] not in {p['id'] for p in relevant_products}:
-                logger.info(f"Adding best match for '{category}': {best_product['name']}")
-                # Clean up embedding before adding
-                product_to_add = best_product.copy()
-                if 'embedding' in product_to_add:
-                    del product_to_add['embedding']
-                relevant_products.append(product_to_add)
-            else:
-                logger.info(f"Best match for '{category}' ({best_product['name']}) is already in the list.")
-        else:
-            logger.warning(f"No products found in the entire catalog for category: '{category}'")
-            
-    return relevant_products
-
-def find_relevant_products_two_step(
-    analysis_data: dict, 
-    top_ingredients: List[Dict[str, Any]], 
-    products: List[Dict[str, Any]], 
-    model: SentenceTransformer, 
-    top_k: int = 15,
-    enriched_query: str = None,
-    return_query: bool = False
-) -> list:
-    """
-    Step 2: Finds the most relevant products using an enriched query from the analysis and top ingredients.
-    Can optionally return the query and its embedding for reuse.
-    """
-    logger.info(f"Step 2: Starting ingredient-to-product retrieval for top {top_k}...")
-    start_time = time.time()
-    
-    if not enriched_query:
-        # 1. Create enriched query
-        base_query = generate_analysis_query(analysis_data)
-        ingredient_descriptors = []
-        for ing in top_ingredients:
-            desc = f"{ing['name']}"
-            if ing.get('what_it_does'):
-                desc += f" which helps with {', '.join(ing['what_it_does'])}"
-            ingredient_descriptors.append(desc)
+        product_embeddings = np.array([p['embedding'] for p in category_products])
         
-        enriched_query = base_query + " The ideal products should contain ingredients like: " + ", ".join(ingredient_descriptors)
-        logger.debug(f"Generated enriched product search query: {enriched_query}")
-
-    # 2. Embed enriched query
-    query_embedding = model.encode(enriched_query)
-    
-    if return_query:
-        return enriched_query, query_embedding
-
-    # 3. Calculate Similarities
-    product_embeddings = np.array([p['embedding'] for p in products])
-    similarities = calculate_similarity(query_embedding, product_embeddings)
-    
-    # 4. Get Top K
-    top_indices = np.argsort(similarities)[-top_k:][::-1]
-    
-    relevant_products = []
-    for i in top_indices:
-        p = products[i]
-        # Make a copy to avoid modifying the original list in place
-        product_copy = p.copy()
-        if 'embedding' in product_copy:
-            del product_copy['embedding'] # Clean up for smaller payload to LLM
-        relevant_products.append(product_copy)
+        similarities = calculate_similarity(query_embedding, product_embeddings)
+        top_indices = np.argsort(similarities)[-top_k_per_category:][::-1]
         
-    end_time = time.time()
-    logger.success(f"Found {len(relevant_products)} relevant products in {end_time - start_time:.2f} seconds.")
-    return relevant_products
+        for i in top_indices:
+            product = category_products[i]
+            if product['id'] not in all_relevant_products:
+                product_copy = product.copy()
+                if 'embedding' in product_copy:
+                    del product_copy['embedding']
+                all_relevant_products[product['id']] = product_copy
+
+    logger.success(f"Found {len(all_relevant_products)} unique relevant products across all categories.")
+    return list(all_relevant_products.values())
+
 
 def main():
     """Main function to generate recommendations."""
@@ -280,19 +235,16 @@ def main():
     analysis_data = full_analysis_record['analysis_data']
     logger.success(f"Loaded analysis {analysis_id}.")
 
-    # --- Two-Step RAG ---
+    # --- Category-Aware RAG ---
     top_ingredients = find_relevant_ingredients(analysis_data, ingredients, model)
     logger.info(f"DEBUG: Top ingredients found: {[ing['name'] for ing in top_ingredients]}")
 
-    # The enriched query is used for both finding top products and for backfilling missing categories
-    enriched_query, query_embedding = find_relevant_products_two_step(analysis_data, top_ingredients, products, model, return_query=True)
-    relevant_products = find_relevant_products_two_step(analysis_data, top_ingredients, products, model, top_k=15, enriched_query=enriched_query)
-    logger.info(f"DEBUG: Relevant products found: {[p['name'] for p in relevant_products]}")
-    logger.info(f"DEBUG: Categories of relevant products: {[p.get('category') for p in relevant_products]}")
-
-
-    # --- Ensure all required categories are represented ---
-    relevant_products = ensure_category_coverage(relevant_products, products, query_embedding)
+    # --- New: Dynamic Category-Aware Retrieval ---
+    product_categories = get_all_product_categories(supabase)
+    relevant_products = find_relevant_products_by_category(
+        analysis_data, top_ingredients, products, model, product_categories, top_k_per_category=5
+    )
+    logger.info(f"DEBUG: Found {len(relevant_products)} relevant products across {len(product_categories)} categories.")
 
     # --- Construct User Message for LLM ---
     logger.info("Constructing payload for LLM...")
@@ -314,7 +266,18 @@ def main():
     logger.debug(f"LLM Payload Summary: {analysis_summary}")
 
     # --- Agent Configuration & Execution ---
-    recommendation_prompt = load_system_prompt(args.recommendation_prompt)
+    # Get dynamic data for prompt template
+    top_concerns = analysis_data.get("analysis", {}).get("top_concerns", [])
+    top_concerns_str = ", ".join(top_concerns).replace('_', ' ')
+    categories_str = ", ".join([f'"{cat}"' for cat in product_categories])
+
+    raw_prompt = load_system_prompt(args.recommendation_prompt)
+    recommendation_prompt = raw_prompt.format(
+        top_concerns=top_concerns_str,
+        available_categories=categories_str
+    )
+    logger.info("Dynamically formatted recommendation prompt.")
+
     logger.info(f"Configuring agent with model: {args.model}")
     llm, model_settings = create_agent(args.model, args.api_key, args.reasoning_effort)
     logger.success("Agent configured.")
