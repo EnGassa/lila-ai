@@ -67,22 +67,29 @@ export async function Dashboard({ params }: { params: Promise<{ userId: string }
 
       const { data: productDetails } = await supabase
         .from('products')
-        .select('id, links')
+        .select('id, links, claims')
         .in('id', uniqueProductIds);
 
       if (productDetails) {
-        const productUrlMap = new Map(
-          productDetails.map(p => [p.id, p.links?.image_url || p.links?.image_alt || null])
+        const productDetailsMap = new Map(
+          productDetails.map(p => [p.id, {
+            image_url: p.links?.image_url || p.links?.image_alt || null,
+            claims: p.claims || null
+          }])
         );
 
         (['am', 'pm', 'weekly'] as const).forEach(routineType => {
           const steps = recommendationsData.routine[routineType];
           if (steps) {
             steps.forEach((step: Step) => {
-              step.products = step.products.map((product: Product) => ({
-                ...product,
-                image_url: productUrlMap.get(product.product_id) || null,
-              }));
+              step.products = step.products.map((product: Product) => {
+                const details = productDetailsMap.get(product.product_id);
+                return {
+                  ...product,
+                  image_url: details?.image_url || null,
+                  claims: details?.claims || null,
+                };
+              });
             });
           }
         });

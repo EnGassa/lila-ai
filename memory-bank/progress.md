@@ -13,7 +13,10 @@
     *   The prompt has been fine-tuned with several expert-level rules, enabling the AI to provide safer, more comprehensive recommendations (e.g., advising on how to introduce multiple active ingredients).
 *   **Beta Readiness:**
     *   **Automated Onboarding:** `onboard_beta_user.py` script automates user creation, analysis, and recommendations.
-    *   **Recommendations UI:** The dashboard now displays personalized recommendations with dynamic product images fetched from the database, featuring performance optimizations like image preloading.
+    *   **Recommendations UI:**
+    *   The dashboard displays personalized recommendations with dynamic product images.
+    *   The product recommendation card has been completely redesigned based on a Figma mock to improve clarity and UX.
+    *   The card now features a distinct "How to use" section and dynamically renders product `claims` (e.g., "alcohol free") from the database.
 *   **Frontend:**
     *   Refactored to fetch data from Supabase.
     *   Dashboard at `/dashboard/[userId]` is dynamic.

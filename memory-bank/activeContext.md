@@ -19,8 +19,12 @@
         1.  **Comprehensive Key Ingredients:** The `key_ingredients` list must now reflect the primary active ingredients from the *final chosen products*, not just the initial candidate list.
         2.  **AM/PM Top Concern Treatment:** The AI is now required to include treatment steps for the user's top concerns in *both* the AM and PM routines.
         3.  **Active Ingredient Safety:** The AI must now provide explicit instructions on how to safely introduce multiple potent active ingredients (e.g., advising to use them on alternate nights).
+*   **UI Refinement (Product Card):**
+    *   Overhauled the product recommendation card in `components/recommendations-tab.tsx` to match a new, more detailed Figma design.
+    *   The layout now features a distinct "How to use" section, pulling the step instructions into each product card for better context.
+    *   Implemented dynamic rendering for product "claims" (e.g., "alcohol_free"). The component now fetches the `claims` JSONB object from the database and displays a badge for each `true` claim, replacing the previous hardcoded badges.
+    *   Updated `lib/types.ts` and the data fetching logic in `app/dashboard/[userId]/components/dashboard.tsx` to support the new `claims` data.
 
 ## Next Steps
-*   Commit and push all recent changes to finalize the V3 engine improvements.
-*   File a new GitHub issue to track the future implementation of a "Safety Check / Reviewer Agent" for the recommendation pipeline.
-*   Continue with beta testing to gather feedback on the new, higher-quality recommendations.
+*   Commit and push all UI and documentation changes.
+*   Continue with beta testing to gather feedback on the new UI and recommendation quality.

@@ -130,51 +130,48 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
                     </AccordionTrigger>
                     <AccordionContent className="pt-4 pb-4">
                     <div className="space-y-4">
-                        {step.instructions && (
-                          <p className="text-sm text-muted-foreground italic">
-                            {step.instructions}
-                          </p>
-                        )}
+                        {/* Instructions are now rendered inside each product card */}
                         {step.products && step.products.map((product: Product, pIndex: number) => (
-                            <div key={pIndex} className="bg-[#F9F9F8] rounded-xl p-4 border border-[rgba(0,0,0,0.06)] shadow-sm">
-                                <div className="flex flex-col sm:flex-row gap-4">
-                                  {/* Product Image */}
-                                  <div className="w-32 h-32 sm:w-[117px] sm:h-[141px] bg-white rounded-[9px] flex-shrink-0 overflow-hidden mx-auto sm:mx-0 p-2 flex items-center justify-center">
-                                      <img src={product.image_url || "/ingredients/product-placeholder.png"} alt={product.name} className="w-full h-full object-contain" />
-                                  </div>
-                                  
-                                  {/* Product Details */}
-                                  <div className="flex-grow flex flex-col justify-between">
-                                      <div>
-                                          <div className="flex justify-between items-start">
-                                            <h3 className="font-bold text-base text-[#1C1B1F]">{product.brand} - {product.name}</h3>
-                                            {/* Placeholder Price if available, else hidden for now */}
-                                            {/* <span className="font-bold text-xl text-[#1C1B1F]">₹---</span> */}
-                                          </div>
-                                          
-                                          {/* Badges/Tags Placeholder - Can be dynamic later */}
-                                          <div className="flex flex-wrap gap-2 mt-2 mb-3">
-                                            <Badge variant="secondary" className="bg-[rgba(0,71,241,0.07)] text-[rgba(0,43,183,0.77)] hover:bg-[rgba(0,71,241,0.1)]">
-                                              Recommended
-                                            </Badge>
-                                          </div>
+                            <div key={pIndex} className="bg-[#F9F9F8] rounded-2xl border border-[#BC8B80] overflow-hidden">
+                                <div className="p-6">
+                                    <div className="flex gap-6">
+                                        {/* Product Image */}
+                                        <div className="w-[117px] h-[117px] bg-white rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                            <img src={product.image_url || "/ingredients/product-placeholder.png"} alt={product.name} className="w-full h-full object-cover" />
+                                        </div>
+                                        
+                                        {/* Product Title & Brand */}
+                                        <div className="flex-grow">
+                                            <h3 className="font-bold text-lg text-[#1C1B1F] leading-tight">{product.brand} - {product.name}</h3>
+                                        </div>
+                                    </div>
 
-                                          <p className="text-sm text-[#1C1B1F] leading-relaxed">
+                                    {/* Dynamic Badges from claims */}
+                                    <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[#BC8B80]">
+                                        {product.claims && Object.entries(product.claims).map(([claim, value]) => (
+                                            value === true && (
+                                                <Badge key={claim} variant="secondary" className="bg-[rgba(0,71,241,0.07)] text-[rgba(0,43,183,0.77)] hover:bg-[rgba(0,71,241,0.1)] capitalize">
+                                                    {claim.replace(/_/g, ' ')}
+                                                </Badge>
+                                            )
+                                        ))}
+                                    </div>
+
+                                    <div className="mt-4">
+                                        <p className="text-sm text-[#1C1B1F] leading-relaxed">
                                             <span className="font-semibold">Why:</span> {product.rationale}
-                                          </p>
-                                      </div>
-
-                                      {/* Action Buttons */}
-                                      <div className="flex gap-2 mt-4 justify-end sm:justify-start">
-                                        <Button variant="outline" size="sm" className="border-[#BC8B80] text-[#B07669] hover:bg-[#fdf8f7]">
-                                          View Details
-                                        </Button>
-                                        <Button size="sm" className="bg-[#B98579] text-white hover:bg-[#a06e63]">
-                                          Add to Cart
-                                        </Button>
-                                      </div>
-                                  </div>
+                                        </p>
+                                    </div>
                                 </div>
+
+                                {/* How to Use Section */}
+                                {step.instructions && (
+                                    <div className="bg-[#ECE0DE] p-6 rounded-t-lg">
+                                        <p className="text-sm text-[#1C1B1F] leading-relaxed">
+                                            <span className="font-semibold">How to use:</span> {step.instructions}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         ))}
                         {(!step.products || step.products.length === 0) && (

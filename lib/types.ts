@@ -7,6 +7,7 @@ export interface Product {
   brand: string;
   rationale: string;
   image_url?: string;
+  claims?: { [key: string]: boolean | null };
 }
 
 export interface Step {
