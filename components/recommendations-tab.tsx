@@ -69,7 +69,7 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
             <Card key={index} className="min-w-[280px] shadow-sm border">
               <CardContent className="p-4">
                 <div className="flex items-center gap-4">
-                  <img src={ingredient.image_url || "/ingredients/ingredient-placeholder.png"} alt={ingredient.name} className="w-16 h-16 rounded-md object-cover" />
+                  <img src={ingredient.image_url || "/ingredients/ingredient-placeholder.png"} alt={ingredient.name} className="w-16 h-16 rounded-md object-contain" />
                   <div>
                     <h3 className="font-bold text-base text-[#1C1B1F]">{ingredient.name}</h3>
                     <p className="text-sm text-muted-foreground mt-1">{ingredient.description}</p>
@@ -137,7 +137,7 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
                                     <div className="flex gap-6">
                                         {/* Product Image */}
                                         <div className="w-[117px] h-[117px] bg-white rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center">
-                                            <img src={product.image_url || "/ingredients/product-placeholder.png"} alt={product.name} className="w-full h-full object-cover" />
+                                            <img src={product.image_url || "/ingredients/product-placeholder.png"} alt={product.name} className="w-full h-full object-contain" />
                                         </div>
                                         
                                         {/* Product Title & Brand */}
