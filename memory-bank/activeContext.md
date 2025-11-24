@@ -29,6 +29,12 @@
     *   The root cause was query dilution in the RAG pipeline's product retrieval step. The semantic search query was constructed as `"A product in the '{category}' category. {personalized_details}"`, which placed too much emphasis on the generic category.
     *   The query has been reordered to `"{personalized_details} The product should be from the '{category}' category."` in `scripts/generate_recommendations.py`.
     *   This change prioritizes the user's unique skin analysis first, significantly improving the personalization and diversity of the retrieved product candidates.
+*   **Feature: Safety Check Reviewer Agent (GitHub Issue #18):**
+    *   Implemented a new, critical safety-check pass for all generated skincare recommendations.
+    *   Created a new script, `scripts/review_recommendations.py`, which uses a dedicated AI agent to act as an expert reviewer.
+    *   Developed a new system prompt, `prompts/03_review_recommendations_prompt.md`, that instructs the agent to scrutinize routines for ingredient conflicts, over-exfoliation, and unsafe combinations.
+    *   Added a new `ValidatedRecommendations` Pydantic model in `skin_lib.py` to ensure the reviewer's output is structured and reliable.
+    *   This feature acts as a quality assurance gate, significantly enhancing the safety and trustworthiness of the recommendations.
 
 ## Next Steps
 *   Commit and push all UI and documentation changes.
