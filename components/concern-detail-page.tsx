@@ -55,7 +55,7 @@ export function ConcernDetailPage({ userId, concernName, onClose, userData }: Co
 
   return (
     <div className="space-y-4 px-4">
-      <Button variant="ghost" onClick={onClose} className="flex items-center text-sm text-muted-foreground hover:text-foreground -ml-4">
+      <Button variant="ghost" onClick={onClose} className="flex items-center text-base text-muted-foreground hover:text-foreground -ml-4">
         <ChevronLeft className="h-4 w-4 mr-1" />
         Back to overview
       </Button>

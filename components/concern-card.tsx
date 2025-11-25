@@ -70,11 +70,14 @@ export function ConcernCard({ concern, onClick }: ConcernCardProps) {
           <p className="text-xs text-muted-foreground">Severity: 1-5</p>
         </div>
       </CardHeader>
-      <CardContent className="flex items-center justify-between">
+      <CardContent className="flex flex-col items-start gap-4">
         <p className="text-sm text-muted-foreground">
           {concern.description}
         </p>
-        <ChevronRight className="h-6 w-6 text-muted-foreground" />
+        <div className="flex items-center gap-1 text-sm font-bold text-gray-700">
+          <span>View Details</span>
+          <ChevronRight className="h-4 w-4" />
+        </div>
       </CardContent>
     </Card>
   );
