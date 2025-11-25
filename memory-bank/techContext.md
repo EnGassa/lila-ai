@@ -11,6 +11,7 @@
     *   `@supabase/ssr` and `@supabase/supabase-js` for database interaction.
     *   `recharts` for data visualization.
     *   `react-hook-form` for form management.
+*   **Analytics:** PostHog for web analytics and session recordings.
 *   **Logging:** Loguru
 *   **Package Manager:** pnpm
 

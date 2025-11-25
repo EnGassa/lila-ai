@@ -1,14 +1,15 @@
 # Active Context
 
-## Current Focus: Intelligent Image Capture
+## Current Focus: Pre-Launch Analytics & Image Capture Backend
 
-The primary focus is the development of a new, intelligent image capture flow for skin analysis. The client-side component is now complete.
+The immediate priority has been to implement analytics and session recording before sharing the application more widely. With that complete, the focus now returns to the intelligent image capture flow.
 
-1.  **MVP & Guidance (Complete):** The `FaceCapture.tsx` component now provides real-time guidance for centering, distance, and ensuring the full face is in the frame. It uses the `ImageCapture` API to capture high-resolution stills.
-2.  **Backend Integration (Next):** The final phase will involve uploading the captured image to Supabase and triggering the existing Python-based analysis pipeline.
+1.  **Analytics (Complete):** PostHog has been integrated for site-wide analytics and session recording to monitor user behavior.
+2.  **Image Capture Backend (Next):** The final phase of the image capture feature is to implement the backend logic. This involves uploading the captured image to Supabase and triggering the existing Python-based analysis pipeline.
 
 ## Recent Changes
 
+*   **Analytics Integration:** Added PostHog for comprehensive web analytics and session recording. This included creating a provider, a pageview tracking component, and updating the root layout.
 *   **High-Resolution Capture:** The capture logic was upgraded from a canvas-based approach to using the `ImageCapture` API's `takePhoto()` method to ensure the highest possible image quality from the device's camera.
 *   **Intelligent Guidance:** Implemented and calibrated logic to analyze face landmarks for centering, distance, and full-frame visibility before enabling the capture button.
 *   **Dependency Added:** `@mediapipe/tasks-vision` was added to the project to enable client-side ML.

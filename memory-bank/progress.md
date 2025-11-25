@@ -2,6 +2,8 @@
 
 ## What Works
 
+*   **Analytics and Monitoring:**
+    *   **PostHog Integration:** The application is now fully integrated with PostHog for web analytics and session recording, providing insights into user behavior.
 *   **Intelligent Image Capture (Client-Side Complete):** The frontend for the new analysis flow is complete.
     *   **Real-time Guidance:** The system uses MediaPipe `FaceLandmarker` to provide real-time feedback on centering, distance, and face visibility.
     *   **High-Resolution Capture:** The `ImageCapture` API is used to capture still photos at the camera's full resolution, ensuring high quality for analysis.
