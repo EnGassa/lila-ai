@@ -1,23 +1,25 @@
 # Active Context
 
-## Current Focus: Multi-Pose Image Capture System
+## Current Focus: Multi-Pose Image Capture & Calibration
 
-With analytics now complete, the primary focus has shifted to evolving the image capture system from a single photo to a more sophisticated, multi-pose capture flow. This will provide a more comprehensive dataset for the AI analysis.
+The image capture system has been significantly advanced with the addition of a comprehensive calibration suite and robust modularization. The focus remains on perfecting the multi-pose capture flow.
 
-1.  **Head Pose Detection (In Progress):** The foundational step of detecting the user's head orientation (yaw, pitch, roll) in real-time is underway. This is being built using the `facialTransformationMatrixes` provided by MediaPipe's FaceLandmarker.
-2.  **Guided Multi-Capture UI (Next):** Once detection is calibrated, the next step is to build the UI logic to guide the user through a sequence of poses (e.g., front, left 45°, right 45°) and capture an image for each.
-3.  **Image Upload & Backend Trigger (Planned):** After all poses are captured, the final step will be to upload the set of images to Supabase and trigger the analysis pipeline.
+1.  **Calibration & Validation (Complete):** A full calibration suite has been built, allowing dynamic calibration of the "master" front pose and side poses. Validation logic is now driven by these calibrated values (orientation, eye distance, centering, bounding box) with adjustable tolerance.
+2.  **Modularization (Complete):** The `FaceCapture` component has been refactored into a clean, maintainable architecture with a custom hook (`useFaceLandmarker`) and a dedicated UI component (`CalibrationSuite`).
+3.  **Guided Multi-Capture UI (Next):** Build the UI logic to guide the user through the sequence of poses (front, left 45°, right 45°) using the new validation engine.
+4.  **Image Upload & Backend Trigger (Planned):** Upload the set of captured images to Supabase and trigger the analysis pipeline.
 
 ## Recent Changes
 
-*   **Analytics Integration:** Added PostHog for comprehensive web analytics and session recording. This included creating a provider, a pageview tracking component, and updating the root layout.
-*   **High-Resolution Capture:** The capture logic was upgraded from a canvas-based approach to using the `ImageCapture` API's `takePhoto()` method to ensure the highest possible image quality from the device's camera.
-*   **Intelligent Guidance:** Implemented and calibrated logic to analyze face landmarks for centering, distance, and full-frame visibility before enabling the capture button.
-*   **Head Pose Detection:** Added the underlying logic to process facial transformation matrices from MediaPipe to calculate real-time head pose (yaw, pitch, roll). This is the first step toward a multi-pose capture sequence.
-*   **Dependency Added:** `@mediapipe/tasks-vision` was added to the project to enable client-side ML.
-*   **New Route:** A new route has been created at `/analysis` to host the capture flow.
-*   **New Component:** `components/analysis/FaceCapture.tsx` is the core component for this new feature.
-*   **Mobile Fixes:** Addressed both a secure context (HTTPS) issue and a CSS layout bug to ensure the feature works correctly on mobile browsers.
+*   **Calibration Suite:** Implemented a `CalibrationSuite` component that allows users to calibrate the system for their specific setup (camera, distance, lighting). It captures target values for yaw, pitch, roll, and eye distance for three distinct poses.
+*   **Robust Distance Check:** Replaced the unreliable `z` coordinate check with a robust screen-space `eyeDistance` calculation for distance validation.
+*   **Code Modularization:**
+    *   Extracted MediaPipe logic into a custom hook: `hooks/useFaceLandmarker.ts`.
+    *   Moved math helpers to `lib/utils.ts`.
+    *   Created `components/analysis/CalibrationSuite.tsx` for the debug UI.
+    *   Streamlined `components/analysis/FaceCapture.tsx`.
+*   **Head Pose Detection:** Validated and integrated real-time head pose calculations (yaw, pitch, roll) into the core validation logic.
+*   **Dynamic Validation:** All capture conditions (centering, distance, orientation, visibility) are now checked against dynamic calibrated targets rather than hardcoded values.
 
 ## Key Learnings & Decisions
 

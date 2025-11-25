@@ -6,7 +6,10 @@
     *   **PostHog Integration:** The application is now fully integrated with PostHog for web analytics and session recording, providing insights into user behavior.
 *   **Intelligent Image Capture (V2 In Progress):** The image capture system is being upgraded to a multi-pose flow.
     *   **V1 Complete (Single Capture):** The initial implementation for a single, high-resolution photo with real-time guidance (centering, distance, visibility) is complete and validated on desktop and mobile.
-    *   **V2 In Progress (Multi-Pose Detection):** The foundational work for multi-pose capture is underway. The system can now detect head orientation (yaw, pitch, roll) in real-time, which is the first step toward guiding the user through multiple capture angles.
+    *   **V2 Foundations Complete (Calibration & Modularization):**
+        *   **Calibration Suite:** A powerful tool for calibrating the system to the user's specific environment has been built. It captures precise targets for orientation and distance for multiple poses.
+        *   **Modular Architecture:** The feature has been refactored into a scalable architecture with a custom hook (`useFaceLandmarker`), utility functions, and a dedicated calibration component.
+        *   **Robust Validation:** The validation engine now uses dynamic, calibrated targets and screen-space eye distance, making it far more reliable than the initial hardcoded version.
 *   **Database Integration:** The application is fully integrated with Supabase (PostgreSQL).
     *   **AI Pipeline:** Python scripts (`run_analysis.py`, `generate_recommendations.py`) now read/write directly to the DB.
     *   **Embeddings:** Product catalog has vector embeddings stored in the `products` table.
