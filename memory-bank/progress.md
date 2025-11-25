@@ -2,9 +2,10 @@
 
 ## What Works
 
-*   **Intelligent Image Capture (MVP):** A new browser-based image capture flow has been implemented at `/analysis`.
-    *   **Real-time Face Tracking:** The system uses MediaPipe `FaceLandmarker` to detect and display a real-time face mesh over the user's camera feed.
-    *   **Cross-Platform Validation:** The feature is confirmed to work on both desktop and mobile browsers (using an HTTPS tunnel for mobile development).
+*   **Intelligent Image Capture (Client-Side Complete):** The frontend for the new analysis flow is complete.
+    *   **Real-time Guidance:** The system uses MediaPipe `FaceLandmarker` to provide real-time feedback on centering, distance, and face visibility.
+    *   **High-Resolution Capture:** The `ImageCapture` API is used to capture still photos at the camera's full resolution, ensuring high quality for analysis.
+    *   **Cross-Platform Validation:** The feature is confirmed to work on both desktop and mobile browsers, with fixes for HTTPS context and CSS layout issues.
 *   **Database Integration:** The application is fully integrated with Supabase (PostgreSQL).
     *   **AI Pipeline:** Python scripts (`run_analysis.py`, `generate_recommendations.py`) now read/write directly to the DB.
     *   **Embeddings:** Product catalog has vector embeddings stored in the `products` table.
@@ -33,7 +34,7 @@
 
 ## What's Next
 
-*   **Intelligent Image Capture (Phase 3):** Implement the intelligent guidance logic to analyze the face mesh and provide real-time feedback to the user.
+*   **Intelligent Image Capture (Phase 4):** Implement the backend integration. This involves uploading the captured high-resolution image to Supabase and triggering the Python analysis script.
 *   **Beta Testing:** Continue beta testing with the new, higher-quality V3 recommendation engine.
 *   **User Feedback Loop:** Implement features for users to provide feedback on analysis and recommendations (#8).
 *   **Profile Management:** Allow users to edit their own profiles (#6).

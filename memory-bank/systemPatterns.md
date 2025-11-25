@@ -19,6 +19,7 @@
 ## AI and Data Processing
 
 *   **Client-Side Real-time Analysis:** The application uses MediaPipe's `FaceLandmarker` task running directly in the browser via WebAssembly. This allows for real-time video processing on the user's device without needing a server round-trip. The model runs in a `requestAnimationFrame` loop to continuously analyze the webcam feed for face landmarks, providing immediate data for UI feedback.
+*   **High-Resolution Image Capture:** To ensure the highest quality input for analysis, the application uses the `ImageCapture` API (`takePhoto()` method). This allows capturing a still image at the camera's full native photo resolution, which is often significantly higher than the resolution of the real-time video stream. This is preferred over the simpler method of drawing a video frame to a canvas.
 
 *   **Prompt Distillation:** To improve the quality and efficiency of LLM-generated recommendations, the system uses a prompt distillation strategy. Instead of passing a large, noisy JSON object to the model, the `distill_analysis_for_prompt` function in `skin_lib.py` pre-processes the analysis data into a concise, human-readable Markdown summary. This focuses the LLM's attention on the most clinically relevant information, reducing token costs and improving the consistency of the output.
 *   **Category-Aware Retrieval-Augmented Generation (RAG) for Recommendations:** The system has been upgraded to a more robust, multi-step RAG process that ensures comprehensive and high-quality product candidates for the AI.
