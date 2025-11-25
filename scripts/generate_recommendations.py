@@ -100,7 +100,7 @@ def generate_analysis_query(analysis_data: dict) -> str:
             if concern_info:
                 rationale = concern_info.get('rationale_plain', '')
                 query_parts.append(f"- {concern_name.replace('_', ' ').title()}: {rationale}")
-    
+    logger.info(" ".join(query_parts))
     return " ".join(query_parts)
 
 def find_relevant_ingredients(analysis_data: dict, ingredients: List[Dict[str, Any]], model: SentenceTransformer, top_k: int = 10) -> List[Dict[str, Any]]:

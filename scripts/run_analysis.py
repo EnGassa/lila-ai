@@ -63,7 +63,7 @@ def main():
         help="The user ID to save the analysis for in the database.",
     )
     parser.add_argument(
-        "   ",
+        "--context-file",
         type=str,
         help="Optional path to a JSON file containing user context.",
     )
