@@ -7,6 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Badge } from "@/components/ui/badge";
 import { Sun, Moon, RefreshCw } from 'lucide-react';
 import { Recommendations, Step, Product } from '@/lib/types';
+import { IngredientCard } from './ingredient-card';
 
 function InfoCard({ label, value, description, className }: { label: string, value: React.ReactNode, description?: string, className?: string }) {
   return (
@@ -61,38 +62,28 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
       </div>
 
       <div>
-        <h2 className="text-base font-light text-muted-foreground p-4 bg-white rounded-t-lg">
+        <h2 className="text-lg font-medium text-muted-foreground p-4 rounded-t-lg">
           KEY INGREDIENTS FOR YOUR CONCERNS
         </h2>
-        <div className="flex space-x-4 overflow-x-auto p-4 bg-white rounded-b-lg">
+        <div className="flex space-x-4 overflow-x-auto p-2 rounded-b-lg">
           {recommendations.key_ingredients.map((ingredient, index) => (
-            <Card key={index} className="min-w-[280px] shadow-sm border">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-4">
-                  <img src={ingredient.image_url || "/ingredients/ingredient-placeholder.png"} alt={ingredient.name} className="w-16 h-16 rounded-md object-contain" />
-                  <div>
-                    <h3 className="font-bold text-base text-[#1C1B1F]">{ingredient.name}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">{ingredient.description}</p>
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {ingredient.concerns.map((concern, cIndex) => (
-                      <Badge key={cIndex} variant="secondary">{concern}</Badge>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <IngredientCard
+              key={index}
+              name={ingredient.name}
+              imageUrl={ingredient.image_url || "/ingredients/ingredient-placeholder.png"}
+              description={ingredient.description}
+              tags={ingredient.concerns}
+              className="min-w-[280px] shadow-sm border"
+            />
           ))}
         </div>
       </div>
 
       <div>
-        <h2 className="text-base font-light text-muted-foreground p-4 bg-white rounded-t-lg">
+        <h2 className="text-lg font-medium text-muted-foreground p-4 bg-white rounded-t-lg">
           YOUR ROUTINE
         </h2>
-        <div className="p-4 bg-white rounded-b-lg">
+        <div className="p-2 bg-white rounded-b-lg">
         <div className="flex space-x-2 mb-6">
             <Button
               onClick={() => setActiveTab('AM')}

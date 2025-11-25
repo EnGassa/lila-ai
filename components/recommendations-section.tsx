@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { IngredientCard } from "@/components/ingredient-card";
 
 const mockData = {
   problems: {
@@ -113,32 +114,13 @@ export function RecommendationsSection() {
         </CardHeader>
         <CardContent className="space-y-4">
           {mockData.ingredients.concerns.map((concern) => (
-            <Card key={concern.name} className="p-4">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h4 className="font-semibold">{concern.name}</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Severity: {concern.severity}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-2xl font-bold text-red-500">
-                    {concern.severity}
-                  </p>
-                  <p className="text-xs text-muted-foreground">Severity: 1-5</p>
-                </div>
-              </div>
-              <div className="mt-4">
-                <h5 className="text-sm font-semibold">KEY ACTIVES</h5>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {concern.actives.map((active) => (
-                    <Badge key={active} variant="outline">
-                      {active}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            </Card>
+            <IngredientCard
+              key={concern.name}
+              name={concern.name}
+              imageUrl="/public/ingredients/ingredient-placeholder.png"
+              tags={concern.actives}
+              description={`A key ingredient for addressing ${concern.name.toLowerCase()}.`}
+            />
           ))}
         </CardContent>
       </Card>
