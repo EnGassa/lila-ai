@@ -7,6 +7,8 @@ import {
   DrawingUtils,
 } from "@mediapipe/tasks-vision";
 
+type CapturePose = "front" | "left45" | "right45";
+
 export default function FaceCapture() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -15,6 +17,13 @@ export default function FaceCapture() {
   const [guidanceMessage, setGuidanceMessage] = useState("Align your face with the oval");
   const [captureEnabled, setCaptureEnabled] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  
+  // -- New State for Multi-Capture --
+  const [currentPose, setCurrentPose] = useState<CapturePose>("front");
+  const [detectedYaw, setDetectedYaw] = useState<number>(0);
+  const [detectedPitch, setDetectedPitch] = useState<number>(0);
+  const [detectedRoll, setDetectedRoll] = useState<number>(0);
+  // --------------------------------
 
   const faceLandmarkerRef = useRef<FaceLandmarker | null>(null);
   const imageCaptureRef = useRef<ImageCapture | null>(null);
@@ -32,7 +41,8 @@ export default function FaceCapture() {
             modelAssetPath: `/models/face_landmarker.task`,
             delegate: "GPU",
           },
-          outputFaceBlendshapes: true,
+          outputFaceBlendshapes: true, // Keep for now, might be useful later
+          outputFacialTransformationMatrixes: true,
           runningMode: "VIDEO",
           numFaces: 1,
         }
@@ -79,6 +89,16 @@ export default function FaceCapture() {
         const drawingUtils = new DrawingUtils(canvasCtx);
 
         if (results.faceLandmarks && results.faceLandmarks.length > 0) {
+          // -- Head Pose Detection from Transformation Matrix --
+          if (results.facialTransformationMatrixes && results.facialTransformationMatrixes.length > 0) {
+            const matrix = results.facialTransformationMatrixes[0].data;
+            const { yaw, pitch, roll } = getEulerAngles(matrix);
+            setDetectedYaw(yaw);
+            setDetectedPitch(pitch);
+            setDetectedRoll(roll);
+          }
+          // ----------------------------------------------------
+
           const landmarks = results.faceLandmarks[0];
           const nose = landmarks[1]; // A good center point
           const leftIris = landmarks[473];
@@ -90,25 +110,27 @@ export default function FaceCapture() {
 
           let newMessage = "Perfect!";
           let conditionsMet = true;
+          
+          console.log(`--- Frame Analysis ---`);
 
           // Check centering
-          if (nose.x < 0.4 || nose.x > 0.6) {
-            newMessage = "Center your face";
-            conditionsMet = false;
-          } else if (nose.y < 0.4 || nose.y > 0.6) {
+          const isCentered = nose.x >= 0.4 && nose.x <= 0.6 && nose.y >= 0.4 && nose.y <= 0.6;
+          console.log(`Is Centered: ${isCentered} (x: ${nose.x.toFixed(2)}, y: ${nose.y.toFixed(2)})`);
+          if (!isCentered) {
             newMessage = "Center your face";
             conditionsMet = false;
           }
 
           // Check distance
-          if (conditionsMet) {
-            if (eyeDistance < 0.12) { // Tightened the range a bit
+          const isCorrectDistance = eyeDistance >= 0.12 && eyeDistance <= 0.18;
+          console.log(`Is Correct Distance: ${isCorrectDistance} (eyeDistance: ${eyeDistance.toFixed(2)})`);
+          if (conditionsMet && !isCorrectDistance) {
+            if (eyeDistance < 0.12) {
               newMessage = "Move closer";
-              conditionsMet = false;
-            } else if (eyeDistance > 0.18) { // Tightened the range a bit
+            } else {
               newMessage = "Move farther away";
-              conditionsMet = false;
             }
+            conditionsMet = false;
           }
           
           // Check if entire face oval is in frame
@@ -119,13 +141,17 @@ export default function FaceCapture() {
                 landmarks[234], // Left cheek
                 landmarks[454] // Right cheek
             ];
-            
+            let isFaceInFrame = true;
             for(const landmark of faceOvalLandmarks) {
                 if(landmark.x < 0.05 || landmark.x > 0.95 || landmark.y < 0.05 || landmark.y > 0.95) {
-                    newMessage = "Ensure your whole face is visible";
-                    conditionsMet = false;
+                    isFaceInFrame = false;
                     break;
                 }
+            }
+            console.log(`Is Face In Frame: ${isFaceInFrame}`);
+            if(!isFaceInFrame) {
+                newMessage = "Ensure your whole face is visible";
+                conditionsMet = false;
             }
           }
 
@@ -134,8 +160,10 @@ export default function FaceCapture() {
           }
           
           if(conditionsMet && !captureEnabled) {
+            console.log("CAPTURE ENABLED");
             setCaptureEnabled(true);
           } else if (!conditionsMet && captureEnabled) {
+            console.log("CAPTURE DISABLED");
             setCaptureEnabled(false);
           }
 
@@ -290,6 +318,51 @@ export default function FaceCapture() {
         )}
       </div>
       <p className="text-center text-lg mt-4">{webcamRunning ? guidanceMessage : status}</p>
+
+      {/* -- Debugging Display for Phase 3.1 -- */}
+      {webcamRunning && (
+        <div className="mt-4 p-2 bg-gray-100 rounded">
+          <h3 className="font-bold text-center">Debug Info</h3>
+          <p>Required Pose: {currentPose}</p>
+          <p>Yaw: {detectedYaw.toFixed(2)}°</p>
+          <p>Pitch: {detectedPitch.toFixed(2)}°</p>
+          <p>Roll: {detectedRoll.toFixed(2)}°</p>
+        </div>
+      )}
+      {/* ------------------------------------ */}
     </section>
   );
+}
+
+// Helper function to convert transformation matrix to Euler angles
+function getEulerAngles(matrix: number[]): { yaw: number; pitch: number; roll: number } {
+    const [
+        m00, m01, m02, m03,
+        m10, m11, m12, m13,
+        m20, m21, m22, m23,
+        m30, m31, m32, m33
+    ] = matrix;
+
+    const sy = Math.sqrt(m00 * m00 + m10 * m10);
+
+    const singular = sy < 1e-6;
+
+    let x, y, z;
+
+    if (!singular) {
+        x = Math.atan2(m21, m22);
+        y = Math.atan2(-m20, sy);
+        z = Math.atan2(m10, m00);
+    } else {
+        x = Math.atan2(-m12, m11);
+        y = Math.atan2(-m20, sy);
+        z = 0;
+    }
+
+    // Convert radians to degrees
+    const pitch = x * (180 / Math.PI);
+    const yaw = y * (180 / Math.PI);
+    const roll = z * (180 / Math.PI);
+    
+    return { yaw, pitch, roll };
 }

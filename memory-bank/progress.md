@@ -4,10 +4,9 @@
 
 *   **Analytics and Monitoring:**
     *   **PostHog Integration:** The application is now fully integrated with PostHog for web analytics and session recording, providing insights into user behavior.
-*   **Intelligent Image Capture (Client-Side Complete):** The frontend for the new analysis flow is complete.
-    *   **Real-time Guidance:** The system uses MediaPipe `FaceLandmarker` to provide real-time feedback on centering, distance, and face visibility.
-    *   **High-Resolution Capture:** The `ImageCapture` API is used to capture still photos at the camera's full resolution, ensuring high quality for analysis.
-    *   **Cross-Platform Validation:** The feature is confirmed to work on both desktop and mobile browsers, with fixes for HTTPS context and CSS layout issues.
+*   **Intelligent Image Capture (V2 In Progress):** The image capture system is being upgraded to a multi-pose flow.
+    *   **V1 Complete (Single Capture):** The initial implementation for a single, high-resolution photo with real-time guidance (centering, distance, visibility) is complete and validated on desktop and mobile.
+    *   **V2 In Progress (Multi-Pose Detection):** The foundational work for multi-pose capture is underway. The system can now detect head orientation (yaw, pitch, roll) in real-time, which is the first step toward guiding the user through multiple capture angles.
 *   **Database Integration:** The application is fully integrated with Supabase (PostgreSQL).
     *   **AI Pipeline:** Python scripts (`run_analysis.py`, `generate_recommendations.py`) now read/write directly to the DB.
     *   **Embeddings:** Product catalog has vector embeddings stored in the `products` table.
@@ -36,7 +35,9 @@
 
 ## What's Next
 
-*   **Intelligent Image Capture (Phase 4):** Implement the backend integration. This involves uploading the captured high-resolution image to Supabase and triggering the Python analysis script.
+*   **Intelligent Image Capture (V2):** Complete the multi-pose capture feature.
+    *   **Guided UI:** Implement the logic and UI to guide the user through a sequence of required head poses.
+    *   **Backend Integration:** Upload the set of captured images to Supabase and trigger the analysis pipeline.
 *   **Beta Testing:** Continue beta testing with the new, higher-quality V3 recommendation engine.
 *   **User Feedback Loop:** Implement features for users to provide feedback on analysis and recommendations (#8).
 *   **Profile Management:** Allow users to edit their own profiles (#6).
