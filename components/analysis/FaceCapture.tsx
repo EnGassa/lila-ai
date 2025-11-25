@@ -155,17 +155,22 @@ export default function FaceCapture() {
             }
           }
 
+          // Check head orientation
+          if (conditionsMet) {
+            const isStraight = Math.abs(detectedYaw) < 10 && Math.abs(detectedPitch) < 10 && Math.abs(detectedRoll) < 10;
+            console.log(`Is Straight: ${isStraight} (Y: ${detectedYaw.toFixed(1)}, P: ${detectedPitch.toFixed(1)}, R: ${detectedRoll.toFixed(1)})`);
+            if (!isStraight) {
+              newMessage = "Look straight ahead";
+              conditionsMet = false;
+            }
+          }
+
           if(newMessage !== guidanceMessage) {
             setGuidanceMessage(newMessage);
           }
           
-          if(conditionsMet && !captureEnabled) {
-            console.log("CAPTURE ENABLED");
-            setCaptureEnabled(true);
-          } else if (!conditionsMet && captureEnabled) {
-            console.log("CAPTURE DISABLED");
-            setCaptureEnabled(false);
-          }
+          // Set capture button state based on all conditions being met
+          setCaptureEnabled(conditionsMet);
 
           drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_TESSELATION, {
             color: "#C0C0C070",
