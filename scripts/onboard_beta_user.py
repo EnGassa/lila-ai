@@ -82,6 +82,7 @@ def main():
     parser.add_argument("--image-dir", required=True, help="Directory containing user's face images.")
     parser.add_argument("--model", default="google-gla:gemini-2.5-pro", help="Model to use for analysis and recommendations.")
     parser.add_argument("--api-key", help="API key for the model provider.")
+    parser.add_argument("--context-file", help="Path to a JSON file containing user context.")
     
     args = parser.parse_args()
     
@@ -99,6 +100,8 @@ def main():
     ]
     if args.api_key:
         analysis_args.extend(["--api-key", args.api_key])
+    if args.context_file:
+        analysis_args.extend(["--context-file", args.context_file])
         
     run_script("run_analysis.py", analysis_args)
     
