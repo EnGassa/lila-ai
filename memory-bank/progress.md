@@ -2,9 +2,12 @@
 
 ## What Works
 
+*   **Intelligent Image Capture (MVP):** A new browser-based image capture flow has been implemented at `/analysis`.
+    *   **Real-time Face Tracking:** The system uses MediaPipe `FaceLandmarker` to detect and display a real-time face mesh over the user's camera feed.
+    *   **Cross-Platform Validation:** The feature is confirmed to work on both desktop and mobile browsers (using an HTTPS tunnel for mobile development).
 *   **Database Integration:** The application is fully integrated with Supabase (PostgreSQL).
     *   **AI Pipeline:** Python scripts (`run_analysis.py`, `generate_recommendations.py`) now read/write directly to the DB.
-    *   **Embeddings:** Product catalog now has vector embeddings stored in the `products` table.
+    *   **Embeddings:** Product catalog has vector embeddings stored in the `products` table.
     *   **Data Migration:** Product, user, and skin analysis data migrated to DB.
 *   **Recommendation Engine V3 (Architectural Overhaul):**
     *   The engine has been completely refactored to use a **Category-Aware RAG** system. Instead of a single brittle product search, it now performs targeted searches for the top 5 products in every available category, eliminating product blind spots.
@@ -30,6 +33,7 @@
 
 ## What's Next
 
+*   **Intelligent Image Capture (Phase 3):** Implement the intelligent guidance logic to analyze the face mesh and provide real-time feedback to the user.
 *   **Beta Testing:** Continue beta testing with the new, higher-quality V3 recommendation engine.
 *   **User Feedback Loop:** Implement features for users to provide feedback on analysis and recommendations (#8).
 *   **Profile Management:** Allow users to edit their own profiles (#6).

@@ -1,42 +1,22 @@
 # Active Context
 
-## Current Focus
-*   **Recommendation Engine V3:** Major architectural and prompt engineering overhaul to improve the quality, safety, and consistency of skincare recommendations.
+## Current Focus: Intelligent Image Capture
+
+The primary focus is the development of a new, intelligent image capture flow for skin analysis. This feature is being built in phases:
+
+1.  **MVP (Complete):** A React component (`FaceCapture.tsx`) has been created that uses the device camera and integrates with MediaPipe's `FaceLandmarker` to display a real-time face mesh over the video feed. This has been validated on both desktop and mobile.
+2.  **Intelligent Guidance (Next):** The next step is to add logic that analyzes the face mesh to provide real-time feedback to the user, ensuring they capture a high-quality, centered image.
+3.  **Backend Integration (Future):** The final phase will involve uploading the captured image to Supabase and triggering the existing Python-based analysis pipeline.
 
 ## Recent Changes
-*   **Architectural Refactor (Category-Aware RAG):**
-    *   Refactored `scripts/generate_recommendations.py` to eliminate the brittle single-pass product retrieval.
-    *   Implemented a new **Category-Aware Retrieval** strategy. The script now dynamically fetches all product categories from the database.
-    *   For each category, it performs a targeted semantic search to retrieve the top 5 most relevant products, ensuring the AI always has a high-quality, diverse set of candidates to choose from.
-    *   This change has removed the need for the `ensure_category_coverage` "bandaid" function, making the entire pipeline more robust.
 
-*   **Advanced Prompt Engineering (Dynamic Templating):**
-    *   The recommendation prompt (`prompts/02_generate_recommendations_prompt.md`) is now treated as a dynamic template.
-    *   The `generate_recommendations.py` script now injects the user's specific **`top_concerns`** and the **`available_categories`** from the database directly into the prompt's instructions. This provides the AI with critical context, focusing its reasoning on what matters most.
+*   **Dependency Added:** `@mediapipe/tasks-vision` was added to the project to enable client-side ML.
+*   **New Route:** A new route has been created at `/analysis` to host the capture flow.
+*   **New Component:** `components/analysis/FaceCapture.tsx` is the core component for this new feature.
+*   **Mobile Fixes:** Addressed both a secure context (HTTPS) issue and a CSS layout bug to ensure the feature works correctly on mobile browsers.
 
-*   **Expert-Level Prompt Tuning:**
-    *   Added several new `CRITICAL` rules to the prompt to enforce expert-level logic:
-        1.  **Comprehensive Key Ingredients:** The `key_ingredients` list must now reflect the primary active ingredients from the *final chosen products*, not just the initial candidate list.
-        2.  **AM/PM Top Concern Treatment:** The AI is now required to include treatment steps for the user's top concerns in *both* the AM and PM routines.
-        3.  **Active Ingredient Safety:** The AI must now provide explicit instructions on how to safely introduce multiple potent active ingredients (e.g., advising to use them on alternate nights).
-*   **UI Refinement (Product Card):**
-    *   Overhauled the product recommendation card in `components/recommendations-tab.tsx` to match a new, more detailed Figma design.
-    *   The layout now features a distinct "How to use" section, pulling the step instructions into each product card for better context.
-    *   Implemented dynamic rendering for product "claims" (e.g., "alcohol_free"). The component now fetches the `claims` JSONB object from the database and displays a badge for each `true` claim, replacing the previous hardcoded badges.
-    *   Updated `lib/types.ts` and the data fetching logic in `app/dashboard/[userId]/components/dashboard.tsx` to support the new `claims` data.
-*   **Improved RAG Query Personalization:**
-    *   Identified and fixed a key issue causing recommendation homogenization, where users received similar product suggestions regardless of their specific analysis.
-    *   The root cause was query dilution in the RAG pipeline's product retrieval step. The semantic search query was constructed as `"A product in the '{category}' category. {personalized_details}"`, which placed too much emphasis on the generic category.
-    *   The query has been reordered to `"{personalized_details} The product should be from the '{category}' category."` in `scripts/generate_recommendations.py`.
-    *   This change prioritizes the user's unique skin analysis first, significantly improving the personalization and diversity of the retrieved product candidates.
-*   **Multi-Agent Recommendation Refactor (GitHub Issue #19):**
-    *   Upgraded the recommendation pipeline to a multi-agent system to enhance safety and reliability.
-    *   The `generate_recommendations.py` script now orchestrates a **Generator Agent** and a **Reviewer Agent**.
-    *   Implemented a **feedback and retry loop**: If the Reviewer Agent rejects a routine, it provides specific feedback that the Generator Agent uses to make corrections on its next attempt.
-    *   The standalone `review_recommendations.py` script has been deprecated and its logic fully integrated into the new orchestrator.
-    *   Updated `skin_lib.py` with a new `ReviewResult` Pydantic model to facilitate the structured feedback loop.
-    *   This new architecture replaces the previous single-pass safety check with a more robust, self-correcting system.
+## Key Learnings & Decisions
 
-## Next Steps
-*   Commit and push all multi-agent refactor changes.
-*   Continue with beta testing to gather feedback on the V3 recommendation engine.
+*   **`FaceLandmarker` vs. `FaceDetector`:** `FaceLandmarker` was chosen over the simpler `FaceDetector` because its detailed 478-point mesh is necessary for providing the precise positioning and orientation guidance required for a high-quality capture.
+*   **Local Model Asset:** The `face_landmarker.task` model is hosted locally in `public/models` for better performance and reliability compared to loading from a CDN.
+*   **HTTPS for Mobile Testing:** `getUserMedia` requires a secure context. Local development testing on mobile devices must be done via an HTTPS tunnel (e.g., using `cloudflared`).
