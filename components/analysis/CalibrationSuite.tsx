@@ -10,6 +10,7 @@ interface CalibrationSuiteProps {
   tolerance: number;
   setTolerance: (tolerance: number) => void;
   isPoseCorrect: boolean;
+  isPortrait: boolean;
   detectedYaw: number;
   detectedPitch: number;
   detectedRoll: number;
@@ -25,6 +26,7 @@ export default function CalibrationSuite({
   tolerance,
   setTolerance,
   isPoseCorrect,
+  isPortrait,
   detectedYaw,
   detectedPitch,
   detectedRoll,
@@ -80,10 +82,22 @@ export default function CalibrationSuite({
               2. Calibrate Selected Pose:
             </label>
             <button
-              onClick={handleCalibrate}
+              onClick={() => {
+                const calibratedValues = {
+                  yaw: detectedYaw,
+                  pitch: detectedPitch,
+                  roll: detectedRoll,
+                  eyeDistance: detectedEyeDistance,
+                };
+                console.log(
+                  `CALIBRATED POSE: ${currentPose}`,
+                  JSON.stringify(calibratedValues, null, 2)
+                );
+                handleCalibrate();
+              }}
               className="w-full bg-green-500 text-white p-2 rounded"
             >
-              Calibrate &apos;{currentPose}&apos;
+              Calibrate {currentPose}
             </button>
           </div>
           <div className="mb-4">
@@ -134,7 +148,11 @@ export default function CalibrationSuite({
             <div>
               <p>Dist (Eyes): {detectedEyeDistance.toFixed(3)}</p>
               <p className="text-gray-400">
-                Tgt: {calibrationData[currentPose].eyeDistance.toFixed(3)}
+                Tgt:{" "}
+                {(isPortrait
+                  ? calibrationData[currentPose].eyeDistance.portrait
+                  : calibrationData[currentPose].eyeDistance.landscape
+                ).toFixed(3)}
               </p>
             </div>
           </div>

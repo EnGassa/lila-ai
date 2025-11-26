@@ -9,7 +9,7 @@
     *   **V2 Foundations Complete (Calibration & Modularization):**
         *   **Calibration Suite:** A powerful tool for calibrating the system to the user's specific environment has been built. It captures precise targets for orientation and distance for multiple poses.
         *   **Modular Architecture:** The feature has been refactored into a scalable architecture with a custom hook (`useFaceLandmarker`), utility functions, and a dedicated calibration component.
-        *   **Robust Validation:** The validation engine now uses dynamic, calibrated targets and screen-space eye distance, making it far more reliable than the initial hardcoded version.
+        *   **Device-Agnostic Validation:** The validation engine now dynamically adjusts its targets based on the video aspect ratio (landscape vs. portrait), ensuring consistent behavior across devices. It uses a set of pre-calibrated "golden" values rather than requiring end-user calibration.
 *   **Database Integration:** The application is fully integrated with Supabase (PostgreSQL).
     *   **AI Pipeline:** Python scripts (`run_analysis.py`, `generate_recommendations.py`) now read/write directly to the DB.
     *   **Embeddings:** Product catalog has vector embeddings stored in the `products` table.
@@ -39,6 +39,7 @@
 ## What's Next
 
 *   **Intelligent Image Capture (V2):** Complete the multi-pose capture feature.
+    *   **Architectural Refactor:** Separate the `CalibrationSuite` into a dedicated developer route (`/analysis/calibrate`) to clean up the user experience.
     *   **Guided UI:** Implement the logic and UI to guide the user through a sequence of required head poses.
     *   **Backend Integration:** Upload the set of captured images to Supabase and trigger the analysis pipeline.
 *   **Beta Testing:** Continue beta testing with the new, higher-quality V3 recommendation engine.

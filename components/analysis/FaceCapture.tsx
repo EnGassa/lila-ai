@@ -12,7 +12,7 @@ export interface PoseData {
   yaw: number;
   pitch: number;
   roll: number;
-  eyeDistance: number;
+  eyeDistance: { landscape: number; portrait: number };
   noseX?: number;
   noseY?: number;
   boundingBox?: {
@@ -26,15 +26,25 @@ export interface PoseData {
 const initialCalibrationData: Record<CapturePose, PoseData> = {
   front: {
     yaw: 0,
-    pitch: 0,
+    pitch: -5.0,
     roll: 0,
-    eyeDistance: 0.15,
-    noseX: 0.5,
-    noseY: 0.5,
-    boundingBox: { top: 0.05, bottom: 0.95, left: 0.05, right: 0.95 },
+    eyeDistance: { landscape: 0.13, portrait: 0.24 },
+    // noseX: 0.5,
+    // noseY: 0.5,
+    boundingBox: { top: 0.15, bottom: 0.85, left: 0.05, right: 0.95 },
   },
-  left45: { yaw: -45, pitch: 0, roll: 0, eyeDistance: 0.15 },
-  right45: { yaw: 45, pitch: 0, roll: 0, eyeDistance: 0.15 },
+  left45: {
+    yaw: -22.0,
+    pitch: -5.0,
+    roll: 0,
+    eyeDistance: { landscape: 0.13, portrait: 0.24 },
+  },
+  right45: {
+    yaw: 22.0,
+    pitch: -5.0,
+    roll: 0,
+    eyeDistance: { landscape: 0.13, portrait: 0.24 },
+  },
 };
 
 export default function FaceCapture() {
@@ -51,7 +61,7 @@ export default function FaceCapture() {
   const [calibrationData, setCalibrationData] = useState(
     initialCalibrationData
   );
-  const [tolerance, setTolerance] = useState(10);
+  const [tolerance, setTolerance] = useState(5);
 
   const {
     status,
@@ -63,6 +73,7 @@ export default function FaceCapture() {
     detectedEyeDistance,
     landmarks,
     imageCaptureRef,
+    isPortrait,
   } = useFaceLandmarker(videoRef, canvasRef);
 
   // --- Derived State and Side Effects ---
@@ -77,6 +88,10 @@ export default function FaceCapture() {
       let poseCorrect = true;
 
       // Validation logic
+      const targetEyeDistance = isPortrait
+        ? targetPose.eyeDistance.portrait
+        : targetPose.eyeDistance.landscape;
+
       if (
         Math.abs(detectedYaw - targetPose.yaw) > tolerance ||
         Math.abs(detectedPitch - targetPose.pitch) > tolerance ||
@@ -84,25 +99,51 @@ export default function FaceCapture() {
       ) {
         guidanceMessage = `Turn head to ${currentPose} position`;
         poseCorrect = false;
-      } else if (Math.abs(detectedEyeDistance - targetPose.eyeDistance) > (targetPose.eyeDistance * tolerancePercent)) {
-        guidanceMessage = detectedEyeDistance < targetPose.eyeDistance ? "Move closer" : "Move farther away";
+      } else if (
+        Math.abs(detectedEyeDistance - targetEyeDistance) >
+        targetEyeDistance * 0.15
+      ) {
+        // Use 15% hardcoded tolerance
+        guidanceMessage =
+          detectedEyeDistance < targetEyeDistance
+            ? "Move closer"
+            : "Move farther away";
         poseCorrect = false;
-      } else if (currentPose === "front" && masterRef.noseX && masterRef.noseY && (Math.abs(nose.x - masterRef.noseX) > 0.05 || Math.abs(nose.y - masterRef.noseY) > 0.05)) {
+      } else if (
+        currentPose === "front" &&
+        masterRef.noseX &&
+        masterRef.noseY &&
+        (Math.abs(nose.x - masterRef.noseX) > 0.05 ||
+          Math.abs(nose.y - masterRef.noseY) > 0.05)
+      ) {
         guidanceMessage = "Center your face";
         poseCorrect = false;
       } else if (currentPose === "front" && masterRef.boundingBox) {
-          const faceOvalLandmarks = [landmarks[10], landmarks[152], landmarks[234], landmarks[454]];
-          if (faceOvalLandmarks.some(lm => lm.x < masterRef.boundingBox!.left || lm.x > masterRef.boundingBox!.right || lm.y < masterRef.boundingBox!.top || lm.y > masterRef.boundingBox!.bottom)) {
-            guidanceMessage = "Ensure your whole face is visible";
-            poseCorrect = false;
-          }
+        const faceOvalLandmarks = [
+          landmarks[10],
+          landmarks[152],
+          landmarks[234],
+          landmarks[454],
+        ];
+        if (
+          faceOvalLandmarks.some(
+            (lm) =>
+              lm.x < masterRef.boundingBox!.left ||
+              lm.x > masterRef.boundingBox!.right ||
+              lm.y < masterRef.boundingBox!.top ||
+              lm.y > masterRef.boundingBox!.bottom
+          )
+        ) {
+          guidanceMessage = "Ensure your whole face is visible";
+          poseCorrect = false;
+        }
       }
 
       // Update state only when it changes to avoid cascading renders
       if (poseCorrect !== isPoseCorrect) setIsPoseCorrect(poseCorrect);
-      const newCaptureState = currentPose === 'front' && poseCorrect;
-      if (newCaptureState !== captureEnabled) setCaptureEnabled(newCaptureState);
-
+      const newCaptureState = currentPose === "front" && poseCorrect;
+      if (newCaptureState !== captureEnabled)
+        setCaptureEnabled(newCaptureState);
     } else {
       guidanceMessage = "No face detected";
     }
@@ -116,7 +157,9 @@ export default function FaceCapture() {
       return;
     }
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      console.warn("getUserMedia() is not supported by your browser or the context is insecure.");
+      console.warn(
+        "getUserMedia() is not supported by your browser or the context is insecure."
+      );
       return;
     }
     setWebcamRunning((prev) => !prev);
@@ -142,11 +185,15 @@ export default function FaceCapture() {
   const handleCalibrate = () => {
     if (landmarks.length > 0) {
       const nose = landmarks[1];
-      const newPoseData: PoseData = {
+      const newPoseData = {
+        ...calibrationData[currentPose],
         yaw: detectedYaw,
         pitch: detectedPitch,
         roll: detectedRoll,
-        eyeDistance: detectedEyeDistance,
+        eyeDistance: {
+          ...calibrationData[currentPose].eyeDistance,
+          [isPortrait ? "portrait" : "landscape"]: detectedEyeDistance,
+        },
       };
 
       if (currentPose === "front") {
@@ -231,6 +278,7 @@ export default function FaceCapture() {
         tolerance={tolerance}
         setTolerance={setTolerance}
         isPoseCorrect={isPoseCorrect}
+        isPortrait={isPortrait}
         detectedYaw={detectedYaw}
         detectedPitch={detectedPitch}
         detectedRoll={detectedRoll}

@@ -21,6 +21,7 @@ export function useFaceLandmarker(
   const [detectedRoll, setDetectedRoll] = useState<number>(0);
   const [detectedEyeDistance, setDetectedEyeDistance] = useState<number>(0);
   const [landmarks, setLandmarks] = useState<NormalizedLandmark[]>([]);
+  const [isPortrait, setIsPortrait] = useState(false);
 
   const faceLandmarkerRef = useRef<FaceLandmarker | null>(null);
   const imageCaptureRef = useRef<ImageCapture | null>(null);
@@ -84,6 +85,13 @@ export function useFaceLandmarker(
         if (canvas.width !== videoWidth) canvas.width = videoWidth;
         if (canvas.height !== videoHeight) canvas.height = videoHeight;
 
+        if (videoWidth > 0) {
+          const currentIsPortrait = videoHeight > videoWidth;
+          if (currentIsPortrait !== isPortrait) {
+            setIsPortrait(currentIsPortrait);
+          }
+        }
+
         const results = faceLandmarkerRef.current.detectForVideo(
           video,
           performance.now()
@@ -121,7 +129,46 @@ export function useFaceLandmarker(
             FaceLandmarker.FACE_LANDMARKS_TESSELATION,
             { color: "#C0C0C070", lineWidth: 1 }
           );
-          // ... (rest of drawing logic)
+          drawingUtils.drawConnectors(
+            landmarksData,
+            FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE,
+            { color: "#FF3030" }
+          );
+          drawingUtils.drawConnectors(
+            landmarksData,
+            FaceLandmarker.FACE_LANDMARKS_RIGHT_EYEBROW,
+            { color: "#FF3030" }
+          );
+          drawingUtils.drawConnectors(
+            landmarksData,
+            FaceLandmarker.FACE_LANDMARKS_LEFT_EYE,
+            { color: "#30FF30" }
+          );
+          drawingUtils.drawConnectors(
+            landmarksData,
+            FaceLandmarker.FACE_LANDMARKS_LEFT_EYEBROW,
+            { color: "#30FF30" }
+          );
+          drawingUtils.drawConnectors(
+            landmarksData,
+            FaceLandmarker.FACE_LANDMARKS_FACE_OVAL,
+            { color: "#E0E0E0" }
+          );
+          drawingUtils.drawConnectors(
+            landmarksData,
+            FaceLandmarker.FACE_LANDMARKS_LIPS,
+            { color: "#E0E0E0" }
+          );
+          drawingUtils.drawConnectors(
+            landmarksData,
+            FaceLandmarker.FACE_LANDMARKS_RIGHT_IRIS,
+            { color: "#FF3030" }
+          );
+          drawingUtils.drawConnectors(
+            landmarksData,
+            FaceLandmarker.FACE_LANDMARKS_LEFT_IRIS,
+            { color: "#30FF30" }
+          );
         }
         canvasCtx.restore();
       }
@@ -162,5 +209,6 @@ export function useFaceLandmarker(
     detectedEyeDistance,
     landmarks,
     imageCaptureRef,
+    isPortrait,
   };
 }
