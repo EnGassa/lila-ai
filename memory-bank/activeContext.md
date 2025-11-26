@@ -1,30 +1,33 @@
 # Active Context
 
-## Current Focus: Multi-Capture UI and Backend Integration
+## Current Focus: Backend Integration for Image Upload
 
-With the auto-capture feature now implemented, the next step is to complete the guided multi-pose UI and integrate it with the backend for image upload and analysis.
+With the guided multi-pose capture feature fully implemented and polished, the next major step is to integrate with the backend to upload the captured images and trigger the analysis pipeline.
 
-1.  **Auto-Capture UI (Complete):** The system now automatically captures a photo when the user holds the correct pose for a set duration, guided by a visual progress indicator.
-2.  **Guided Multi-Pose Logic (Next):** Implement the state management to cycle the user through the required poses (front, left, right), capturing an image for each.
-3.  **Image Upload & Backend Trigger (Planned):** Upload the set of captured images to Supabase and trigger the analysis pipeline.
+1.  **Guided Multi-Pose UI (Complete):** The system now successfully guides the user through a sequence of 3 poses (Front, Left, Right), automatically capturing photos with smooth transitions and clear feedback.
+2.  **Image Upload & Backend Trigger (Next):** Upload the set of 3 captured images to Supabase and trigger the existing analysis pipeline.
 
 ## Recent Changes
 
+*   **Mirrored Preview Fix:** Applied a CSS transform to the final captured images in the review gallery so they match the mirrored live preview, preventing user confusion about "left" vs "right".
+*   **UI Polish:** Added a "Step X of 3" progress indicator and refined the guidance text (e.g., "Turn your head to the Left until the oval is green") to be more instructional.
+*   **Smooth Transitions:** Implemented a "transition state" between captures. After a successful auto-capture, the system pauses, shows a "Pose Captured!" success overlay for 2 seconds, and then advances to the next pose.
+*   **Multi-Pose State Management:** Refactored `FaceCapture` to handle a sequence of poses (`['front', 'left45', 'right45']`) and store images for each.
 *   **Auto-Capture Refinement (Midpoint Trigger):** Optimized the auto-capture logic to address latency. The system now captures the photo at the midpoint (50%) of the "Hold" timer but only displays it if the full timer completes successfully. This ensures the user is perfectly still during the actual capture moment while masking any `takePhoto()` latency.
 *   **Auto-Capture Implementation:** Implemented a hands-free capture mechanism. When the user's face is correctly aligned, a timer starts, and the photo is taken automatically. This is supported by a circular progress indicator with a "Hold" text cue for clear user feedback.
 *   **Dynamic Distance Validation:** The system now detects the video aspect ratio and selects between two hardcoded `eyeDistance` targets (`0.13` for landscape, `0.24` for portrait), making the validation device-agnostic.
 *   **"Golden" Value Calibration:** The `CalibrationSuite` was used as a developer tool to find and hardcode a universal set of target values for `yaw`, `pitch`, `roll`, and `eyeDistance`. The concept of end-user calibration has been removed in favor of this pre-calibrated approach.
-*   **Code Modularization:**
-    *   Extracted MediaPipe logic into a custom hook: `hooks/useFaceLandmarker.ts`.
-    *   Moved math helpers to `lib/utils.ts`.
-    *   Created `components/analysis/CalibrationSuite.tsx` for the debug UI.
-    *   Streamlined `components/analysis/FaceCapture.tsx`.
-*   **Head Pose Detection:** Validated and integrated real-time head pose calculations into the core validation logic.
 
 ## Key Learnings & Decisions
 
+*   **Mirrored vs. True Image:** Users expect the final photo to match the mirrored preview they saw during capture. While we display the mirrored version for UX, the underlying data sent to the backend must remain the true, un-mirrored image to ensure correct left/right analysis.
+*   **Transition Delays are Critical:** Without a pause between auto-captures, the user experience feels rushed and jarring. A 2-second "success" state allows the user to reset before the next instruction.
 *   **`eyeDistance` is Aspect-Ratio Dependent:** The normalized `eyeDistance` value is highly sensitive to the video stream's aspect ratio. A single hardcoded value is insufficient for both mobile (portrait) and desktop (landscape) use cases. The solution is to detect the aspect ratio and switch targets accordingly.
 *   **Pre-Calibration over End-User Calibration:** For a consistent user experience, it was decided to use the `CalibrationSuite` as a one-time developer tool to establish a universal set of "golden" calibration values rather than requiring each end-user to calibrate the system.
 *   **`FaceLandmarker` vs. `FaceDetector`:** `FaceLandmarker` was chosen because its detailed 478-point mesh is necessary for the precise positioning and orientation guidance required.
 *   **Local Model Asset:** The `face_landmarker.task` model is hosted locally in `public/models` for better performance.
 *   **HTTPS for Mobile Testing:** `getUserMedia` requires a secure context, necessitating an HTTPS tunnel for testing on mobile devices.
+
+## Active Issues (GitHub)
+*   **Feature: Programmatically determine and use max camera resolution** (Issue #24): Currently hardcoded to 1920x1080.
+*   **Enhancement: Crop captured photo to match video preview aspect ratio** (To be filed/tracked): The raw capture has a wider FOV than the preview, making the user appear further away.

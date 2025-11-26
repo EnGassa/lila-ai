@@ -48,6 +48,7 @@ const initialCalibrationData: Record<CapturePose, PoseData> = {
   },
 };
 
+const CAPTURE_SEQUENCE: CapturePose[] = ["front", "left45", "right45"];
 const AUTO_CAPTURE_HOLD_DURATION = 2000; // 2 seconds
 
 interface FaceCaptureProps {
@@ -59,12 +60,22 @@ export default function FaceCapture({
 }: FaceCaptureProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [captureEnabled, setCaptureEnabled] = useState(false);
-  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+
+  // --- Sequence State ---
+  const [currentStep, setCurrentStep] = useState(0);
+  const [capturedImages, setCapturedImages] = useState<
+    Record<CapturePose, string | null>
+  >({
+    front: null,
+    left45: null,
+    right45: null,
+  });
+  const currentPose = CAPTURE_SEQUENCE[currentStep];
+  const isSequenceComplete = currentStep >= CAPTURE_SEQUENCE.length;
 
   // --- Live Detection State ---
-  const [currentPose, setCurrentPose] = useState<CapturePose>("front");
   const [isPoseCorrect, setIsPoseCorrect] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   // --- Auto-Capture State ---
   const [autoCaptureProgress, setAutoCaptureProgress] = useState(0);
@@ -93,6 +104,29 @@ export default function FaceCapture({
     isPortrait,
   } = useFaceLandmarker(videoRef, canvasRef);
 
+  const handleCommitCapture = useCallback(
+    (imageUrl: string) => {
+      setCapturedImages((prev) => ({
+        ...prev,
+        [currentPose]: imageUrl,
+      }));
+
+      const nextStep = currentStep + 1;
+
+      if (nextStep >= CAPTURE_SEQUENCE.length) {
+        setCurrentStep(nextStep);
+        setWebcamRunning(false); // All captures are done
+      } else {
+        setIsTransitioning(true);
+        setTimeout(() => {
+          setCurrentStep(nextStep);
+          setIsTransitioning(false);
+        }, 2000); // 2-second delay
+      }
+    },
+    [currentPose, currentStep, setWebcamRunning]
+  );
+
   const handleCapture = useCallback(async () => {
     if (imageCaptureRef.current) {
       try {
@@ -101,8 +135,7 @@ export default function FaceCapture({
 
         // If the countdown is ALREADY complete (slow capture), commit immediately
         if (countdownCompletedRef.current) {
-          setCapturedImage(url);
-          setWebcamRunning(false);
+          handleCommitCapture(url);
         } else {
           // Otherwise, just store it temporarily. The timer will commit it.
           tempImageRef.current = url;
@@ -111,11 +144,11 @@ export default function FaceCapture({
         console.error("Error taking photo:", error);
       }
     }
-  }, [imageCaptureRef, setWebcamRunning]);
+  }, [imageCaptureRef, handleCommitCapture]);
 
   // --- Derived State and Side Effects ---
   useEffect(() => {
-    if (isPoseCorrect) {
+    if (isPoseCorrect && !isSequenceComplete && !isTransitioning) {
       // 1. Trigger capture at midpoint (50% of duration)
       const captureTimer = setTimeout(() => {
         if (!captureTriggeredRef.current) {
@@ -130,8 +163,7 @@ export default function FaceCapture({
 
         // If we have a temp image ready, use it!
         if (tempImageRef.current) {
-          setCapturedImage(tempImageRef.current);
-          setWebcamRunning(false);
+          handleCommitCapture(tempImageRef.current);
           tempImageRef.current = null; // Cleanup
         }
       }, AUTO_CAPTURE_HOLD_DURATION);
@@ -169,7 +201,13 @@ export default function FaceCapture({
       countdownCompletedRef.current = false;
       tempImageRef.current = null;
     }
-  }, [isPoseCorrect, handleCapture]);
+  }, [
+    isPoseCorrect,
+    handleCapture,
+    handleCommitCapture,
+    isSequenceComplete,
+    isTransitioning,
+  ]);
 
   useEffect(() => {
     let animationFrameId: number;
@@ -199,7 +237,9 @@ export default function FaceCapture({
   }, [isPoseCorrect]);
 
   let guidanceMessage = "Align your face with the oval";
-  if (webcamRunning) {
+  if (isTransitioning) {
+    guidanceMessage = "Success! Prepare for the next pose.";
+  } else if (webcamRunning) {
     if (landmarks.length > 0) {
       guidanceMessage = "Perfect!"; // Start with the ideal message
       if (isPoseCorrect) {
@@ -216,12 +256,19 @@ export default function FaceCapture({
         ? targetPose.eyeDistance.portrait
         : targetPose.eyeDistance.landscape;
 
+      const poseFriendlyNames = {
+        front: "Front",
+        left45: "Left",
+        right45: "Right",
+      };
       if (
         Math.abs(detectedYaw - targetPose.yaw) > tolerance ||
         Math.abs(detectedPitch - targetPose.pitch) > tolerance ||
         Math.abs(detectedRoll - targetPose.roll) > tolerance
       ) {
-        guidanceMessage = `Turn head to ${currentPose} position`;
+        guidanceMessage = `Turn your head to the ${
+          poseFriendlyNames[currentPose]
+        } until the oval is green`;
         poseCorrect = false;
       } else if (
         Math.abs(detectedEyeDistance - targetEyeDistance) >
@@ -265,9 +312,6 @@ export default function FaceCapture({
 
       // Update state only when it changes to avoid cascading renders
       if (poseCorrect !== isPoseCorrect) setIsPoseCorrect(poseCorrect);
-      const newCaptureState = currentPose === "front" && poseCorrect;
-      if (newCaptureState !== captureEnabled)
-        setCaptureEnabled(newCaptureState);
     } else {
       guidanceMessage = "No face detected";
     }
@@ -290,7 +334,8 @@ export default function FaceCapture({
   };
 
   const handleRetake = () => {
-    setCapturedImage(null);
+    setCapturedImages({ front: null, left45: null, right45: null });
+    setCurrentStep(0);
     setWebcamRunning(true);
   };
 
@@ -329,13 +374,21 @@ export default function FaceCapture({
 
   return (
     <section>
-      {capturedImage ? (
-        <div className="relative w-full max-w-2xl mx-auto">
-          <img
-            src={capturedImage}
-            alt="Captured face"
-            className="w-full h-auto"
-          />
+      {isSequenceComplete ? (
+        <div className="w-full max-w-4xl mx-auto">
+          <h2 className="text-center text-2xl font-bold mb-4">Review Your Photos</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {CAPTURE_SEQUENCE.map((pose) => (
+              <div key={pose}>
+                <h3 className="text-center font-semibold capitalize mb-2">{pose}</h3>
+                <img
+                  src={capturedImages[pose] || ""}
+                  alt={`Captured pose: ${pose}`}
+                  className="w-full h-auto rounded-lg transform -scale-x-100"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       ) : (
         <div className="relative w-full max-w-2xl mx-auto">
@@ -349,14 +402,19 @@ export default function FaceCapture({
             ref={canvasRef}
             className="absolute top-0 left-0 w-full h-full transform -scale-x-100"
           ></canvas>
-          {webcamRunning && isPoseCorrect && (
+          {webcamRunning && isPoseCorrect && !isTransitioning && (
             <AutoCaptureIndicator progress={autoCaptureProgress} />
+          )}
+          {isTransitioning && (
+             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="text-white text-2xl font-bold">Pose Captured!</div>
+             </div>
           )}
         </div>
       )}
 
       <div className="flex justify-center space-x-4 mt-4">
-        {!capturedImage && (
+        {!isSequenceComplete && (
           <button
             onClick={handleCamClick}
             className="bg-blue-500 text-white p-2 rounded"
@@ -365,17 +423,7 @@ export default function FaceCapture({
           </button>
         )}
 
-        {webcamRunning && !capturedImage && (
-          <button
-            onClick={handleCapture}
-            disabled={!captureEnabled || isPoseCorrect}
-            className="bg-green-500 text-white p-2 rounded disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            Capture
-          </button>
-        )}
-
-        {capturedImage && (
+        {isSequenceComplete && (
           <button
             onClick={handleRetake}
             className="bg-yellow-500 text-white p-2 rounded"
@@ -389,7 +437,12 @@ export default function FaceCapture({
         <CalibrationSuite
           webcamRunning={webcamRunning}
           currentPose={currentPose}
-          setCurrentPose={setCurrentPose}
+          setCurrentPose={(pose) => {
+            const stepIndex = CAPTURE_SEQUENCE.indexOf(pose);
+            if (stepIndex !== -1) {
+              setCurrentStep(stepIndex);
+            }
+          }}
           handleCalibrate={handleCalibrate}
           tolerance={tolerance}
           setTolerance={setTolerance}
@@ -403,7 +456,19 @@ export default function FaceCapture({
         />
       )}
 
-      <p className="text-center text-lg mt-4">
+      {!isSequenceComplete && webcamRunning && (
+        <p className="text-center text-md mt-4 text-gray-400">
+          Step {currentStep + 1} of {CAPTURE_SEQUENCE.length}: Capturing{" "}
+          {
+            { front: "Front", left45: "Left", right45: "Right" }[
+              currentPose
+            ]
+          }{" "}
+          Pose
+        </p>
+      )}
+
+      <p className="text-center text-lg mt-2">
         {webcamRunning ? guidanceMessage : status}
       </p>
     </section>
