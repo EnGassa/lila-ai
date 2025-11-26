@@ -1,13 +1,12 @@
 # Active Context
 
-## Current Focus: Finalizing Calibration & Refactoring Routes
+## Current Focus: Building the Multi-Capture UI
 
-The core functionality for a device-agnostic, multi-pose image capture system is complete and validated. The immediate focus is on documenting this stable state and then refactoring the UI to separate the developer-facing calibration tool from the end-user capture flow.
+The calibration system is complete, robust, and cleanly separated from the main UI. The focus now shifts to building the user-facing experience for capturing the sequence of three photos required for analysis.
 
-1.  **Device-Agnostic Calibration (Complete):** A robust, pre-calibrated system has been implemented. It uses a set of "golden" values and dynamically adjusts its distance validation (`eyeDistance`) based on the video stream's aspect ratio (portrait vs. landscape), ensuring a consistent experience on both desktop and mobile devices.
-2.  **Architectural Refactor (Next):** The `CalibrationSuite` will be moved from the main `/analysis` page to a dedicated `/analysis/calibrate` developer route. This will involve making the `FaceCapture` component more reusable by controlling the visibility of the suite via a prop.
-3.  **Guided Multi-Capture UI (Planned):** Build the UI logic to guide the user through the sequence of poses (front, left 45°, right 45°).
-4.  **Image Upload & Backend Trigger (Planned):** Upload the set of captured images to Supabase and trigger the analysis pipeline.
+1.  **Architectural Refactor (Complete):** The `CalibrationSuite` has been successfully moved to a dedicated developer route (`/analysis/calibrate`). The main `FaceCapture` component now accepts a `showCalibrationSuite` prop, keeping the production `/analysis` route clean and user-focused.
+2.  **Guided Multi-Capture UI (Next):** Build the UI logic to guide the user through the sequence of poses (front, left 45°, right 45°). This involves managing state for multiple captured images and transitioning the user between steps.
+3.  **Image Upload & Backend Trigger (Planned):** Upload the set of captured images to Supabase and trigger the analysis pipeline.
 
 ## Recent Changes
 

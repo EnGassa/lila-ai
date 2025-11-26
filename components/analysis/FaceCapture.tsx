@@ -47,7 +47,13 @@ const initialCalibrationData: Record<CapturePose, PoseData> = {
   },
 };
 
-export default function FaceCapture() {
+interface FaceCaptureProps {
+  showCalibrationSuite?: boolean;
+}
+
+export default function FaceCapture({
+  showCalibrationSuite = false,
+}: FaceCaptureProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [captureEnabled, setCaptureEnabled] = useState(false);
@@ -270,21 +276,23 @@ export default function FaceCapture() {
         )}
       </div>
 
-      <CalibrationSuite
-        webcamRunning={webcamRunning}
-        currentPose={currentPose}
-        setCurrentPose={setCurrentPose}
-        handleCalibrate={handleCalibrate}
-        tolerance={tolerance}
-        setTolerance={setTolerance}
-        isPoseCorrect={isPoseCorrect}
-        isPortrait={isPortrait}
-        detectedYaw={detectedYaw}
-        detectedPitch={detectedPitch}
-        detectedRoll={detectedRoll}
-        detectedEyeDistance={detectedEyeDistance}
-        calibrationData={calibrationData}
-      />
+      {showCalibrationSuite && (
+        <CalibrationSuite
+          webcamRunning={webcamRunning}
+          currentPose={currentPose}
+          setCurrentPose={setCurrentPose}
+          handleCalibrate={handleCalibrate}
+          tolerance={tolerance}
+          setTolerance={setTolerance}
+          isPoseCorrect={isPoseCorrect}
+          isPortrait={isPortrait}
+          detectedYaw={detectedYaw}
+          detectedPitch={detectedPitch}
+          detectedRoll={detectedRoll}
+          detectedEyeDistance={detectedEyeDistance}
+          calibrationData={calibrationData}
+        />
+      )}
 
       <p className="text-center text-lg mt-4">
         {webcamRunning ? guidanceMessage : status}
