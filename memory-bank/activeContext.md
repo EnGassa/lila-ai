@@ -1,15 +1,17 @@
 # Active Context
 
-## Current Focus: Building the Multi-Capture UI
+## Current Focus: Multi-Capture UI and Backend Integration
 
-The calibration system is complete, robust, and cleanly separated from the main UI. The focus now shifts to building the user-facing experience for capturing the sequence of three photos required for analysis.
+With the auto-capture feature now implemented, the next step is to complete the guided multi-pose UI and integrate it with the backend for image upload and analysis.
 
-1.  **Architectural Refactor (Complete):** The `CalibrationSuite` has been successfully moved to a dedicated developer route (`/analysis/calibrate`). The main `FaceCapture` component now accepts a `showCalibrationSuite` prop, keeping the production `/analysis` route clean and user-focused.
-2.  **Guided Multi-Capture UI (Next):** Build the UI logic to guide the user through the sequence of poses (front, left 45°, right 45°). This involves managing state for multiple captured images and transitioning the user between steps.
+1.  **Auto-Capture UI (Complete):** The system now automatically captures a photo when the user holds the correct pose for a set duration, guided by a visual progress indicator.
+2.  **Guided Multi-Pose Logic (Next):** Implement the state management to cycle the user through the required poses (front, left, right), capturing an image for each.
 3.  **Image Upload & Backend Trigger (Planned):** Upload the set of captured images to Supabase and trigger the analysis pipeline.
 
 ## Recent Changes
 
+*   **Auto-Capture Refinement (Midpoint Trigger):** Optimized the auto-capture logic to address latency. The system now captures the photo at the midpoint (50%) of the "Hold" timer but only displays it if the full timer completes successfully. This ensures the user is perfectly still during the actual capture moment while masking any `takePhoto()` latency.
+*   **Auto-Capture Implementation:** Implemented a hands-free capture mechanism. When the user's face is correctly aligned, a timer starts, and the photo is taken automatically. This is supported by a circular progress indicator with a "Hold" text cue for clear user feedback.
 *   **Dynamic Distance Validation:** The system now detects the video aspect ratio and selects between two hardcoded `eyeDistance` targets (`0.13` for landscape, `0.24` for portrait), making the validation device-agnostic.
 *   **"Golden" Value Calibration:** The `CalibrationSuite` was used as a developer tool to find and hardcode a universal set of target values for `yaw`, `pitch`, `roll`, and `eyeDistance`. The concept of end-user calibration has been removed in favor of this pre-calibrated approach.
 *   **Code Modularization:**

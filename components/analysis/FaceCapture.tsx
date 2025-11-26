@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FaceLandmarker, DrawingUtils } from "@mediapipe/tasks-vision";
 import { getEulerAngles } from "@/lib/utils";
 import CalibrationSuite from "./CalibrationSuite";
 import { useFaceLandmarker } from "@/hooks/useFaceLandmarker";
+import AutoCaptureIndicator from "./AutoCaptureIndicator";
 
 export type CapturePose = "front" | "left45" | "right45";
 
@@ -47,6 +48,8 @@ const initialCalibrationData: Record<CapturePose, PoseData> = {
   },
 };
 
+const AUTO_CAPTURE_HOLD_DURATION = 2000; // 2 seconds
+
 interface FaceCaptureProps {
   showCalibrationSuite?: boolean;
 }
@@ -62,6 +65,14 @@ export default function FaceCapture({
   // --- Live Detection State ---
   const [currentPose, setCurrentPose] = useState<CapturePose>("front");
   const [isPoseCorrect, setIsPoseCorrect] = useState(false);
+
+  // --- Auto-Capture State ---
+  const [autoCaptureProgress, setAutoCaptureProgress] = useState(0);
+  const autoCaptureTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const captureTriggeredRef = useRef(false);
+  const countdownCompletedRef = useRef(false);
+  const tempImageRef = useRef<string | null>(null);
 
   // --- Calibration State ---
   const [calibrationData, setCalibrationData] = useState(
@@ -82,11 +93,118 @@ export default function FaceCapture({
     isPortrait,
   } = useFaceLandmarker(videoRef, canvasRef);
 
+  const handleCapture = useCallback(async () => {
+    if (imageCaptureRef.current) {
+      try {
+        const blob = await imageCaptureRef.current.takePhoto();
+        const url = URL.createObjectURL(blob);
+
+        // If the countdown is ALREADY complete (slow capture), commit immediately
+        if (countdownCompletedRef.current) {
+          setCapturedImage(url);
+          setWebcamRunning(false);
+        } else {
+          // Otherwise, just store it temporarily. The timer will commit it.
+          tempImageRef.current = url;
+        }
+      } catch (error) {
+        console.error("Error taking photo:", error);
+      }
+    }
+  }, [imageCaptureRef, setWebcamRunning]);
+
   // --- Derived State and Side Effects ---
+  useEffect(() => {
+    if (isPoseCorrect) {
+      // 1. Trigger capture at midpoint (50% of duration)
+      const captureTimer = setTimeout(() => {
+        if (!captureTriggeredRef.current) {
+          handleCapture();
+          captureTriggeredRef.current = true;
+        }
+      }, AUTO_CAPTURE_HOLD_DURATION / 2);
+
+      // 2. Commit the capture at the end (100% of duration)
+      const commitTimer = setTimeout(() => {
+        countdownCompletedRef.current = true;
+
+        // If we have a temp image ready, use it!
+        if (tempImageRef.current) {
+          setCapturedImage(tempImageRef.current);
+          setWebcamRunning(false);
+          tempImageRef.current = null; // Cleanup
+        }
+      }, AUTO_CAPTURE_HOLD_DURATION);
+
+      // Store the timer ID (we only need to clear the last one as nesting handles order,
+      // but to be safe/clean, we can just overwrite since we clear on unmount/change)
+      // A cleaner way for the cleanup function below is to just clear this one ref,
+      // but we have two timers. Let's use the commitTimer as the primary one to track
+      // for the "whole operation cancellation".
+      autoCaptureTimerRef.current = commitTimer;
+
+      // We also need to ensure the captureTimer is cleared if we abort early.
+      // Javascript timers are just numbers, so we can't easily "group" them without an array or object.
+      // But actually, if we clear the effect, we should clear ALL pending timers.
+      // The easiest way is to store them in a way we can access.
+      // But since `autoCaptureTimerRef` is typed as `NodeJS.Timeout | null`, let's hack it slightly
+      // or better, just use a closure variable for the captureTimer since we only clear it in this scope's cleanup.
+      // Actually, we can't use a closure for cleanup because `autoCaptureTimerRef` is mutable.
+      // Let's just attach the captureTimer to the ref as well, but we can't because of types.
+      // Simpler approach: The cleanup function runs on every dependency change.
+      // So we can just define the cleanup function to clear BOTH specific IDs.
+      return () => {
+        clearTimeout(captureTimer);
+        clearTimeout(commitTimer);
+        captureTriggeredRef.current = false;
+        countdownCompletedRef.current = false;
+        tempImageRef.current = null;
+      };
+    } else {
+      // If pose becomes incorrect, clear everything
+      if (autoCaptureTimerRef.current) {
+        clearTimeout(autoCaptureTimerRef.current);
+      }
+      captureTriggeredRef.current = false;
+      countdownCompletedRef.current = false;
+      tempImageRef.current = null;
+    }
+  }, [isPoseCorrect, handleCapture]);
+
+  useEffect(() => {
+    let animationFrameId: number;
+    let startTime: number;
+
+    const animate = (timestamp: number) => {
+      if (startTime === undefined) {
+        startTime = timestamp;
+      }
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / AUTO_CAPTURE_HOLD_DURATION, 1);
+      setAutoCaptureProgress(progress);
+
+      if (elapsed < AUTO_CAPTURE_HOLD_DURATION) {
+        animationFrameId = requestAnimationFrame(animate);
+      }
+    };
+
+    if (isPoseCorrect) {
+      animationFrameId = requestAnimationFrame(animate);
+    }
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      setAutoCaptureProgress(0);
+    };
+  }, [isPoseCorrect]);
+
   let guidanceMessage = "Align your face with the oval";
   if (webcamRunning) {
     if (landmarks.length > 0) {
       guidanceMessage = "Perfect!"; // Start with the ideal message
+      if (isPoseCorrect) {
+        guidanceMessage = "Hold steady...";
+      }
       const nose = landmarks[1];
       const masterRef = calibrationData.front;
       const targetPose = calibrationData[currentPose];
@@ -171,18 +289,6 @@ export default function FaceCapture({
     setWebcamRunning((prev) => !prev);
   };
 
-  const handleCapture = async () => {
-    if (imageCaptureRef.current) {
-      try {
-        const blob = await imageCaptureRef.current.takePhoto();
-        setCapturedImage(URL.createObjectURL(blob));
-        setWebcamRunning(false);
-      } catch (error) {
-        console.error("Error taking photo:", error);
-      }
-    }
-  };
-
   const handleRetake = () => {
     setCapturedImage(null);
     setWebcamRunning(true);
@@ -243,6 +349,9 @@ export default function FaceCapture({
             ref={canvasRef}
             className="absolute top-0 left-0 w-full h-full transform -scale-x-100"
           ></canvas>
+          {webcamRunning && isPoseCorrect && (
+            <AutoCaptureIndicator progress={autoCaptureProgress} />
+          )}
         </div>
       )}
 
@@ -259,7 +368,7 @@ export default function FaceCapture({
         {webcamRunning && !capturedImage && (
           <button
             onClick={handleCapture}
-            disabled={!captureEnabled}
+            disabled={!captureEnabled || isPoseCorrect}
             className="bg-green-500 text-white p-2 rounded disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             Capture

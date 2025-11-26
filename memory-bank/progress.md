@@ -6,6 +6,9 @@
     *   **PostHog Integration:** The application is now fully integrated with PostHog for web analytics and session recording, providing insights into user behavior.
 *   **Intelligent Image Capture (V2 In Progress):** The image capture system is being upgraded to a multi-pose flow.
     *   **V1 Complete (Single Capture):** The initial implementation for a single, high-resolution photo with real-time guidance (centering, distance, visibility) is complete and validated on desktop and mobile.
+    *   **V2 UX Upgrade Complete (Auto-Capture):** Implemented a robust, hands-free capture mechanism.
+        *   **Visual Feedback:** A circular progress indicator with a "Hold" text cue guides the user.
+        *   **Midpoint Trigger Strategy:** The system intelligently captures the photo halfway through the "hold" timer but only commits the result if the user successfully maintains the pose for the full duration. This effectively masks device latency and ensures the captured image corresponds to the moment of perfect alignment.
     *   **V2 Foundations Complete (Calibration & Modularization):**
         *   **Calibration Suite:** A powerful tool for calibrating the system to the user's specific environment has been built. It captures precise targets for orientation and distance for multiple poses.
         *   **Modular Architecture:** The feature has been refactored into a scalable architecture with a custom hook (`useFaceLandmarker`), utility functions, and a dedicated calibration component.
