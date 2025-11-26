@@ -9,6 +9,8 @@ With the guided multi-pose capture feature fully implemented and polished, the n
 
 ## Recent Changes
 
+*   **Responsive Facemesh Fix:** Resolved a visual bug where the facemesh overlay appeared squashed on mobile devices. The fix involved reverting a flawed logic change in the `useFaceLandmarker` hook and applying the `object-cover` CSS property to the `<canvas>` element to ensure it scales identically to the video feed.
+*   **Face Capture UI Redesign:** Overhauled the `FaceCapture` component to align with the app's established design system. The component is now wrapped in a `Card` and utilizes the standard `shadcn/ui` components for titles, descriptions, and buttons. The color palette, typography, and layout now match the clean, minimalist aesthetic of the user dashboard.
 *   **Mirrored Preview Fix:** Applied a CSS transform to the final captured images in the review gallery so they match the mirrored live preview, preventing user confusion about "left" vs "right".
 *   **UI Polish:** Added a "Step X of 3" progress indicator and refined the guidance text (e.g., "Turn your head to the Left until the oval is green") to be more instructional.
 *   **Smooth Transitions:** Implemented a "transition state" between captures. After a successful auto-capture, the system pauses, shows a "Pose Captured!" success overlay for 2 seconds, and then advances to the next pose.

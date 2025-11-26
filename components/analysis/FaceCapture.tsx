@@ -6,6 +6,16 @@ import { getEulerAngles } from "@/lib/utils";
 import CalibrationSuite from "./CalibrationSuite";
 import { useFaceLandmarker } from "@/hooks/useFaceLandmarker";
 import AutoCaptureIndicator from "./AutoCaptureIndicator";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { CheckCircle2 } from "lucide-react";
 
 export type CapturePose = "front" | "left45" | "right45";
 
@@ -373,14 +383,25 @@ export default function FaceCapture({
   };
 
   return (
-    <section>
-      {isSequenceComplete ? (
-        <div className="w-full max-w-4xl mx-auto">
-          <h2 className="text-center text-2xl font-bold mb-4">Review Your Photos</h2>
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardHeader>
+        <CardTitle>
+          {isSequenceComplete ? "Review Your Photos" : "Skin Analysis Capture"}
+        </CardTitle>
+        <CardDescription>
+          {isSequenceComplete
+            ? "Ensure the photos are clear and well-lit before proceeding."
+            : "Please follow the on-screen instructions to capture three photos of your face."}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {isSequenceComplete ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {CAPTURE_SEQUENCE.map((pose) => (
               <div key={pose}>
-                <h3 className="text-center font-semibold capitalize mb-2">{pose}</h3>
+                <h3 className="text-center font-semibold capitalize mb-2 text-sm text-muted-foreground">
+                  {pose === "left45" ? "Left" : pose === "right45" ? "Right" : "Front"}
+                </h3>
                 <img
                   src={capturedImages[pose] || ""}
                   alt={`Captured pose: ${pose}`}
@@ -389,88 +410,87 @@ export default function FaceCapture({
               </div>
             ))}
           </div>
-        </div>
-      ) : (
-        <div className="relative w-full max-w-2xl mx-auto">
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            className="w-full h-auto transform -scale-x-100"
-          ></video>
-          <canvas
-            ref={canvasRef}
-            className="absolute top-0 left-0 w-full h-full transform -scale-x-100"
-          ></canvas>
-          {webcamRunning && isPoseCorrect && !isTransitioning && (
-            <AutoCaptureIndicator progress={autoCaptureProgress} />
-          )}
-          {isTransitioning && (
-             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="text-white text-2xl font-bold">Pose Captured!</div>
-             </div>
-          )}
-        </div>
-      )}
-
-      <div className="flex justify-center space-x-4 mt-4">
+        ) : (
+          <div className="relative w-full aspect-square md:aspect-video mx-auto overflow-hidden rounded-lg">
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              className="w-full h-full object-cover transform -scale-x-100"
+            ></video>
+            <canvas
+              ref={canvasRef}
+              className="absolute top-0 left-0 w-full h-full object-cover transform -scale-x-100"
+            ></canvas>
+            {webcamRunning && isPoseCorrect && !isTransitioning && (
+              <AutoCaptureIndicator progress={autoCaptureProgress} />
+            )}
+            {isTransitioning && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm">
+                <CheckCircle2 className="w-16 h-16 text-green-500 mb-4" />
+                <div className="text-foreground text-2xl font-bold">Pose Captured!</div>
+              </div>
+            )}
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent">
+              {!isSequenceComplete && webcamRunning && (
+                <p className="text-center text-sm font-medium text-white/80">
+                  Step {currentStep + 1} of {CAPTURE_SEQUENCE.length}: Capturing{" "}
+                  {
+                    { front: "Front", left45: "Left", right45: "Right" }[
+                      currentPose
+                    ]
+                  }{" "}
+                  Pose
+                </p>
+              )}
+              <p className="text-center text-lg font-semibold text-white mt-1">
+                {webcamRunning ? guidanceMessage : status}
+              </p>
+            </div>
+          </div>
+        )}
+      </CardContent>
+      <CardFooter className="flex justify-center space-x-4">
         {!isSequenceComplete && (
-          <button
-            onClick={handleCamClick}
-            className="bg-blue-500 text-white p-2 rounded"
-          >
-            {webcamRunning ? "DISABLE WEBCAM" : "ENABLE WEBCAM"}
-          </button>
+          <Button onClick={handleCamClick} variant={webcamRunning ? "destructive" : "default"}>
+            {webcamRunning ? "Disable Webcam" : "Enable Webcam"}
+          </Button>
         )}
 
         {isSequenceComplete && (
-          <button
-            onClick={handleRetake}
-            className="bg-yellow-500 text-white p-2 rounded"
-          >
-            Retake
-          </button>
+          <>
+            <Button onClick={handleRetake} variant="outline">
+              Retake Photos
+            </Button>
+            <Button className="bg-brown-500 hover:bg-brown-500/90">Continue</Button>
+          </>
         )}
-      </div>
+      </CardFooter>
 
       {showCalibrationSuite && (
-        <CalibrationSuite
-          webcamRunning={webcamRunning}
-          currentPose={currentPose}
-          setCurrentPose={(pose) => {
-            const stepIndex = CAPTURE_SEQUENCE.indexOf(pose);
-            if (stepIndex !== -1) {
-              setCurrentStep(stepIndex);
-            }
-          }}
-          handleCalibrate={handleCalibrate}
-          tolerance={tolerance}
-          setTolerance={setTolerance}
-          isPoseCorrect={isPoseCorrect}
-          isPortrait={isPortrait}
-          detectedYaw={detectedYaw}
-          detectedPitch={detectedPitch}
-          detectedRoll={detectedRoll}
-          detectedEyeDistance={detectedEyeDistance}
-          calibrationData={calibrationData}
-        />
+        <div className="p-4 border-t">
+          <CalibrationSuite
+            webcamRunning={webcamRunning}
+            currentPose={currentPose}
+            setCurrentPose={(pose) => {
+              const stepIndex = CAPTURE_SEQUENCE.indexOf(pose);
+              if (stepIndex !== -1) {
+                setCurrentStep(stepIndex);
+              }
+            }}
+            handleCalibrate={handleCalibrate}
+            tolerance={tolerance}
+            setTolerance={setTolerance}
+            isPoseCorrect={isPoseCorrect}
+            isPortrait={isPortrait}
+            detectedYaw={detectedYaw}
+            detectedPitch={detectedPitch}
+            detectedRoll={detectedRoll}
+            detectedEyeDistance={detectedEyeDistance}
+            calibrationData={calibrationData}
+          />
+        </div>
       )}
-
-      {!isSequenceComplete && webcamRunning && (
-        <p className="text-center text-md mt-4 text-gray-400">
-          Step {currentStep + 1} of {CAPTURE_SEQUENCE.length}: Capturing{" "}
-          {
-            { front: "Front", left45: "Left", right45: "Right" }[
-              currentPose
-            ]
-          }{" "}
-          Pose
-        </p>
-      )}
-
-      <p className="text-center text-lg mt-2">
-        {webcamRunning ? guidanceMessage : status}
-      </p>
-    </section>
+    </Card>
   );
 }

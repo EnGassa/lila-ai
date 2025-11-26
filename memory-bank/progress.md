@@ -3,12 +3,14 @@
 ## What Works
 
 *   **Intelligent Image Capture (V2 Complete):** The image capture system has been successfully upgraded to a multi-pose flow.
+    *   **UI/UX Redesign:** The entire `FaceCapture` component has been redesigned to align with the app's established aesthetic. It now uses the standard `Card` and `Button` components, a consistent color palette, and branded typography, creating a seamless user experience.
     *   **Guided Multi-Pose UI:** The system guides the user through a sequence of 3 poses (Front, Left, Right) with clear instructional text and progress indicators ("Step X of 3").
     *   **Smooth Auto-Capture:** Implemented a hands-free capture mechanism with a visual "Hold" timer.
         *   **Midpoint Trigger:** Captures the photo at 50% of the hold duration to mask latency, validating the pose at 100%.
         *   **Transition Logic:** Features a 2-second "Success" pause between captures to allow the user to reset comfortably.
     *   **Device-Agnostic Validation:** Dynamically adjusts validation targets based on the video aspect ratio (landscape vs. portrait) using a set of pre-calibrated "golden" values.
     *   **Mirrored Preview Consistency:** The final review gallery is visually mirrored to match the live video preview, providing a natural user experience while preserving the raw image data for analysis.
+    *   **Responsive UI Fix:** Resolved a bug that caused the facemesh to appear distorted on mobile devices by synchronizing the CSS scaling properties of the video and canvas elements.
     *   **Modular Architecture:** The feature is built on a scalable architecture with a custom hook (`useFaceLandmarker`), utility functions, and a dedicated calibration component.
 *   **Analytics and Monitoring:**
     *   **PostHog Integration:** The application is fully integrated with PostHog for web analytics and session recording.
