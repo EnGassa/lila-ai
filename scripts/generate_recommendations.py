@@ -259,6 +259,13 @@ def main():
         analysis_summary = distill_analysis_for_prompt(analysis_data)
         for ing in top_ingredients:
             if 'embedding' in ing: del ing['embedding']
+
+        # --- DETAILED LOGGING ---
+        logger.info("--- Start of Diagnostic Data ---")
+        logger.info(f"\n[DIAGNOSTIC] Distilled Analysis Summary:\n{analysis_summary}")
+        logger.info(f"\n[DIAGNOSTIC] Retrieved Ingredients:\n{json.dumps(top_ingredients, indent=2)}")
+        logger.info(f"\n[DIAGNOSTIC] Retrieved Product Candidates:\n{json.dumps(relevant_products, indent=2)}")
+        logger.info("--- End of Diagnostic Data ---")
             
         message_content = [
             "Here is the skin analysis:", analysis_summary,

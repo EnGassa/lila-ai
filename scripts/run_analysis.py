@@ -38,9 +38,11 @@ from skin_lib import (
 # Load environment variables from .env file
 load_dotenv()
 
+# Initialize logger at the module level
+logger = setup_logger()
+
 def main():
     """Main function to run the skin analysis."""
-    logger = setup_logger()
     parser = argparse.ArgumentParser(
         description="Analyze skin images using Pydantic AI."
     )
@@ -211,9 +213,5 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:
-        try:
-            logger.exception("An unexpected error occurred.")
-        except NameError:
-            print(f"An error occurred:", file=sys.stderr)
-            traceback.print_exc()
+        logger.exception("An unexpected error occurred.")
         sys.exit(1)

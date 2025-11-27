@@ -90,13 +90,20 @@ def main():
     
     # 1. Create User
     user_id = create_user(supabase, args.name, args.email)
+
+    # Create a directory for this test run's logs
+    log_dir = f"logs/test_run_{user_id}"
+    os.makedirs(log_dir, exist_ok=True)
+    logger.info(f"Saving diagnostic logs to {log_dir}")
     
     # 2. Run Analysis
+    analysis_output_path = os.path.join(log_dir, "analysis_full_output.json")
     analysis_args = [
         "--model", args.model,
         "--images", args.image_dir,
         "--user-id", user_id,
-        "--reasoning-effort", "high"
+        "--reasoning-effort", "high",
+        "--output", analysis_output_path
     ]
     if args.api_key:
         analysis_args.extend(["--api-key", args.api_key])
@@ -106,10 +113,12 @@ def main():
     run_script("run_analysis.py", analysis_args)
     
     # 3. Generate Recommendations
+    rec_output_path = os.path.join(log_dir, "final_routine_output.json")
     rec_args = [
         "--model", args.model,
         "--user-id", user_id,
-        "--reasoning-effort", "high"
+        "--reasoning-effort", "high",
+        "--output", rec_output_path
     ]
     if args.api_key:
         rec_args.extend(["--api-key", args.api_key])

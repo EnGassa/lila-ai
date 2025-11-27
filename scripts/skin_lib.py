@@ -238,7 +238,7 @@ def distill_analysis_for_prompt(analysis_data: dict) -> str:
         score = concern_info.get('score_1_5', 'N/A')
         summary_parts.append(f"{i}.  **{concern_name.replace('_', ' ').title()}** (Score: {score}/5)")
 
-    summary_parts.append("\n**Detailed Analysis:**")
+    summary_parts.append("\n**Detailed Analysis & Care Guidance:**")
     for concern_name in top_concerns:
         concern_info = concerns_details.get(concern_name, {})
         rationale = concern_info.get('rationale_plain', 'No details provided.')
@@ -246,10 +246,18 @@ def distill_analysis_for_prompt(analysis_data: dict) -> str:
         
         subtypes = concern_info.get("identified_subtypes", [])
         if subtypes:
+            care_notes = []
             for subtype in subtypes:
                 subtype_key = subtype.get('key', 'N/A').replace('_', ' ').title()
                 subtype_exp = subtype.get('explanation', 'N/A')
                 summary_parts.append(f"    *   **Subtype: {subtype_key}:** {subtype_exp}")
+                if "care_education" in subtype and subtype["care_education"]:
+                    care_notes.extend(subtype["care_education"])
+            
+            if care_notes:
+                summary_parts.append("    *   **Key Care Advice:**")
+                for note in set(care_notes): # Use set to avoid duplicates
+                    summary_parts.append(f"        *   {note}")
 
     escalation_flags = analysis.get("escalation_flags", [])
     summary_parts.append("\n**Escalation Flags:**")
