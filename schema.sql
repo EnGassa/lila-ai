@@ -64,7 +64,8 @@ create table if not exists public.ingredients (
 
 -- 6. Products Table (Skinsort)
 create table if not exists public.products_1 (
-  url text not null primary key,
+  product_slug text not null primary key,
+  url text not null unique,
   name text,
   brand text,
   description text,
@@ -82,7 +83,8 @@ create table if not exists public.products_1 (
 
 -- 7. Ingredients Table (Skinsort)
 create table if not exists public.ingredients_1 (
-  url text not null primary key,
+  ingredient_slug text not null primary key,
+  url text not null unique,
   name text,
   description text,
   tags jsonb,

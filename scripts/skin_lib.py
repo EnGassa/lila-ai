@@ -147,15 +147,12 @@ class Ingredient(BaseModel):
 # --- Pydantic Output Models for Recommendations ---
 
 class KeyIngredient(BaseModel):
-    name: str = Field(..., description="The name of the key ingredient.")
-    description: str = Field(..., description="A brief description of what the ingredient does.")
+    ingredient_slug: str = Field(..., description="The unique slug for the ingredient.")
+    description: str = Field(..., description="A brief, user-specific description of what the ingredient does.")
     concerns: List[str] = Field(..., description="List of concerns this ingredient helps address.")
-    image_url: Optional[str] = Field(None, description="The URL of the ingredient image.")
 
 class ProductRecommendation(BaseModel):
-    product_id: str = Field(..., description="The unique identifier for the product.")
-    name: str = Field(..., description="The name of the product.")
-    brand: str = Field(..., description="The brand of the product.")
+    product_slug: str = Field(..., description="The unique slug for the product.")
     rationale: str = Field(..., description="Explanation for why this product is recommended.")
 
 class RoutineStep(BaseModel):

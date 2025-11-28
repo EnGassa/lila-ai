@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 from typing import List, Dict, Set, Optional
 import logging
 import sys
-from urllib.parse import urljoin, unquote
+from urllib.parse import urljoin, unquote, urlparse
 from tqdm.asyncio import tqdm
 import orjson
 import re
@@ -405,81 +405,74 @@ class SkinsortScraper:
         
         return product
 
-    def sanitize_filename(self, text: str) -> str:
-        """Sanitizes a string to be a valid filename."""
-        # Replace spaces and special characters with underscores
-        text = re.sub(r'[\s/\\:*?"<>|]+', '_', text)
-        # Truncate to a reasonable length
-        return text[:100]
+    def generate_filename_from_url(self, product_url: str) -> Optional[str]:
+        """Creates a sanitized filename from the product URL slug."""
+        if not product_url:
+            return None
+        try:
+            path = urlparse(product_url).path
+            slug = path.split('/products/', 1)[1]
+            filename = slug.replace('/', '-')
+            return filename
+        except (IndexError, TypeError):
+            logger.warning(f"Could not generate filename from URL: {product_url}")
+            return None
 
     async def download_and_save_image(self, product: Dict) -> Optional[str]:
-        """Downloads an image, saves it locally, and returns the local path."""
-        image_url = product.get("image_url")
-        brand = product.get("brand", "unknown_brand")
-        name = product.get("name", "unknown_product")
+        """Downloads an image, saves it with a slug-based filename, and returns the final local path."""
+        remote_image_url = product.get("image_url")
+        product_url = product.get("url")
 
-        if not image_url:
+        if not remote_image_url or not product_url:
+            return None
+
+        filename_base = self.generate_filename_from_url(product_url)
+        if not filename_base:
             return None
 
         try:
             async with self.semaphore:
-                response = await self.client.get(image_url)
+                response = await self.client.get(remote_image_url)
                 response.raise_for_status()
         except httpx.HTTPError as e:
-            logger.warning(f"Failed to download image {image_url} for '{name}': {e}")
+            logger.warning(f"Failed to download image {remote_image_url} for '{product_url}': {e}")
             return None
 
-        # Create a clean filename
-        filename = self.sanitize_filename(f"{brand}_{name}")
-        
-        # Get the file extension from the URL
         try:
-            path_part = unquote(image_url.split('?')[0])
-            extension = Path(path_part).suffix or ".jpg" # Default to .jpg
+            path_part = unquote(remote_image_url.split('?')[0])
+            extension = Path(path_part).suffix.lower() or ".jpg"
         except Exception:
             extension = ".jpg"
 
-        # Define save path
+        final_filename = f"{filename_base}{extension}"
         save_dir = Path("public/products")
         save_dir.mkdir(parents=True, exist_ok=True)
-        save_path = save_dir / f"{filename}{extension}"
+        save_path = save_dir / final_filename
         
-        # Save the file
         with open(save_path, "wb") as f:
             f.write(response.content)
 
-        # Return the local path for the JSONL file
-        return f"/products/{filename}{extension}"
+        # Return the final, local path
+        return f"/products/{final_filename}"
 
     async def run(self, product_urls: List[str], products_output: str, ingredients_output: str):
         logger.info(f"Starting scrape for {len(product_urls)} products...")
 
-        # 1. Scrape Products
-        product_scrape_tasks = [self.parse_product(url) for url in product_urls]
-        
-        # Use a list to store results before processing to avoid race conditions
-        scraped_products_raw = []
-        for f in tqdm(asyncio.as_completed(product_scrape_tasks), total=len(product_scrape_tasks), desc="Scraping Product Details"):
-            result = await f
-            if result and "error" not in result:
-                scraped_products_raw.append(result)
-
-        # 2. Download images and finalize product data
-        image_download_tasks = []
-        for product_data in scraped_products_raw:
-            # Create a task to download the image and update the product dict
-            async def process_product_with_image(p_data):
-                local_image_path = await self.download_and_save_image(p_data)
-                p_data["image_url"] = local_image_path # Replace remote URL with local one
-                self.products_data.append(p_data)
-                # Collect new ingredients to scrape
-                for ing_url in p_data.get("ingredient_urls", []):
+        async def process_product_url(p_url):
+            product_data = await self.parse_product(p_url)
+            if product_data and "error" not in product_data:
+                # This now returns the local path
+                local_image_path = await self.download_and_save_image(product_data)
+                # Update the product data with the final local path before saving
+                product_data["image_url"] = local_image_path
+                
+                self.products_data.append(product_data)
+                for ing_url in product_data.get("ingredient_urls", []):
                     if ing_url not in self.seen_ingredients:
                         self.seen_ingredients.add(ing_url)
 
-            image_download_tasks.append(process_product_with_image(product_data))
-        
-        for f in tqdm(asyncio.as_completed(image_download_tasks), total=len(image_download_tasks), desc="Downloading Product Images"):
+        tasks = [process_product_url(url) for url in product_urls]
+        for f in tqdm(asyncio.as_completed(tasks), total=len(tasks), desc="Scraping Products & Images"):
             await f
 
         logger.info(f"Found {len(self.seen_ingredients)} unique ingredients to scrape.")

@@ -227,8 +227,8 @@ def main():
 
     # --- Pre-load all data ---
     model = SentenceTransformer('all-MiniLM-L6-v2')
-    products = load_data_from_db('products_1', 'url, name, brand, overview, meta_data, ingredient_urls, embedding')
-    ingredients = load_data_from_db('ingredients_1', 'url, name, what_it_does, embedding')
+    products = load_data_from_db('products_1', 'product_slug, url, name, brand, overview, meta_data, ingredient_urls, embedding')
+    ingredients = load_data_from_db('ingredients_1', 'ingredient_slug, url, name, what_it_does, embedding')
     
     if not products or not ingredients:
         logger.error("Missing products or ingredients data. Exiting.")

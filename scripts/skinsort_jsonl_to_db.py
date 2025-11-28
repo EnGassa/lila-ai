@@ -17,7 +17,9 @@ from dotenv import load_dotenv
 from supabase import create_client, Client
 from tqdm import tqdm
 import logging
+import re
 from sentence_transformers import SentenceTransformer
+from urllib.parse import urlparse, unquote
 
 # --- Configuration ---
 BATCH_SIZE = 50 # Reduced batch size to accommodate embedding payload
@@ -122,12 +124,66 @@ def upload_data(client: Client, table_name: str, file_path: str, data_type: str)
     for record in all_records:
         unique_records[record['url']] = record
     records = list(unique_records.values())
-    
+
+    # Generate slug for records before further processing
+    slug_key = None
+    url_prefix = None
+    if data_type == "products":
+        slug_key = "product_slug"
+        url_prefix = "/products/"
+    elif data_type == "ingredients":
+        slug_key = "ingredient_slug"
+        url_prefix = "/ingredients/"
+
+    if slug_key and url_prefix:
+        for record in records:
+            if 'url' in record and record['url']:
+                try:
+                    path = urlparse(record['url']).path
+                    if url_prefix in path:
+                        slug = path.split(url_prefix, 1)[1]
+                        record[slug_key] = slug
+                    else:
+                        record[slug_key] = None
+                except (IndexError, TypeError):
+                    logger.warning(f"Could not generate slug for URL: {record['url']}")
+                    record[slug_key] = None
+            else:
+                record[slug_key] = None
+        
+        # Filter out records where slug generation failed, as it's the primary key
+        original_count = len(records)
+        records = [r for r in records if r.get(slug_key)]
+        filtered_count = original_count - len(records)
+        if filtered_count > 0:
+            logger.warning(f"Removed {filtered_count} records due to missing or invalid URL for slug generation.")
+
     total_records = len(records)
     deduplicated_count = len(all_records) - total_records
     
     if deduplicated_count > 0:
         logger.warning(f"Removed {deduplicated_count} duplicate records based on URL.")
+
+    # Use the product_slug to construct a clean, reliable image_url
+    if data_type == "products":
+        logger.info("Constructing image URLs from product slugs...")
+        for record in records:
+            if record.get('product_slug') and record.get('image_url'):
+                # Sanitize the slug for use in a filename by replacing '/'
+                filename_slug = record['product_slug'].replace('/', '-')
+                
+                # Preserve the original file extension
+                _, extension = os.path.splitext(record['image_url'])
+                
+                if extension:
+                    # Construct the new URL in the format /products/slug.ext
+                    record['image_url'] = f"/products/{filename_slug}{extension.lower()}"
+                else:
+                    # Fallback if there's no extension for some reason
+                    record['image_url'] = None
+            else:
+                record['image_url'] = None
+
 
     if not records:
         logger.info("No records to upload.")

@@ -2,12 +2,11 @@
 // models in the Python backend (skin_lib.py).
 
 export interface Product {
-  product_id: string;
-  name: string;
-  brand: string;
+  product_slug: string; // This will be the product_slug from the lean object
+  name?: string;
+  brand?: string;
   rationale: string;
   image_url?: string;
-  claims?: { [key: string]: boolean | null };
 }
 
 export interface Step {
@@ -17,7 +16,8 @@ export interface Step {
 }
 
 export interface KeyIngredient {
-  name: string;
+  ingredient_slug: string;
+  name?: string;
   description: string;
   concerns: string[];
   image_url?: string;

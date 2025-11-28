@@ -36,9 +36,13 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
   const processedSteps = Object.values(
     (currentSteps || []).reduce((acc: { [key: string]: Step }, step: Step) => {
       if (!acc[step.step]) {
-        acc[step.step] = { ...step, products: [] };
+        // If the step doesn't exist in the accumulator, create it with the current step's products
+        acc[step.step] = { ...step };
+      } else {
+        // If the step already exists, concatenate the products
+        acc[step.step].products = acc[step.step].products.concat(step.products);
       }
-      acc[step.step].products.push(...step.products);
+      // Always ensure the instructions are set if they exist on the current step
       if (step.instructions && !acc[step.step].instructions) {
         acc[step.step].instructions = step.instructions;
       }
@@ -69,7 +73,7 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
           {recommendations.key_ingredients.map((ingredient, index) => (
             <IngredientCard
               key={index}
-              name={ingredient.name}
+              name={ingredient.name || ingredient.ingredient_slug}
               imageUrl={ingredient.image_url || "/ingredients/ingredient-placeholder.png"}
               description={ingredient.description}
               tags={ingredient.concerns}
@@ -128,24 +132,13 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
                                     <div className="flex gap-6">
                                         {/* Product Image */}
                                         <div className="w-[117px] h-[117px] bg-white rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center">
-                                            <img src={product.image_url || "/ingredients/product-placeholder.png"} alt={product.name} className="w-full h-full object-contain" />
+                                            <img src={product.image_url || "/ingredients/product-placeholder.png"} alt={product.name || product.product_slug} className="w-full h-full object-contain" />
                                         </div>
                                         
                                         {/* Product Title & Brand */}
                                         <div className="flex-grow">
                                             <h3 className="font-bold text-lg text-[#1C1B1F] leading-tight">{product.brand} - {product.name}</h3>
                                         </div>
-                                    </div>
-
-                                    {/* Dynamic Badges from claims */}
-                                    <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[#BC8B80]">
-                                        {product.claims && Object.entries(product.claims).map(([claim, value]) => (
-                                            value === true && (
-                                                <Badge key={claim} variant="secondary" className="bg-[rgba(0,71,241,0.07)] text-[rgba(0,43,183,0.77)] hover:bg-[rgba(0,71,241,0.1)] capitalize">
-                                                    {claim.replace(/_/g, ' ')}
-                                                </Badge>
-                                            )
-                                        ))}
                                     </div>
 
                                     <div className="mt-4">
