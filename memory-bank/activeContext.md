@@ -1,13 +1,16 @@
 # Active Context
 
-## Current Focus: Backend Integration for Image Upload
+## Current Focus: Data Pipeline Expansion
 
-With the guided multi-pose capture feature fully implemented and polished, the next major step is to integrate with the backend to upload the captured images and trigger the analysis pipeline.
-
-1.  **Guided Multi-Pose UI (Complete):** The system now successfully guides the user through a sequence of 3 poses (Front, Left, Right), automatically capturing photos with smooth transitions and clear feedback.
-2.  **Image Upload & Backend Trigger (Next):** Upload the set of 3 captured images to Supabase and trigger the existing analysis pipeline.
+The primary focus has been on expanding the application's data sources by building a new pipeline to scrape and ingest product and ingredient information from `skinsort.com`. This provides an alternative and supplementary data source to the existing `incidecoder.com` data.
 
 ## Recent Changes
+
+*   **Skinsort Data Pipeline:**
+    *   **Scraper (`scripts/skinsort_to_jsonl.py`):** Created a new Python script to scrape detailed product and ingredient information from `skinsort.com`. The script is a robust CLI tool that can scrape single URLs or a list from a file.
+    *   **Database Schema (`schema.sql`):** Created new tables, `products_1` and `ingredients_1`, to house the data from `skinsort.com`, keeping it separate from the original data sources.
+    *   **Upload Script (`scripts/upload_to_supabase.py`):** Developed a script to read the scraped JSONL files and reliably `upsert` the data into the new Supabase tables.
+    *   **Scraper Debugging:** Identified and fixed a bug in the scraper where product ratings were not being correctly parsed. The fix involved switching from a fragile CSS class selector to parsing a more reliable JSON-LD schema block embedded in the page HTML.
 
 *   **Responsive Facemesh Fix:** Resolved a visual bug where the facemesh overlay appeared squashed on mobile devices. The fix involved reverting a flawed logic change in the `useFaceLandmarker` hook and applying the `object-cover` CSS property to the `<canvas>` element to ensure it scales identically to the video feed.
 *   **Face Capture UI Redesign:** Overhauled the `FaceCapture` component to align with the app's established design system. The component is now wrapped in a `Card` and utilizes the standard `shadcn/ui` components for titles, descriptions, and buttons. The color palette, typography, and layout now match the clean, minimalist aesthetic of the user dashboard.

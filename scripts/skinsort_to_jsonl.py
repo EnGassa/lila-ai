@@ -26,6 +26,9 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[logging.StreamHandler(sys.stdout)]
 )
+# Silence the noisy httpx logs
+logging.getLogger("httpx").setLevel(logging.WARNING)
+
 logger = logging.getLogger(__name__)
 
 class SkinsortScraper:
@@ -326,46 +329,65 @@ class SkinsortScraper:
             if ph_text_elem:
                 product["meta_data"]["ph_level"] = self.clean_text(ph_text_elem.get_text())
 
-        # 7. Ratings & Reviews
-        # Rating: <span class="text-3xl ...">2.90</span>
-        rating_span = soup.find("span", class_=lambda x: x and "text-3xl" in x)
-        if rating_span:
+        # 7. Ratings & Reviews (from JSON-LD schema)
+        json_ld_script = soup.find("script", {"type": "application/ld+json"})
+        if json_ld_script:
             try:
-                rating_text = self.clean_text(rating_span.get_text())
-                if rating_text:
-                    product["rating"] = float(rating_text)
-            except (ValueError, TypeError):
-                pass
-        
-        # Review Count: <span class="text-sm font-medium underline">24 reviews</span>
-        review_span = soup.find("span", string=re.compile(r'\d+\s+reviews', re.I))
-        if review_span:
-            review_text = self.clean_text(review_span.text)
-            # Extract number
-            if review_text:
-                match = re.search(r'(\d+)', review_text)
-                if match:
-                    product["review_count"] = int(match.group(1))
+                # Use get_text() for more robust content extraction
+                schema_data = orjson.loads(json_ld_script.get_text())
+                if "aggregateRating" in schema_data:
+                    rating_info = schema_data["aggregateRating"]
+                    if "ratingValue" in rating_info:
+                        product["rating"] = float(rating_info["ratingValue"])
+                    if "reviewCount" in rating_info:
+                        product["review_count"] = int(rating_info["reviewCount"])
+            except (orjson.JSONDecodeError, ValueError, TypeError) as e:
+                logger.warning(f"Could not parse JSON-LD for rating on {url}: {e}")
+
+        # Fallback for review count if not in JSON-LD
+        if product["review_count"] is None:
+            review_span = soup.find("span", string=re.compile(r'\d+\s+reviews', re.I))
+            if review_span:
+                review_text = self.clean_text(review_span.text)
+                if review_text:
+                    match = re.search(r'(\d+)', review_text)
+                    if match:
+                        product["review_count"] = int(match.group(1))
 
         # 8. Extract Ingredients
         # Target specific sections: #ingredients-explained-list or #ingredients_list
         unique_ing_urls = set()
         
+        def process_links(links):
+            for link in links:
+                href = link.get('href')
+                if not href:
+                    continue
+                
+                # Normalize the href by removing any protocol and leading slashes
+                # then join it with the base https protocol and domain.
+                path = href.split('://')[-1].split('/', 1)[-1]
+                
+                if not path.startswith('ingredients/'):
+                    continue
+
+                try:
+                    # Reconstruct the URL cleanly
+                    full_url = f"https://{self.base_url.split('://')[-1]}/{path}"
+                    unique_ing_urls.add(full_url)
+                except Exception:
+                    # Ignore any errors during URL construction
+                    pass
+
         # Method A: Ingredients Explained List (Detailed rows)
         explained_list = soup.find(id="ingredients-explained-list")
         if explained_list:
-            links = explained_list.find_all("a", href=lambda x: x and "/ingredients/" in x)
-            for link in links:
-                full_url = urljoin(self.base_url, link['href'])
-                unique_ing_urls.add(full_url)
+            process_links(explained_list.find_all("a", href=True))
         
         # Method B: Simple Ingredients List (Grid) - as fallback or addition
         simple_list = soup.find(id="ingredients_list")
         if simple_list:
-            links = simple_list.find_all("a", href=lambda x: x and "/ingredients/" in x)
-            for link in links:
-                full_url = urljoin(self.base_url, link['href'])
-                unique_ing_urls.add(full_url)
+            process_links(simple_list.find_all("a", href=True))
 
         product["ingredient_urls"] = list(unique_ing_urls)
         

@@ -43,3 +43,11 @@
     *   **Purpose**: Contains all shared code, including Pydantic models, helper functions, agent configuration, a centralized logger setup, and prompt engineering utilities like `distill_analysis_for_prompt`.
 *   **`prompts/01_analyse_images_prompt.md`**: The system prompt used for the skin analysis step.
 *   **`prompts/02_generate_recommendations_prompt.md`**: The system prompt used for the recommendation generation step.
+*   **`scripts/skinsort_to_jsonl.py`**: A Python script for scraping data from `skinsort.com`.
+    *   **Purpose**: Scrapes detailed product and ingredient information and saves it to JSONL files.
+    *   **Framework**: Uses `httpx` for asynchronous requests and `BeautifulSoup4` for HTML parsing.
+    *   **Execution**: A CLI tool that can be run via `uv run`, accepting a single URL or a file of URLs.
+*   **`scripts/upload_to_supabase.py`**: A Python script for uploading scraped data to Supabase.
+    *   **Purpose**: Reads JSONL files and `upserts` the data into the `products_1` and `ingredients_1` tables.
+    *   **Framework**: Uses `supabase-client` to interact with the database and `python-dotenv` to manage credentials.
+    *   **Execution**: A CLI tool run via `uv run` that allows specifying which data to upload.

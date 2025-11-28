@@ -38,3 +38,10 @@
 *   **Schema Simplification for API Compatibility:** To overcome limitations in the Google Gemini API's native tooling, the Pydantic schema is kept simple (avoiding `Literal` types and complex `Field` constraints). This ensures the schema can be processed by the model.
 *   **Post-Processing for Data Transformation:** To align the LLM's output with the application's existing data structure, a post-processing step is implemented in the Python script. This step transforms the AI-generated data (e.g., converting a list of concerns into a nested object) after it is received and validated, separating the AI's generation task from the application's data formatting requirements.
 *   **Embedding Generation Strategy:** The `scripts/generate_embeddings.py` script creates a rich text representation of each product for embedding. To improve the relevance of semantic search, the script prioritizes functional attributes over brand and name. The text is constructed in the following order: `purpose`, `details_blurb` (from `metadata`), `ingredients`, `claims`, `category`, and finally `brand` and `name`.
+
+## Data Pipelines
+
+*   **Skinsort.com Data Ingestion:**
+    *   **Scraping:** The `scripts/skinsort_to_jsonl.py` script scrapes product and ingredient data from `skinsort.com` and saves it to local JSONL files.
+    *   **Schema:** The `schema.sql` file defines the `products_1` and `ingredients_1` tables in the Supabase database to store this data.
+    *   **Upload:** The `scripts/upload_to_supabase.py` script reads the JSONL files and upserts the data into the corresponding Supabase tables, preventing duplicates based on the product/ingredient URL.

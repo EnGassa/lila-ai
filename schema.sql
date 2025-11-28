@@ -61,3 +61,33 @@ create table if not exists public.ingredients (
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
+
+-- 6. Products Table (Skinsort)
+create table if not exists public.products_1 (
+  url text not null primary key,
+  name text,
+  brand text,
+  description text,
+  attributes text[],
+  overview jsonb,
+  highlights jsonb,
+  meta_data jsonb,
+  rating float,
+  review_count integer,
+  ingredient_urls text[],
+  created_at timestamptz default now()
+);
+
+-- 7. Ingredients Table (Skinsort)
+create table if not exists public.ingredients_1 (
+  url text not null primary key,
+  name text,
+  description text,
+  tags jsonb,
+  what_it_does jsonb,
+  prevalence jsonb,
+  cosing_data jsonb,
+  "references" text[],
+  user_sentiment jsonb,
+  created_at timestamptz default now()
+);
