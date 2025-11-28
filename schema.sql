@@ -75,6 +75,7 @@ create table if not exists public.products_1 (
   rating float,
   review_count integer,
   ingredient_urls text[],
+  image_url text,
   embedding vector(384),
   created_at timestamptz default now()
 );

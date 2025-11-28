@@ -14,11 +14,13 @@ from bs4 import BeautifulSoup
 from typing import List, Dict, Set, Optional
 import logging
 import sys
-from urllib.parse import urljoin
+from urllib.parse import urljoin, unquote
 from tqdm.asyncio import tqdm
 import orjson
 import re
 import argparse
+import os
+from pathlib import Path
 
 # Setup Logging
 logging.basicConfig(
@@ -232,8 +234,11 @@ class SkinsortScraper:
             "meta_data": {}, # pH, Country
             "rating": None,
             "review_count": None,
-            "ingredient_urls": []
+            "ingredient_urls": [],
+            "image_url": None
         }
+
+        # Image URL is now handled via JSON-LD parsing later in the script.
 
         # 1. Product Name & Brand (Split H1 structure)
         # <h1 ...> <span ...>The Ordinary</span> <span ...>Salicylic Acid...</span> </h1>
@@ -329,12 +334,18 @@ class SkinsortScraper:
             if ph_text_elem:
                 product["meta_data"]["ph_level"] = self.clean_text(ph_text_elem.get_text())
 
-        # 7. Ratings & Reviews (from JSON-LD schema)
+        # 7. Image URL, Ratings & Reviews (from JSON-LD schema)
         json_ld_script = soup.find("script", {"type": "application/ld+json"})
         if json_ld_script:
             try:
                 # Use get_text() for more robust content extraction
                 schema_data = orjson.loads(json_ld_script.get_text())
+                
+                # Extract image URL from schema
+                if "image" in schema_data:
+                    # Ensure it's a full URL
+                    product["image_url"] = urljoin(self.base_url, schema_data["image"])
+
                 if "aggregateRating" in schema_data:
                     rating_info = schema_data["aggregateRating"]
                     if "ratingValue" in rating_info:
@@ -342,7 +353,7 @@ class SkinsortScraper:
                     if "reviewCount" in rating_info:
                         product["review_count"] = int(rating_info["reviewCount"])
             except (orjson.JSONDecodeError, ValueError, TypeError) as e:
-                logger.warning(f"Could not parse JSON-LD for rating on {url}: {e}")
+                logger.warning(f"Could not parse JSON-LD for {url}: {e}")
 
         # Fallback for review count if not in JSON-LD
         if product["review_count"] is None:
@@ -394,30 +405,93 @@ class SkinsortScraper:
         
         return product
 
+    def sanitize_filename(self, text: str) -> str:
+        """Sanitizes a string to be a valid filename."""
+        # Replace spaces and special characters with underscores
+        text = re.sub(r'[\s/\\:*?"<>|]+', '_', text)
+        # Truncate to a reasonable length
+        return text[:100]
+
+    async def download_and_save_image(self, product: Dict) -> Optional[str]:
+        """Downloads an image, saves it locally, and returns the local path."""
+        image_url = product.get("image_url")
+        brand = product.get("brand", "unknown_brand")
+        name = product.get("name", "unknown_product")
+
+        if not image_url:
+            return None
+
+        try:
+            async with self.semaphore:
+                response = await self.client.get(image_url)
+                response.raise_for_status()
+        except httpx.HTTPError as e:
+            logger.warning(f"Failed to download image {image_url} for '{name}': {e}")
+            return None
+
+        # Create a clean filename
+        filename = self.sanitize_filename(f"{brand}_{name}")
+        
+        # Get the file extension from the URL
+        try:
+            path_part = unquote(image_url.split('?')[0])
+            extension = Path(path_part).suffix or ".jpg" # Default to .jpg
+        except Exception:
+            extension = ".jpg"
+
+        # Define save path
+        save_dir = Path("public/products")
+        save_dir.mkdir(parents=True, exist_ok=True)
+        save_path = save_dir / f"{filename}{extension}"
+        
+        # Save the file
+        with open(save_path, "wb") as f:
+            f.write(response.content)
+
+        # Return the local path for the JSONL file
+        return f"/products/{filename}{extension}"
+
     async def run(self, product_urls: List[str], products_output: str, ingredients_output: str):
         logger.info(f"Starting scrape for {len(product_urls)} products...")
 
         # 1. Scrape Products
-        tasks = [self.parse_product(url) for url in product_urls]
-        for f in tqdm(asyncio.as_completed(tasks), total=len(tasks), desc="Processing Products"):
+        product_scrape_tasks = [self.parse_product(url) for url in product_urls]
+        
+        # Use a list to store results before processing to avoid race conditions
+        scraped_products_raw = []
+        for f in tqdm(asyncio.as_completed(product_scrape_tasks), total=len(product_scrape_tasks), desc="Scraping Product Details"):
             result = await f
-            if "error" not in result:
-                self.products_data.append(result)
+            if result and "error" not in result:
+                scraped_products_raw.append(result)
+
+        # 2. Download images and finalize product data
+        image_download_tasks = []
+        for product_data in scraped_products_raw:
+            # Create a task to download the image and update the product dict
+            async def process_product_with_image(p_data):
+                local_image_path = await self.download_and_save_image(p_data)
+                p_data["image_url"] = local_image_path # Replace remote URL with local one
+                self.products_data.append(p_data)
                 # Collect new ingredients to scrape
-                for ing_url in result["ingredient_urls"]:
+                for ing_url in p_data.get("ingredient_urls", []):
                     if ing_url not in self.seen_ingredients:
                         self.seen_ingredients.add(ing_url)
 
+            image_download_tasks.append(process_product_with_image(product_data))
+        
+        for f in tqdm(asyncio.as_completed(image_download_tasks), total=len(image_download_tasks), desc="Downloading Product Images"):
+            await f
+
         logger.info(f"Found {len(self.seen_ingredients)} unique ingredients to scrape.")
 
-        # 2. Scrape Ingredients
+        # 3. Scrape Ingredients
         ing_tasks = [self.parse_ingredient(url) for url in self.seen_ingredients]
         for f in tqdm(asyncio.as_completed(ing_tasks), total=len(ing_tasks), desc="Processing Ingredients"):
             result = await f
             if result:
                 self.ingredients_data.append(result)
 
-        # 3. Save Data
+        # 4. Save Data
         self.save_jsonl(self.products_data, products_output)
         self.save_jsonl(self.ingredients_data, ingredients_output)
         
