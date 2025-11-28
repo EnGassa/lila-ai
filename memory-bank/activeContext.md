@@ -9,7 +9,7 @@ The primary focus has been on expanding the application's data sources by buildi
 *   **Skinsort Data Pipeline:**
     *   **Scraper (`scripts/skinsort_to_jsonl.py`):** Created a new Python script to scrape detailed product and ingredient information from `skinsort.com`. The script is a robust CLI tool that can scrape single URLs or a list from a file.
     *   **Database Schema (`schema.sql`):** Created new tables, `products_1` and `ingredients_1`, to house the data from `skinsort.com`, keeping it separate from the original data sources.
-    *   **Upload Script (`scripts/upload_to_supabase.py`):** Developed a script to read the scraped JSONL files and reliably `upsert` the data into the new Supabase tables.
+    *   **Upload Script (`scripts/skinsort_jsonl_to_db.py`):** Developed a script to read the scraped JSONL files and reliably `upsert` the data into the new Supabase tables.
     *   **Scraper Debugging:** Identified and fixed a bug in the scraper where product ratings were not being correctly parsed. The fix involved switching from a fragile CSS class selector to parsing a more reliable JSON-LD schema block embedded in the page HTML.
 
 *   **Responsive Facemesh Fix:** Resolved a visual bug where the facemesh overlay appeared squashed on mobile devices. The fix involved reverting a flawed logic change in the `useFaceLandmarker` hook and applying the `object-cover` CSS property to the `<canvas>` element to ensure it scales identically to the video feed.

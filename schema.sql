@@ -75,6 +75,7 @@ create table if not exists public.products_1 (
   rating float,
   review_count integer,
   ingredient_urls text[],
+  embedding vector(384),
   created_at timestamptz default now()
 );
 
@@ -89,5 +90,6 @@ create table if not exists public.ingredients_1 (
   cosing_data jsonb,
   "references" text[],
   user_sentiment jsonb,
+  embedding vector(384),
   created_at timestamptz default now()
 );

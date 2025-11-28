@@ -44,4 +44,4 @@
 *   **Skinsort.com Data Ingestion:**
     *   **Scraping:** The `scripts/skinsort_to_jsonl.py` script scrapes product and ingredient data from `skinsort.com` and saves it to local JSONL files.
     *   **Schema:** The `schema.sql` file defines the `products_1` and `ingredients_1` tables in the Supabase database to store this data.
-    *   **Upload:** The `scripts/upload_to_supabase.py` script reads the JSONL files and upserts the data into the corresponding Supabase tables, preventing duplicates based on the product/ingredient URL.
+    *   **Upload:** The `scripts/skinsort_jsonl_to_db.py` script reads the JSONL files and upserts the data into the corresponding Supabase tables, preventing duplicates based on the product/ingredient URL.

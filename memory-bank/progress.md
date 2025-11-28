@@ -5,7 +5,7 @@
 *   **Data Pipeline Expansion (Skinsort):** A new data pipeline has been successfully created to scrape, store, and upload product and ingredient data from `skinsort.com`.
     *   **Scraping:** A robust Python script (`skinsort_to_jsonl.py`) scrapes detailed product and ingredient data.
     *   **Database Schema:** New tables (`products_1`, `ingredients_1`) have been added to the Supabase database to store the new data.
-    *   **Data Upload:** A dedicated script (`upload_to_supabase.py`) handles the efficient upload of the scraped data to the database.
+    *   **Data Upload:** A dedicated script (`skinsort_jsonl_to_db.py`) handles the efficient upload of the scraped data to the database.
     *   **Verified:** The entire pipeline has been tested and verified, including a bug fix to ensure product ratings are scraped correctly.
 
 *   **Intelligent Image Capture (V2 Complete):** The image capture system has been successfully upgraded to a multi-pose flow.
