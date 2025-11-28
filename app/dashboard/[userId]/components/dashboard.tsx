@@ -80,7 +80,7 @@ export async function Dashboard({ params }: { params: Promise<{ userId: string }
       });
 
       const uniqueProductSlugs = Array.from(productSlugs);
-      console.log("Slugs sent to DB:", uniqueProductSlugs);
+      // console.log("Slugs sent to DB:", uniqueProductSlugs);
       if (uniqueProductSlugs.length === 0) return;
 
       const { data: productDetails, error } = await supabase
@@ -91,8 +91,8 @@ export async function Dashboard({ params }: { params: Promise<{ userId: string }
       if (error) {
         console.error("Error fetching product details:", error);
       }
-      
-      console.log("Details received from DB:", productDetails);
+
+      // console.log("Details received from DB:", productDetails);
 
       if (productDetails) {
         const productDetailsMap = new Map(
@@ -128,10 +128,10 @@ export async function Dashboard({ params }: { params: Promise<{ userId: string }
     await Promise.all([enrichIngredients(), enrichProducts()]);
   }
 
-  console.log(
-    "After Enrichment:",
-    JSON.stringify(recommendationsData, null, 2)
-  );
+  // console.log(
+  //   "After Enrichment:",
+  //   JSON.stringify(recommendationsData, null, 2)
+  // );
 
   return (
     <SkincareDashboard

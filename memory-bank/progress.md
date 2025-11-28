@@ -2,11 +2,17 @@
 
 ## What Works
 
-*   **Data Pipeline Expansion (Skinsort):** A new data pipeline has been successfully created to scrape, store, and upload product and ingredient data from `skinsort.com`.
+*   **Data Pipeline & Hydration (V4 Complete):** The entire data pipeline, from scraping to frontend rendering, has been successfully debugged, refactored, and verified end-to-end.
+    *   **Lean Recommendations:** The AI now generates "lean" recommendation objects containing only `product_slug` and `ingredient_slug` identifiers, which are stored in the database.
+    *   **Server-Side Hydration:** The Next.js frontend (`dashboard.tsx`) is now responsible for fetching these lean objects and "hydrating" them with full details from the `products_1` and `ingredients_1` tables.
+    *   **Bug Squashed:** A series of critical bugs were resolved, including identifier mismatches, schema mismatches, and data corruption in the UI, resulting in a fully functional and robust data flow.
+
+*   **Skinsort.com Data Ingestion (V2 Complete):**
+    *   **Unified Image URLs:** The data pipeline has been refactored to use a single source of truth for image filenames. The scraper script (`skinsort_to_jsonl.py`) now generates a clean, URL-safe filename from the product's URL slug, saves the physical file with this name, and writes the final local path (e.g., `/products/brand-product-name.jpg`) into the JSONL file.
+    *   **Simplified DB Script:** The database ingestion script (`skinsort_jsonl_to_db.py`) has been simplified to trust and directly insert the `image_url` from the JSONL file, removing all redundant logic.
     *   **Scraping:** A robust Python script (`skinsort_to_jsonl.py`) scrapes detailed product and ingredient data.
     *   **Database Schema:** New tables (`products_1`, `ingredients_1`) have been added to the Supabase database to store the new data.
     *   **Data Upload:** A dedicated script (`skinsort_jsonl_to_db.py`) handles the efficient upload of the scraped data to the database.
-    *   **Verified:** The entire pipeline has been tested and verified, including a bug fix to ensure product ratings are scraped correctly.
 
 *   **Intelligent Image Capture (V2 Complete):** The image capture system has been successfully upgraded to a multi-pose flow.
     *   **UI/UX Redesign:** The entire `FaceCapture` component has been redesigned to align with the app's established aesthetic. It now uses the standard `Card` and `Button` components, a consistent color palette, and branded typography, creating a seamless user experience.
@@ -43,7 +49,6 @@
 
 ## What's Next
 
-*   **Data Pipeline Integration:** Integrate the new `skinsort.com` data into the main application and recommendation engine.
 *   **Intelligent Image Capture (V2):** Backend Integration.
     *   **Image Upload:** Upload the set of 3 captured images to Supabase storage.
     *   **Trigger Analysis:** Connect the frontend flow to the existing backend analysis pipeline.

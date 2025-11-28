@@ -47,7 +47,7 @@
     *   **Purpose**: Scrapes detailed product and ingredient information and saves it to JSONL files.
     *   **Framework**: Uses `httpx` for asynchronous requests and `BeautifulSoup4` for HTML parsing.
     *   **Execution**: A CLI tool that can be run via `uv run`, accepting a single URL or a file of URLs.
-*   **`scripts/upload_to_supabase.py`**: A Python script for uploading scraped data to Supabase.
+*   **`scripts/skinsort_jsonl_to_db.py`**: A Python script for uploading scraped data to Supabase.
     *   **Purpose**: Reads JSONL files and `upserts` the data into the `products_1` and `ingredients_1` tables.
     *   **Framework**: Uses `supabase-client` to interact with the database and `python-dotenv` to manage credentials.
     *   **Execution**: A CLI tool run via `uv run` that allows specifying which data to upload.

@@ -1,10 +1,28 @@
 # Active Context
 
-## Current Focus: Data Pipeline Expansion
+## Current Focus: End-to-End Data Pipeline Debugging & Refactoring
 
-The primary focus has been on expanding the application's data sources by building a new pipeline to scrape and ingest product and ingredient information from `skinsort.com`. This provides an alternative and supplementary data source to the existing `incidecoder.com` data.
+The primary focus has been on a comprehensive, end-to-end debugging and refactoring of the entire data pipeline, from the initial scraping of product data to the final rendering of recommendations on the user dashboard. This was initiated to resolve a critical bug where product and ingredient information was not appearing on the UI.
 
 ## Recent Changes
+
+*   **Data Pipeline and Hydration:**
+    *   **Problem:** The user dashboard was failing to display product/ingredient names and images, despite the backend scripts running successfully.
+    *   **Root Cause Analysis:** A multi-step debugging process revealed a series of issues:
+        1.  **Identifier Mismatch:** The frontend data hydration component (`dashboard.tsx`) was initially using the wrong property keys (`product_id` instead of `product_slug`) to fetch product details.
+        2.  **Schema Mismatch:** The hydration component was attempting to select a `claims` column from the `products_1` table that did not exist, causing the entire database query to fail.
+    *   **Solution:**
+        *   Corrected all property key references in `dashboard.tsx` to align with the "lean" data model (`product_slug`, `ingredient_slug`).
+        *   Updated the `Product` and `KeyIngredient` TypeScript types in `lib/types.ts` to reflect the correct data structure.
+        *   Removed the non-existent `claims` column from the database query in `dashboard.tsx` and the corresponding type definitions.
+
+*   **Image URL Unification:**
+    *   **Problem:** Product image URLs were broken due to special characters (`%`, `+`, `_`, `/`) in the filenames, which were not being handled consistently.
+    *   **Root Cause Analysis:** The scraper script (`skinsort_to_jsonl.py`) and the database ingestion script (`skinsort_jsonl_to_db.py`) were using different, and ultimately flawed, strategies for naming files and constructing URL paths.
+    *   **Solution:** The architecture was refactored to establish a single source of truth for image filenames.
+        *   The scraper script (`skinsort_to_jsonl.py`) is now solely responsible for generating the final, local image path. It does this by taking the product's URL slug (e.g., `brand/product-name`), replacing the `/` with a `-` to create a flat filename, and appending the original file extension.
+        *   This final, correct path (e.g., `/products/brand-product-name.jpg`) is now written directly into the `image_url` field of the JSONL file.
+        *   The database script (`skinsort_jsonl_to_db.py`) was simplified to remove all `image_url` manipulation logic; it now trusts and inserts the path it receives from the JSONL file directly.
 
 *   **Skinsort Data Pipeline:**
     *   **Scraper (`scripts/skinsort_to_jsonl.py`):** Created a new Python script to scrape detailed product and ingredient information from `skinsort.com`. The script is a robust CLI tool that can scrape single URLs or a list from a file.
@@ -24,6 +42,10 @@ The primary focus has been on expanding the application's data sources by buildi
 *   **"Golden" Value Calibration:** The `CalibrationSuite` was used as a developer tool to find and hardcode a universal set of target values for `yaw`, `pitch`, `roll`, and `eyeDistance`. The concept of end-user calibration has been removed in favor of this pre-calibrated approach.
 
 ## Key Learnings & Decisions
+
+*   **Architectural Principles:**
+    *   **Single Source of Truth:** Data generation and naming conventions should be handled by a single, authoritative script to prevent inconsistencies. The data pipeline now reflects this, with the scraper being the single source of truth for image filenames.
+    *   **Lean, Normalized Data Objects:** To ensure data consistency and maintainability, the AI should generate "lean" objects that contain only identifiers (e.g., `product_slug`). The frontend is responsible for "hydrating" these objects with the full, static details from the database. This avoids data duplication and ensures information is always up-to-date.
 
 *   **Mirrored vs. True Image:** Users expect the final photo to match the mirrored preview they saw during capture. While we display the mirrored version for UX, the underlying data sent to the backend must remain the true, un-mirrored image to ensure correct left/right analysis.
 *   **Transition Delays are Critical:** Without a pause between auto-captures, the user experience feels rushed and jarring. A 2-second "success" state allows the user to reset before the next instruction.
