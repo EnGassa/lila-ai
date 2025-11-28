@@ -1,10 +1,23 @@
 # Active Context
 
-## Current Focus: End-to-End Data Pipeline Debugging & Refactoring
+## Current Focus: Feature Enhancement and UX Improvements
 
-The primary focus has been on a comprehensive, end-to-end debugging and refactoring of the entire data pipeline, from the initial scraping of product data to the final rendering of recommendations on the user dashboard. This was initiated to resolve a critical bug where product and ingredient information was not appearing on the UI.
+With the data pipeline now stable, the focus has shifted to implementing new features and refining the user experience based on feedback. This includes improving the performance of AI-related scripts and adding flexibility to the core user-facing features.
 
 ## Recent Changes
+
+*   **Recommendation Engine Performance (pgvector Refactor):**
+    *   **Problem:** The `generate_recommendations.py` script was inefficiently loading the entire product and ingredient catalog into memory to perform similarity searches, bypassing the `pgvector` database extension.
+    *   **Solution:** The script and database schema were refactored to offload all vector similarity searches to the database.
+        *   **Database Functions (RPCs):** Created two new SQL functions, `match_ingredients` and `match_products_by_category`, in `schema.sql` and deployed them to the live database. These functions use `pgvector` to perform efficient, indexed similarity searches directly in PostgreSQL.
+        *   **Script Refactoring:** The Python script was updated to remove the bulk data loading and in-memory `numpy` calculations. It now calls the new database functions via Supabase RPC, resulting in a significant improvement in performance and scalability.
+
+*   **Optional Routine Steps:**
+    *   **Problem:** The default 6-step routine could be overwhelming for users seeking a simpler regimen.
+    *   **Solution:** Implemented a feature to designate certain routine steps as optional.
+        *   **Model Updates:** Added an `is_optional: bool` field to the `RoutineStep` model in `scripts/skin_lib.py` (Pydantic) and the corresponding `Step` interface in `lib/types.ts` (TypeScript).
+        *   **AI Prompt Engineering:** Updated `prompts/02_generate_recommendations_prompt.md` to instruct the AI to identify non-essential steps (e.g., serums, treatments) and set the `is_optional` flag, while keeping core steps (cleanser, moisturizer, sunscreen) as mandatory.
+        *   **Frontend UI:** The `components/recommendations-tab.tsx` component was updated to check for the `is_optional` flag and render an `(Optional)` badge next to the step title, providing a clear visual cue to the user.
 
 *   **Data Pipeline and Hydration:**
     *   **Problem:** The user dashboard was failing to display product/ingredient names and images, despite the backend scripts running successfully.

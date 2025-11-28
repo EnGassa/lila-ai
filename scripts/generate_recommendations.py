@@ -6,8 +6,7 @@
 #     "python-dotenv",
 #     "sentence-transformers",
 #     "loguru",
-#     "supabase",
-#     "numpy"
+#     "supabase"
 # ]
 # ///
 """
@@ -20,7 +19,6 @@ import argparse
 import json
 import sys
 import time
-import numpy as np
 from sentence_transformers import SentenceTransformer
 from typing import List, Dict, Any
 
@@ -48,43 +46,6 @@ logger = setup_logger()
 # Constants
 MAX_RETRIES = 3
 
-def load_data_from_db(table_name: str, columns: str) -> List[Dict[str, Any]]:
-    """
-    Generic function to fetch data from a Supabase table and parse string embeddings.
-    """
-    logger.info(f"Loading {table_name} from database...")
-    supabase = get_supabase_client()
-    response = supabase.table(table_name).select(columns).not_.is_('embedding', 'null').execute()
-    data = response.data
-    
-    if not data:
-        logger.warning(f"No data found in {table_name} with embeddings.")
-        return []
-    
-    for item in data:
-        emb_str = item.get('embedding')
-        if isinstance(emb_str, str):
-            try:
-                item['embedding'] = json.loads(emb_str)
-            except json.JSONDecodeError:
-                logger.warning(f"Could not parse embedding for item {item.get('id')} in {table_name}.")
-                item['embedding'] = None
-    
-    parsed_data = [item for item in data if item.get('embedding') is not None]
-    
-    logger.success(f"Successfully loaded and parsed {len(parsed_data)} items from {table_name}.")
-    return parsed_data
-
-def calculate_similarity(query_embedding: np.ndarray, item_embeddings: np.ndarray) -> np.ndarray:
-    """Calculates cosine similarity between a query and a matrix of item embeddings."""
-    query_norm = np.linalg.norm(query_embedding)
-    item_norms = np.linalg.norm(item_embeddings, axis=1)
-    
-    item_norms[item_norms == 0] = 1e-9
-    if query_norm == 0: query_norm = 1e-9
-    
-    return np.dot(item_embeddings, query_embedding) / (item_norms * query_norm)
-
 def generate_analysis_query(analysis_data: dict) -> str:
     """Generates a descriptive query string from the skin analysis data."""
     analysis = analysis_data.get("analysis", {})
@@ -104,103 +65,104 @@ def generate_analysis_query(analysis_data: dict) -> str:
     logger.info(" ".join(query_parts))
     return " ".join(query_parts)
 
-def find_relevant_ingredients(analysis_data: dict, ingredients: List[Dict[str, Any]], model: SentenceTransformer, top_k: int = 10) -> List[Dict[str, Any]]:
+def find_relevant_ingredients(analysis_data: dict, model: SentenceTransformer, top_k: int = 10) -> List[Dict[str, Any]]:
     """
-    Step 1: Finds the most relevant ingredients based on the skin analysis.
+    Step 1: Finds the most relevant ingredients by calling a database RPC.
     """
-    logger.info(f"Step 1: Starting concern-to-ingredient retrieval for top {top_k}...")
+    logger.info(f"Step 1: Starting concern-to-ingredient retrieval for top {top_k} via RPC...")
     start_time = time.time()
-    
+    supabase = get_supabase_client()
+
     query = generate_analysis_query(analysis_data)
-    query_embedding = model.encode(query)
-    
-    ingredient_embeddings = np.array([ing['embedding'] for ing in ingredients])
-    
-    similarities = calculate_similarity(query_embedding, ingredient_embeddings)
-    top_indices = np.argsort(similarities)[-top_k:][::-1]
-    
-    relevant_ingredients = [ingredients[i] for i in top_indices]
-    
-    end_time = time.time()
-    logger.success(f"Found {len(relevant_ingredients)} relevant ingredients in {end_time - start_time:.2f} seconds.")
-    return relevant_ingredients
+    query_embedding = model.encode(query).tolist()  # Convert to list for JSON
 
-def get_all_product_categories(products: List[Dict[str, Any]]) -> List[str]:
-    """Extracts all distinct product categories from the loaded product data."""
-    logger.info("Extracting distinct product categories from product data...")
-    if not products:
-        logger.warning("No products to extract categories from.")
+    try:
+        response = supabase.rpc('match_ingredients', {
+            'query_embedding': query_embedding,
+            'match_count': top_k
+        }).execute()
+
+        relevant_ingredients = response.data
+        if not relevant_ingredients:
+            logger.warning("No relevant ingredients found from DB.")
+            return []
+
+        end_time = time.time()
+        logger.success(f"Found {len(relevant_ingredients)} relevant ingredients in {end_time - start_time:.2f} seconds.")
+        return relevant_ingredients
+    except Exception as e:
+        logger.error(f"Error calling match_ingredients RPC: {e}")
         return []
-    
-    categories = set()
-    for p in products:
-        overview = p.get('overview', {})
-        if overview and isinstance(overview, dict):
-            what_it_is = overview.get('what_it_is', '')
-            # The category is the first word(s) before "with..."
-            category = what_it_is.split(' with ')[0].strip()
-            if category:
-                categories.add(category)
 
-    sorted_categories = sorted(list(categories))
-    logger.success(f"Found {len(sorted_categories)} categories: {sorted_categories}")
-    return sorted_categories
+def get_all_product_categories() -> List[str]:
+    """Extracts all distinct product categories directly from the database."""
+    logger.info("Extracting distinct product categories from database...")
+    supabase = get_supabase_client()
+    try:
+        # This is a bit of a hack, but it's the most direct way to get distinct categories
+        # without a dedicated table or a more complex query.
+        response = supabase.table('products_1').select('overview').execute()
+        if not response.data:
+            logger.warning("No products found to extract categories from.")
+            return []
+
+        categories = set()
+        for p in response.data:
+            overview = p.get('overview', {})
+            if overview and isinstance(overview, dict):
+                what_it_is = overview.get('what_it_is', '')
+                category = what_it_is.split(' with ')[0].strip()
+                if category:
+                    categories.add(category)
+
+        sorted_categories = sorted(list(categories))
+        logger.success(f"Found {len(sorted_categories)} categories: {sorted_categories}")
+        return sorted_categories
+    except Exception as e:
+        logger.error(f"Error fetching product categories: {e}")
+        return []
 
 def find_relevant_products_by_category(
     analysis_data: dict,
     philosophy: SkincarePhilosophy,
-    products: List[Dict[str, Any]],
     model: SentenceTransformer,
     categories: List[str],
     top_k_per_category: int = 5
 ) -> List[Dict[str, Any]]:
     """
-    Finds relevant products by performing a targeted, philosophy-driven search for each category.
+    Finds relevant products by calling a database RPC for each category.
     """
-    logger.info(f"Starting philosophy-driven product retrieval for {len(categories)} categories...")
+    logger.info(f"Starting philosophy-driven product retrieval for {len(categories)} categories via RPC...")
+    supabase = get_supabase_client()
 
     base_query = generate_analysis_query(analysis_data)
-    
-    # Construct a detailed query from the philosophy
     philosophy_descriptors = [
         f"The primary goals are: {', '.join(philosophy.primary_goals)}.",
         f"Key ingredients to look for include: {', '.join(philosophy.key_ingredients_to_target)}.",
         f"Ingredients to avoid are: {', '.join(philosophy.ingredients_to_avoid)}."
     ]
-    
     base_enriched_query = base_query + " " + " ".join(philosophy_descriptors)
 
     all_relevant_products = {}
 
     for category in categories:
-        # Each category gets a specialized query
         category_query = f"Searching for a product in the '{category}' category. {base_enriched_query}"
-        query_embedding = model.encode(category_query)
-        
-        category_products = []
-        for p in products:
-            overview = p.get('overview', {})
-            if overview and isinstance(overview, dict):
-                what_it_is = overview.get('what_it_is', '')
-                product_category = what_it_is.split(' with ')[0].strip()
-                if product_category == category:
-                    category_products.append(p)
+        query_embedding = model.encode(category_query).tolist()
 
-        if not category_products:
-            continue
-            
-        product_embeddings = np.array([p['embedding'] for p in category_products])
-        
-        similarities = calculate_similarity(query_embedding, product_embeddings)
-        top_indices = np.argsort(similarities)[-top_k_per_category:][::-1]
-        
-        for i in top_indices:
-            product = category_products[i]
-            if product['url'] not in all_relevant_products:
-                product_copy = product.copy()
-                if 'embedding' in product_copy:
-                    del product_copy['embedding']
-                all_relevant_products[product['url']] = product_copy
+        try:
+            response = supabase.rpc('match_products_by_category', {
+                'query_embedding': query_embedding,
+                'p_category': category,
+                'match_count': top_k_per_category
+            }).execute()
+
+            for product in response.data:
+                if product['url'] not in all_relevant_products:
+                    # The RPC returns exactly the columns we need, no need to copy or del
+                    all_relevant_products[product['url']] = product
+
+        except Exception as e:
+            logger.error(f"Error calling match_products_by_category RPC for category '{category}': {e}")
 
     logger.success(f"Found {len(all_relevant_products)} unique relevant products across all categories.")
     return list(all_relevant_products.values())
@@ -225,14 +187,8 @@ def main():
     logger.info(f"Starting recommendations generation for User: {args.user_id}")
     logger.info(f"Generator: {args.model} | Reviewer: {reviewer_model_str}")
 
-    # --- Pre-load all data ---
+    # --- Initialize Model ---
     model = SentenceTransformer('all-MiniLM-L6-v2')
-    products = load_data_from_db('products_1', 'product_slug, url, name, brand, overview, meta_data, ingredient_urls, embedding')
-    ingredients = load_data_from_db('ingredients_1', 'ingredient_slug, url, name, what_it_does, embedding')
-    
-    if not products or not ingredients:
-        logger.error("Missing products or ingredients data. Exiting.")
-        sys.exit(1)
 
     # --- Load User Analysis ---
     supabase = get_supabase_client()
@@ -267,9 +223,13 @@ def main():
 
 
     # --- RAG ---
-    product_categories = get_all_product_categories(products)
+    product_categories = get_all_product_categories()
+    if not product_categories:
+        logger.error("Could not retrieve product categories. Exiting.")
+        sys.exit(1)
+        
     relevant_products = find_relevant_products_by_category(
-        analysis_data, philosophy, products, model, product_categories
+        analysis_data, philosophy, model, product_categories
     )
 
     # --- Agent Configuration ---

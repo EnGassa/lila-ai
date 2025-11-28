@@ -121,6 +121,7 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
                     <AccordionTrigger className="text-lg font-bold text-[#1C1B1F] capitalize hover:no-underline">
                         <div className="flex items-center gap-2">
                           Step {index + 1}: {step.step}
+                          {step.is_optional && <Badge variant="outline">Optional</Badge>}
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pt-4 pb-4">

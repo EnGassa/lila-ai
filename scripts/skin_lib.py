@@ -159,6 +159,7 @@ class RoutineStep(BaseModel):
     step: str
     products: List[ProductRecommendation]
     instructions: str
+    is_optional: bool = Field(False, description="Set to true if this step is not essential for a minimal routine.")
 
 class Routine(BaseModel):
     am: List[RoutineStep]

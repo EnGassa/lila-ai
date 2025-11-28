@@ -14,9 +14,13 @@ You will be provided with three key pieces of information:
     *   Build a logical AM (morning) and PM (evening) routine.
     *   Assign each product to its correct step (e.g., cleanser, serum, moisturizer, sunscreen).
     *   Ensure the routine aligns with the AM/PM focus defined in the philosophy.
-4.  **Write Clear Instructions:** For each step, provide clear, concise instructions on how to use the selected product(s).
-5.  **Explain Your Choices (Rationale):** For each product you recommend, write a brief rationale explaining *why* you chose it and how it supports the overall `SkincarePhilosophy`.
-6.  **Identify Key Ingredients:** Based on your routine, highlight the most important active ingredients, explain their function, and link them to the primary goals.
-7.  **Provide General Advice:** Offer a few pieces of general, actionable advice that complement the routine and the philosophy (e.g., "Introduce new active ingredients slowly," "Always patch-test new products").
+4.  **Mark Optional Steps:** For users who prefer a minimal routine, you must identify which steps are not absolutely essential.
+    *   **Core Steps (NEVER optional):** Cleanser, Moisturizer, and Sunscreen (in the AM). These are the foundation of the routine.
+    *   **Optional Steps (CAN be optional):** Treatments, Serums, Toners, Masks, Exfoliants, etc.
+    *   Set the `is_optional` flag to `true` for any step that is not a core step.
+5.  **Write Clear Instructions:** For each step, provide clear, concise instructions on how to use the selected product(s).
+6.  **Explain Your Choices (Rationale):** For each product you recommend, write a brief rationale explaining *why* you chose it and how it supports the overall `SkincarePhilosophy`.
+7.  **Identify Key Ingredients:** Based on your routine, highlight the most important active ingredients, explain their function, and link them to the primary goals.
+8.  **Provide General Advice:** Offer a few pieces of general, actionable advice that complement the routine and the philosophy (e.g., "Introduce new active ingredients slowly," "Always patch-test new products").
 
 Produce ONLY the JSON object that conforms to the `Recommendations` Pydantic schema. Do not add any extra commentary.

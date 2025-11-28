@@ -13,6 +13,7 @@ export interface Step {
   step: string;
   products: Product[];
   instructions: string;
+  is_optional?: boolean;
 }
 
 export interface KeyIngredient {

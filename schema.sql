@@ -96,3 +96,62 @@ create table if not exists public.ingredients_1 (
   embedding vector(384),
   created_at timestamptz default now()
 );
+
+-- RPC Functions for Vector Search
+
+create or replace function match_ingredients(
+  query_embedding vector(384),
+  match_count int
+)
+returns table (
+  ingredient_slug text,
+  url text,
+  name text,
+  what_it_does jsonb,
+  similarity float
+)
+language sql stable
+as $$
+  select
+    i.ingredient_slug,
+    i.url,
+    i.name,
+    i.what_it_does,
+    1 - (i.embedding <=> query_embedding) as similarity
+  from ingredients_1 as i
+  where i.embedding is not null
+  order by similarity desc
+  limit match_count;
+$$;
+
+create or replace function match_products_by_category(
+  query_embedding vector(384),
+  p_category text,
+  match_count int
+)
+returns table (
+  product_slug text,
+  url text,
+  name text,
+  brand text,
+  overview jsonb,
+  meta_data jsonb,
+  ingredient_urls text[],
+  similarity float
+)
+language sql stable
+as $$
+  select
+    p.product_slug,
+    p.url,
+    p.name,
+    p.brand,
+    p.overview,
+    p.meta_data,
+    p.ingredient_urls,
+    1 - (p.embedding <=> query_embedding) as similarity
+  from products_1 as p
+  where p.embedding is not null and (p.overview->>'what_it_is') ilike (p_category || '%')
+  order by similarity desc
+  limit match_count;
+$$;
