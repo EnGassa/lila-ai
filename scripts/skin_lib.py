@@ -181,6 +181,17 @@ class ReviewResult(BaseModel):
     review_notes: List[str] = Field(..., description="A list of notes explaining the review decision. If rejected, this provides actionable feedback for the generator.")
     validated_recommendations: Optional[Recommendations] = Field(None, description="The final, validated recommendations ONLY if the status is 'approved'.")
 
+class SkincarePhilosophy(BaseModel):
+    """
+    Represents the high-level strategic plan for a user's skincare routine.
+    This serves as the "blueprint" for the recommendation engine.
+    """
+    primary_goals: List[str] = Field(..., description="The top 2-3 overarching goals for the routine, e.g., 'Reduce Acne & Inflammation', 'Strengthen Skin Barrier'.")
+    am_routine_focus: str = Field(..., description="The strategic focus for the morning routine, e.g., 'Protection and Prevention'.")
+    pm_routine_focus: str = Field(..., description="The strategic focus for the evening routine, e.g., 'Treatment and Repair'.")
+    key_ingredients_to_target: List[str] = Field(..., description="A list of specific active ingredients that should be prioritized in the routine.")
+    ingredients_to_avoid: List[str] = Field(..., description="A list of ingredients to avoid based on skin concerns or potential conflicts.")
+
 
 # --- Helper Functions ---
 

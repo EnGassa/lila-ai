@@ -56,30 +56,17 @@ Map QC to `qc` fields:
 - `qc.fail_reasons`: list of short machine-friendly strings, e.g.: `"insufficient_poses"`, `"core_pose_missing"`, `"blur"`, `"over_exposed"`, `"under_exposed"`, `"color_cast"`, `"filters_detected"`, `"makeup_detected"`, `"occlusions"`.
 - `qc.notes`: short natural-language explanation including pose counts, main issues, and tailored retake hints.
 
-**On QC FAIL (Pure Failure policy):**
-- Do **not** attempt any skin concern scoring or interpretation.
-- Still return a **valid `FullSkinAnalysis` object** so the tool can parse it:
-  - `analysis.skin_type.label = "cannot_estimate"`, with a brief rationale stating that image quality or required views were insufficient.
-  - `analysis.skin_tone_fitzpatrick.label = "cannot_estimate"` with a clear note about QC fail.
-  - `analysis.skin_age_range`: choose a narrow neutral range (e.g. 20–22) but set `confidence_0_1 = 0.0` and explain in `rationale` that **no age estimation was performed due to QC failure**.
-  - `analysis.top_concerns = []`.
-  - `analysis.concerns`: create one concern block for each standard concern (`pores`, `wrinkles`, `pigmentation`, `redness`, `texture`, `acne`, `under_eye`) with:
-    - `score_1_5 = 3.0` (neutral placeholder), `confidence_0_1 = 0.0`.
-    - `rationale_plain` and `uncertainty_notes` both stating that analysis was not performed due to QC fail and scores are placeholders only.
-    - `possible_causes = []`, `identified_subtypes = []`.
-    - `regional_breakdown` with neutral midline scores (e.g. 3.0) and explicit notes in `uncertainty_notes` that they are placeholders.
-  - `analysis.region_summaries`: either empty or brief notes indicating that regions could not be reliably assessed.
-  - `analysis.escalation_flags`: still set if there are **obvious dangerous findings** despite QC issues; otherwise empty.
-  - `charts.overview_radar`:
-    - `axis_order = ["pores","wrinkles","pigmentation","redness","texture","acne","under_eye"]`.
-    - `values_1_5 = [3,3,3,3,3,3,3]`.
-    - `scale.min = 1`, `scale.max = 5`, `scale.direction = "higher_is_worse"`, `scale.formula = "identity (score_1_5)"`.
-  - `audit`:
-    - `prompt_version = "skin_v2_poc_v2"` (or similar short string).
-    - `model_hint = "vision_llm_only"`.
-    - `limitations`: include explicit statements that QC failed and no true analysis was done.
+**On QC FAIL (Best-Effort Policy):**
+- Acknowledge the QC failure in the `qc` fields as specified.
+- However, you MUST proceed with a **best-effort analysis** of all visible and interpretable regions.
+- For any metric or region that cannot be assessed due to the QC failure (e.g., a missing under-eye photo means under-eye concerns cannot be scored), you must:
+  - Use a neutral placeholder score (e.g., 3.0).
+  - Set confidence to 0.0.
+  - Clearly state in the `rationale_plain` and `uncertainty_notes` for that specific concern that it could not be assessed and why (e.g., "Under-eye analysis could not be performed because the required close-up images were not provided.").
+- For all other concerns where views are adequate, perform the analysis as usual, following all rubrics.
+- **Crucially, still identify and flag any potential medical issues in `analysis.escalation_flags` regardless of QC status.** This is a safety-critical override.
 
-The frontend will use `qc.status` to gate visibility of scores, so your priority on QC fail is **clear documentation of failure**, not estimation.
+The goal is to provide as much value as possible from the provided images, even if they are imperfect, while being transparent about the limitations.
 </QC_GATE>
 
 <REGIONS canonical_order="forehead,glabella,periorbital_left,periorbital_right,cheek_left,cheek_right,nose,upper_lip,chin,jaw_left,jaw_right" />

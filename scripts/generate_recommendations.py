@@ -31,6 +31,7 @@ from supabase import Client
 from skin_lib import (
     Recommendations,
     ReviewResult,
+    SkincarePhilosophy,
     create_agent,
     distill_analysis_for_prompt,
     load_system_prompt,
@@ -124,48 +125,67 @@ def find_relevant_ingredients(analysis_data: dict, ingredients: List[Dict[str, A
     logger.success(f"Found {len(relevant_ingredients)} relevant ingredients in {end_time - start_time:.2f} seconds.")
     return relevant_ingredients
 
-def get_all_product_categories(supabase: Client) -> List[str]:
-    """Fetches all distinct product categories from the database."""
-    logger.info("Fetching distinct product categories...")
-    response = supabase.table("products").select("category").execute()
-    if not response.data:
-        logger.warning("No product categories found.")
+def get_all_product_categories(products: List[Dict[str, Any]]) -> List[str]:
+    """Extracts all distinct product categories from the loaded product data."""
+    logger.info("Extracting distinct product categories from product data...")
+    if not products:
+        logger.warning("No products to extract categories from.")
         return []
     
-    categories = sorted(list(set([p['category'] for p in response.data if p.get('category')])))
-    logger.success(f"Found {len(categories)} categories: {categories}")
-    return categories
+    categories = set()
+    for p in products:
+        overview = p.get('overview', {})
+        if overview and isinstance(overview, dict):
+            what_it_is = overview.get('what_it_is', '')
+            # The category is the first word(s) before "with..."
+            category = what_it_is.split(' with ')[0].strip()
+            if category:
+                categories.add(category)
+
+    sorted_categories = sorted(list(categories))
+    logger.success(f"Found {len(sorted_categories)} categories: {sorted_categories}")
+    return sorted_categories
 
 def find_relevant_products_by_category(
     analysis_data: dict,
-    top_ingredients: List[Dict[str, Any]],
+    philosophy: SkincarePhilosophy,
     products: List[Dict[str, Any]],
     model: SentenceTransformer,
     categories: List[str],
     top_k_per_category: int = 5
 ) -> List[Dict[str, Any]]:
     """
-    Finds relevant products by performing a targeted search for each category.
+    Finds relevant products by performing a targeted, philosophy-driven search for each category.
     """
-    logger.info(f"Starting category-aware product retrieval for {len(categories)} categories...")
-    
+    logger.info(f"Starting philosophy-driven product retrieval for {len(categories)} categories...")
+
     base_query = generate_analysis_query(analysis_data)
-    ingredient_descriptors = []
-    for ing in top_ingredients:
-        desc = f"{ing['name']}"
-        if ing.get('what_it_does'):
-            desc += f" which helps with {', '.join(ing['what_it_does'])}"
-        ingredient_descriptors.append(desc)
     
-    base_enriched_query = base_query + " The ideal products should contain ingredients like: " + ", ".join(ingredient_descriptors)
+    # Construct a detailed query from the philosophy
+    philosophy_descriptors = [
+        f"The primary goals are: {', '.join(philosophy.primary_goals)}.",
+        f"Key ingredients to look for include: {', '.join(philosophy.key_ingredients_to_target)}.",
+        f"Ingredients to avoid are: {', '.join(philosophy.ingredients_to_avoid)}."
+    ]
+    
+    base_enriched_query = base_query + " " + " ".join(philosophy_descriptors)
 
     all_relevant_products = {}
 
     for category in categories:
-        category_query = base_enriched_query + f" The product should be from the '{category}' category."
+        # Each category gets a specialized query
+        category_query = f"Searching for a product in the '{category}' category. {base_enriched_query}"
         query_embedding = model.encode(category_query)
         
-        category_products = [p for p in products if p.get('category') == category]
+        category_products = []
+        for p in products:
+            overview = p.get('overview', {})
+            if overview and isinstance(overview, dict):
+                what_it_is = overview.get('what_it_is', '')
+                product_category = what_it_is.split(' with ')[0].strip()
+                if product_category == category:
+                    category_products.append(p)
+
         if not category_products:
             continue
             
@@ -176,11 +196,11 @@ def find_relevant_products_by_category(
         
         for i in top_indices:
             product = category_products[i]
-            if product['id'] not in all_relevant_products:
+            if product['url'] not in all_relevant_products:
                 product_copy = product.copy()
                 if 'embedding' in product_copy:
                     del product_copy['embedding']
-                all_relevant_products[product['id']] = product_copy
+                all_relevant_products[product['url']] = product_copy
 
     logger.success(f"Found {len(all_relevant_products)} unique relevant products across all categories.")
     return list(all_relevant_products.values())
@@ -193,6 +213,7 @@ def main():
     parser.add_argument("--model", type=str, required=True, help="The model for the generator (e.g., 'google:gemini-1.5-pro').")
     parser.add_argument("--reviewer-model", type=str, help="Optional model for the reviewer. Defaults to the main model.")
     parser.add_argument("--user-id", type=str, required=True, help="The user ID for analysis and recommendations.")
+    parser.add_argument("--philosophy-prompt", type=str, default="prompts/01a_generate_philosophy_prompt.md")
     parser.add_argument("--recommendation-prompt", type=str, default="prompts/02_generate_recommendations_prompt.md")
     parser.add_argument("--reviewer-prompt", type=str, default="prompts/03_review_recommendations_prompt.md")
     parser.add_argument("--output", type=str, help="Optional path to save the final validated output JSON.")
@@ -206,8 +227,8 @@ def main():
 
     # --- Pre-load all data ---
     model = SentenceTransformer('all-MiniLM-L6-v2')
-    products = load_data_from_db('products', 'id, name, brand, category, metadata, ingredients, embedding')
-    ingredients = load_data_from_db('ingredients', 'id, name, what_it_does, image_url, embedding')
+    products = load_data_from_db('products_1', 'url, name, brand, overview, meta_data, ingredient_urls, embedding')
+    ingredients = load_data_from_db('ingredients_1', 'url, name, what_it_does, embedding')
     
     if not products or not ingredients:
         logger.error("Missing products or ingredients data. Exiting.")
@@ -227,11 +248,28 @@ def main():
     analysis_data = full_analysis_record['analysis_data']
     logger.success(f"Loaded analysis {analysis_id}.")
 
+    # --- Phase 1: Generate Skincare Philosophy (Blueprint) ---
+    logger.info("--- Generating Skincare Philosophy ---")
+    analysis_summary = distill_analysis_for_prompt(analysis_data)
+    
+    strategist_llm, strategist_settings = create_agent(args.model, args.api_key, None)
+    strategist_agent = Agent(
+        strategist_llm,
+        output_type=SkincarePhilosophy,
+        instructions=load_system_prompt(args.philosophy_prompt)
+    )
+    
+    start_time = time.time()
+    philosophy = strategist_agent.run_sync([analysis_summary], model_settings=strategist_settings).output
+    end_time = time.time()
+    logger.success(f"Generated skincare philosophy in {end_time - start_time:.2f}s.")
+    logger.info(f"Philosophy: {philosophy.model_dump_json(indent=2)}")
+
+
     # --- RAG ---
-    top_ingredients = find_relevant_ingredients(analysis_data, ingredients, model)
-    product_categories = get_all_product_categories(supabase)
+    product_categories = get_all_product_categories(products)
     relevant_products = find_relevant_products_by_category(
-        analysis_data, top_ingredients, products, model, product_categories
+        analysis_data, philosophy, products, model, product_categories
     )
 
     # --- Agent Configuration ---
@@ -256,21 +294,23 @@ def main():
         logger.info(f"--- Attempt {attempt + 1} of {MAX_RETRIES} ---")
 
         # --- Construct Generator Message ---
-        analysis_summary = distill_analysis_for_prompt(analysis_data)
-        for ing in top_ingredients:
-            if 'embedding' in ing: del ing['embedding']
-
+        
+        # --- DETAILED LOGGING ---
         # --- DETAILED LOGGING ---
         logger.info("--- Start of Diagnostic Data ---")
         logger.info(f"\n[DIAGNOSTIC] Distilled Analysis Summary:\n{analysis_summary}")
-        logger.info(f"\n[DIAGNOSTIC] Retrieved Ingredients:\n{json.dumps(top_ingredients, indent=2)}")
-        logger.info(f"\n[DIAGNOSTIC] Retrieved Product Candidates:\n{json.dumps(relevant_products, indent=2)}")
+        logger.info(f"\n[DIAGNOSTIC] Skincare Philosophy:\n{philosophy.model_dump_json(indent=2)}")
+        
+        logger.info("\n[DIAGNOSTIC] Retrieved Product Candidates:")
+        for product in relevant_products:
+            logger.info(f"- {product.get('name')} by {product.get('brand')} ({product.get('url')})")
+
         logger.info("--- End of Diagnostic Data ---")
             
         message_content = [
             "Here is the skin analysis:", analysis_summary,
-            "Here is a curated list of relevant ingredients:", json.dumps(top_ingredients, indent=2),
-            "Here is a curated list of relevant products:", json.dumps(relevant_products, indent=2),
+            "Here is the strategic Skincare Philosophy to follow:", philosophy.model_dump_json(indent=2),
+            "Here is a curated list of relevant products based on the philosophy:", json.dumps(relevant_products, indent=2),
         ]
         
         if feedback_history:
@@ -290,7 +330,12 @@ def main():
         logger.info("Running Reviewer Agent...")
         start_time = time.time()
         review_result = reviewer_agent.run_sync(
-            [json.dumps(generated_routine.model_dump(), indent=2)],
+            [
+                "Here is the Skincare Philosophy that must be followed:",
+                philosophy.model_dump_json(indent=2),
+                "Here is the generated routine to review:",
+                json.dumps(generated_routine.model_dump(), indent=2)
+            ],
             model_settings=reviewer_settings
         ).output
         end_time = time.time()
