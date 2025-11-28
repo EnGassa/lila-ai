@@ -14,6 +14,7 @@ You will be provided with three key pieces of information:
     *   Build a logical AM (morning) and PM (evening) routine.
     *   Assign each product to its correct step (e.g., cleanser, serum, moisturizer, sunscreen).
     *   Ensure the routine aligns with the AM/PM focus defined in the philosophy.
+    *   **Prioritize Product Reuse:** Where appropriate, reuse the same product for both AM and PM to create a streamlined, cost-effective routine. Only recommend different products if the philosophy or specific active ingredients require it (e.g., a heavy night cream vs. a light day moisturizer).
 4.  **Mark Optional Steps:** For users who prefer a minimal routine, you must identify which steps are not absolutely essential.
     *   **Core Steps (NEVER optional):** Cleanser, Moisturizer, and Sunscreen (in the AM). These are the foundation of the routine.
     *   **Optional Steps (CAN be optional):** Treatments, Serums, Toners, Masks, Exfoliants, etc.

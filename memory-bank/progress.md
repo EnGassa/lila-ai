@@ -35,6 +35,7 @@
     *   **Dynamic System Prompt:** Injects user concerns and categories into the instructions for each run.
     *   **Improved Personalization:** Prioritizes user-specific analysis over generic category matching.
     *   **Multi-Agent System:** A Generator Agent creates the routine, and a Reviewer Agent validates it in a feedback loop (addresses #19, supersedes #18).
+    *   **Product Reuse Optimization:** The recommendation engine now prioritizes reusing products (e.g., cleanser, moisturizer) across AM and PM routines to create more practical and cost-effective regimens for users.
 *   **Beta Readiness:**
     *   **Automated Onboarding:** `onboard_beta_user.py` script automates user creation, analysis, and recommendations.
     *   **Recommendations UI:** Dynamic dashboard with redesigned product cards featuring "How to use" sections and dynamic claims.

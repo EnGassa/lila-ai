@@ -53,7 +53,7 @@ export function SkincareDashboard({ analysis, recommendations, userId }: Skincar
       <UserProfile userData={analysis} userId={userId} />
       <Tabs defaultValue="overview" className="w-full">
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="overview">Analysis</TabsTrigger>
           <TabsTrigger value="recommendations">Recommendation</TabsTrigger>
         </TabsList>
         <TabsContent value="overview" className="space-y-6">
@@ -103,7 +103,9 @@ export function SkincareDashboard({ analysis, recommendations, userId }: Skincar
           {selectedConcern && (
             <>
               <SheetHeader>
-                <SheetTitle>{selectedConcern.name.replace(/_/g, ' ')}</SheetTitle>
+                <SheetTitle>
+                  {selectedConcern.name.replace(/_/g, " ")}
+                </SheetTitle>
               </SheetHeader>
               <ConcernDetailPage
                 userId={userId}

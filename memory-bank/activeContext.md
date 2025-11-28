@@ -19,6 +19,10 @@ With the data pipeline now stable, the focus has shifted to implementing new fea
         *   **AI Prompt Engineering:** Updated `prompts/02_generate_recommendations_prompt.md` to instruct the AI to identify non-essential steps (e.g., serums, treatments) and set the `is_optional` flag, while keeping core steps (cleanser, moisturizer, sunscreen) as mandatory.
         *   **Frontend UI:** The `components/recommendations-tab.tsx` component was updated to check for the `is_optional` flag and render an `(Optional)` badge next to the step title, providing a clear visual cue to the user.
 
+*   **Product Reuse Strategy:**
+    *   **Problem:** The recommendation engine was frequently suggesting different products for similar steps in the AM and PM routines (e.g., different cleansers or moisturizers), which is impractical and costly for users.
+    *   **Solution:** Updated the system prompt `prompts/02_generate_recommendations_prompt.md` to explicitly instruct the AI to prioritize reusing products across AM and PM routines unless there is a specific reason not to (e.g., active ingredients).
+
 *   **Data Pipeline and Hydration:**
     *   **Problem:** The user dashboard was failing to display product/ingredient names and images, despite the backend scripts running successfully.
     *   **Root Cause Analysis:** A multi-step debugging process revealed a series of issues:
