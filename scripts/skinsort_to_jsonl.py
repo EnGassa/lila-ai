@@ -363,17 +363,18 @@ class SkinsortScraper:
                 href = link.get('href')
                 if not href:
                     continue
-                
-                # Normalize the href by removing any protocol and leading slashes
-                # then join it with the base https protocol and domain.
-                path = href.split('://')[-1].split('/', 1)[-1]
-                
-                if not path.startswith('ingredients/'):
+
+                # Use regex to find a clean URL path, ignoring extra chars.
+                # This looks for a pattern like '/ingredients/some-name'
+                match = re.search(r"(/ingredients/[a-zA-Z0-9_-]+)", href)
+                if not match:
                     continue
+                
+                path = match.group(1)
 
                 try:
-                    # Reconstruct the URL cleanly
-                    full_url = f"https://{self.base_url.split('://')[-1]}/{path}"
+                    # Reconstruct the URL cleanly using urljoin
+                    full_url = urljoin(self.base_url, path)
                     unique_ing_urls.add(full_url)
                 except Exception:
                     # Ignore any errors during URL construction
