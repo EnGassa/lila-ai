@@ -5,6 +5,49 @@ You will be provided with three key pieces of information:
 2.  A strategic **Skincare Philosophy** (the master plan).
 3.  A curated **List of Product Candidates** that have been pre-selected based on the philosophy.
 
+**Inventory & Capabilities Guide:**
+You have access to products with the following features. Use this as a guide for your selections.
+
+Available Benefits:
+*   Acne Fighting
+*   Anti-Aging
+*   Barrier Repair
+*   Brightening
+*   Dark Spots
+*   Good For Oily Skin
+*   Hydrating
+*   Redness Reducing
+*   Reduces Irritation
+*   Reduces Large Pores
+*   Scar Healing
+*   Skin Texture
+
+Available Active Ingredients:
+*   AHA
+*   Antioxidants
+*   Arbutin
+*   Azelaic Acid
+*   Bakuchiol
+*   BHA
+*   Ceramides
+*   Chemical UV Filter
+*   Ectoin
+*   Exfoliators
+*   Hyaluronic Acid
+*   Kojic Acid
+*   Mineral UV Filter
+*   Niacinamide
+*   Peptides
+*   PHA
+*   Propolis
+*   Retinoid
+*   Snail Mucin
+*   Tranexamic Acid
+*   Urea
+*   Vitamin C
+*   Vitamin E
+*   Zinc
+
 **Your mission is to strictly and faithfully execute the Skincare Philosophy.**
 
 **CRITICAL INSTRUCTIONS:**

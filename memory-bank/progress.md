@@ -2,6 +2,11 @@
 
 ## What Works
 
+*   **Data Schema Refactor (V1):**
+    *   **Flattened Product Data:** The `products_1` table has been refactored to promote key data from JSONB to top-level `text[]` columns: `benefits`, `active_ingredients`, and `concerns`. This enables powerful, performant SQL filtering.
+    *   **Robust Data Linking:** Replaced `ingredient_urls` with `ingredient_slugs` to create a direct, foreign-key-style relationship between `products_1` and `ingredients_1`, enabling efficient joins and data grounding.
+    *   **Ingestion Pipeline Update:** The scraper (`skinsort_to_jsonl.py`) and schema (`schema.sql`) have been updated to support this new flattened structure.
+
 *   **Data Pipeline & Hydration (V4 Complete):** The entire data pipeline, from scraping to frontend rendering, has been successfully debugged, refactored, and verified end-to-end.
     *   **Lean Recommendations:** The AI now generates "lean" recommendation objects containing only `product_slug` and `ingredient_slug` identifiers, which are stored in the database.
     *   **Server-Side Hydration:** The Next.js frontend (`dashboard.tsx`) is now responsible for fetching these lean objects and "hydrating" them with full details from the `products_1` and `ingredients_1` tables.
@@ -31,6 +36,7 @@
     *   **Embeddings:** Product catalog has vector embeddings stored in the `products` table.
     *   **Data Migration:** Product, user, and skin analysis data migrated to DB.
 *   **Recommendation Engine V3 (Architectural Overhaul):**
+    *   **Inventory-Aware Prompts:** The Strategist and Generator agent prompts have been updated with lists of available active ingredients and product benefits, grounding their outputs in the reality of the product catalog.
     *   **Category-Aware RAG:** Performs targeted searches for top products in every available category.
     *   **Dynamic System Prompt:** Injects user concerns and categories into the instructions for each run.
     *   **Improved Personalization:** Prioritizes user-specific analysis over generic category matching.
@@ -50,6 +56,8 @@
 
 ## What's Next
 
+*   **Hybrid Search Implementation:** Update the `match_products_by_category` RPC to support pre-filtering by `benefits`, `active_ingredients`, and `concerns` before performing the vector search.
+*   **"Grounding" & Safety Checks:** Implement logic in the Python recommendation script to verify recommended products contain the key actives from the philosophy, and to hard-filter products based on user-specific exclusions.
 *   **Intelligent Image Capture (V2):** Backend Integration.
     *   **Image Upload:** Upload the set of 3 captured images to Supabase storage.
     *   **Trigger Analysis:** Connect the frontend flow to the existing backend analysis pipeline.

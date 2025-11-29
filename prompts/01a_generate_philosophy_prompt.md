@@ -12,6 +12,35 @@ Based on the provided skin analysis summary, you must generate a JSON object tha
 4.  **Identify Key Ingredients:** Based on the primary goals and concerns, list the most effective and scientifically-backed active ingredients that should be included in the routine.
 5.  **Identify Ingredients to Avoid:** Note any ingredients that could be counter-productive or irritating for the user's specific skin concerns.
 
+**Inventory Guidance:**
+When suggesting `key_ingredients_to_target`, try to prioritize from the following list of available active ingredients, as we have a good selection of products containing them. However, if the user's needs strongly indicate an ingredient not on this list, feel free to recommend it.
+
+Available Actives:
+*   AHA
+*   Antioxidants
+*   Arbutin
+*   Azelaic Acid
+*   Bakuchiol
+*   BHA
+*   Ceramides
+*   Chemical UV Filter
+*   Ectoin
+*   Exfoliators
+*   Hyaluronic Acid
+*   Kojic Acid
+*   Mineral UV Filter
+*   Niacinamide
+*   Peptides
+*   PHA
+*   Propolis
+*   Retinoid
+*   Snail Mucin
+*   Tranexamic Acid
+*   Urea
+*   Vitamin C
+*   Vitamin E
+*   Zinc
+
 **Special Handling for Escalation Flags:**
 
 - If the `escalation_flags` field in the analysis is NOT empty, you MUST adopt a safety-first approach.

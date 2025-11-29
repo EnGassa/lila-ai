@@ -230,7 +230,10 @@ class SkinsortScraper:
             "description": None,
             "attributes": [], # Alcohol-free, Vegan, etc.
             "overview": {}, # What it is, Suited for, etc.
-            "highlights": {}, # Benefits, Concerns, Key Ingredients
+            "highlights": {}, # Kept for backward compatibility/extra data
+            "benefits": [], # Extracted from highlights
+            "active_ingredients": [], # Extracted from highlights['Key Ingredients']
+            "concerns": [], # Extracted from highlights
             "meta_data": {}, # pH, Country
             "rating": None,
             "review_count": None,
@@ -314,6 +317,14 @@ class SkinsortScraper:
                     
                     if items:
                         product["highlights"][cat_name] = items
+                        
+                        # Populate top-level columns
+                        if cat_name == "Benefits":
+                            product["benefits"] = items
+                        elif cat_name == "Concerns":
+                            product["concerns"] = items
+                        elif cat_name == "Key Ingredients":
+                            product["active_ingredients"] = items
 
         # 6. Meta Data (Origin, pH)
         # Often found in max-w-2xl mx-auto mt-8 blocks with h2 headers
