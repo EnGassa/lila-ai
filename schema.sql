@@ -75,7 +75,7 @@ create table if not exists public.products_1 (
   meta_data jsonb,
   rating float,
   review_count integer,
-  ingredient_urls text[],
+  ingredient_slugs text[],
   image_url text,
   embedding vector(384),
   created_at timestamptz default now()
@@ -136,7 +136,7 @@ returns table (
   brand text,
   overview jsonb,
   meta_data jsonb,
-  ingredient_urls text[],
+  ingredient_slugs text[],
   similarity float
 )
 language sql stable
@@ -148,7 +148,7 @@ as $$
     p.brand,
     p.overview,
     p.meta_data,
-    p.ingredient_urls,
+    p.ingredient_slugs,
     1 - (p.embedding <=> query_embedding) as similarity
   from products_1 as p
   where p.embedding is not null and (p.overview->>'what_it_is') ilike (p_category || '%')

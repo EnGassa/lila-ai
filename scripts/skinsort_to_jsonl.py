@@ -234,7 +234,7 @@ class SkinsortScraper:
             "meta_data": {}, # pH, Country
             "rating": None,
             "review_count": None,
-            "ingredient_urls": [],
+            "ingredient_slugs": [],
             "image_url": None
         }
 
@@ -367,7 +367,7 @@ class SkinsortScraper:
 
         # 8. Extract Ingredients
         # Target specific sections: #ingredients-explained-list or #ingredients_list
-        unique_ing_urls = set()
+        unique_ing_slugs = set()
         
         def process_links(links):
             for link in links:
@@ -377,18 +377,17 @@ class SkinsortScraper:
 
                 # Use regex to find a clean URL path, ignoring extra chars.
                 # This looks for a pattern like '/ingredients/some-name'
-                match = re.search(r"(/ingredients/[a-zA-Z0-9_-]+)", href)
+                match = re.search(r"(/ingredients/([a-zA-Z0-9_-]+))", href)
                 if not match:
                     continue
                 
-                path = match.group(1)
+                # path = match.group(1) # Unused now
+                slug = match.group(2)
 
                 try:
-                    # Reconstruct the URL cleanly using urljoin
-                    full_url = urljoin(self.base_url, path)
-                    unique_ing_urls.add(full_url)
+                    unique_ing_slugs.add(slug)
                 except Exception:
-                    # Ignore any errors during URL construction
+                    # Ignore any errors
                     pass
 
         # Method A: Ingredients Explained List (Detailed rows)
@@ -401,7 +400,7 @@ class SkinsortScraper:
         if simple_list:
             process_links(simple_list.find_all("a", href=True))
 
-        product["ingredient_urls"] = list(unique_ing_urls)
+        product["ingredient_slugs"] = list(unique_ing_slugs)
         
         return product
 
@@ -467,7 +466,9 @@ class SkinsortScraper:
                 product_data["image_url"] = local_image_path
                 
                 self.products_data.append(product_data)
-                for ing_url in product_data.get("ingredient_urls", []):
+                # We construct the URL from the slug here to keep the scraping logic working
+                for ing_slug in product_data.get("ingredient_slugs", []):
+                    ing_url = urljoin(self.base_url, f"/ingredients/{ing_slug}")
                     if ing_url not in self.seen_ingredients:
                         self.seen_ingredients.add(ing_url)
 
