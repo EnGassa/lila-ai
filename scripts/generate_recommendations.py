@@ -65,19 +65,35 @@ def generate_analysis_query(analysis_data: dict) -> str:
     logger.info(" ".join(query_parts))
     return " ".join(query_parts)
 
+def get_all_product_categories(client: Client) -> List[str]:
+    """Extracts all distinct, non-null product categories from the database."""
+    logger.info("Extracting distinct product categories from database...")
+    try:
+        response = client.rpc('get_distinct_categories').execute()
+        if not response.data:
+            logger.warning("No categories found in products_1 table.")
+            return []
+        
+        categories = [item['category'] for item in response.data if item['category']]
+        logger.success(f"Found {len(categories)} categories.")
+        return categories
+    except Exception as e:
+        logger.error(f"Error fetching product categories via RPC: {e}")
+        return []
+
 def find_relevant_products(
     analysis_data: dict,
     philosophy: SkincarePhilosophy,
     model: SentenceTransformer,
+    categories: List[str],
     top_k_per_category: int = 5
 ) -> List[Dict[str, Any]]:
     """
-    Finds relevant products using hybrid search (vector + keyword) based on the skincare philosophy.
+    Finds relevant products by scanning across all categories and using vector search.
+    This is a broad search to maximize recall.
     """
-    target_categories = philosophy.target_product_categories
     key_ingredients = philosophy.key_ingredients_to_target
-    
-    logger.info(f"Starting hybrid product retrieval for {len(target_categories)} categories, targeting ingredients: {key_ingredients}...")
+    logger.info(f"Starting broad product retrieval for {len(categories)} categories...")
     supabase = get_supabase_client()
 
     base_query = generate_analysis_query(analysis_data)
@@ -90,16 +106,17 @@ def find_relevant_products(
 
     all_relevant_products = {}
 
-    for category in target_categories:
+    for category in categories:
         category_query = f"Searching for a product in the '{category}' category. {base_enriched_query}"
         query_embedding = model.encode(category_query).tolist()
 
         try:
+            # Revert to simpler call: disable strict ingredient filtering at DB level
             rpc_params = {
                 'query_embedding': query_embedding,
                 'p_category': category,
                 'match_count': top_k_per_category,
-                'p_active_ingredients': key_ingredients
+                'p_active_ingredients': None # Pass None to use vector search only
             }
             response = supabase.rpc('match_products_by_category', rpc_params).execute()
 
@@ -169,9 +186,14 @@ def main():
     logger.info(f"Philosophy: {philosophy.model_dump_json(indent=2)}")
 
 
-    # --- RAG ---
+    # --- RAG (Broad Search) ---
+    all_categories = get_all_product_categories(supabase)
+    if not all_categories:
+        logger.error("Could not retrieve product categories. Exiting.")
+        sys.exit(1)
+
     relevant_products = find_relevant_products(
-        analysis_data, philosophy, model
+        analysis_data, philosophy, model, all_categories
     )
 
     # --- Grounding Step: Tag products with matched key ingredients ---

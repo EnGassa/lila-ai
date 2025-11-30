@@ -11,20 +11,9 @@ Based on the provided skin analysis summary, you must generate a JSON object tha
 3.  **Define AM/PM Focus:** Assign a clear, strategic focus for the morning and evening routines. The AM routine should focus on protection, while the PM routine should focus on treatment and repair.
 4.  **Identify Key Ingredients:** Based on the primary goals and concerns, list the most effective and scientifically-backed active ingredients that should be included in the routine.
 5.  **Identify Ingredients to Avoid:** Note any ingredients that could be counter-productive or irritating for the user's specific skin concerns.
-6.  **Determine Necessary Product Categories:** Based on the goals, decide which categories of products are essential for the routine. Always include `Cleanser`, `Moisturizer`, and `Sunscreen`. Only add other categories like `Serum & Treatment` or `Exfoliator` if the user's concerns and your ingredient choices warrant them.
 
 **Inventory Guidance:**
-When suggesting `key_ingredients_to_target` and `target_product_categories`, try to prioritize from the following lists, as we have a good selection of products containing them.
-
-Available Categories:
-*   Cleanser
-*   Toner & Essence
-*   Serum & Treatment
-*   Moisturizer
-*   Sunscreen
-*   Eye Care
-*   Mask & Peel
-*   Other
+When suggesting `key_ingredients_to_target`, try to prioritize from the following list of available active ingredients, as we have a good selection of products containing them.
 
 Available Actives:
 *   AHA

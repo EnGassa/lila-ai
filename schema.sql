@@ -128,6 +128,15 @@ as $$
   limit match_count;
 $$;
 
+create or replace function get_distinct_categories()
+returns table (
+  category text
+)
+language sql stable
+as $$
+  select distinct category from products_1 where category is not null order by category;
+$$;
+
 create or replace function match_products_by_category(
   query_embedding vector(384),
   p_category text,
