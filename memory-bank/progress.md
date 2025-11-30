@@ -35,13 +35,11 @@
     *   **AI Pipeline:** Python scripts (`run_analysis.py`, `generate_recommendations.py`) read/write directly to the DB.
     *   **Embeddings:** Product catalog has vector embeddings stored in the `products` table.
     *   **Data Migration:** Product, user, and skin analysis data migrated to DB.
-*   **Recommendation Engine V3 (Architectural Overhaul):**
-    *   **Inventory-Aware Prompts:** The Strategist and Generator agent prompts have been updated with lists of available active ingredients and product benefits, grounding their outputs in the reality of the product catalog.
-    *   **Category-Aware RAG:** Performs targeted searches for top products in every available category.
-    *   **Dynamic System Prompt:** Injects user concerns and categories into the instructions for each run.
-    *   **Improved Personalization:** Prioritizes user-specific analysis over generic category matching.
-    *   **Multi-Agent System:** A Generator Agent creates the routine, and a Reviewer Agent validates it in a feedback loop (addresses #19, supersedes #18).
-    *   **Product Reuse Optimization:** The recommendation engine now prioritizes reusing products (e.g., cleanser, moisturizer) across AM and PM routines to create more practical and cost-effective regimens for users.
+*   **Recommendation Engine V4 (Hybrid Search & Grounding):**
+    *   **Data Foundation:** The `products_1` table now has a clean, LLM-classified `category` column, removing the dependency on brittle string parsing.
+    *   **Hybrid Search:** The product retrieval RPC now performs hybrid search, filtering by `category` and `active_ingredients` before applying vector search. This dramatically improves the relevance of product candidates.
+    *   **Smarter AI Strategy:** The Strategist agent now determines the required product categories for the routine.
+    *   **Ingredient Grounding:** The Generator agent is now provided with "tagged" products that explicitly list which key ingredients they contain, and its instructions have been updated to force fact-based selections. This has resolved the logical failures and allows the AI to generate a valid routine in a single attempt.
 *   **Beta Readiness:**
     *   **Automated Onboarding:** `onboard_beta_user.py` script automates user creation, analysis, and recommendations.
     *   **Recommendations UI:** Dynamic dashboard with redesigned product cards featuring "How to use" sections and dynamic claims.
@@ -56,8 +54,8 @@
 
 ## What's Next
 
-*   **Hybrid Search Implementation:** Update the `match_products_by_category` RPC to support pre-filtering by `benefits`, `active_ingredients`, and `concerns` before performing the vector search.
-*   **"Grounding" & Safety Checks:** Implement logic in the Python recommendation script to verify recommended products contain the key actives from the philosophy, and to hard-filter products based on user-specific exclusions.
+*   **Refine Hybrid Search:** Enhance the `match_products_by_category` RPC to also filter by `benefits` and `concerns` arrays.
+*   **Optimize Ingestion:** Refactor the `skinsort_to_jsonl.py` script to classify products in batches to improve performance and reduce cost at scale.
 *   **Intelligent Image Capture (V2):** Backend Integration.
     *   **Image Upload:** Upload the set of 3 captured images to Supabase storage.
     *   **Trigger Analysis:** Connect the frontend flow to the existing backend analysis pipeline.

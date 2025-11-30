@@ -189,6 +189,7 @@ class SkincarePhilosophy(BaseModel):
     pm_routine_focus: str = Field(..., description="The strategic focus for the evening routine, e.g., 'Treatment and Repair'.")
     key_ingredients_to_target: List[str] = Field(..., description="A list of specific active ingredients that should be prioritized in the routine.")
     ingredients_to_avoid: List[str] = Field(..., description="A list of ingredients to avoid based on skin concerns or potential conflicts.")
+    target_product_categories: List[str] = Field(..., description="A list of product categories needed to build the routine, e.g., ['Cleanser', 'Moisturizer', 'Sunscreen', 'Serum & Treatment'].")
 
 
 # --- Helper Functions ---

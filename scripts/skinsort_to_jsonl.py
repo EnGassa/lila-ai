@@ -5,6 +5,8 @@
 #     "beautifulsoup4",
 #     "tqdm",
 #     "orjson",
+#     "pydantic-ai",
+#     "python-dotenv"
 # ]
 # ///
 
@@ -14,6 +16,10 @@ from bs4 import BeautifulSoup
 from typing import List, Dict, Set, Optional
 import logging
 import sys
+from enum import Enum
+from pydantic import BaseModel, Field
+from pydantic_ai import Agent
+from dotenv import load_dotenv
 from urllib.parse import urljoin, unquote, urlparse
 from tqdm.asyncio import tqdm
 import orjson
@@ -21,6 +27,23 @@ import re
 import argparse
 import os
 from pathlib import Path
+
+# Load .env for ANTHROPIC_API_KEY
+load_dotenv()
+
+# --- AI Classification Setup ---
+class SkincareCategory(str, Enum):
+    CLEANSER = "Cleanser"
+    TONER_ESSENCE = "Toner & Essence"
+    SERUM_TREATMENT = "Serum & Treatment"
+    MOISTURIZER = "Moisturizer"
+    SUNSCREEN = "Sunscreen"
+    EYE_CARE = "Eye Care"
+    MASK_PEEL = "Mask & Peel"
+    OTHER = "Other"
+
+class Classification(BaseModel):
+    category: SkincareCategory = Field(..., description="The single best-fitting category for the product.")
 
 # Setup Logging
 logging.basicConfig(
@@ -34,7 +57,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 class SkinsortScraper:
-    def __init__(self, concurrency: int = 5):
+    def __init__(self, concurrency: int = 5, classification_model: str = "openai:gpt-5-nano"):
         self.base_url = "https://skinsort.com"
         self.client = httpx.AsyncClient(
             headers={
@@ -47,6 +70,38 @@ class SkinsortScraper:
         self.seen_ingredients: Set[str] = set()
         self.ingredients_data: List[Dict] = []
         self.products_data: List[Dict] = []
+        self.classifier_agent = Agent(
+            classification_model,
+            output_type=Classification,
+            instructions=f"""
+            You are a skincare product classification expert. Your task is to categorize a product
+            into one of the following predefined categories based on its name and description.
+            Choose the single best fit.
+
+            Valid Categories:
+            - {SkincareCategory.CLEANSER.value}
+            - {SkincareCategory.TONER_ESSENCE.value}
+            - {SkincareCategory.SERUM_TREATMENT.value}
+            - {SkincareCategory.MOISTURIZER.value}
+            - {SkincareCategory.SUNSCREEN.value}
+            - {SkincareCategory.EYE_CARE.value}
+            - {SkincareCategory.MASK_PEEL.value}
+            - {SkincareCategory.OTHER.value}
+            """
+        )
+
+    async def classify_product_category(self, name: str, description: str) -> SkincareCategory:
+        """Uses an LLM to classify a product into a standard category."""
+        if not name or not description:
+            return SkincareCategory.OTHER
+
+        try:
+            prompt = f"Product Name: {name}\nDescription: {description}"
+            result = await self.classifier_agent.run(prompt)
+            return result.output.category
+        except Exception as e:
+            logger.error(f"Failed to classify product '{name}': {e}")
+            return SkincareCategory.OTHER
 
     async def fetch_page(self, url: str) -> Optional[str]:
         """Fetch a page with retry logic and concurrency limits."""
@@ -227,6 +282,7 @@ class SkinsortScraper:
             "url": url,
             "name": None,
             "brand": None,
+            "category": None,
             "description": None,
             "attributes": [], # Alcohol-free, Vegan, etc.
             "overview": {}, # What it is, Suited for, etc.
@@ -471,13 +527,21 @@ class SkinsortScraper:
         async def process_product_url(p_url):
             product_data = await self.parse_product(p_url)
             if product_data and "error" not in product_data:
-                # This now returns the local path
+                # Classify the product category
+                category = await self.classify_product_category(
+                    product_data.get("name"),
+                    product_data.get("description")
+                )
+                product_data["category"] = category.value
+                logger.info(f"Classified '{product_data.get('name')}' as '{category.value}'")
+
+                # Download image and update path
                 local_image_path = await self.download_and_save_image(product_data)
-                # Update the product data with the final local path before saving
                 product_data["image_url"] = local_image_path
-                
+
                 self.products_data.append(product_data)
-                # We construct the URL from the slug here to keep the scraping logic working
+                
+                # Collect unique ingredients for scraping
                 for ing_slug in product_data.get("ingredient_slugs", []):
                     ing_url = urljoin(self.base_url, f"/ingredients/{ing_slug}")
                     if ing_url not in self.seen_ingredients:

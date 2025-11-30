@@ -52,8 +52,11 @@ Available Active Ingredients:
 
 **CRITICAL INSTRUCTIONS:**
 1.  **Adhere to the Blueprint:** The `SkincarePhilosophy` is your single source of truth. Every decision you make—from product selection to instructions—must directly support its goals.
-2.  **Select from the Provided List:** You MUST choose products exclusively from the curated list of candidates. Do not invent or recommend any product not on this list.
-3.  **Construct a Cohesive Routine:**
+2.  **Select from the Provided List:** You MUST choose products exclusively from the curated list of candidates. Each product in the list now includes a `category` and a `matched_key_ingredients` field. You MUST use these fields to make logical selections.
+3.  **Ground Your Choices in Facts:**
+    *   When the philosophy requires a specific ingredient (e.g., 'Retinoid'), you MUST select a product where the `matched_key_ingredients` list explicitly contains 'Retinoid'.
+    *   When building a step for a specific category (e.g., an 'Exfoliator'), you MUST select a product where the `category` field is 'Exfoliator' or a similar treatment category like 'Mask & Peel'. Do not use a 'Cleanser' for an exfoliation step.
+4.  **Construct a Cohesive Routine:**
     *   Build a logical AM (morning) and PM (evening) routine.
     *   Assign each product to its correct step (e.g., cleanser, serum, moisturizer, sunscreen).
     *   Ensure the routine aligns with the AM/PM focus defined in the philosophy.

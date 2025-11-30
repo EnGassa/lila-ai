@@ -65,96 +65,43 @@ def generate_analysis_query(analysis_data: dict) -> str:
     logger.info(" ".join(query_parts))
     return " ".join(query_parts)
 
-def find_relevant_ingredients(analysis_data: dict, model: SentenceTransformer, top_k: int = 10) -> List[Dict[str, Any]]:
-    """
-    Step 1: Finds the most relevant ingredients by calling a database RPC.
-    """
-    logger.info(f"Step 1: Starting concern-to-ingredient retrieval for top {top_k} via RPC...")
-    start_time = time.time()
-    supabase = get_supabase_client()
-
-    query = generate_analysis_query(analysis_data)
-    query_embedding = model.encode(query).tolist()  # Convert to list for JSON
-
-    try:
-        response = supabase.rpc('match_ingredients', {
-            'query_embedding': query_embedding,
-            'match_count': top_k
-        }).execute()
-
-        relevant_ingredients = response.data
-        if not relevant_ingredients:
-            logger.warning("No relevant ingredients found from DB.")
-            return []
-
-        end_time = time.time()
-        logger.success(f"Found {len(relevant_ingredients)} relevant ingredients in {end_time - start_time:.2f} seconds.")
-        return relevant_ingredients
-    except Exception as e:
-        logger.error(f"Error calling match_ingredients RPC: {e}")
-        return []
-
-def get_all_product_categories() -> List[str]:
-    """Extracts all distinct product categories directly from the database."""
-    logger.info("Extracting distinct product categories from database...")
-    supabase = get_supabase_client()
-    try:
-        # This is a bit of a hack, but it's the most direct way to get distinct categories
-        # without a dedicated table or a more complex query.
-        response = supabase.table('products_1').select('overview').execute()
-        if not response.data:
-            logger.warning("No products found to extract categories from.")
-            return []
-
-        categories = set()
-        for p in response.data:
-            overview = p.get('overview', {})
-            if overview and isinstance(overview, dict):
-                what_it_is = overview.get('what_it_is', '')
-                category = what_it_is.split(' with ')[0].strip()
-                if category:
-                    categories.add(category)
-
-        sorted_categories = sorted(list(categories))
-        logger.success(f"Found {len(sorted_categories)} categories: {sorted_categories}")
-        return sorted_categories
-    except Exception as e:
-        logger.error(f"Error fetching product categories: {e}")
-        return []
-
-def find_relevant_products_by_category(
+def find_relevant_products(
     analysis_data: dict,
     philosophy: SkincarePhilosophy,
     model: SentenceTransformer,
-    categories: List[str],
     top_k_per_category: int = 5
 ) -> List[Dict[str, Any]]:
     """
-    Finds relevant products by calling a database RPC for each category.
+    Finds relevant products using hybrid search (vector + keyword) based on the skincare philosophy.
     """
-    logger.info(f"Starting philosophy-driven product retrieval for {len(categories)} categories via RPC...")
+    target_categories = philosophy.target_product_categories
+    key_ingredients = philosophy.key_ingredients_to_target
+    
+    logger.info(f"Starting hybrid product retrieval for {len(target_categories)} categories, targeting ingredients: {key_ingredients}...")
     supabase = get_supabase_client()
 
     base_query = generate_analysis_query(analysis_data)
     philosophy_descriptors = [
         f"The primary goals are: {', '.join(philosophy.primary_goals)}.",
-        f"Key ingredients to look for include: {', '.join(philosophy.key_ingredients_to_target)}.",
+        f"Key ingredients to look for include: {', '.join(key_ingredients)}.",
         f"Ingredients to avoid are: {', '.join(philosophy.ingredients_to_avoid)}."
     ]
     base_enriched_query = base_query + " " + " ".join(philosophy_descriptors)
 
     all_relevant_products = {}
 
-    for category in categories:
+    for category in target_categories:
         category_query = f"Searching for a product in the '{category}' category. {base_enriched_query}"
         query_embedding = model.encode(category_query).tolist()
 
         try:
-            response = supabase.rpc('match_products_by_category', {
+            rpc_params = {
                 'query_embedding': query_embedding,
                 'p_category': category,
-                'match_count': top_k_per_category
-            }).execute()
+                'match_count': top_k_per_category,
+                'p_active_ingredients': key_ingredients
+            }
+            response = supabase.rpc('match_products_by_category', rpc_params).execute()
 
             for product in response.data:
                 if product['url'] not in all_relevant_products:
@@ -223,14 +170,18 @@ def main():
 
 
     # --- RAG ---
-    product_categories = get_all_product_categories()
-    if not product_categories:
-        logger.error("Could not retrieve product categories. Exiting.")
-        sys.exit(1)
-        
-    relevant_products = find_relevant_products_by_category(
-        analysis_data, philosophy, model, product_categories
+    relevant_products = find_relevant_products(
+        analysis_data, philosophy, model
     )
+
+    # --- Grounding Step: Tag products with matched key ingredients ---
+    logger.info("Grounding retrieved products with philosophy's key ingredients...")
+    key_ingredients_set = set(ing.lower() for ing in philosophy.key_ingredients_to_target)
+    for product in relevant_products:
+        product_actives_set = set(ing.lower() for ing in product.get('active_ingredients', []))
+        matched_ingredients = list(key_ingredients_set.intersection(product_actives_set))
+        product['matched_key_ingredients'] = matched_ingredients
+    logger.success("Product grounding complete.")
 
     # --- Agent Configuration ---
     logger.info("Configuring Generator and Reviewer agents...")
@@ -238,9 +189,9 @@ def main():
     reviewer_llm, reviewer_settings = create_agent(reviewer_model_str, args.api_key, None)
 
     top_concerns_str = ", ".join(analysis_data.get("analysis", {}).get("top_concerns", [])).replace('_', ' ')
-    categories_str = ", ".join([f'"{cat}"' for cat in product_categories])
     raw_prompt = load_system_prompt(args.recommendation_prompt)
-    generator_prompt = raw_prompt.format(top_concerns=top_concerns_str, available_categories=categories_str)
+    # The available_categories placeholder is no longer needed as the agent gets a pre-filtered list
+    generator_prompt = raw_prompt.format(top_concerns=top_concerns_str)
     
     generator_agent = Agent(generator_llm, output_type=Recommendations, instructions=generator_prompt)
     reviewer_agent = Agent(reviewer_llm, output_type=ReviewResult, instructions=load_system_prompt(args.reviewer_prompt))

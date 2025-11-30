@@ -68,6 +68,7 @@ create table if not exists public.products_1 (
   url text not null unique,
   name text,
   brand text,
+  category text,
   description text,
   attributes text[],
   overview jsonb,
@@ -130,13 +131,15 @@ $$;
 create or replace function match_products_by_category(
   query_embedding vector(384),
   p_category text,
-  match_count int
+  match_count int,
+  p_active_ingredients text[] default null
 )
 returns table (
   product_slug text,
   url text,
   name text,
   brand text,
+  category text,
   overview jsonb,
   meta_data jsonb,
   ingredient_slugs text[],
@@ -152,6 +155,7 @@ as $$
     p.url,
     p.name,
     p.brand,
+    p.category,
     p.overview,
     p.meta_data,
     p.ingredient_slugs,
@@ -160,7 +164,14 @@ as $$
     p.concerns,
     1 - (p.embedding <=> query_embedding) as similarity
   from products_1 as p
-  where p.embedding is not null and (p.overview->>'what_it_is') ilike (p_category || '%')
+  where
+    p.embedding is not null
+    and p.category = p_category
+    and (
+      p_active_ingredients is null
+      or array_length(p_active_ingredients, 1) is null
+      or p.active_ingredients && p_active_ingredients
+    )
   order by similarity desc
   limit match_count;
 $$;
