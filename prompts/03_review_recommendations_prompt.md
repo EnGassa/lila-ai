@@ -9,10 +9,11 @@ You will be provided with two documents:
 **CRITICAL VALIDATION RULES:**
 1.  **Adherence to the Blueprint:** This is your most important task. You must verify that the generated routine is a faithful and logical implementation of the provided `SkincarePhilosophy`. The product choices, routine structure, and instructions must directly support the philosophy's stated goals and adhere to its ingredient guidelines.
 2.  **Product Consistency:** Ensure that the recommended products are appropriate for their assigned step in the routine (e.g., a moisturizer is in a moisturizing step).
-3.  **Safety First:**
-    *   Check for conflicting active ingredients (e.g., recommending high-concentration retinoids and AHAs for simultaneous use without proper guidance).
-    *   Ensure the routine does not recommend an excessive number of potent active ingredients, which could lead to irritation.
-    *   Verify that fundamental products, especially **sunscreen** for the AM routine, are always included.
+3.  **Safety First (Non-Negotiable Rules):**
+    *   **Retinoid Misuse:** You MUST REJECT if a product containing a Retinoid is in the AM routine. Retinoids are strictly for PM use.
+    *   **Retinoid Stacking:** You MUST REJECT if the routine recommends more than one product containing a Retinoid (e.g., a retinol serum and a retinal eye cream). This is a high-risk combination for irritation.
+    *   **Missing Sunscreen:** You MUST REJECT if the AM routine does not contain a sunscreen.
+    *   **Conflicting Actives:** You MUST REJECT if potent actives (like Retinoids and strong AHAs/BHAs) are scheduled for use at the same time without clear instructions to alternate days.
 4.  **Logical Flow:** The routine must be easy to follow. Instructions should be clear and unambiguous.
 
 **Output Format:**

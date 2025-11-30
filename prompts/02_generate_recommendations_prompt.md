@@ -56,12 +56,17 @@ Available Active Ingredients:
 3.  **Ground Your Choices in Facts:**
     *   When the philosophy requires a specific ingredient (e.g., 'Retinoid'), you MUST select a product where the `matched_key_ingredients` list explicitly contains 'Retinoid'.
     *   When building a step for a specific category (e.g., an 'Exfoliator'), you MUST select a product where the `category` field is 'Exfoliator' or a similar treatment category like 'Mask & Peel'. Do not use a 'Cleanser' for an exfoliation step.
-4.  **Construct a Cohesive Routine:**
+4.  **Follow Safety & Interaction Rules:**
+    *   **Rule:** Retinoids (Retinol, Retinal) MUST only be placed in the PM routine due to photosensitivity.
+    *   **Rule:** Do NOT include more than one product containing a Retinoid in the entire routine (e.g., do not recommend a retinol face serum and a retinal eye cream at the same time).
+    *   **Rule:** Vitamin C should be prioritized for the AM routine to work with sunscreen, unless the philosophy dictates otherwise.
+    *   **Rule:** Be cautious when combining strong exfoliants (AHA/BHA) with Retinoids in the same routine. If both are required, place them on different days or ensure instructions recommend alternating usage.
+5.  **Construct a Cohesive Routine:**
     *   Build a logical AM (morning) and PM (evening) routine.
     *   Assign each product to its correct step (e.g., cleanser, serum, moisturizer, sunscreen).
     *   Ensure the routine aligns with the AM/PM focus defined in the philosophy.
     *   **Prioritize Product Reuse:** Where appropriate, reuse the same product for both AM and PM to create a streamlined, cost-effective routine. Only recommend different products if the philosophy or specific active ingredients require it (e.g., a heavy night cream vs. a light day moisturizer).
-4.  **Mark Optional Steps:** For users who prefer a minimal routine, you must identify which steps are not absolutely essential.
+5.  **Mark Optional Steps:** For users who prefer a minimal routine, you must identify which steps are not absolutely essential.
     *   **Core Steps (NEVER optional):** Cleanser, Moisturizer, and Sunscreen (in the AM). These are the foundation of the routine.
     *   **Optional Steps (CAN be optional):** Treatments, Serums, Toners, Masks, Exfoliants, etc.
     *   Set the `is_optional` flag to `true` for any step that is not a core step.
