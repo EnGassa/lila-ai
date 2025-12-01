@@ -1,23 +1,26 @@
 # Active Context
 
-## Current Work: Recommendation Engine V4.1 (Rollback & Refinement)
+## Current Work: Clinical Safety & Strategy Prompt Library
 
-After implementing the strict category-based filtering, we observed a decrease in recommendation quality, such as missing key product types like exfoliants. The system had become too rigid.
+The AI recommendation engine has been significantly upgraded by integrating a layer of clinically-validated dermatological logic directly into the prompt library. This moves the system beyond generic advice to providing safe, effective, and personalized skincare protocols.
 
-We have now completed a "strategic rollback" to restore flexibility while retaining our recent safety improvements.
+### 1. **Philosophy Prompt (`01a_...philosophy_prompt.md`)**
+-   **New Feature:** A **"Clinical Strategy Library"** has been added.
+-   **Logic:**
+    -   It now contains specific protocols for key concerns like Hyperpigmentation, Acne, and Aging, detailing the best ingredients and AM/PM focus for each.
+    -   A **"Barrier-First"** rule has been implemented, forcing the AI to prioritize skin barrier repair over aggressive treatments if sensitivity or dehydration is detected.
 
-### 1. **Restored "Broad Search" Behavior**
--   **Problem:** Forcing the AI to pick a category and then filtering the database by that single category was too restrictive, as many functional products (like exfoliants) are spread across multiple form-based categories (Serums, Toners).
--   **Solution:**
-    -   The `generate_recommendations.py` script has been reverted to a "Broad Search" logic. It now fetches all distinct categories from the database and runs a vector search across each one.
-    -   The strict database-level filtering for `active_ingredients` has been disabled during this initial retrieval to maximize the number of relevant candidates.
+### 2. **Generator Prompt (`02_...recommendations_prompt.md`)**
+-   **New Feature:** Hard-coded **"Clinical Safety Rules"** and a **"Skin Cycling"** scheduling model.
+-   **Logic:**
+    -   Enforces non-negotiable rules, such as never combining Retinoids with Vitamin C or AHA/BHA in the same routine.
+    -   Mandates an alternating nightly schedule for potent actives (e.g., Night A for exfoliants, Night B for retinoids, Night C for recovery) to prevent irritation and improve efficacy.
 
-### 2. **Retained "Ingredient Grounding" and Safety Rules**
--   **Benefit:** While the search is now broader, we have kept the crucial safety and logic improvements:
-    -   **Product Tagging:** The script still programmatically tags all retrieved products with the key ingredients they contain (`matched_key_ingredients`).
-    -   **Enhanced Prompts:** The Generator and Reviewer prompts still contain the strict safety rules regarding Retinoids, ingredient stacking, and AM/PM usage.
+### 3. **Reviewer Prompt (`03_...review_recommendations_prompt.md`)**
+-   **New Feature:** The **"Clinical Safety Validation"** rules have been updated to mirror the generator's new constraints.
+-   **Logic:** The reviewer now acts as a strict gatekeeper, explicitly checking for forbidden ingredient combinations, incorrect AM/PM placement of actives, and logical scheduling conflicts.
 
-This new V4.1 approach combines the high-recall, flexible search of the older system with the safety, factual grounding, and logical consistency of our most recent enhancements, providing the best of both worlds. The system is now confirmed to be correctly suggesting complex patterns like "Double Cleansing" where appropriate.
+This enhancement ensures that every generated routine is not only aligned with a high-level strategy but is also constructed and validated against a robust framework of dermatological best practices.
 
 ## Next Steps
 

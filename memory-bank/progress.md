@@ -2,6 +2,11 @@
 
 ## What Works
 
+*   **AI Prompt Library (V2 - Clinical Safety):** The entire AI prompt library has been upgraded with a layer of clinically-validated dermatological logic.
+    *   **Strategic Guardrails:** The "Philosophy" prompt (`01a`) now includes a clinical library and a "Barrier-First" protocol to ensure the AI generates safe and effective high-level plans.
+    *   **Safety & Scheduling:** The "Generator" prompt (`02`) enforces non-negotiable safety rules (e.g., no Retinol + Vit C) and implements a "Skin Cycling" schedule to prevent irritation.
+    *   **Strict Validation:** The "Reviewer" prompt (`03`) has been updated to mirror the new safety rules, acting as a final gatekeeper.
+
 *   **Data Schema Refactor (V1):**
     *   **Flattened Product Data:** The `products_1` table has been refactored to promote key data from JSONB to top-level `text[]` columns: `benefits`, `active_ingredients`, and `concerns`. This enables powerful, performant SQL filtering.
     *   **Robust Data Linking:** Replaced `ingredient_urls` with `ingredient_slugs` to create a direct, foreign-key-style relationship between `products_1` and `ingredients_1`, enabling efficient joins and data grounding.
