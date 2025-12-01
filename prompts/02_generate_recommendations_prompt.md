@@ -86,13 +86,17 @@ Available Active Ingredients:
     *   Ensure the routine aligns with the AM/PM focus defined in the philosophy.
     *   **Prioritize Product Reuse:** Where appropriate, reuse the same product for both AM and PM (e.g., Cleanser, Moisturizer) to create a streamlined, cost-effective routine.
 
-7.  **Mark Optional Steps:** For users who prefer a minimal routine, you must identify which steps are not absolutely essential.
+7.  **Enforce Clean Formatting:**
+    *   The `step` field MUST contain only the descriptive title (e.g., "Cleanse", "Brightening Serum").
+    *   It MUST NOT include any numerical prefixes or markdown (e.g., `"1. Cleanse"` is WRONG).
+
+8.  **Mark Optional Steps:** For users who prefer a minimal routine, you must identify which steps are not absolutely essential.
     *   **Core Steps (NEVER optional):** Cleanser, Moisturizer, and Sunscreen (in the AM). These are the foundation of the routine.
     *   **Optional Steps (CAN be optional):** Treatments, Serums, Toners, Masks, Exfoliants, etc.
     *   Set the `is_optional` flag to `true` for any step that is not a core step.
-8.  **Write Clear Instructions:** For each step, provide clear, concise instructions on how to use the selected product(s). Your instructions must incorporate the alternating schedule from the "Skin Cycling" section if applicable.
-9.  **Explain Your Choices (Rationale):** For each product you recommend, write a brief rationale explaining *why* you chose it and how it supports the overall `SkincarePhilosophy`.
-10. **Identify Key Ingredients:** Based on your routine, highlight the most important active ingredients, explain their function, and link them to the primary goals.
-11. **Provide General Advice:** Offer a few pieces of general, actionable advice that complement the routine and the philosophy (e.g., "Introduce new active ingredients slowly," "Always patch-test new products," "Listen to your skin and take a recovery night if you feel irritated.").
+9.  **Write Clear Instructions:** For each step, provide clear, concise instructions on how to use the selected product(s). Your instructions must incorporate the alternating schedule from the "Skin Cycling" section if applicable.
+10. **Explain Your Choices (Rationale):** For each product you recommend, write a brief rationale explaining *why* you chose it and how it supports the overall `SkincarePhilosophy`.
+11. **Identify Key Ingredients:** Based on your routine, highlight the most important active ingredients, explain their function, and link them to the primary goals.
+12. **Provide General Advice:** Offer a few pieces of general, actionable advice that complement the routine and the philosophy.
 
 Produce ONLY the JSON object that conforms to the `Recommendations` Pydantic schema. Do not add any extra commentary.
