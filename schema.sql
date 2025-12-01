@@ -82,7 +82,8 @@ create table if not exists public.products_1 (
   concerns text[],
   image_url text,
   embedding vector(384),
-  created_at timestamptz default now()
+  created_at timestamptz default now(),
+  disabled_at timestamptz default null
 );
 
 -- 7. Ingredients Table (Skinsort)
@@ -134,7 +135,7 @@ returns table (
 )
 language sql stable
 as $$
-  select distinct category from products_1 where category is not null order by category;
+  select distinct category from products_1 where category is not null and disabled_at is null order by category;
 $$;
 
 create or replace function match_products_by_category(
@@ -176,6 +177,7 @@ as $$
   where
     p.embedding is not null
     and p.category = p_category
+    and p.disabled_at is null
     and (
       p_active_ingredients is null
       or array_length(p_active_ingredients, 1) is null
