@@ -9,13 +9,32 @@ Based on the provided skin analysis summary, you must generate a JSON object tha
 ### **Core Instructions**
 
 1.  **Analyze the Entire Report:** Carefully read the patient's skin type, top concerns, detailed analysis, and any escalation flags.
-2.  **Prioritize Barrier Health:** First, check for signs of a compromised skin barrier (e.g., high sensitivity, dehydration, redness). If present, you MUST prioritize barrier repair above all other goals.
-3.  **Consult the Clinical Library:** Use the `Clinical Strategy Library` below to determine the primary goals, AM/PM focus, and key ingredients based on the user's top concerns.
-4.  **Synthesize Goals:** Identify the top 2-3 most critical, overarching goals. If barrier repair is needed, it must be the #1 goal.
-5.  **Define AM/PM Focus:** Assign a clear, strategic focus for the morning and evening routines based on the library.
-6.  **Identify Ingredients:**
+2.  **Apply the Universal Framework:** Every routine MUST be built upon the "Universal Routine Framework" defined below. This provides the non-negotiable skeleton of the regimen.
+3.  **Prioritize Barrier Health:** First, check for signs of a compromised skin barrier (e.g., high sensitivity, dehydration, redness). If present, you MUST prioritize barrier repair above all other goals.
+4.  **Consult the Clinical Library:** Use the `Clinical Strategy Library` below to determine the primary focus goals, AM/PM focus, and key ingredients based on the user's top concerns.
+5.  **Apply Clinical Specificity:**
+    *   **Vitamin C:** If the user has Oily/Combination skin, specify Water-based Vitamin C (L-Ascorbic Acid). If Dry/Sensitive, specify Lipid-soluble Vitamin C (THD Ascorbate, MAP, SAP).
+    *   **Retinoids:** For mature/sensitive skin, always specify the "Sandwich Method" (Moisturizer -> Retinoid -> Moisturizer) and a "low and slow" introduction.
+6.  **Synthesize Goals:** Identify the top 2-3 most critical, overarching goals.
+7.  **Identify Ingredients:**
     *   `key_ingredients_to_target`: List the most effective ingredients from the library that align with the user's goals.
-    *   `ingredients_to_avoid`: Note any ingredients that are counter-productive or known irritants for the user's concerns.
+    *   `ingredients_to_avoid`: Note any ingredients that are counter-productive or known irritants.
+
+---
+
+### **Universal Routine Framework**
+*All generated philosophies must adhere to this structural backbone while allowing for targeted expansion.*
+
+**The Non-Negotiable Backbone:**
+1.  **Cleanser:** Always start with a gentle, non-stripping cleanser (AM & PM).
+2.  **Toner:** A hydrating toner is mandatory to prep the skin for absorption.
+3.  **AM Active:** Vitamin C is **MANDATORY** for every routine (Protect & Brighten).
+4.  **PM Treatment:** A targeted treatment step is **MANDATORY**. This slot MUST be filled based on the user's specific Clinical Protocol (e.g., Retinoids, Exfoliants, or Barrier Repair).
+5.  **Moisturizer:** Essential for barrier support.
+6.  **Sunscreen:** The final, non-negotiable step in the AM.
+
+**The Expansion Rule (Critical):**
+While the backbone is mandatory, you **SHOULD** build upon it with targeted treatments (serums, ampoules, spot treatments) to address specific concerns. **Do not limit the routine to just the basics.** A comprehensive routine (5-6 steps) is encouraged if it benefits the user's specific goals (e.g., adding a Peptide serum for aging, or a Niacinamide serum for pores).
 
 ---
 
@@ -24,42 +43,43 @@ Based on the provided skin analysis summary, you must generate a JSON object tha
 #### **1. Barrier-First Protocol (Universal Priority)**
 - **Trigger:** If analysis shows high sensitivity, dehydration, or significant redness.
 - **Primary Goal:** "Strengthen and repair the skin's moisture barrier to reduce sensitivity and inflammation."
-- **AM Focus:** "Protect & Hydrate"
-- **PM Focus:** "Soothe & Repair"
-- **Key Ingredients to Target:** Ceramides, Hyaluronic Acid, Niacinamide (low %), Ectoin, Snail Mucin.
+- **AM Focus:** "Protect & Hydrate" (Vitamin C + Barrier Support + Sunscreen)
+- **PM Focus:** "Soothe & Repair" (Lipid Replenishment)
+- **Key Ingredients to Target:** Ceramides, Hyaluronic Acid, Panthenol, Squalane, Niacinamide (low %), Ectoin, Snail Mucin, Centella Asiatica.
 - **Ingredients to Avoid:** All strong exfoliants (AHA, BHA), Retinoids, and high-concentration Vitamin C until the barrier is healthy.
 
 #### **2. Hyperpigmentation Protocol**
 - **Primary Goal:** "Fade existing dark spots and prevent new ones by inhibiting melanin production and increasing cell turnover."
-- **AM Focus:** "Protect & Brighten" (Antioxidants + Sunscreen)
+- **AM Focus:** "Protect & Brighten" (Vitamin C + Tyrosinase Inhibitors + Sunscreen)
 - **PM Focus:** "Treat & Renew" (Pigment Inhibitors + Exfoliation)
 - **Key Ingredients to Target:**
-    - **Tyrosinase Inhibitors:** Azelaic Acid, Tranexamic Acid, Arbutin, Kojic Acid.
-    - **Antioxidants:** Vitamin C, Vitamin E.
-    - **Cell Turnover:** Retinoids, AHA, PHA.
+    - **Tyrosinase Inhibitors:** Azelaic Acid, Tranexamic Acid, Arbutin, Kojic Acid, Licorice Root.
+    - **Antioxidants:** Vitamin C (Mandatory), Vitamin E.
+    - **Cell Turnover:** Retinoids, AHA (Glycolic/Lactic), PHA.
     - **Support:** Niacinamide.
-- **Sunscreen is non-negotiable.**
+- **Rule:** Sunscreen is strictly non-negotiable.
 
 #### **3. Acne & Large Pores Protocol**
-- **Primary Goal:** "Clear congestion, regulate oil production, and reduce inflammation, while maintaining skin hydration."
-- **AM Focus:** "Control Oil & Protect"
-- **PM Focus:** "Exfoliate & Treat"
+- **Primary Goal:** "Clear congestion, regulate oil production, and reduce inflammation without stripping the skin."
+- **AM Focus:** "Control Oil & Protect" (Vitamin C + BHA/Niacinamide + Sunscreen)
+- **PM Focus:** "Exfoliate & Treat" (Retinoids or Benzoyl Peroxide)
 - **Key Ingredients to Target:**
-    - **Pore Clearing:** BHA (Salicylic Acid), PHA.
-    - **Anti-Inflammatory/Redness:** Azelaic Acid, Niacinamide.
-    - **Cell Turnover:** Retinoids (especially Adapalene).
-    - **Barrier Support (CRITICAL):** Hyaluronic Acid, Ceramides.
-- **Note:** Do not over-strip the skin. A gentle cleanser and non-comedogenic moisturizer are essential.
+    - **Pore Clearing:** BHA (Salicylic Acid) - *Instruction: Start usage 2-3 times per week.*
+    - **Bacteria Control:** Benzoyl Peroxide - *Instruction: PM use only, apply over moisturizer if sensitive.*
+    - **Anti-Inflammatory:** Azelaic Acid, Niacinamide.
+    - **Cell Turnover:** Retinoids (Adapalene/Retinol) - *Instruction: PM only, pea-sized amount, slow build.*
+    - **Hydration:** Hyaluronic Acid, Ceramides (essential to balance actives).
+- **Rule:** Avoid comedogenic oils. Balance strong actives with hydration to prevent barrier damage.
 
 #### **4. Mature & Aging Skin Protocol**
 - **Primary Goal:** "Boost collagen production, improve skin texture, and protect against environmental damage."
-- **AM Focus:** "Protect & Firm" (Antioxidants + Sunscreen)
-- **PM Focus:** "Rebuild & Repair" (Cell Turnover + Peptides)
+- **AM Focus:** "Protect & Firm" (Vitamin C + Peptides + Sunscreen)
+- **PM Focus:** "Rebuild & Repair" (Retinoids + Peptides + Lipids)
 - **Key Ingredients to Target:**
-    - **Collagen Boosters:** Retinoids, Peptides, Vitamin C.
-    - **Texture & Tone:** AHA (Lactic, Glycolic), Niacinamide.
-    - **Hydration & Barrier:** Ceramides, Hyaluronic Acid.
-- **Instruction:** Emphasize starting slow with Retinoids and acids (2-3 times per week).
+    - **Collagen Boosters:** Retinoids (Tretinoin/Retinol), Peptides (Copper/Signal), Vitamin C.
+    - **Texture & Tone:** AHA (Lactic/Glycolic), Niacinamide.
+    - **Hydration & Barrier:** Ceramides, Hyaluronic Acid, Panthenol, Squalane, Fatty Acids, Shea Butter.
+- **Rule:** For Retinoids (especially Tretinoin), explicitly suggest the "Sandwich Method" (Moisturizer -> Retinoid -> Moisturizer) to improve tolerability.
 
 ---
 
