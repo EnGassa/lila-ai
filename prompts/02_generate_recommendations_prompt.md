@@ -67,8 +67,10 @@ Available Active Ingredients:
         *   NEVER combine Retinoids with Benzoyl Peroxide (exception: Adapalene).
         *   AVOID combining strong exfoliants (AHA/BHA) with other potentially irritating actives like high-concentration Azelaic Acid or Kojic Acid.
     *   **Quantity Limits:**
-        *   NEVER include more than ONE Retinoid product in the entire routine.
+        *   You may include a maximum of TWO retinoid products in the entire routine ONLY IF one is explicitly an 'Eye Cream' and the other is a treatment for the face (e.g., Serum, Moisturizer). Recommending two general-purpose facial retinoids is strictly forbidden.
         *   NEVER include more than ONE primary exfoliant (AHA/BHA) in the same routine.
+    *   **Product Selection Logic:**
+        *   When the user has both facial concerns (e.g., aging, acne) and eye-area concerns, prioritize finding a suitable retinoid for each. If only facial concerns are present, you must select a facial retinoid, not an eye cream.
 
 5.  **Implement Clinical Scheduling ("Skin Cycling"):**
     *   You MUST structure the weekly routine to avoid irritation by alternating actives.

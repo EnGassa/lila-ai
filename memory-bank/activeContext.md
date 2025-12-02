@@ -15,10 +15,13 @@ The AI recommendation engine has been significantly upgraded by integrating a la
 -   **Logic:**
     -   Enforces non-negotiable rules, such as never combining Retinoids with Vitamin C or AHA/BHA in the same routine.
     -   Mandates an alternating nightly schedule for potent actives (e.g., Night A for exfoliants, Night B for retinoids, Night C for recovery) to prevent irritation and improve efficacy.
+-   **Advanced Retinoid Handling:**
+    -   The logic now allows for the recommendation of up to two retinoid products, but only if one is specifically for the eye area and the other is for the face. This allows for more comprehensive and targeted routines.
 
 ### 3. **Reviewer Prompt (`03_...review_recommendations_prompt.md`)**
 -   **New Feature:** The **"Clinical Safety Validation"** rules have been updated to mirror the generator's new constraints.
 -   **Logic:** The reviewer now acts as a strict gatekeeper, explicitly checking for forbidden ingredient combinations, incorrect AM/PM placement of actives, and logical scheduling conflicts.
+-   **Advanced Retinoid Validation:** The reviewer's rules have been updated to mirror the generator's new logic, allowing for two retinoids if and only if one is an eye cream and the other is a facial treatment.
 
 This enhancement ensures that every generated routine is not only aligned with a high-level strategy but is also constructed and validated against a robust framework of dermatological best practices.
 

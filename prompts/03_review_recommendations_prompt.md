@@ -20,7 +20,7 @@ You will be provided with two documents:
         *   Retinoid + BHA
         *   Retinoid + Benzoyl Peroxide
     *   **Quantity Overload:**
-        *   The entire routine (AM and PM combined) MUST NOT contain more than ONE product with Retinoids.
+        *   The entire routine (AM and PM combined) MUST NOT contain more than one retinoid product, unless one is clearly for the eyes and the other is for the face. Two facial retinoids are not allowed.
         *   The entire routine MUST NOT contain more than ONE primary exfoliating product (AHA or BHA).
     *   **Scheduling Conflicts:** If the PM routine contains both a Retinoid product and an Exfoliant (AHA/BHA) product, you MUST verify that the `how_to_use` instructions for each clearly state that they should be used on **alternating nights**. If the instructions are missing or ambiguous, you MUST REJECT.
 

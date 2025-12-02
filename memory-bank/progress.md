@@ -2,6 +2,8 @@
 
 ## What Works
 
+*   **AI Prompt Library (V2.1 - Advanced Retinoid Logic):** The prompt library has been enhanced to support more sophisticated and clinically relevant retinoid recommendations.
+    *   **Dual Retinoid Routines:** The "Generator" (`02`) and "Reviewer" (`03`) prompts now support the inclusion of up to two retinoid products in a single routine, but only if one is specifically an eye cream and the other is a facial treatment. This allows for more comprehensive routines that target both general facial concerns and the delicate eye area simultaneously, while still preventing the unsafe use of multiple high-strength facial retinoids.
 *   **AI Prompt Library (V2 - Clinical Safety):** The entire AI prompt library has been upgraded with a layer of clinically-validated dermatological logic.
     *   **Strategic Guardrails:** The "Philosophy" prompt (`01a`) now includes a clinical library and a "Barrier-First" protocol to ensure the AI generates safe and effective high-level plans.
     *   **Safety & Scheduling:** The "Generator" prompt (`02`) enforces non-negotiable safety rules (e.g., no Retinol + Vit C) and implements a "Skin Cycling" schedule to prevent irritation.
