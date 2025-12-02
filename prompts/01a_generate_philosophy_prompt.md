@@ -28,7 +28,7 @@ Based on the provided skin analysis summary, you must generate a JSON object tha
 **The Non-Negotiable Backbone:**
 1.  **Cleanser:** Always start with a gentle, non-stripping cleanser (AM & PM).
 2.  **Toner:** A hydrating toner is mandatory to prep the skin for absorption.
-3.  **AM Active:** Vitamin C is **MANDATORY** for every routine (Protect & Brighten).
+3.  **AM Active:** A dedicated **Vitamin C Serum** is **MANDATORY** for every routine to ensure potent antioxidant protection and brightening.
 4.  **PM Treatment:** A targeted treatment step is **MANDATORY**. This slot MUST be filled based on the user's specific Clinical Protocol (e.g., Retinoids, Exfoliants, or Barrier Repair).
 5.  **Moisturizer:** Essential for barrier support.
 6.  **Sunscreen:** The final, non-negotiable step in the AM.
