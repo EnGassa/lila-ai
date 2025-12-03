@@ -1,6 +1,19 @@
 # Active Context
 
-## Current Work: Smart Retrieval & Full Transparency Tracing
+## Current Work: Secure Mobile-Friendly Image Uploads
+
+A new, secure workflow has been implemented to allow beta users to upload their photos directly to the platform via a unique link, replacing the high-friction WhatsApp process.
+
+### 1. **"Secure Broker" S3 Uploads**
+-   **Architecture:** Implemented a "Secure Broker" pattern where the frontend uploads files to a Next.js Server Action (`app/[userId]/upload/actions.ts`), which then streams them securely to a private Supabase S3 bucket (`user-uploads`) using admin credentials.
+-   **Security:** This approach keeps the storage bucket private and prevents exposing sensitive API keys to the client, while avoiding the complexity of RLS for unauthenticated users.
+-   **Future-Proofing:** Uses the official AWS S3 SDK, making it easy to migrate to standard AWS S3 in the future if needed.
+
+### 2. **Mobile-First Experience**
+-   **HEIC Support:** The frontend `FileUpload` component includes automatic client-side conversion of HEIC images (common on iPhones) to JPEG using `heic2any`. This ensures compatibility with the backend analysis pipeline.
+-   **Dynamic Imports:** Solved server-side rendering issues with browser-only libraries by implementing a `DynamicFileUpload` wrapper component.
+
+## Previous Work: Smart Retrieval & Full Transparency Tracing
 
 The AI recommendation engine has been upgraded with two major architectural improvements: a more intelligent product retrieval strategy and an end-to-end reasoning trace for enhanced debuggability and trust.
 
@@ -21,7 +34,7 @@ The AI recommendation engine has been upgraded with two major architectural impr
 This enhancement provides a complete "flight recorder" for the AI's decision-making process, from initial diagnosis to final safety review, making the system significantly more transparent and easier to debug.
 
 ## Next Steps
-With the core recommendation pipeline now robust and transparent, the focus can shift to broader integration and optimization:
-1.  **Backend Integration for Image Capture:** Connect the multi-pose image capture flow to the backend analysis pipeline.
+With the secure upload workflow in place, the immediate next steps are:
+1.  **Backend Integration:** Connect the newly uploaded images to the existing backend analysis pipeline (currently triggered manually).
 2.  **Optimize Ingestion:** Refactor the classification script to process products in batches for better performance.
 3.  **UI/UX for Traces:** Explore how to surface the new reasoning traces in the user dashboard to build trust and explain the "why" behind the recommendations.

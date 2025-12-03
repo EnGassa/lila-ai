@@ -9,6 +9,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.943.0",
+    "@aws-sdk/lib-storage": "^3.943.0",
     "@hookform/resolvers": "^3.10.0",
     "@mediapipe/tasks-vision": "0.10.22-rc.20250304",
     "@radix-ui/react-accordion": "1.2.2",
@@ -48,6 +50,7 @@
     "date-fns": "4.1.0",
     "embla-carousel-react": "8.5.1",
     "framer-motion": "^12.23.24",
+    "heic2any": "^0.0.4",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
     "next": "16.0.3",
@@ -81,6 +84,9 @@
     "overrides": {
       "@types/react": "19.2.6",
       "@types/react-dom": "19.2.3"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "core-js"
+    ]
   }
 }

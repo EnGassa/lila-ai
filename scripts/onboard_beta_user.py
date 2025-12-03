@@ -79,10 +79,11 @@ def main():
     parser = argparse.ArgumentParser(description="Onboard a beta user.")
     parser.add_argument("--name", required=True, help="Full name of the user.")
     parser.add_argument("--email", help="Email of the user (optional).")
-    parser.add_argument("--image-dir", required=True, help="Directory containing user's face images.")
+    parser.add_argument("--image-dir", help="Directory containing user's face images.")
     parser.add_argument("--model", default="google-gla:gemini-2.5-pro", help="Model to use for analysis and recommendations.")
     parser.add_argument("--api-key", help="API key for the model provider.")
     parser.add_argument("--context-file", help="Path to a JSON file containing user context.")
+    parser.add_argument("--setup-only", action="store_true", help="Only create the user and print the upload link.")
     
     args = parser.parse_args()
     
@@ -90,6 +91,18 @@ def main():
     
     # 1. Create User
     user_id = create_user(supabase, args.name, args.email)
+
+    # Handle --setup-only flag
+    if args.setup_only:
+        print("\n" + "="*50)
+        print(f"✅ User Setup Complete for {args.name}!")
+        print(f"🔗 Upload Link: http://localhost:3000/{user_id}/upload")
+        print("="*50 + "\n")
+        sys.exit(0)
+
+    # Validate image-dir for full onboarding
+    if not args.image_dir:
+        parser.error("the following arguments are required: --image-dir")
 
     # Create a directory for this test run's logs
     log_dir = f"logs/test_run_{user_id}"

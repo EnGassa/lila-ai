@@ -2,6 +2,11 @@
 
 ## What Works
 
+*   **Secure Mobile-Friendly Image Uploads:** A complete, secure workflow for beta users to upload photos.
+    *   **Secure Broker Architecture:** Implemented a backend API route that securely acts as a broker between the client and Supabase S3, keeping admin credentials safe.
+    *   **Mobile-First Design:** The frontend uploader automatically handles HEIC-to-JPEG conversion in the browser, ensuring compatibility with iPhone photos.
+    *   **Tooling:** Updated `onboard_beta_user.py` to generate persistent, personalized upload links for easy sharing.
+
 *   **Recommendation Engine V5 (Smart Retrieval & Full Transparency):** The recommendation engine has been significantly upgraded for quality and debuggability.
     *   **"Smart Brute Force" Retrieval:** Implemented a new retrieval strategy that iterates through all product categories while using enriched, ingredient-specific vector search queries. This guarantees a comprehensive and highly relevant pool of product candidates for the AI.
     *   **End-to-End Reasoning Traces:** The entire multi-agent pipeline now outputs detailed reasoning traces:
