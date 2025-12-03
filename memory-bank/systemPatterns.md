@@ -23,6 +23,13 @@ To handle sensitive file uploads securely without exposing storage credentials o
 3.  **Direct Upload:** The client receives the URL and uploads the file directly to Supabase Storage (S3 compatible) using a standard `PUT` request.
 This pattern bypasses server body size limits and reduces server load.
 
+### Event-Driven Notifications (Discord)
+To provide real-time alerts for important system events, such as a user uploading new photos, a notification pattern leveraging Next.js Server Actions and external webhooks is used.
+1.  **Client-Side Trigger**: After a client-side process completes (e.g., all files in a batch are successfully uploaded), the client calls a dedicated Server Action (`notifyOnUploadComplete`).
+2.  **Secure Server-Side Execution**: The Server Action executes securely on the server. It retrieves sensitive information, such as a Discord webhook URL, from environment variables.
+3.  **Webhook Dispatch**: The action formats a message and sends it to the pre-configured webhook URL (e.g., a Discord channel).
+This pattern ensures that notifications for batch events are sent only once, and sensitive webhook URLs are never exposed to the client.
+
 ### Component-Based UI
 - **shadcn/ui:** Used as the foundation for UI components, ensuring accessibility and consistent styling.
 - **Tailwind CSS:** Utility-first CSS framework for rapid and responsive styling.

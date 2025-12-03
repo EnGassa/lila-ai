@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Terminal, UploadCloud, X } from 'lucide-react'
-import { getSignedUploadUrl } from '@/app/[userId]/upload/actions'
+import { getSignedUploadUrl, notifyOnUploadComplete } from '@/app/[userId]/upload/actions'
 import { toast } from 'sonner'
 
 interface FileUploadProps {
@@ -112,6 +112,14 @@ export function FileUpload({ userId }: FileUploadProps) {
       }))
 
       toast.success("Files uploaded successfully!")
+
+      // Fire and forget the notification
+      try {
+        await notifyOnUploadComplete(userId, validFiles.map(f => f.name))
+      } catch (e) {
+        console.warn("Failed to send upload notification:", e)
+      }
+
       setFiles([])
       setUploadProgress(null)
 

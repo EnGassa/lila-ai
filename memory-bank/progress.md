@@ -6,7 +6,15 @@
 
 *   **Build Fix:** A bug that caused the Next.js build to fail due to a server-side rendering issue with the PostHog provider has been resolved. The provider is now dynamically imported and rendered only on the client side, ensuring a successful build.
 
-*   **Secure Mobile-Friendly Image Uploads:** A complete, secure workflow for beta users to upload photos.
+*   **Secure Mobile-Friendly Image Uploads & Notifications:**
+    *   **Discord Notifications:** Implemented a real-time notification system. A server action (`notifyOnUploadComplete`) is triggered by the client after a successful upload batch, sending a formatted embed message to a configured Discord channel via webhook.
+    *   **Secure Broker Architecture:** Implemented a **Client-Side Direct Upload** pattern. The frontend requests pre-signed URLs from a secure Server Action (`getSignedUploadUrl`) and then uploads files directly to Supabase S3. This bypasses server body limits and improves performance while keeping credentials safe.
+    *   **Mobile-First Design:**
+        *   **UI/UX:** The upload interface features a large, tappable touch zone, portrait-oriented previews (`aspect-[3/4]`), and "native-style" delete buttons.
+        *   **Sticky Footer:** A sticky footer ensures the "Upload" button and progress bar are always visible, preventing scrolling issues on mobile.
+        *   **Feedback:** Includes a clear, consolidated progress bar, duplicate file detection, and toast notifications.
+        *   **HEIC Support:** Automatically handles HEIC-to-JPEG conversion in the browser, ensuring compatibility with iPhone photos.
+    *   **Tooling:** Updated `onboard_beta_user.py` to generate persistent, personalized upload links for easy sharing.
     *   **Secure Broker Architecture:** Implemented a **Client-Side Direct Upload** pattern. The frontend requests pre-signed URLs from a secure Server Action (`getSignedUploadUrl`) and then uploads files directly to Supabase S3. This bypasses server body limits and improves performance while keeping credentials safe.
     *   **Mobile-First Design:**
         *   **UI/UX:** The upload interface features a large, tappable touch zone, portrait-oriented previews (`aspect-[3/4]`), and "native-style" delete buttons.
