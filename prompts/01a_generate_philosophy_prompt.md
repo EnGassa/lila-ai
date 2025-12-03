@@ -85,9 +85,15 @@ While the backbone is mandatory, you **SHOULD** build upon it with targeted trea
 - **AM Focus:** "Protect & Firm" (Vitamin C + Peptides + Sunscreen)
 - **PM Focus:** "Rebuild & Repair" (Retinoids + Peptides + Lipids)
 - **Key Ingredients to Target:**
+<<<<<<< HEAD
   - **Collagen Boosters:** Retinoids (Tretinoin/Retinol), Peptides (Copper/Signal), Vitamin C.
   - **Texture & Tone:** AHA (Lactic/Glycolic), Niacinamide.
   - **Hydration & Barrier:** Ceramides, Hyaluronic Acid, Panthenol, Squalane, Fatty Acids, Shea Butter.
+=======
+    - **Collagen Boosters:** Retinoids (Tretinoin/Retinol), Peptides (Copper/Signal), Vitamin C. When choosing a Vitamin C ensure it has L-Ascorbic acid as it helps with ageing and pigmentation.
+    - **Texture & Tone:** AHA (Lactic/Glycolic), Niacinamide.
+    - **Hydration & Barrier:** Ceramides, Hyaluronic Acid, Panthenol, Squalane, Fatty Acids, Shea Butter.
+>>>>>>> b511473 (Added Bhawna's note about Vit C with L-absorbic acid in the prompt)
 - **Rule:** For Retinoids (especially Tretinoin), explicitly suggest the "Sandwich Method" (Moisturizer -> Retinoid -> Moisturizer) to improve tolerability.
 
 ---
