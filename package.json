@@ -11,6 +11,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.943.0",
     "@aws-sdk/lib-storage": "^3.943.0",
+    "@aws-sdk/s3-request-presigner": "^3.943.0",
     "@hookform/resolvers": "^3.10.0",
     "@mediapipe/tasks-vision": "0.10.22-rc.20250304",
     "@radix-ui/react-accordion": "1.2.2",

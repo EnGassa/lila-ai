@@ -3,8 +3,12 @@
 ## What Works
 
 *   **Secure Mobile-Friendly Image Uploads:** A complete, secure workflow for beta users to upload photos.
-    *   **Secure Broker Architecture:** Implemented a backend API route that securely acts as a broker between the client and Supabase S3, keeping admin credentials safe.
-    *   **Mobile-First Design:** The frontend uploader automatically handles HEIC-to-JPEG conversion in the browser, ensuring compatibility with iPhone photos.
+    *   **Secure Broker Architecture:** Implemented a **Client-Side Direct Upload** pattern. The frontend requests pre-signed URLs from a secure Server Action (`getSignedUploadUrl`) and then uploads files directly to Supabase S3. This bypasses server body limits and improves performance while keeping credentials safe.
+    *   **Mobile-First Design:**
+        *   **UI/UX:** The upload interface features a large, tappable touch zone, portrait-oriented previews (`aspect-[3/4]`), and "native-style" delete buttons.
+        *   **Sticky Footer:** A sticky footer ensures the "Upload" button and progress bar are always visible, preventing scrolling issues on mobile.
+        *   **Feedback:** Includes a clear, consolidated progress bar, duplicate file detection, and toast notifications.
+        *   **HEIC Support:** Automatically handles HEIC-to-JPEG conversion in the browser, ensuring compatibility with iPhone photos.
     *   **Tooling:** Updated `onboard_beta_user.py` to generate persistent, personalized upload links for easy sharing.
 
 *   **Recommendation Engine V5 (Smart Retrieval & Full Transparency):** The recommendation engine has been significantly upgraded for quality and debuggability.

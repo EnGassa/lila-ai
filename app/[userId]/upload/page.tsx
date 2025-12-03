@@ -1,9 +1,11 @@
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { DynamicFileUpload } from '@/components/dynamic-file-upload'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Skeleton } from '@/components/ui/skeleton'
 
-export default async function UploadPage({ params }: { params: Promise<{ userId: string }> }) {
-  const { userId } = await params
+async function UserUploadContent({ userId }: { userId: string }) {
   const supabase = await createClient()
 
   const { data: user } = await supabase
@@ -15,18 +17,59 @@ export default async function UploadPage({ params }: { params: Promise<{ userId:
   if (!user) {
     notFound()
   }
+  
+  const displayName = user.full_name || userId;
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <div className="max-w-xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">
-          Hi, {user.full_name}!
-        </h1>
+    <div className="p-4 space-y-6 bg-gray-50 min-h-screen">
+       <div className="flex items-center gap-4">
+        <Avatar className="h-24 w-24 rounded-lg">
+          <AvatarImage
+            src={`/profile_pic/${userId}.jpg`}
+            alt="User"
+          />
+          <AvatarFallback className="rounded-lg">{displayName.charAt(0)}</AvatarFallback>
+        </Avatar>
+        <div>
+          <p className="text-2xl font-light">{displayName}</p>
+        </div>
+      </div>
+      <div className="p-6 rounded-lg bg-white">
+        <h1 className="text-xl font-semibold mb-2">Upload Your Photos</h1>
         <p className="text-muted-foreground mb-6">
           Please upload your photos below. You can select multiple files at once.
         </p>
-        <DynamicFileUpload userId={userId} />
       </div>
-    </main>
+      <DynamicFileUpload userId={userId} />
+    </div>
+  )
+}
+
+function UploadPageSkeleton() {
+  return (
+    <div className="p-4 space-y-6 bg-gray-50 min-h-screen">
+      <div className="flex items-center gap-4">
+        <Skeleton className="h-24 w-24 rounded-lg" />
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-4 w-32" />
+        </div>
+      </div>
+      <div className="p-6 rounded-lg bg-white">
+        <Skeleton className="h-8 w-1/3 mb-2" />
+        <Skeleton className="h-4 w-2/3 mb-6" />
+        <Skeleton className="h-48 w-full" />
+      </div>
+    </div>
+  )
+}
+
+export default async function UploadPage({ params }: { params: Promise<{ userId: string }> }) {
+  const { userId } = await params;
+  return (
+    <Suspense fallback={<UploadPageSkeleton />}>
+      <UserUploadContent userId={userId} />
+    </Suspense>
   )
 }

@@ -1,14 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import heic2any from 'heic2any'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Terminal } from 'lucide-react'
-import { uploadFiles } from '@/app/[userId]/upload/actions'
+import { Terminal, UploadCloud, X } from 'lucide-react'
+import { getSignedUploadUrl } from '@/app/[userId]/upload/actions'
 import { toast } from 'sonner'
 
 interface FileUploadProps {
@@ -17,126 +16,195 @@ interface FileUploadProps {
 
 interface UploadedFile {
   file: File
-  progress: number
+  preview: string
   error?: string
 }
 
 export function FileUpload({ userId }: FileUploadProps) {
   const [files, setFiles] = useState<UploadedFile[]>([])
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [isConverting, setIsConverting] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!event.target.files) return;
-    setIsConverting(true);
+    if (!event.target.files) return
+    setIsConverting(true)
 
-    const filePromises = Array.from(event.target.files).map(async file => {
+    const filePromises = Array.from(event.target.files).map(async (file): Promise<UploadedFile | null> => {
+      // Check for duplicates
+      if (files.some(f => f.file.name === file.name && f.file.size === file.size)) {
+        toast.info(`Skipped duplicate file: ${file.name}`)
+        return null
+      }
+
+      let processedFile = file
       if (file.type === 'image/heic' || file.name.toLowerCase().endsWith('.heic')) {
         try {
           const convertedBlob = await heic2any({
             blob: file,
             toType: 'image/jpeg',
             quality: 0.8,
-          });
-          const convertedFile = new File([convertedBlob as Blob], `${file.name.split('.')[0]}.jpeg`, {
+          })
+          processedFile = new File([convertedBlob as Blob], `${file.name.split('.')[0]}.jpeg`, {
             type: 'image/jpeg',
-          });
-          return { file: convertedFile, progress: 0 };
+          })
         } catch (error) {
-          console.error('Error converting HEIC file:', error);
-          return { file, progress: 0, error: 'Failed to convert HEIC file.' };
+          console.error('Error converting HEIC file:', error)
+          return { file, preview: URL.createObjectURL(file), error: 'Failed to convert HEIC file.' }
         }
       }
-      return { file, progress: 0 };
-    });
+      return { file: processedFile, preview: URL.createObjectURL(processedFile) }
+    })
 
-    const newFiles = await Promise.all(filePromises);
-    setFiles(prevFiles => [...prevFiles, ...newFiles]);
-    setIsConverting(false);
+    const newFiles = (await Promise.all(filePromises)).filter((f): f is UploadedFile => f !== null)
+    setFiles(prevFiles => [...prevFiles, ...newFiles])
+    setIsConverting(false)
+    // Reset file input so the same file can be selected again if removed
+    if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+    }
+  }
+
+  const handleRemoveFile = (index: number) => {
+    setFiles(prevFiles => prevFiles.filter((_, i) => i !== index))
   }
 
   const handleUpload = async () => {
     if (files.length === 0) return
 
     setIsUploading(true)
-    const formData = new FormData()
-    formData.append('userId', userId)
-    
-    files.forEach(f => {
-      // Only upload files that were successfully converted (or didn't error)
-      if (!f.error) {
-        formData.append('files', f.file)
-      }
-    })
+    setUploadProgress(0)
+
+    const validFiles = files.filter(f => !f.error).map(f => f.file)
+    const fileData = validFiles.map(f => ({ name: f.name, type: f.type }))
 
     try {
-      const result = await uploadFiles(formData)
+      // Step 1: Get signed URLs
+      const { signedUrls, error } = await getSignedUploadUrl(userId, fileData)
 
-      if (result.error) {
-        toast.error(result.error)
-        console.error("Upload error details:", result.details)
-      } else {
-        toast.success("Files uploaded successfully!")
-        setFiles([]) // Clear selection on success
+      if (error || !signedUrls) {
+        throw new Error(error || 'Failed to get upload permissions')
       }
+
+      // Step 2: Upload files directly to S3
+      const totalFiles = signedUrls.length
+      let completedFiles = 0
+
+      await Promise.all(signedUrls.map(async ({ signedUrl, fileName }) => {
+        const file = validFiles.find(f => f.name === fileName)
+        if (!file) return
+
+        const response = await fetch(signedUrl, {
+          method: 'PUT',
+          body: file,
+          headers: {
+            'Content-Type': file.type,
+          },
+        })
+
+        if (!response.ok) {
+          throw new Error(`Failed to upload ${fileName}`)
+        }
+
+        completedFiles++
+        setUploadProgress(Math.round((completedFiles / totalFiles) * 100))
+      }))
+
+      toast.success("Files uploaded successfully!")
+      setFiles([])
+      setUploadProgress(null)
+
     } catch (error) {
-      console.error("Unexpected upload error:", error)
-      toast.error("An unexpected error occurred during upload.")
+      console.error("Upload failed:", error)
+      toast.error(error instanceof Error ? error.message : "An unexpected error occurred")
+      setUploadProgress(null)
     } finally {
       setIsUploading(false)
     }
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Upload Your Images</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Input
-            id="picture"
-            type="file"
-            multiple
-            onChange={handleFileChange}
-            disabled={isUploading || isConverting}
-            accept="image/jpeg, image/png, image/webp, image/heic"
-          />
-        </div>
+    <>
+      <Card className="border-dashed border-2">
+        <CardContent className="space-y-4 p-6">
+          <div
+            className="flex flex-col items-center justify-center p-8 rounded-lg cursor-pointer text-center"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <UploadCloud className="h-12 w-12 text-muted-foreground" />
+            <p className="mt-4 text-lg font-semibold">Tap to select photos</p>
+            <p className="text-sm text-muted-foreground">You can upload multiple images at once</p>
+            <input
+              ref={fileInputRef}
+              id="picture"
+              type="file"
+              multiple
+              onChange={handleFileChange}
+              disabled={isUploading || isConverting}
+              accept="image/jpeg, image/png, image/webp, image/heic"
+              className="hidden"
+            />
+          </div>
 
-        {isConverting && <p>Converting images...</p>}
+          {isConverting && <p className="text-center">Converting images...</p>}
 
-        {files.length > 0 && (
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium">Selected Files:</h3>
-            <ul className="space-y-2">
-              {files.map((uploadedFile, index) => (
-                <li key={index}>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm truncate">{uploadedFile.file.name}</span>
-                    {uploadedFile.progress > 0 && !uploadedFile.error && (
-                      <Progress value={uploadedFile.progress} className="w-1/2 mx-4" />
+          {files.length > 0 && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {files.map((uploadedFile, index) => (
+                <div key={index} className="relative group">
+                  <img
+                    src={uploadedFile.preview}
+                    alt={`preview ${index}`}
+                    className="w-full aspect-[3/4] object-cover rounded-lg"
+                  />
+                  <button
+                    onClick={() => handleRemoveFile(index)}
+                    className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md border border-gray-200 hover:bg-gray-100 transition-colors"
+                    type="button"
+                  >
+                    <X className="h-4 w-4 text-gray-600" />
+                  </button>
+                    {uploadedFile.error && (
+                      <Alert variant="destructive" className="mt-2 text-xs">
+                        <Terminal className="h-3 w-3" />
+                        <AlertTitle className="text-xs font-semibold">Failed</AlertTitle>
+                        <AlertDescription>{uploadedFile.error}</AlertDescription>
+                      </Alert>
                     )}
                   </div>
-                  {uploadedFile.error && (
-                     <Alert variant="destructive" className="mt-2">
-                       <Terminal className="h-4 w-4" />
-                       <AlertTitle>Conversion Failed</AlertTitle>
-                       <AlertDescription>
-                         {uploadedFile.error}
-                       </AlertDescription>
-                     </Alert>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+      
+      <div className="h-24" /> {/* Spacer for sticky footer */}
 
-        <Button onClick={handleUpload} disabled={files.length === 0 || isUploading}>
-          {isUploading ? 'Uploading...' : 'Upload'}
-        </Button>
-      </CardContent>
-    </Card>
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-lg z-50">
+        <div className="max-w-md mx-auto space-y-4">
+          {uploadProgress !== null && (
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Uploading...</span>
+                <span>{uploadProgress}%</span>
+              </div>
+              <Progress value={uploadProgress} className="h-2" />
+            </div>
+          )}
+
+          <Button
+            onClick={handleUpload}
+            disabled={files.length === 0 || isUploading || isConverting}
+            className="w-full bg-[#B98579] text-white hover:bg-[#a06e63] shadow-sm"
+            size="lg"
+          >
+            {isUploading ? 'Uploading...' : `Upload ${files.length} File(s)`}
+          </Button>
+        </div>
+      </div>
+    </>
   )
 }

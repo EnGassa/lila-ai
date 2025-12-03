@@ -4,14 +4,22 @@
 
 A new, secure workflow has been implemented to allow beta users to upload their photos directly to the platform via a unique link, replacing the high-friction WhatsApp process.
 
-### 1. **"Secure Broker" S3 Uploads**
--   **Architecture:** Implemented a "Secure Broker" pattern where the frontend uploads files to a Next.js Server Action (`app/[userId]/upload/actions.ts`), which then streams them securely to a private Supabase S3 bucket (`user-uploads`) using admin credentials.
--   **Security:** This approach keeps the storage bucket private and prevents exposing sensitive API keys to the client, while avoiding the complexity of RLS for unauthenticated users.
--   **Future-Proofing:** Uses the official AWS S3 SDK, making it easy to migrate to standard AWS S3 in the future if needed.
+### 1. **"Secure Broker" S3 Uploads (Client-Side)**
+-   **Architecture:** To bypass server body size limits and improve performance, the upload strategy was refactored to use **Client-Side Direct Uploads**.
+-   **Mechanism:**
+    -   The client calls a Server Action (`getSignedUploadUrl`) to request pre-signed URLs.
+    -   The server verifies the user and generates short-lived, signed URLs using the `@aws-sdk/s3-request-presigner`.
+    -   The client then uploads the files directly to Supabase Storage (S3 compatible) using a standard `PUT` request.
+-   **Security:** This maintains security by keeping long-lived credentials on the server while granting only temporary, scoped access to the client.
 
 ### 2. **Mobile-First Experience**
--   **HEIC Support:** The frontend `FileUpload` component includes automatic client-side conversion of HEIC images (common on iPhones) to JPEG using `heic2any`. This ensures compatibility with the backend analysis pipeline.
--   **Dynamic Imports:** Solved server-side rendering issues with browser-only libraries by implementing a `DynamicFileUpload` wrapper component.
+-   **UI Refinement:** The upload interface was redesigned to be "mobile-first," featuring a large, tappable upload zone and clear visual cues.
+-   **Image Previews:** Users can see portrait-oriented thumbnails (`aspect-[3/4]`) of their selected photos, which is optimized for selfies.
+-   **Interactivity:** Added the ability to remove individual photos from the selection before uploading.
+-   **Feedback:** Implemented a consolidated progress bar and `sonner` toast notifications for clear success/error feedback. (Fixed an issue where `Toaster` was missing from `app/layout.tsx`).
+-   **Layout:** Introduced a **sticky footer** for the "Upload" button to ensure it remains accessible regardless of the number of photos selected.
+-   **Styling:** Applied the application's branded colors (e.g., `#B98579`) and "native-feeling" controls (e.g., circular delete buttons with shadows) to ensure a cohesive user experience.
+-   **HEIC Support:** Automatic client-side conversion of HEIC images to JPEG ensures compatibility.
 
 ## Previous Work: Smart Retrieval & Full Transparency Tracing
 
