@@ -1,5 +1,9 @@
 # Active Context
 
+## Current Work: Build Fix
+
+A bug was introduced that caused the Next.js build to fail due to the PostHog provider being rendered on the server. The issue was resolved by ensuring the provider is only rendered on the client side. This was achieved by creating a new component that dynamically imports the PostHog provider with server-side rendering (SSR) disabled, and then using this component in the main application layout.
+
 ## Current Work: Secure Mobile-Friendly Image Uploads
 
 A new, secure workflow has been implemented to allow beta users to upload their photos directly to the platform via a unique link, replacing the high-friction WhatsApp process.

@@ -9,7 +9,3 @@ if (typeof window !== 'undefined') {
     capture_pageview: false // Disable automatic pageview capture, as we capture manually
   })
 }
-
-export function CSPostHogProvider({ children }: { children: React.ReactNode }) {
-    return <PostHogProvider client={posthog}>{children}</PostHogProvider>
-}

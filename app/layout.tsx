@@ -1,10 +1,8 @@
 import type { Metadata } from 'next'
-import { Suspense } from 'react'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
-import { CSPostHogProvider } from './providers'
-import PostHogPageView from '@/components/PostHogPageView'
+import { ClientPostHogProvider } from '@/components/ClientPostHogProvider'
 import { Toaster } from '@/components/ui/sonner'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -24,15 +22,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=v1.0, maximum-scale=1.0, user-scalable=no" />
       </head>
       <body className={`font-sans antialiased`}>
-        <CSPostHogProvider>
-          <Suspense>
-            <PostHogPageView />
-          </Suspense>
+        <ClientPostHogProvider>
           {children}
-        </CSPostHogProvider>
+        </ClientPostHogProvider>
         <Toaster />
         <Analytics />
       </body>

@@ -2,6 +2,8 @@
 
 ## What Works
 
+*   **Build Fix:** A bug that caused the Next.js build to fail due to a server-side rendering issue with the PostHog provider has been resolved. The provider is now dynamically imported and rendered only on the client side, ensuring a successful build.
+
 *   **Secure Mobile-Friendly Image Uploads:** A complete, secure workflow for beta users to upload photos.
     *   **Secure Broker Architecture:** Implemented a **Client-Side Direct Upload** pattern. The frontend requests pre-signed URLs from a secure Server Action (`getSignedUploadUrl`) and then uploads files directly to Supabase S3. This bypasses server body limits and improves performance while keeping credentials safe.
     *   **Mobile-First Design:**
