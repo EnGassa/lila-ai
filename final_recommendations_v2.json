@@ -1,0 +1,172 @@
+{
+  "reasoning": "**Step 1 (Audit & Philosophy Alignment):** My primary directive is to execute the Skincare Philosophy, which targets Pigmentation, Pores, and Under-Eye concerns using Vitamin C, Retinoid, BHA, Niacinamide, Hyaluronic Acid, and Azelaic Acid. I first audited the provided product list. The list contains excellent candidates for Vitamin C, Retinoid, BHA, Niacinamide, and Hyaluronic Acid. However, I identified a gap: no product contained Azelaic Acid in its `matched_key_ingredients`, so I will proceed without it, relying on the other actives to address pigmentation. For BHA, the only product that matched the key ingredient was a cleanser (`jumiso/all-day-vitamin-clean-mild-facial-cleanser`), which is unconventional for an exfoliant but necessary to follow the rules.\\n\\n**Step 2 (Hero Product Selection & Skin Cycling):** Based on the AM (Protect & Brighten) and PM (Treat & Renew) focuses, I selected the \"hero\" products.\\n- **AM Vitamin C:** I chose the `needly/vita-c-glow-jelly-pad` as the primary brightening step.\\n- **PM Retinoid:** The `la-roche-posay/retinol-b3-serum` was the clear choice, as it contains both the required Retinoid and Niacinamide.\\n- **PM BHA:** The `jumiso/all-day-vitamin-clean-mild-facial-cleanser` was selected to fulfill the BHA requirement for pores.\\nTo ensure safety and prevent over-exfoliation, I structured the PM routine around a \"Skin Cycling\" schedule. The BHA Cleanser and Retinoid Serum are used on separate, alternating nights, with \"Recovery\" nights in between that focus solely on hydration and barrier repair.\\n\\n**Step 3 (Building the Supporting Routine & Safety Checks):** I built the rest of the routine around these core actives.\\n- **Cleanser:** I selected the gentle `anua/8-hyaluronic-acid-hydrating-gentle-foaming-cleanser` for daily use to avoid stripping the skin, adhering to the \"ingredients_to_avoid\" rule. The BHA cleanser is used *only* on exfoliation nights.\\n- **Moisturizer & Sunscreen:** I chose the `purito/b5-panthenol-re-barrier-cream` and `round-lab/birch-juice-moisturizing-sunscreen-spf-50` for their hydrating and supportive ingredients (Niacinamide, Hyaluronic Acid), which are used daily to maintain skin health.\\n- **Eye Cream:** The top concern is under-eyes. I selected the `cosrx/advanced-snail-peptide-eye-cream` for its blend of Niacinamide and Hyaluronic Acid to target both pigmentation and structural hollows safely in both AM and PM routines.\\n\\n**Step 4 (Final Polish):** I reviewed the complete routine against all clinical safety rules. The alternating schedule prevents Retinoid and BHA from being used together. Vitamin C is correctly placed in the AM. Core steps (Cleanser, Moisturizer, Sunscreen) are identified, and treatment steps are marked as optional for a minimal routine. The instructions clearly outline the weekly schedule.",
+  "key_ingredients": [
+    {
+      "ingredient_slug": "vitamin-c",
+      "description": "A powerful antioxidant used in the AM to protect against environmental damage, brighten the skin, and help fade dark spots. It works synergistically with your sunscreen.",
+      "concerns": [
+        "Pigmentation",
+        "Under Eye"
+      ]
+    },
+    {
+      "ingredient_slug": "retinoid",
+      "description": "This is your primary treatment for accelerating skin cell turnover. It helps fade hyperpigmentation, smooths skin texture, and refines the appearance of pores. It's used exclusively at night.",
+      "concerns": [
+        "Pigmentation",
+        "Pores",
+        "Under Eye"
+      ]
+    },
+    {
+      "ingredient_slug": "bha",
+      "description": "Salicylic Acid, a Beta-Hydroxy Acid, is oil-soluble, allowing it to penetrate deep into the pores to clear out clogged sebum and debris, which is key for addressing your T-zone concerns.",
+      "concerns": [
+        "Pores"
+      ]
+    },
+    {
+      "ingredient_slug": "niacinamide",
+      "description": "A versatile ingredient that helps brighten skin tone, fade dark spots, reduce the appearance of pores, and support a healthy skin barrier. It's included in multiple products to provide consistent benefits.",
+      "concerns": [
+        "Pigmentation",
+        "Under Eye",
+        "Pores"
+      ]
+    },
+    {
+      "ingredient_slug": "hyaluronic-acid",
+      "description": "A humectant that draws moisture into the skin, providing a plumping effect. This is crucial for your routine to help reduce the shadowing caused by under-eye hollows and keep the skin hydrated.",
+      "concerns": [
+        "Under Eye"
+      ]
+    }
+  ],
+  "routine": {
+    "am": [
+      {
+        "step": "Gentle Cleanse",
+        "products": [
+          {
+            "product_slug": "anua/8-hyaluronic-acid-hydrating-gentle-foaming-cleanser",
+            "rationale": "Chosen for its gentle, hydrating formula containing Hyaluronic Acid. This aligns with the philosophy of avoiding harsh, stripping cleansers while providing an initial layer of hydration to support the skin barrier."
+          }
+        ],
+        "instructions": "Apply a small amount to your damp face, gently massaging in circular motions. Rinse thoroughly with lukewarm water.",
+        "is_optional": false
+      },
+      {
+        "step": "Brightening Toner Pad",
+        "products": [
+          {
+            "product_slug": "needly/vita-c-glow-jelly-pad",
+            "rationale": "This pad delivers Vitamin C and Niacinamide to execute the AM 'Protect & Brighten' strategy. It helps to fade pigmentation and provides antioxidant protection to complement your sunscreen."
+          }
+        ],
+        "instructions": "After cleansing, take one pad and gently swipe it across your entire face, avoiding the immediate eye and lip areas. Pat the remaining essence into the skin until absorbed.",
+        "is_optional": true
+      },
+      {
+        "step": "Eye Cream",
+        "products": [
+          {
+            "product_slug": "cosrx/advanced-snail-peptide-eye-cream",
+            "rationale": "Selected to address the primary concern of under-eye circles. It contains Niacinamide to help with pigmentation and Hyaluronic Acid to hydrate and plump the skin, reducing the shadow from structural hollows."
+          }
+        ],
+        "instructions": "Gently tap a small amount of cream around the entire eye area using your ring finger until it is absorbed.",
+        "is_optional": true
+      },
+      {
+        "step": "Moisturize",
+        "products": [
+          {
+            "product_slug": "purito/b5-panthenol-re-barrier-cream",
+            "rationale": "This product supports the skin barrier, which is crucial when using actives in the PM. It contains Niacinamide and Hyaluronic Acid, contributing to the goals of brightening and hydration."
+          }
+        ],
+        "instructions": "Apply a moderate amount to your face and neck as the last step before sunscreen.",
+        "is_optional": false
+      },
+      {
+        "step": "Protect (Sunscreen)",
+        "products": [
+          {
+            "product_slug": "round-lab/birch-juice-moisturizing-sunscreen-spf-50",
+            "rationale": "A hydrating sunscreen that provides essential daily protection against UV damage, which is the primary cause of pigmentation. It also contains Niacinamide and Hyaluronic Acid, perfectly aligning with the AM 'Protect & Brighten' focus."
+          }
+        ],
+        "instructions": "Apply a liberal amount to your face and neck 15-20 minutes before sun exposure. Reapply as needed throughout the day. This is the most critical step for preventing pigmentation.",
+        "is_optional": false
+      }
+    ],
+    "pm": [
+      {
+        "step": "Cleanse (Alternating)",
+        "products": [
+          {
+            "product_slug": "jumiso/all-day-vitamin-clean-mild-facial-cleanser",
+            "rationale": "This cleanser was selected specifically because it is the only product on the list containing BHA, a key ingredient targeted by the philosophy to clear clogged pores. It is used only on exfoliation nights to avoid irritation."
+          },
+          {
+            "product_slug": "anua/8-hyaluronic-acid-hydrating-gentle-foaming-cleanser",
+            "rationale": "This is your primary, gentle cleanser for nights when you are not exfoliating (Retinoid and Recovery nights) to effectively cleanse without compromising your skin barrier."
+          }
+        ],
+        "instructions": "**On Exfoliation Nights (e.g., Monday, Thursday):** Use this cleanser to gently exfoliate. Apply to a damp face, massage for 60 seconds, and rinse thoroughly.\\n**On All Other Nights:** Use your gentle cleanser (`Anua/8-hyaluronic-acid-hydrating-gentle-foaming-cleanser`).",
+        "is_optional": false
+      },
+      {
+        "step": "Eye Cream",
+        "products": [
+          {
+            "product_slug": "cosrx/advanced-snail-peptide-eye-cream",
+            "rationale": "Used nightly to consistently target the primary concern of under-eye circles. Its gentle, hydrating formula is safe to use alongside the nightly actives."
+          }
+        ],
+        "instructions": "Gently tap a small amount of cream around the entire eye area using your ring finger until it is absorbed.",
+        "is_optional": true
+      },
+      {
+        "step": "Retinoid Serum",
+        "products": [
+          {
+            "product_slug": "la-roche-posay/retinol-b3-serum",
+            "rationale": "This is the core 'Treat & Renew' product. It contains a Retinoid to accelerate cell turnover, fading pigmentation and improving texture. The formula also includes Niacinamide and Hyaluronic Acid, supporting multiple skincare goals in one step."
+          }
+        ],
+        "instructions": "**On Retinoid Nights (e.g., Tuesday, Friday):** After cleansing, apply a pea-sized amount to dry skin, avoiding the eye and mouth area. Start with 1-2 nights per week and slowly increase frequency as tolerated.\\n**On Exfoliation & Recovery Nights:** Skip this step.",
+        "is_optional": true
+      },
+      {
+        "step": "Hydrating & Brightening Serum",
+        "products": [
+          {
+            "product_slug": "axis-y/dark-spot-correcting-glow-serum",
+            "rationale": "This serum is used on 'Recovery' nights. It contains Niacinamide and Hyaluronic Acid to gently work on pigmentation and boost hydration, supporting the skin's renewal process without causing irritation."
+          }
+        ],
+        "instructions": "**On Recovery Nights (e.g., Wednesday, Saturday, Sunday):** Apply an even layer to your face after cleansing and eye cream. This will help brighten and hydrate the skin while giving it a rest from stronger actives.",
+        "is_optional": true
+      },
+      {
+        "step": "Moisturize",
+        "products": [
+          {
+            "product_slug": "purito/b5-panthenol-re-barrier-cream",
+            "rationale": "Used every night as the final step to lock in moisture and support barrier function. This is especially important on nights you use actives like BHA and Retinoid to keep skin calm and hydrated."
+          }
+        ],
+        "instructions": "Apply a moderate amount to your face and neck as the final step of your evening routine.",
+        "is_optional": false
+      }
+    ],
+    "weekly": null
+  },
+  "general_advice": [
+    "**Patch Test First:** Before introducing any new product, apply a small amount to a discreet area of skin (like behind your ear) for 24-48 hours to ensure you don't have a reaction.",
+    "**Consistency is Key:** Skincare results, especially for pigmentation and texture, take time. Follow the routine consistently for at least 8-12 weeks to see meaningful improvement.",
+    "**Listen to Your Skin:** If you experience excessive dryness, redness, or irritation, reduce the frequency of your active nights (Retinoid and Exfoliation). You can add an extra Recovery night instead. Protection and hydration are the priority.",
+    "**Sunscreen is Non-Negotiable:** The most effective way to combat pigmentation and premature aging is to protect your skin from the sun every single day, even when it's cloudy."
+  ]
+}

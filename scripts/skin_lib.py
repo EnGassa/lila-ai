@@ -167,6 +167,7 @@ class Routine(BaseModel):
     weekly: Optional[List[RoutineStep]] = Field(None, description="Optional weekly treatments like masks or exfoliants.")
 
 class Recommendations(BaseModel):
+    reasoning: str = Field(..., description="A step-by-step thought process explaining how the routine was constructed, how product conflicts were avoided, and why specific products were chosen.")
     key_ingredients: List[KeyIngredient]
     routine: Routine
     general_advice: List[str]
@@ -176,6 +177,7 @@ class ReviewResult(BaseModel):
     Represents the outcome of the expert review agent's validation.
     """
     review_status: Literal["approved", "rejected"] = Field(..., description="The final outcome of the expert review. 'approved' if safe, 'rejected' if issues are found.")
+    audit_log: str = Field(..., description="A detailed log of the safety checks performed, confirming what was verified (e.g., 'Checked for retinoid overlap: None found. Verified AM sunscreen: Present.').")
     review_notes: List[str] = Field(..., description="A list of notes explaining the review decision. If rejected, this provides actionable feedback for the generator.")
     validated_recommendations: Optional[Recommendations] = Field(None, description="The final, validated recommendations ONLY if the status is 'approved'.")
 
@@ -184,12 +186,13 @@ class SkincarePhilosophy(BaseModel):
     Represents the high-level strategic plan for a user's skincare routine.
     This serves as the "blueprint" for the recommendation engine.
     """
+    diagnosis_rationale: str = Field(..., description="A detailed explanation of the diagnosis, explaining why specific goals and ingredients were chosen based on the user's unique analysis (e.g., 'Due to high sensitivity, I am avoiding strong acids despite the acne concern').")
     primary_goals: List[str] = Field(..., description="The top 2-3 overarching goals for the routine, e.g., 'Reduce Acne & Inflammation', 'Strengthen Skin Barrier'.")
     am_routine_focus: str = Field(..., description="The strategic focus for the morning routine, e.g., 'Protection and Prevention'.")
     pm_routine_focus: str = Field(..., description="The strategic focus for the evening routine, e.g., 'Treatment and Repair'.")
     key_ingredients_to_target: List[str] = Field(..., description="A list of specific active ingredients that should be prioritized in the routine.")
     ingredients_to_avoid: List[str] = Field(..., description="A list of ingredients to avoid based on skin concerns or potential conflicts.")
-    target_product_categories: List[str] = Field(..., description="A list of product categories needed to build the routine, e.g., ['Cleanser', 'Moisturizer', 'Sunscreen', 'Serum & Treatment'].")
+    target_product_categories: List[str] = Field(..., description="A list of product categories needed to build the routine")
 
 
 # --- Helper Functions ---

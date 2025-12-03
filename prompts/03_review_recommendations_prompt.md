@@ -28,5 +28,8 @@ You will be provided with two documents:
 
 **Output Format:**
 You must produce ONLY a JSON object that conforms to the `ReviewResult` Pydantic schema.
+
+*   **Audit Log (Mandatory):** You MUST populate the `audit_log` field with a detailed record of your verification process. Explicitly state the result of each safety check.
+    *   Example: "Checked for Retinoid/VitC conflict: None. Verified Retinoid is PM only: Confirmed. Verified alternating schedule instructions: Present and clear."
 *   If the routine passes ALL validation rules, set `review_status` to `"approved"` and place the original routine object into the `validated_recommendations` field. The `review_notes` should state that the routine is approved.
 *   If the routine fails ANY validation rule, you MUST set `review_status` to `"rejected"`. In the `review_notes`, you must provide clear, specific, and actionable feedback detailing every single issue you found. This feedback is critical for the generator agent to correct its mistakes.

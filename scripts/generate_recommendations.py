@@ -86,7 +86,7 @@ def find_relevant_products(
     philosophy: SkincarePhilosophy,
     model: SentenceTransformer,
     categories: List[str],
-    top_k_per_category: int = 5
+    top_k_per_category: int = 7
 ) -> List[Dict[str, Any]]:
     """
     Finds relevant products by scanning across all categories and using vector search.
@@ -97,17 +97,32 @@ def find_relevant_products(
     supabase = get_supabase_client()
 
     base_query = generate_analysis_query(analysis_data)
-    philosophy_descriptors = [
-        f"The primary goals are: {', '.join(philosophy.primary_goals)}.",
-        f"Key ingredients to look for include: {', '.join(key_ingredients)}.",
-        f"Ingredients to avoid are: {', '.join(philosophy.ingredients_to_avoid)}."
-    ]
-    base_enriched_query = base_query + " " + " ".join(philosophy_descriptors)
+    
+    # Pre-compute string representations for efficiency
+    goals_str = ", ".join(philosophy.primary_goals)
+    ingredients_str = ", ".join(key_ingredients)
+    avoid_str = ", ".join(philosophy.ingredients_to_avoid)
+    
+    # Base context still useful for background
+    base_context = f"{base_query} Avoid: {avoid_str}."
 
     all_relevant_products = {}
 
+    logger.info(f"Targeting Key Ingredients: {ingredients_str}")
+
     for category in categories:
-        category_query = f"Searching for a product in the '{category}' category. {base_enriched_query}"
+        # Smart Brute Force Query Construction
+        # We explicitly explicitly mention the ingredients in the query to align with the product embeddings
+        category_query = (
+            f"Best {category} containing {ingredients_str} for {analysis_data.get('analysis', {}).get('skin_type', {}).get('label', 'user')} skin. "
+            f"Goals: {goals_str}. "
+            f"{base_context}"
+        )
+        
+        # Log the first query to verify structure
+        if category == categories[0]:
+            logger.debug(f"Example Smart Query for '{category}': {category_query}")
+
         query_embedding = model.encode(category_query).tolist()
 
         try:
@@ -276,6 +291,7 @@ def main():
 
         if review_result.review_status == "approved":
             logger.success(f"Routine approved on attempt {attempt + 1}. Validation passed.")
+            logger.info(f"Safety Audit Log: {review_result.audit_log}")
             final_recommendations = review_result.validated_recommendations
             break
         else:

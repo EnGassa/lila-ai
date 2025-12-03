@@ -2,6 +2,13 @@
 
 ## What Works
 
+*   **Recommendation Engine V5 (Smart Retrieval & Full Transparency):** The recommendation engine has been significantly upgraded for quality and debuggability.
+    *   **"Smart Brute Force" Retrieval:** Implemented a new retrieval strategy that iterates through all product categories while using enriched, ingredient-specific vector search queries. This guarantees a comprehensive and highly relevant pool of product candidates for the AI.
+    *   **End-to-End Reasoning Traces:** The entire multi-agent pipeline now outputs detailed reasoning traces:
+        *   `diagnosis_rationale` (Strategist): Explains the "why" behind the chosen goals and ingredients.
+        *   `reasoning` (Generator): Provides a step-by-step thought process for routine construction.
+        *   `audit_log` (Reviewer): Outputs a checklist of the safety rules that were validated.
+
 *   **AI Prompt Library (V2.1 - Advanced Retinoid Logic):** The prompt library has been enhanced to support more sophisticated and clinically relevant retinoid recommendations.
     *   **Dual Retinoid Routines:** The "Generator" (`02`) and "Reviewer" (`03`) prompts now support the inclusion of up to two retinoid products in a single routine, but only if one is specifically an eye cream and the other is a facial treatment. This allows for more comprehensive routines that target both general facial concerns and the delicate eye area simultaneously, while still preventing the unsafe use of multiple high-strength facial retinoids.
 *   **AI Prompt Library (V2 - Clinical Safety):** The entire AI prompt library has been upgraded with a layer of clinically-validated dermatological logic.
@@ -42,10 +49,6 @@
     *   **AI Pipeline:** Python scripts (`run_analysis.py`, `generate_recommendations.py`) read/write directly to the DB.
     *   **Embeddings:** Product catalog has vector embeddings stored in the `products` table.
     *   **Data Migration:** Product, user, and skin analysis data migrated to DB.
-*   **Recommendation Engine V4.1 (Flexible Search & Enhanced Safety):**
-    *   **Flexible "Broad Search" Retrieval:** The system has been reverted to a more flexible search strategy. It now scans all product categories to maximize the pool of potential products, fixing issues where strict category filtering was incorrectly excluding relevant items (like exfoliants).
-    *   **Retained Safety & Grounding:** The system preserves key improvements. It still programmatically "tags" retrieved products with the key ingredients they contain and uses enhanced prompts with hard-coded safety rules (e.g., no Retinoids in AM) to guide the AI. This combines the high-recall of the old system with the safety and accuracy of the new one.
-    *   **Data Foundation:** The `products_1` table now has a clean, LLM-classified `category` column, and the database schema supports this more flexible search.
 *   **Beta Readiness:**
     *   **Automated Onboarding:** `onboard_beta_user.py` script automates user creation, analysis, and recommendations.
     *   **Recommendations UI:** Dynamic dashboard with redesigned product cards featuring "How to use" sections and dynamic claims.
@@ -60,12 +63,11 @@
 
 ## What's Next
 
-*   **Refine Hybrid Search:** Enhance the `match_products_by_category` RPC to also filter by `benefits` and `concerns` arrays.
-*   **Optimize Ingestion:** Refactor the `skinsort_to_jsonl.py` script to classify products in batches to improve performance and reduce cost at scale.
-*   **Intelligent Image Capture (V2):** Backend Integration.
+*   **Backend Integration for Image Capture:**
     *   **Image Upload:** Upload the set of 3 captured images to Supabase storage.
     *   **Trigger Analysis:** Connect the frontend flow to the existing backend analysis pipeline.
-*   **Beta Testing:** Continue beta testing with the new, higher-quality V3 recommendation engine.
+*   **UI/UX for Traces:** Explore how to surface the new reasoning traces in the user dashboard to build trust and explain the "why" behind the recommendations.
+*   **Beta Testing:** Continue beta testing with the new, higher-quality V5 recommendation engine.
 *   **User Feedback Loop:** Implement features for users to provide feedback on analysis and recommendations (#8).
 *   **Profile Management:** Allow users to edit their own profiles (#6).
 *   **Progress Tracking:** Implement skin progress tracking over time (#7).

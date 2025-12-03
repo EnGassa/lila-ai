@@ -36,13 +36,15 @@
     *   **Framework**: Uses `pydantic-ai` to interface with various multimodal LLM providers (e.g., Google Gemini, OpenAI GPT) and enforce a reliable output schema.
     *   **Execution**: Designed to be run via `uv run`, which manages its Python dependencies.
 *   **`scripts/generate_recommendations.py`**: A Python script for generating personalized skincare recommendations.
-    *   **Purpose**: Implements a two-step RAG workflow to generate personalized skincare routines. It first finds relevant ingredients based on the user's skin analysis, then uses those ingredients to find relevant products.
+    *   **Purpose**: Orchestrates a multi-agent system (Strategist, Generator, Reviewer) to create a safe and effective skincare routine. It implements a "Smart Brute Force" retrieval strategy, querying all product categories with enriched, ingredient-specific search terms.
     *   **Framework**: Uses `pydantic-ai` for interfacing with LLMs and `sentence-transformers` for creating embeddings.
     *   **Execution**: Designed to be run via `uv run`, which manages its Python dependencies.
 *   **`scripts/skin_lib.py`**: A shared Python library for the analysis and recommendation scripts.
-    *   **Purpose**: Contains all shared code, including Pydantic models, helper functions, agent configuration, a centralized logger setup, and prompt engineering utilities like `distill_analysis_for_prompt`.
+    *   **Purpose**: Contains all shared Pydantic models for the pipeline (`SkincarePhilosophy`, `Recommendations`, `ReviewResult`), which now include dedicated fields for AI reasoning traces (`diagnosis_rationale`, `reasoning`, `audit_log`). Also includes helper functions, agent configuration, and prompt utilities.
 *   **`prompts/01_analyse_images_prompt.md`**: The system prompt used for the skin analysis step.
-*   **`prompts/02_generate_recommendations_prompt.md`**: The system prompt used for the recommendation generation step.
+*   **`prompts/01a_generate_philosophy_prompt.md`**: The system prompt for the Strategist agent, instructing it to create the high-level skincare plan and explain its clinical reasoning.
+*   **`prompts/02_generate_recommendations_prompt.md`**: The system prompt for the Generator agent, instructing it to build the final routine and provide a step-by-step trace of its logic.
+*   **`prompts/03_review_recommendations_prompt.md`**: The system prompt for the Reviewer agent, instructing it to perform safety checks and output a detailed audit log.
 *   **`scripts/skinsort_to_jsonl.py`**: A Python script for scraping data from `skinsort.com`.
     *   **Purpose**: Scrapes detailed product and ingredient information and saves it to JSONL files.
     *   **Framework**: Uses `httpx` for asynchronous requests and `BeautifulSoup4` for HTML parsing.

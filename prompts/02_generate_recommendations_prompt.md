@@ -100,5 +100,11 @@ Available Active Ingredients:
 10. **Explain Your Choices (Rationale):** For each product you recommend, write a brief rationale explaining *why* you chose it and how it supports the overall `SkincarePhilosophy`.
 11. **Identify Key Ingredients:** Based on your routine, highlight the most important active ingredients, explain their function, and link them to the primary goals.
 12. **Provide General Advice:** Offer a few pieces of general, actionable advice that complement the routine and the philosophy.
+13. **Show Your Work (Reasoning):**
+    *   You MUST populate the `reasoning` field with your step-by-step thought process.
+    *   **Step 1 (Audit):** Check if the provided products actually contain the `key_ingredients_to_target`. Note any gaps.
+    *   **Step 2 (Selection):** Select the "Hero" products first (actives/treatments).
+    *   **Step 3 (Safety):** Explicitly check for conflicts (e.g., "I selected a Retinoid for PM, so I will ensure the AM Cleanser is gentle").
+    *   **Step 4 (Final Polish):** Review the routine against the `SkincarePhilosophy`.
 
 Produce ONLY the JSON object that conforms to the `Recommendations` Pydantic schema. Do not add any extra commentary.
