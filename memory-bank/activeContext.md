@@ -19,6 +19,7 @@ A new, secure workflow has been implemented to allow beta users to upload their 
 -   **Feedback:** Implemented a consolidated progress bar and `sonner` toast notifications for clear success/error feedback. (Fixed an issue where `Toaster` was missing from `app/layout.tsx`).
 -   **Layout:** Introduced a **sticky footer** for the "Upload" button to ensure it remains accessible regardless of the number of photos selected.
 -   **Styling:** Applied the application's branded colors (e.g., `#B98579`) and "native-feeling" controls (e.g., circular delete buttons with shadows) to ensure a cohesive user experience.
+-   **Avatar Fallback:** Implemented a robust fallback for user avatars. If a profile picture is not found, the UI displays a generic animated `person.gif` with a slight zoom effect for better presentation.
 -   **HEIC Support:** Automatic client-side conversion of HEIC images to JPEG ensures compatibility.
 
 ## Previous Work: Smart Retrieval & Full Transparency Tracing

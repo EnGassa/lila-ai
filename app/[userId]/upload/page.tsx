@@ -2,8 +2,9 @@ import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { DynamicFileUpload } from '@/components/dynamic-file-upload'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Skeleton } from '@/components/ui/skeleton'
+import { UserAvatar } from '@/components/user-avatar'
+
 
 async function UserUploadContent({ userId }: { userId: string }) {
   const supabase = await createClient()
@@ -23,13 +24,7 @@ async function UserUploadContent({ userId }: { userId: string }) {
   return (
     <div className="p-4 space-y-6 bg-gray-50 min-h-screen">
        <div className="flex items-center gap-4">
-        <Avatar className="h-24 w-24 rounded-lg">
-          <AvatarImage
-            src={`/profile_pic/${userId}.jpg`}
-            alt="User"
-          />
-          <AvatarFallback className="rounded-lg">{displayName.charAt(0)}</AvatarFallback>
-        </Avatar>
+        <UserAvatar userId={userId} displayName={displayName} />
         <div>
           <p className="text-2xl font-light">{displayName}</p>
         </div>
