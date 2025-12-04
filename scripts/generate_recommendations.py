@@ -250,8 +250,9 @@ def main():
         logger.info(f"\n[DIAGNOSTIC] Skincare Philosophy:\n{philosophy.model_dump_json(indent=2)}")
         
         logger.info("\n[DIAGNOSTIC] Retrieved Product Candidates:")
-        for product in relevant_products:
-            logger.info(f"- {product.get('name')} by {product.get('brand')} ({product.get('url')})")
+        logger.info(f'Retrieved {len(relevant_products)} products')
+        # for product in relevant_products:
+        #     logger.info(f"- {product.get('name')} by {product.get('brand')} ({product.get('url')})")
 
         logger.info("--- End of Diagnostic Data ---")
             
@@ -314,6 +315,8 @@ def main():
             'recommendations_data': output_data
         }, on_conflict='skin_analysis_id').execute()
         logger.success(f"Successfully saved recommendations to Supabase.")
+        logger.info("Recommendations Rationale:")
+        logger.info(output_data.get('reasoning', 'NOT FOUND?!?!?!'))
     except Exception as e:
         logger.error(f"Failed to save to database: {e}")
 
