@@ -39,7 +39,18 @@ def get_supabase_client() -> Client:
 
 def create_user(supabase: Client, name: str, email: Optional[str] = None) -> str:
     """Creates a user in the public.users table."""
-    user_id = name.lower().replace(" ", "_")
+    base_user_id = name.lower().replace(" ", "_")
+    user_id = base_user_id
+    suffix = 1
+
+    # Check for existing user_id and append a suffix if necessary
+    while True:
+        existing_user = supabase.table('users').select('id').eq('id', user_id).limit(1).execute()
+        if not existing_user.data:
+            break
+        suffix += 1
+        user_id = f"{base_user_id}_{suffix}"
+
     if not email:
         email = f"{user_id}@example.com"
     

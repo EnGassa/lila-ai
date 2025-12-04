@@ -1,12 +1,8 @@
 # Active Context
 
-## Current Work: Mobile Viewport Fix
+## Current Work: User ID Clash Fix
 
-A typo in the `viewport` meta tag (`initial-scale=v1.0` instead of `initial-scale=1.0`) was causing mobile browsers to render the desktop version of the site. This has been corrected in `app/layout.tsx`.
-
-## Current Work: Build Fix
-
-A bug was introduced that caused the Next.js build to fail due to the PostHog provider being rendered on the server. The issue was resolved by ensuring the provider is only rendered on the client side. This was achieved by creating a new component that dynamically imports the PostHog provider with server-side rendering (SSR) disabled, and then using this component in the main application layout.
+The `onboard_beta_user.py` script was updated to handle potential user ID clashes when a new user is created with a name that already exists. The script now checks for existing user IDs and appends a numerical suffix to ensure uniqueness.
 
 ## Current Work: Photo Guideline Integration
 
