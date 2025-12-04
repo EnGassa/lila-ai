@@ -8,7 +8,15 @@ A typo in the `viewport` meta tag (`initial-scale=v1.0` instead of `initial-scal
 
 A bug was introduced that caused the Next.js build to fail due to the PostHog provider being rendered on the server. The issue was resolved by ensuring the provider is only rendered on the client side. This was achieved by creating a new component that dynamically imports the PostHog provider with server-side rendering (SSR) disabled, and then using this component in the main application layout.
 
-## Current Work: Secure Mobile-Friendly Image Uploads & Notifications
+## Current Work: Photo Guideline Integration
+
+To improve the quality of user-submitted photos, the official photo-taking guidelines have been integrated directly into the upload page.
+
+-   **Reusable Component:** The content from the `/guidelines` page was extracted into a new, reusable `PhotoGuidelines` component located at `components/guidelines.tsx`.
+-   **Modal Integration:** On the user upload page (`app/[userId]/upload/page.tsx`), a link with an `Info` icon now triggers a dialog modal.
+-   **User Experience:** This modal displays the `PhotoGuidelines` component in a scrollable view (`ScrollArea`), allowing users to reference the instructions without navigating away from the upload process. The dedicated `/guidelines` page was also refactored to use the new component, ensuring consistency.
+
+## Previous Work: Secure Mobile-Friendly Image Uploads & Notifications
 
 A new, secure workflow has been implemented to allow beta users to upload their photos directly to the platform via a unique link, replacing the high-friction WhatsApp process. Additionally, a real-time notification system has been added to alert the team on Discord whenever a new upload occurs.
 

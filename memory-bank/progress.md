@@ -15,13 +15,11 @@
         *   **Feedback:** Includes a clear, consolidated progress bar, duplicate file detection, and toast notifications.
         *   **HEIC Support:** Automatically handles HEIC-to-JPEG conversion in the browser, ensuring compatibility with iPhone photos.
     *   **Tooling:** Updated `onboard_beta_user.py` to generate persistent, personalized upload links for easy sharing.
-    *   **Secure Broker Architecture:** Implemented a **Client-Side Direct Upload** pattern. The frontend requests pre-signed URLs from a secure Server Action (`getSignedUploadUrl`) and then uploads files directly to Supabase S3. This bypasses server body limits and improves performance while keeping credentials safe.
-    *   **Mobile-First Design:**
-        *   **UI/UX:** The upload interface features a large, tappable touch zone, portrait-oriented previews (`aspect-[3/4]`), and "native-style" delete buttons.
-        *   **Sticky Footer:** A sticky footer ensures the "Upload" button and progress bar are always visible, preventing scrolling issues on mobile.
-        *   **Feedback:** Includes a clear, consolidated progress bar, duplicate file detection, and toast notifications.
-        *   **HEIC Support:** Automatically handles HEIC-to-JPEG conversion in the browser, ensuring compatibility with iPhone photos.
-    *   **Tooling:** Updated `onboard_beta_user.py` to generate persistent, personalized upload links for easy sharing.
+
+*   **Photo Guideline Integration:** To improve the quality of user-submitted photos, the official photo-taking guidelines have been integrated directly into the upload page.
+    *   **Reusable Component:** The content from the `/guidelines` page was extracted into a new, reusable `PhotoGuidelines` component located at `components/guidelines.tsx`.
+    *   **Modal Integration:** On the user upload page (`app/[userId]/upload/page.tsx`), a link with an `Info` icon now triggers a dialog modal.
+    *   **User Experience:** This modal displays the `PhotoGuidelines` component in a scrollable view (`ScrollArea`), allowing users to reference the instructions without navigating away from the upload process. The dedicated `/guidelines` page was also refactored to use the new component, ensuring consistency. Minor UI refinements (icon and spacing) were also implemented.
 
 *   **Recommendation Engine V5 (Smart Retrieval & Full Transparency):** The recommendation engine has been significantly upgraded for quality and debuggability.
     *   **"Smart Brute Force" Retrieval:** Implemented a new retrieval strategy that iterates through all product categories while using enriched, ingredient-specific vector search queries. This guarantees a comprehensive and highly relevant pool of product candidates for the AI.
