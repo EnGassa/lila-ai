@@ -113,6 +113,7 @@ export async function notifyOnUploadComplete(userId: string, fileNames: string[]
   }
 
   try {
+    console.log('[notifyOnUploadComplete] Sending notification to Discord...')
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
@@ -122,14 +123,16 @@ export async function notifyOnUploadComplete(userId: string, fileNames: string[]
     })
 
     if (!response.ok) {
-      console.error('Failed to send Discord notification:', response.statusText)
-      return { error: 'Failed to send notification.' }
+      const errorBody = await response.text();
+      console.error('[notifyOnUploadComplete] Failed to send Discord notification:', response.status, response.statusText, errorBody);
+      return { error: `Failed to send notification. Status: ${response.status}` };
     }
     
+    console.log('[notifyOnUploadComplete] Successfully sent Discord notification.')
     return { success: true }
 
   } catch (error) {
-    console.error('Error sending Discord notification:', error)
+    console.error('[notifyOnUploadComplete] Error sending Discord notification:', error)
     return { error: 'An unexpected error occurred while sending the notification.' }
   }
 }

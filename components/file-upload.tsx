@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import heic2any from 'heic2any'
 import { Button } from '@/components/ui/button'
+import { unstable_noStore as noStore } from 'next/cache'
 import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -115,6 +116,7 @@ export function FileUpload({ userId }: FileUploadProps) {
 
       // Fire and forget the notification
       try {
+        noStore();
         await notifyOnUploadComplete(userId, validFiles.map(f => f.name))
       } catch (e) {
         console.warn("Failed to send upload notification:", e)
