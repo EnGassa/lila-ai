@@ -29,6 +29,7 @@
         *   `diagnosis_rationale` (Strategist): Explains the "why" behind the chosen goals and ingredients.
         *   `reasoning` (Generator): Provides a step-by-step thought process for routine construction.
         *   `audit_log` (Reviewer): Outputs a checklist of the safety rules that were validated.
+    *   **Resilient RAG Formatting:** The `generate_recommendations.py` script was updated to use a dynamic Markdown formatter for RAG context. This is more token-efficient than the previous JSON-based approach and is resilient to changes in the product database schema.
 
 *   **AI Prompt Library (V2.1 - Advanced Retinoid Logic):** The prompt library has been enhanced to support more sophisticated and clinically relevant retinoid recommendations.
     *   **Dual Retinoid Routines:** The "Generator" (`02`) and "Reviewer" (`03`) prompts now support the inclusion of up to two retinoid products in a single routine, but only if one is specifically an eye cream and the other is a facial treatment. This allows for more comprehensive routines that target both general facial concerns and the delicate eye area simultaneously, while still preventing the unsafe use of multiple high-strength facial retinoids.

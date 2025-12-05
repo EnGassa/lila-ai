@@ -285,6 +285,108 @@ def distill_analysis_for_prompt(analysis_data: dict) -> str:
         
     return "\n".join(summary_parts)
 
+def format_products_as_markdown(products: List[Dict[str, Any]]) -> str:
+    """
+    Formats a list of product dictionaries into a resilient, dynamic Markdown string
+    suitable for LLM consumption (RAG context).
+    
+    Features:
+    - Prioritizes key identifying information (Name, Brand, Category).
+    - Blacklists technical/noisy fields (embeddings, internal IDs).
+    - Dynamically discovers and formats remaining fields to handle schema changes.
+    """
+    if not products:
+        return "No relevant products found."
+
+    # 1. Configuration: Fields to Ignore and Prioritize
+    BLACKLIST_KEYS = {
+        'embedding', 'vectors', 'vector', 'html_content', 'search_index',
+        'created_at', 'updated_at', 'disabled_at',
+        'product_slug', 'ingredient_slugs', 'image_url',
+        'highlights', # Redundant if we show top-level benefits/concerns
+        'id'
+    }
+
+    PRIORITY_KEYS = [
+        'category', 'rating', 'review_count', 'price',
+        'description',
+        'active_ingredients', 'matched_key_ingredients',
+        'benefits', 'concerns', 'attributes'
+    ]
+    
+    # Header fields handled separately
+    HEADER_KEYS = {'name', 'brand', 'title', 'url'}
+
+    formatted_output = []
+
+    for idx, product in enumerate(products, 1):
+        # --- A. Header Construction ---
+        brand = product.get('brand', 'Unknown Brand')
+        name = product.get('name', product.get('title', 'Unknown Product'))
+        url = product.get('url', 'N/A')
+        
+        # Markdown Header: "### 1. [Brand] Product Name"
+        card_parts = [f"### {idx}. [{brand}] {name}"]
+        
+        # --- B. Priority Fields ---
+        for key in PRIORITY_KEYS:
+            if key in product and product[key]:
+                value = product[key]
+                label = key.replace('_', ' ').title()
+                
+                # Special handling for lists
+                if isinstance(value, list):
+                    val_str = ", ".join(str(v) for v in value)
+                    if len(val_str) > 300 and key == 'active_ingredients':
+                        val_str = val_str[:300] + "..." # Truncate massive ingredient lists
+                    card_parts.append(f"*   **{label}:** {val_str}")
+                else:
+                    card_parts.append(f"*   **{label}:** {value}")
+
+        # --- C. Dynamic Discovery (The "Resilient" Part) ---
+        # Flatten known nested dicts like 'overview' or 'meta_data'
+        # and process any other unknown top-level keys.
+        
+        processed_keys = BLACKLIST_KEYS.union(set(PRIORITY_KEYS)).union(HEADER_KEYS)
+        
+        for key, value in product.items():
+            if key in processed_keys or value in [None, "", [], {}]:
+                continue
+            
+            # Helper to format a single line
+            def format_line(k, v, indent=0):
+                k_label = k.replace('_', ' ').title()
+                if isinstance(v, list):
+                    return f"{' ' * indent}*   **{k_label}:** {', '.join(str(x) for x in v)}"
+                elif isinstance(v, dict):
+                    # Flatten one level deep
+                    sub_lines = []
+                    for sub_k, sub_v in v.items():
+                        if sub_v:
+                            sub_lines.append(format_line(sub_k, sub_v, indent + 4))
+                    if sub_lines:
+                         return f"{' ' * indent}*   **{k_label}:**\n" + "\n".join(sub_lines)
+                    return None
+                else:
+                    return f"{' ' * indent}*   **{k_label}:** {v}"
+
+            # Special flattening for 'overview' and 'meta_data' if they exist
+            if key in ['overview', 'meta_data'] and isinstance(value, dict):
+                for sub_k, sub_v in value.items():
+                    line = format_line(sub_k, sub_v)
+                    if line: card_parts.append(line)
+            else:
+                # Catch-all for new DB columns
+                line = format_line(key, value)
+                if line: card_parts.append(line)
+
+        # Always append URL at the end for reference
+        card_parts.append(f"*   **URL:** {url}")
+        
+        formatted_output.append("\n".join(card_parts))
+
+    return "\n\n---\n\n".join(formatted_output)
+
 def get_media_type(file_path: str) -> str:
     """Determine the media type of a file based on its extension."""
     ext = os.path.splitext(file_path)[1].lower()

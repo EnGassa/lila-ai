@@ -32,6 +32,7 @@ from skin_lib import (
     SkincarePhilosophy,
     create_agent,
     distill_analysis_for_prompt,
+    format_products_as_markdown,
     load_system_prompt,
     setup_logger,
     get_supabase_client
@@ -259,7 +260,7 @@ def main():
         message_content = [
             "Here is the skin analysis:", analysis_summary,
             "Here is the strategic Skincare Philosophy to follow:", philosophy.model_dump_json(indent=2),
-            "Here is a curated list of relevant products based on the philosophy:", json.dumps(relevant_products, indent=2),
+            "Here is a curated list of relevant products based on the philosophy:", format_products_as_markdown(relevant_products),
         ]
         
         if feedback_history:

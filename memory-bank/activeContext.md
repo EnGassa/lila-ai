@@ -62,6 +62,10 @@ The AI recommendation engine has been upgraded with two major architectural impr
 
 This enhancement provides a complete "flight recorder" for the AI's decision-making process, from initial diagnosis to final safety review, making the system significantly more transparent and easier to debug.
 
+### 3. **Resilient RAG Formatting**
+-   **New Feature:** The `generate_recommendations.py` script was updated to use a dynamic Markdown formatter (`format_products_as_markdown`) for RAG context.
+-   **Logic:** This function is more token-efficient than the previous JSON-based approach and is resilient to changes in the product database schema by dynamically discovering and formatting fields.
+
 ## Next Steps
 With the secure upload workflow in place, the immediate next steps are:
 1.  **Backend Integration:** Connect the newly uploaded images to the existing backend analysis pipeline (currently triggered manually).

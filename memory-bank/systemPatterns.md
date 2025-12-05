@@ -46,6 +46,15 @@ This pattern ensures that notifications for batch events are sent only once, and
 - **Sticky Call-to-Actions:** Critical actions (like "Upload") are placed in sticky footers to ensure visibility and reachability on long pages.
 - **Portrait Optimization:** Image previews and layouts respect the portrait orientation common in mobile photography.
 
+### Resilient RAG Data Formatting
+For providing context data (e.g., product catalogs) to Large Language Models (LLMs) in Retrieval Augmented Generation (RAG) tasks, a dynamic Markdown formatting pattern is used.
+1.  **Dynamic Discovery:** Instead of hardcoding fields, the formatting function (`format_products_as_markdown`) inspects the data object.
+2.  **Blacklist Filtering:** It ignores noisy or irrelevant fields (e.g., `embedding`, `created_at`, internal IDs).
+3.  **Priority Rendering:** Key fields (`name`, `brand`, `description`) are prioritized and placed at the top of the formatted output.
+4.  **Graceful Formatting:** All other fields are dynamically rendered with readable labels.
+
+This pattern ensures that the system is **resilient to schema changes**. New fields added to the database are automatically included in the LLM prompt, and deleted fields are gracefully ignored without breaking the script. The Markdown format is also more token-efficient and natural for LLM consumption compared to JSON.
+
 ## Key Technical Decisions
 
 ### File Upload Strategy
