@@ -2,7 +2,7 @@
 
 ## What Works
 
-*   **User ID Clash Fix:** The `onboard_beta_user.py` script was updated to handle potential user ID clashes. It now checks for existing user IDs and appends a numerical suffix to ensure uniqueness, preventing data overwrites.
+*   **Interactive User Onboarding:** The `onboard_beta_user.py` script has been enhanced to provide more control and safety during user creation. When a user ID clash is detected, it now provides an interactive prompt to either overwrite the user, rename the new user with a suffix, or abort. It also includes a new `--overwrite` flag to bypass this prompt for automation.
 *   **Mobile Viewport Fix:** A typo in the `viewport` meta tag (`initial-scale=v1.0` instead of `initial-scale=1.0`) was causing mobile browsers to render the desktop version of the site. This has been corrected in `app/layout.tsx`.
 
 *   **Build Fix:** A bug that caused the Next.js build to fail due to a server-side rendering issue with the PostHog provider has been resolved. The provider is now dynamically imported and rendered only on the client side, ensuring a successful build.

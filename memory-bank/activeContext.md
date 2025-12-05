@@ -1,8 +1,13 @@
 # Active Context
 
-## Current Work: User ID Clash Fix
+## Current Work: Interactive User Onboarding
 
-The `onboard_beta_user.py` script was updated to handle potential user ID clashes when a new user is created with a name that already exists. The script now checks for existing user IDs and appends a numerical suffix to ensure uniqueness.
+The `onboard_beta_user.py` script has been enhanced to provide more control and safety during user creation.
+
+-   **Interactive Conflict Resolution:** When a user ID clash is detected, the script now prompts the operator to choose between overwriting the existing user, creating a new user with an auto-generated suffixed ID (e.g., `user_name_2`), or aborting the process.
+-   **`--overwrite` Flag:** A new `--overwrite` flag was added to allow the operator to bypass the interactive prompt and force an overwrite, which is useful for scripting and testing scenarios.
+
+This change prevents accidental data loss and makes the onboarding tool more flexible for developers and administrators.
 
 ## Current Work: Photo Guideline Integration
 

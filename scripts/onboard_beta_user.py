@@ -37,25 +37,46 @@ def get_supabase_client() -> Client:
 
     return create_client(supabase_url, supabase_key)
 
-def create_user(supabase: Client, name: str, email: Optional[str] = None) -> str:
-    """Creates a user in the public.users table."""
+def create_user(supabase: Client, name: str, email: Optional[str] = None, overwrite: bool = False) -> str:
+    """Creates or updates a user in the public.users table, handling conflicts."""
     base_user_id = name.lower().replace(" ", "_")
     user_id = base_user_id
-    suffix = 1
 
-    # Check for existing user_id and append a suffix if necessary
-    while True:
-        existing_user = supabase.table('users').select('id').eq('id', user_id).limit(1).execute()
-        if not existing_user.data:
-            break
-        suffix += 1
-        user_id = f"{base_user_id}_{suffix}"
+    existing_user_res = supabase.table('users').select('id').eq('id', user_id).limit(1).execute()
+
+    if existing_user_res.data:
+        # User exists, handle conflict
+        if overwrite:
+            logger.warning(f"User ID '{user_id}' already exists. Overwriting as requested.")
+        else:
+            while True:
+                print(f"\nUser ID '{user_id}' already exists.")
+                action = input("Choose an action: [o]verwrite, [r]ename to create a new user, or [a]bort: ").lower()
+
+                if action == 'o':
+                    logger.info(f"Proceeding to overwrite user '{user_id}'.")
+                    break
+                elif action == 'r':
+                    # Find next available user_id
+                    suffix = 2
+                    new_user_id = f"{base_user_id}_{suffix}"
+                    while supabase.table('users').select('id').eq('id', new_user_id).limit(1).execute().data:
+                        suffix += 1
+                        new_user_id = f"{base_user_id}_{suffix}"
+                    user_id = new_user_id
+                    logger.info(f"Will create a new user with ID '{user_id}'.")
+                    break
+                elif action == 'a':
+                    logger.info("Aborting user creation.")
+                    sys.exit(0)
+                else:
+                    print("Invalid option. Please try again.")
 
     if not email:
         email = f"{user_id}@example.com"
-    
-    logger.info(f"Creating user '{name}' (ID: {user_id})...")
-    
+
+    logger.info(f"Upserting user '{name}' (ID: {user_id})...")
+
     # Upsert user
     try:
         data = {
@@ -64,7 +85,7 @@ def create_user(supabase: Client, name: str, email: Optional[str] = None) -> str
             "email": email
         }
         supabase.table('users').upsert(data).execute()
-        logger.success(f"User {user_id} created/updated.")
+        logger.success(f"User {user_id} created/updated successfully.")
         return user_id
     except Exception as e:
         logger.error(f"Failed to create user: {e}")
@@ -95,13 +116,14 @@ def main():
     parser.add_argument("--api-key", help="API key for the model provider.")
     parser.add_argument("--context-file", help="Path to a JSON file containing user context.")
     parser.add_argument("--setup-only", action="store_true", help="Only create the user and print the upload link.")
-    
+    parser.add_argument("--overwrite", action="store_true", help="Overwrite existing user without prompting.")
+
     args = parser.parse_args()
     
     supabase = get_supabase_client()
     
     # 1. Create User
-    user_id = create_user(supabase, args.name, args.email)
+    user_id = create_user(supabase, args.name, args.email, overwrite=args.overwrite)
 
     # Handle --setup-only flag
     if args.setup_only:
