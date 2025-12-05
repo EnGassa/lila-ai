@@ -1,8 +1,9 @@
 'use server'
 
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { createClient } from '@/lib/supabase/server'
+import { DiscordEmbed } from '@/lib/types'
 
 const s3Client = new S3Client({
   region: process.env.SUPABASE_S3_REGION,
@@ -60,21 +61,55 @@ export async function notifyOnUploadComplete(userId: string, fileNames: string[]
     return { error: 'Server configuration error: webhook URL is missing.' }
   }
 
-  const content = {
-    embeds: [
-      {
-        title: 'New Photo Upload!',
-        description: `User **${userId}** has uploaded **${fileNames.length}** new photo(s).`,
-        fields: [
-          {
-            name: 'Files',
-            value: fileNames.join('\n'),
-          },
-        ],
-        color: 0xb98579, // Lila AI brand color
-        timestamp: new Date().toISOString(),
+  const signedUrls = []
+  for (const fileName of fileNames) {
+    try {
+      const key = `${userId}/${fileName}`
+      const command = new GetObjectCommand({
+        Bucket: process.env.SUPABASE_S3_BUCKET || 'user-uploads',
+        Key: key,
+      })
+
+      const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 86400 }) // 24 hours
+      signedUrls.push(signedUrl)
+    } catch (error) {
+      console.error(`Error generating signed URL for ${fileName}:`, error)
+      // Continue even if one fails
+    }
+  }
+
+  const embeds: DiscordEmbed[] = [
+    {
+      title: 'New Photo Upload!',
+      description: `User **${userId}** has uploaded **${fileNames.length}** new photo(s).`,
+      fields: [
+        {
+          name: 'Files',
+          value: fileNames.join('\n'),
+        },
+      ],
+      color: 0xb98579, // Lila AI brand color
+      timestamp: new Date().toISOString(),
+      image: {
+        url: signedUrls[0],
       },
-    ],
+    },
+  ]
+
+  // Add additional images as separate embeds
+  if (signedUrls.length > 1) {
+    for (let i = 1; i < signedUrls.length; i++) {
+      embeds.push({
+        url: signedUrls[0], // Main embed url
+        image: {
+          url: signedUrls[i],
+        },
+      })
+    }
+  }
+
+  const content = {
+    embeds,
   }
 
   try {

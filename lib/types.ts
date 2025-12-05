@@ -32,3 +32,19 @@ export interface Recommendations {
     weekly?: Step[];
   };
 }
+
+export interface DiscordEmbed {
+  title?: string;
+  description?: string;
+  url?: string;
+  color?: number;
+  timestamp?: string;
+  image?: {
+    url: string;
+  };
+  fields?: {
+    name: string;
+    value: string;
+    inline?: boolean;
+  }[];
+}

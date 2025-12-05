@@ -9,6 +9,7 @@
 
 *   **Secure Mobile-Friendly Image Uploads & Notifications:**
     *   **Discord Notifications:** Implemented a real-time notification system. A server action (`notifyOnUploadComplete`) is triggered by the client after a successful upload batch, sending a formatted embed message to a configured Discord channel via webhook.
+    *   **Discord Visuals:** Enhanced Discord notifications to include signed, 24-hour preview URLs of the uploaded images. Fixed a race condition where Supabase API metadata was out of sync with direct S3 uploads by generating signed URLs directly via the AWS SDK.
     *   **Secure Broker Architecture:** Implemented a **Client-Side Direct Upload** pattern. The frontend requests pre-signed URLs from a secure Server Action (`getSignedUploadUrl`) and then uploads files directly to Supabase S3. This bypasses server body limits and improves performance while keeping credentials safe.
     *   **Mobile-First Design:**
         *   **UI/UX:** The upload interface features a large, tappable touch zone, portrait-oriented previews (`aspect-[3/4]`), and "native-style" delete buttons.

@@ -16,13 +16,13 @@ To improve the quality of user-submitted photos, the official photo-taking guide
 
 A new, secure workflow has been implemented to allow beta users to upload their photos directly to the platform via a unique link, replacing the high-friction WhatsApp process. Additionally, a real-time notification system has been added to alert the team on Discord whenever a new upload occurs.
 
-### 1. **Event-Driven Discord Notifications**
+### 1. **Event-Driven Discord Notifications with Visuals**
 -   **Architecture:** Implemented a **Client-Triggered Server Action** pattern to send real-time alerts.
 -   **Mechanism:**
     -   The `FileUpload` component waits for all files in a batch to be successfully uploaded to S3.
     -   It then calls a new Server Action `notifyOnUploadComplete`, passing the user ID and list of filenames.
-    -   The server action retrieves the `DISCORD_WEBHOOK_URL` from environment variables and POSTs a formatted embed to the Discord channel.
--   **Benefit:** Provides immediate visibility into user activity without polling or complex database triggers, while keeping webhook credentials secure on the server.
+    -   The server action generates 24-hour signed URLs for the images directly from S3 (bypassing Supabase API to avoid sync issues) and attaches them to the Discord embed.
+-   **Benefit:** Provides immediate visual context of user activity without polling, while keeping credentials secure.
 
 ### 2. **"Secure Broker" S3 Uploads (Client-Side)**
 -   **Architecture:** To bypass server body size limits and improve performance, the upload strategy was refactored to use **Client-Side Direct Uploads**.
