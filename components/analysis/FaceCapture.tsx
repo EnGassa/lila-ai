@@ -111,6 +111,9 @@ export default function FaceCapture({
   // --- Calibration State ---
   const [calibrationData, setCalibrationData] = useState(initialCalibrationData);
   const [tolerance, setTolerance] = useState(8); // Slightly relaxed default tolerance
+  const [isLowLight, setIsLowLight] = useState(false);
+  const [brightnessThreshold, setBrightnessThreshold] = useState(50);
+  const [currentBrightness, setCurrentBrightness] = useState(0);
 
   const {
     status,
@@ -129,6 +132,10 @@ export default function FaceCapture({
   const validationState = (() => {
     if (!webcamRunning || isTransitioning || isSequenceComplete || landmarks.length === 0) {
       return { isCorrect: false, message: "Align your face" };
+    }
+
+    if (isLowLight) {
+      return { isCorrect: false, message: "Lighting too dim" };
     }
 
     const targetPose = calibrationData[currentPose];
@@ -198,9 +205,38 @@ export default function FaceCapture({
   const isPoseCorrect = validationState.isCorrect;
   const guidanceMessage = validationState.message;
 
+  // --- Audio Feedback ---
+  const playCaptureSound = useCallback(() => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContext) return;
+
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(880, ctx.currentTime); // High pitch start
+      osc.frequency.exponentialRampToValueAtTime(587.33, ctx.currentTime + 0.1); // Drop to D5
+
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.1);
+    } catch (e) {
+      console.error("Audio playback failed", e);
+    }
+  }, []);
+
   // --- Capture Logic ---
   const handleCommitCapture = useCallback(
     (imageUrl: string) => {
+      playCaptureSound();
       setCapturedImages((prev) => ({
         ...prev,
         [currentPose]: imageUrl,
@@ -309,6 +345,43 @@ export default function FaceCapture({
       setAutoCaptureProgress(0);
     };
   }, [isPoseCorrect, isTransitioning]);
+
+  // --- Low Light Detection ---
+  useEffect(() => {
+    if (!webcamRunning || !videoRef.current) return;
+
+    const checkBrightness = () => {
+      const video = videoRef.current;
+      if (!video || video.readyState < 4) return;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = 50;
+      canvas.height = 50;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      ctx.drawImage(video, 0, 0, 50, 50);
+      const imageData = ctx.getImageData(0, 0, 50, 50);
+      const data = imageData.data;
+      let r, g, b, avg;
+      let colorSum = 0;
+
+      for (let x = 0, len = data.length; x < len; x += 4) {
+        r = data[x];
+        g = data[x + 1];
+        b = data[x + 2];
+        avg = Math.floor((r + g + b) / 3);
+        colorSum += avg;
+      }
+
+      const brightness = Math.floor(colorSum / (50 * 50));
+      setCurrentBrightness(brightness);
+      setIsLowLight(brightness < brightnessThreshold);
+    };
+
+    const intervalId = setInterval(checkBrightness, 1000);
+    return () => clearInterval(intervalId);
+  }, [webcamRunning]);
 
   // --- Event Handlers ---
   const handleCamClick = () => {
@@ -445,12 +518,35 @@ export default function FaceCapture({
 
                     {/* Bottom Status Bar */}
                     <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent text-center space-y-2">
-                         <h3 className={`text-2xl font-bold ${isPoseCorrect ? "text-green-400" : "text-white"}`}>
+                        <h3 className={`text-2xl font-bold ${isPoseCorrect ? "text-green-400" : "text-white"}`}>
                             {isPoseCorrect ? "Hold Steady" : guidanceMessage}
-                         </h3>
-                         <p className="text-white/70 text-sm">
-                            Position your face to match the guidelines
-                         </p>
+                        </h3>
+
+                        {/* Light Meter (Always Visible) */}
+                        <div className="w-full max-w-[200px] mx-auto mt-4 mb-2 opacity-80 hover:opacity-100 transition-opacity">
+                            <div className="relative h-1.5 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
+                                {/* Threshold Marker */}
+                                <div
+                                    className="absolute top-0 bottom-0 w-0.5 bg-white/50 z-10"
+                                    style={{ left: `${(brightnessThreshold / 255) * 100}%` }}
+                                />
+                                {/* Current Level Bar */}
+                                <div
+                                    className={`h-full transition-all duration-500 ease-out ${
+                                        isLowLight 
+                                            ? "bg-red-500/80 shadow-[0_0_8px_rgba(239,68,68,0.4)]" 
+                                            : "bg-emerald-400/60"
+                                    }`}
+                                    style={{ width: `${(currentBrightness / 255) * 100}%` }}
+                                />
+                            </div>
+                        </div>
+
+                        {!isLowLight && (
+                            <p className="text-white/70 text-sm">
+                                Position your face to match the guidelines
+                            </p>
+                        )}
                     </div>
                 </>
             )}
@@ -518,6 +614,10 @@ export default function FaceCapture({
             detectedRoll={detectedRoll}
             detectedEyeDistance={detectedEyeDistance}
             calibrationData={calibrationData}
+            brightnessThreshold={brightnessThreshold}
+            setBrightnessThreshold={setBrightnessThreshold}
+            currentBrightness={currentBrightness}
+            guidanceMessage={guidanceMessage}
           />
         </div>
       )}

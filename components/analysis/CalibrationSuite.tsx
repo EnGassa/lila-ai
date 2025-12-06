@@ -16,6 +16,10 @@ interface CalibrationSuiteProps {
   detectedRoll: number;
   detectedEyeDistance: number;
   calibrationData: Record<CapturePose, PoseData>;
+  brightnessThreshold: number;
+  setBrightnessThreshold: (val: number) => void;
+  currentBrightness: number;
+  guidanceMessage: string;
 }
 
 export default function CalibrationSuite({
@@ -32,6 +36,10 @@ export default function CalibrationSuite({
   detectedRoll,
   detectedEyeDistance,
   calibrationData,
+  brightnessThreshold,
+  setBrightnessThreshold,
+  currentBrightness,
+  guidanceMessage,
 }: CalibrationSuiteProps) {
   if (!webcamRunning) {
     return null;
@@ -43,17 +51,17 @@ export default function CalibrationSuite({
         Calibration & Debug Suite
       </h3>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* --- CONTROLS --- */}
-        <div>
-          <div className="mb-4">
+        <div className="space-y-6">
+          <div>
             <label className="block mb-2 font-bold">
               1. Select Pose to Test/Calibrate:
             </label>
-            <div className="flex justify-center space-x-2">
+            <div className="flex flex-wrap gap-2 justify-center md:justify-start">
               <button
                 onClick={() => setCurrentPose("front")}
-                className={`p-2 rounded ${
+                className={`px-3 py-2 text-sm rounded ${
                   currentPose === "front" ? "bg-blue-600" : "bg-blue-400"
                 } text-white`}
               >
@@ -61,7 +69,7 @@ export default function CalibrationSuite({
               </button>
               <button
                 onClick={() => setCurrentPose("left45")}
-                className={`p-2 rounded ${
+                className={`px-3 py-2 text-sm rounded ${
                   currentPose === "left45" ? "bg-blue-600" : "bg-blue-400"
                 } text-white`}
               >
@@ -69,7 +77,7 @@ export default function CalibrationSuite({
               </button>
               <button
                 onClick={() => setCurrentPose("right45")}
-                className={`p-2 rounded ${
+                className={`px-3 py-2 text-sm rounded ${
                   currentPose === "right45" ? "bg-blue-600" : "bg-blue-400"
                 } text-white`}
               >
@@ -77,7 +85,7 @@ export default function CalibrationSuite({
               </button>
               <button
                 onClick={() => setCurrentPose("chinUp")}
-                className={`p-2 rounded ${
+                className={`px-3 py-2 text-sm rounded ${
                   currentPose === "chinUp" ? "bg-blue-600" : "bg-blue-400"
                 } text-white`}
               >
@@ -85,7 +93,7 @@ export default function CalibrationSuite({
               </button>
               <button
                 onClick={() => setCurrentPose("chinDown")}
-                className={`p-2 rounded ${
+                className={`px-3 py-2 text-sm rounded ${
                   currentPose === "chinDown" ? "bg-blue-600" : "bg-blue-400"
                 } text-white`}
               >
@@ -93,7 +101,7 @@ export default function CalibrationSuite({
               </button>
             </div>
           </div>
-          <div className="mb-4">
+          <div>
             <label className="block mb-2 font-bold">
               2. Calibrate Selected Pose:
             </label>
@@ -116,7 +124,7 @@ export default function CalibrationSuite({
               Calibrate {currentPose}
             </button>
           </div>
-          <div className="mb-4">
+          <div>
             <label htmlFor="tolerance" className="block mb-2 font-bold">
               3. Set Tolerance ({tolerance}):
             </label>
@@ -132,43 +140,78 @@ export default function CalibrationSuite({
           </div>
         </div>
 
-        {/* --- LIVE DATA --- */}
-        <div>
-          <h4 className="font-bold text-lg mb-2 text-center">Live Data</h4>
-          <p
-            className={`font-bold text-2xl text-center mb-2 ${
-              isPoseCorrect ? "text-green-400" : "text-red-400"
-            }`}
-          >
-            POSE CORRECT: {isPoseCorrect ? "YES" : "NO"}
-          </p>
-          <div className="text-sm grid grid-cols-2 gap-x-4">
-            <div>
-              <p>Yaw: {detectedYaw.toFixed(1)}°</p>
-              <p className="text-gray-400">
-                Tgt: {calibrationData[currentPose].yaw.toFixed(1)}°
-              </p>
+        {/* --- LIVE DATA & QA --- */}
+        <div className="space-y-6">
+          <div>
+            <h4 className="font-bold text-lg mb-2 text-center">Live Data</h4>
+            <p
+              className={`font-bold text-2xl text-center mb-1 ${
+                isPoseCorrect ? "text-green-400" : "text-red-400"
+              }`}
+            >
+              POSE CORRECT: {isPoseCorrect ? "YES" : "NO"}
+            </p>
+            <p className="text-center text-sm text-yellow-300 mb-4 h-6 font-mono">
+              {guidanceMessage}
+            </p>
+            <div className="text-sm grid grid-cols-2 gap-x-4">
+              <div>
+                <p>Yaw: {detectedYaw.toFixed(1)}°</p>
+                <p className="text-gray-400">
+                  Tgt: {calibrationData[currentPose].yaw.toFixed(1)}°
+                </p>
+              </div>
+              <div>
+                <p>Pitch: {detectedPitch.toFixed(1)}°</p>
+                <p className="text-gray-400">
+                  Tgt: {calibrationData[currentPose].pitch.toFixed(1)}°
+                </p>
+              </div>
+              <div>
+                <p>Roll: {detectedRoll.toFixed(1)}°</p>
+                <p className="text-gray-400">
+                  Tgt: {calibrationData[currentPose].roll.toFixed(1)}°
+                </p>
+              </div>
+              <div>
+                <p>Dist (Eyes): {detectedEyeDistance.toFixed(3)}</p>
+                <p className="text-gray-400">
+                  Tgt:{" "}
+                  {(isPortrait
+                    ? calibrationData[currentPose].eyeDistance.portrait
+                    : calibrationData[currentPose].eyeDistance.landscape
+                  ).toFixed(3)}
+                </p>
+              </div>
             </div>
+          </div>
+
+          {/* QA Calibration */}
+          <div className="border-t border-gray-600 pt-4">
+            <h4 className="font-bold text-lg mb-2">QA Calibration</h4>
             <div>
-              <p>Pitch: {detectedPitch.toFixed(1)}°</p>
-              <p className="text-gray-400">
-                Tgt: {calibrationData[currentPose].pitch.toFixed(1)}°
-              </p>
-            </div>
-            <div>
-              <p>Roll: {detectedRoll.toFixed(1)}°</p>
-              <p className="text-gray-400">
-                Tgt: {calibrationData[currentPose].roll.toFixed(1)}°
-              </p>
-            </div>
-            <div>
-              <p>Dist (Eyes): {detectedEyeDistance.toFixed(3)}</p>
-              <p className="text-gray-400">
-                Tgt:{" "}
-                {(isPortrait
-                  ? calibrationData[currentPose].eyeDistance.portrait
-                  : calibrationData[currentPose].eyeDistance.landscape
-                ).toFixed(3)}
+              <label className="block mb-1 text-sm font-bold">
+                Min Brightness ({brightnessThreshold})
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="255"
+                value={brightnessThreshold}
+                onChange={(e) => setBrightnessThreshold(Number(e.target.value))}
+                className="w-full"
+              />
+              <p className="text-xs text-gray-400 mt-1">
+                Current Level:{" "}
+                <span
+                  className={
+                    currentBrightness < brightnessThreshold
+                      ? "text-red-400"
+                      : "text-green-400"
+                  }
+                >
+                  {currentBrightness}
+                </span>
               </p>
             </div>
           </div>
