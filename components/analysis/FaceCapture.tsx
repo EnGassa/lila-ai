@@ -112,8 +112,13 @@ export default function FaceCapture({
   const [calibrationData, setCalibrationData] = useState(initialCalibrationData);
   const [tolerance, setTolerance] = useState(8); // Slightly relaxed default tolerance
   const [isLowLight, setIsLowLight] = useState(false);
-  const [brightnessThreshold, setBrightnessThreshold] = useState(50);
+  const [brightnessThreshold, setBrightnessThreshold] = useState(130);
+  const brightnessThresholdRef = useRef(brightnessThreshold);
   const [currentBrightness, setCurrentBrightness] = useState(0);
+
+  useEffect(() => {
+    brightnessThresholdRef.current = brightnessThreshold;
+  }, [brightnessThreshold]);
 
   const {
     status,
@@ -376,7 +381,7 @@ export default function FaceCapture({
 
       const brightness = Math.floor(colorSum / (50 * 50));
       setCurrentBrightness(brightness);
-      setIsLowLight(brightness < brightnessThreshold);
+      setIsLowLight(brightness < brightnessThresholdRef.current);
     };
 
     const intervalId = setInterval(checkBrightness, 1000);

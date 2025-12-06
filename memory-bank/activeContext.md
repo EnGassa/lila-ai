@@ -11,6 +11,8 @@ The Face Capture interface has been refined to address usability issues on mobil
     -   **Clean State:** The overlay hides the empty video container until the camera is active, providing a more polished initial state with clear instructions ("Position yourself in good lighting").
     -   **Footer Cleanup:** Removed the start button from the footer, reserving that space for "Stop/Cancel" actions only when the camera is running.
     -   **Quality Assurance:** Implemented realtime low-light detection with a configurable threshold (adjustable via the Calibration Suite), an always-visible visual light meter for subtle user guidance, and added audio feedback for successful captures.
+    -   **Bug Fix:** Resolved a stale closure issue in the low-light detection loop where the brightness threshold was not updating dynamically. Implemented a `useRef` to track live state.
+    -   **Configuration:** Updated the default brightness threshold to `150` to better filter out low-quality lighting conditions based on initial testing.
 
 ## Current Work: Interactive User Onboarding
 
