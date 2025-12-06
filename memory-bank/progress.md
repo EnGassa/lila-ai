@@ -2,6 +2,11 @@
 
 ## What Works
 
+*   **Refined Face Capture UI:** The face capture interface is now more mobile-friendly and intuitive.
+    *   **Centered Start Button:** The "Start Camera" action has been moved from the footer to a dedicated start screen overlay in the main content area, ensuring it is always visible above the fold on mobile devices.
+    *   **Cleaner Initial State:** The black video preview box is now hidden behind a polished start screen with instructions until the camera is activated.
+    *   **Simplified Footer:** The footer controls are context-aware, only showing "Stop Camera" when active, reducing clutter.
+
 *   **Interactive User Onboarding:** The `onboard_beta_user.py` script has been enhanced to provide more control and safety during user creation. When a user ID clash is detected, it now provides an interactive prompt to either overwrite the user, rename the new user with a suffix, or abort. It also includes a new `--overwrite` flag to bypass this prompt for automation.
 *   **Mobile Viewport Fix:** A typo in the `viewport` meta tag (`initial-scale=v1.0` instead of `initial-scale=1.0`) was causing mobile browsers to render the desktop version of the site. This has been corrected in `app/layout.tsx`.
 

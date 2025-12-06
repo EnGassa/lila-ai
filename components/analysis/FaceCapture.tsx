@@ -410,10 +410,30 @@ export default function FaceCapture({
               className="absolute top-0 left-0 w-full h-full object-cover transform -scale-x-100"
             ></canvas>
 
+            {/* Start Screen Overlay */}
+            {!webcamRunning && !isTransitioning && (
+              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-zinc-900 text-white p-6 text-center space-y-6">
+                <div className="space-y-2">
+                  <div className="w-20 h-20 rounded-full bg-zinc-800 flex items-center justify-center mx-auto mb-4">
+                    <Camera className="w-10 h-10 text-muted-foreground" />
+                  </div>
+                  <h3 className="font-semibold text-xl">Ready to Analyze?</h3>
+                  <p className="text-sm text-zinc-400 max-w-[240px] mx-auto">
+                    Position yourself in good lighting for the best results.
+                  </p>
+                </div>
+                <Button size="lg" onClick={handleCamClick} className="w-full max-w-xs font-semibold text-md">
+                  Start Camera
+                </Button>
+              </div>
+            )}
+
             {/* Reference Image Overlay (Optional Ghost) */}
-             <div className="absolute top-4 right-4 w-20 h-28 opacity-50 border-2 border-white/30 rounded-lg overflow-hidden pointer-events-none">
-                 <img src={currentGuideline?.imgSrc} alt="Reference" className="w-full h-full object-cover" />
-             </div>
+            {webcamRunning && (
+              <div className="absolute top-4 right-4 w-20 h-28 opacity-50 border-2 border-white/30 rounded-lg overflow-hidden pointer-events-none">
+                <img src={currentGuideline?.imgSrc} alt="Reference" className="w-full h-full object-cover" />
+              </div>
+            )}
 
             {/* Status Overlays */}
             {webcamRunning && !isTransitioning && (
@@ -459,9 +479,9 @@ export default function FaceCapture({
         )}
       </CardContent>
       <CardFooter className="flex justify-center gap-4 p-6">
-        {!isSequenceComplete && (
-          <Button onClick={handleCamClick} variant={webcamRunning ? "destructive" : "default"}>
-            {webcamRunning ? "Stop Camera" : "Start Camera"}
+        {!isSequenceComplete && webcamRunning && (
+          <Button onClick={handleCamClick} variant="destructive">
+            Stop Camera
           </Button>
         )}
 

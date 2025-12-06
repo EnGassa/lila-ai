@@ -1,5 +1,16 @@
 # Active Context
 
+## Current Work: Face Capture UI Polish
+
+The Face Capture interface has been refined to address usability issues on mobile devices.
+
+-   **Problem:** The "Start Camera" button was located in the footer, often pushing it below the fold on mobile screens due to the vertical height of the camera preview. Additionally, the preview area appeared as an uninviting black box before activation.
+-   **Solution:**
+    -   **Start Overlay:** Implemented a new "Start Screen" overlay that sits directly on top of the camera preview area.
+    -   **Prominent CTA:** Moved the "Start Camera" button into this overlay, centering it in the main content area for immediate visibility ("above the fold").
+    -   **Clean State:** The overlay hides the empty video container until the camera is active, providing a more polished initial state with clear instructions ("Position yourself in good lighting").
+    -   **Footer Cleanup:** Removed the start button from the footer, reserving that space for "Stop/Cancel" actions only when the camera is running.
+
 ## Current Work: Interactive User Onboarding
 
 The `onboard_beta_user.py` script has been enhanced to provide more control and safety during user creation.
