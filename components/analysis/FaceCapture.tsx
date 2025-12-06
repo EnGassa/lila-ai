@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Camera, RefreshCw, Check } from "lucide-react";
+import { CheckCircle2, Camera, RefreshCw, Check, Sun } from "lucide-react";
 import { GUIDELINES, PoseId } from "@/components/guidelines";
 
 export type CapturePose = PoseId;
@@ -527,23 +527,27 @@ export default function FaceCapture({
                             {isPoseCorrect ? "Hold Steady" : guidanceMessage}
                         </h3>
 
-                        {/* Light Meter (Always Visible) */}
-                        <div className="w-full max-w-[200px] mx-auto mt-4 mb-2 opacity-80 hover:opacity-100 transition-opacity">
-                            <div className="relative h-1.5 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
-                                {/* Threshold Marker */}
+                        {/* iOS-style Brightness Meter (Grayscale & Subtle) */}
+                        <div className="w-full max-w-[240px] mx-auto mt-4 mb-2 relative group opacity-90 hover:opacity-100 transition-opacity">
+                            {/* Backdrop */}
+                            <div className="relative h-6 bg-black/20 rounded-full overflow-hidden backdrop-blur-md border border-white/10">
+                                
+                                {/* Fill */}
                                 <div
-                                    className="absolute top-0 bottom-0 w-0.5 bg-white/50 z-10"
-                                    style={{ left: `${(brightnessThreshold / 255) * 100}%` }}
-                                />
-                                {/* Current Level Bar */}
-                                <div
-                                    className={`h-full transition-all duration-500 ease-out ${
-                                        isLowLight 
-                                            ? "bg-red-500/80 shadow-[0_0_8px_rgba(239,68,68,0.4)]" 
-                                            : "bg-emerald-400/60"
-                                    }`}
+                                    className="absolute bottom-0 left-0 top-0 bg-white/80 transition-all duration-300 ease-out"
                                     style={{ width: `${(currentBrightness / 255) * 100}%` }}
                                 />
+
+                                {/* Threshold Line */}
+                                <div
+                                    className="absolute top-0 bottom-0 w-0.5 bg-black/40 z-10"
+                                    style={{ left: `${(brightnessThreshold / 255) * 100}%` }}
+                                />
+
+                                {/* Icon Layer */}
+                                <div className="absolute inset-0 flex items-center px-2 justify-between z-20">
+                                    <Sun className="w-3.5 h-3.5 text-white/90" />
+                                </div>
                             </div>
                         </div>
 

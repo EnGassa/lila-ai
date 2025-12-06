@@ -7,7 +7,7 @@
     *   **Cleaner Initial State:** The black video preview box is now hidden behind a polished start screen with instructions until the camera is activated.
     *   **Simplified Footer:** The footer controls are context-aware, only showing "Stop Camera" when active, reducing clutter.
     *   **Quality Assurance:** Added realtime low-light detection (pauses capture if dim) and synthesized audio feedback upon successful capture.
-    *   **Visual Guidance:** Added a subtle, **always-visible Visual Light Meter** to the camera interface, providing continuous feedback on lighting quality without cluttering the UI.
+    *   **Visual Guidance:** Added a subtle, **iOS-style Visual Light Meter** to the camera interface, featuring a blurred backdrop, integrated sun icon, and color-coded feedback for continuous lighting guidance.
     *   **QA Calibration:** Updated the `CalibrationSuite` to include a dynamic brightness threshold slider and realtime lighting feedback, enabling field-tuning of the low-light check.
     *   **Bug Fix:** Fixed a critical bug where the low-light detection loop was using stale threshold values, ensuring calibration changes take effect immediately.
     *   **Configuration:** Updated the default brightness threshold to `150` to provide a more robust baseline for low-light filtering.
