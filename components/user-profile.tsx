@@ -1,6 +1,5 @@
 "use client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useState } from "react";
+import { UserAvatar } from "@/components/user-avatar";
 
 interface UserProfileProps {
   userData: any;
@@ -10,13 +9,6 @@ interface UserProfileProps {
 export function UserProfile({ userData, userId }: UserProfileProps) {
   const { analysis, name } = userData;
   const ageRange = analysis.skin_age_range;
-  const [profileImageUrl, setProfileImageUrl] = useState(
-    `/profile_pic/${userId}.jpg`
-  );
-
-  const handleImageError = () => {
-    setProfileImageUrl(`/profile_pic/${userId}.png`);
-  };
 
   const capitalize = (s: string) => {
     if (typeof s !== "string") return "";
@@ -32,14 +24,7 @@ export function UserProfile({ userData, userId }: UserProfileProps) {
 
   return (
     <div className="flex items-center gap-4">
-      <Avatar className="h-24 w-24 rounded-lg">
-        <AvatarImage
-          src={profileImageUrl}
-          alt="User"
-          onError={handleImageError}
-        />
-        <AvatarFallback className="rounded-lg">U</AvatarFallback>
-      </Avatar>
+      <UserAvatar userId={userId} displayName={displayName} />
       <div>
         <p className="text-2xl font-light">{displayName}</p>
         <p className="text-sm font-light text-muted-foreground">

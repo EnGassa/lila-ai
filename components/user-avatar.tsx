@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils'
 
 export function UserAvatar({ userId, displayName }: { userId: string; displayName: string }) {
   const [imgSrc, setImgSrc] = useState<string | null>(null)
-  const [isFallback, setIsFallback] = useState(false)
 
   useEffect(() => {
     const userImg = `/profile_pic/${userId}.jpg`
@@ -14,11 +13,9 @@ export function UserAvatar({ userId, displayName }: { userId: string; displayNam
     img.src = userImg
     img.onload = () => {
       setImgSrc(userImg)
-      setIsFallback(false)
     }
     img.onerror = () => {
-      setImgSrc('/person.gif')
-      setIsFallback(true)
+      setImgSrc('/placeholder.png')
     }
   }, [userId])
 
@@ -35,10 +32,9 @@ export function UserAvatar({ userId, displayName }: { userId: string; displayNam
       <AvatarImage
         src={imgSrc}
         alt="User"
-        className={cn(isFallback && 'scale-125 object-cover')}
+        className="object-cover"
         onError={() => {
-          setImgSrc('/person.gif')
-          setIsFallback(true)
+          setImgSrc('/placeholder.png')
         }}
       />
       <AvatarFallback className="rounded-lg">{displayName.charAt(0)}</AvatarFallback>
