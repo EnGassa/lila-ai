@@ -55,16 +55,17 @@
     *   **Database Schema:** New tables (`products_1`, `ingredients_1`) have been added to the Supabase database to store the new data.
     *   **Data Upload:** A dedicated script (`skinsort_jsonl_to_db.py`) handles the efficient upload of the scraped data to the database.
 
-*   **Intelligent Image Capture (V2 Complete):** The image capture system has been successfully upgraded to a multi-pose flow.
-    *   **UI/UX Redesign:** The entire `FaceCapture` component has been redesigned to align with the app's established aesthetic. It now uses the standard `Card` and `Button` components, a consistent color palette, and branded typography, creating a seamless user experience.
-    *   **Guided Multi-Pose UI:** The system guides the user through a sequence of 3 poses (Front, Left, Right) with clear instructional text and progress indicators ("Step X of 3").
-    *   **Smooth Auto-Capture:** Implemented a hands-free capture mechanism with a visual "Hold" timer.
-        *   **Midpoint Trigger:** Captures the photo at 50% of the hold duration to mask latency, validating the pose at 100%.
-        *   **Transition Logic:** Features a 2-second "Success" pause between captures to allow the user to reset comfortably.
-    *   **Device-Agnostic Validation:** Dynamically adjusts validation targets based on the video aspect ratio (landscape vs. portrait) using a set of pre-calibrated "golden" values.
-    *   **Mirrored Preview Consistency:** The final review gallery is visually mirrored to match the live video preview, providing a natural user experience while preserving the raw image data for analysis.
-    *   **Responsive UI Fix:** Resolved a bug that caused the facemesh to appear distorted on mobile devices by synchronizing the CSS scaling properties of the video and canvas elements.
-    *   **Modular Architecture:** The feature is built on a scalable architecture with a custom hook (`useFaceLandmarker`), utility functions, and a dedicated calibration component.
+*   **Intelligent Image Capture (V3 Integrated):** The experimental scanner prototype has been matured and fully integrated into the production upload page.
+    *   **Integrated Workflow:** Replaced the static upload page with an interactive `UploadPageClient` that allows users to seamlessly switch between "Camera Mode" and manual upload.
+    *   **"Power 5" Protocol:** Expanded the capture sequence from 3 to 5 distinct poses (Front, Left 45°, Right 45°, Chin Up, Chin Down) to ensure comprehensive facial analysis coverage.
+    *   **Advanced Pose Validation:**
+        *   Added vertical pitch validation for "Chin Up" and "Chin Down" poses.
+        *   Calibrated target angles for real-world usage (Chin Up: +20°, Chin Down: -30°).
+        *   Refined directional guidance logic to correctly interpret pitch changes (positive = look up, negative = look down).
+    *   **Seamless Handoff:** Implemented an `onComplete` workflow that converts captured Blob URLs into `File` objects and automatically pre-fills the manual upload queue, allowing for a frictionless transition from capture to submission.
+    *   **UI Enhancements:**
+        *   **Dynamic Guidelines:** The scanner now displays the specific instruction and reference image for each step, pulled directly from the shared `GUIDELINES` configuration.
+        *   **Manual Override:** Added a prominent "Manual Capture" button to ensure users are never blocked by strict AI validation.
 *   **Analytics and Monitoring:**
     *   **PostHog Integration:** The application is fully integrated with PostHog for web analytics and session recording.
 *   **Database Integration:** The application is fully integrated with Supabase (PostgreSQL).

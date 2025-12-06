@@ -9,7 +9,19 @@ The `onboard_beta_user.py` script has been enhanced to provide more control and 
 
 This change prevents accidental data loss and makes the onboarding tool more flexible for developers and administrators.
 
-## Current Work: Photo Guideline Integration
+## Current Work: Smart Scanner Integration (Power 5 Poses)
+
+The experimental "Smart Scanner" prototype has been successfully matured and fully integrated into the main user upload flow, replacing the cumbersome manual process with an AI-guided experience.
+
+-   **Integration:** The `FaceCapture` component was embedded directly into `app/[userId]/upload/page.tsx` via a new Client Component wrapper (`UploadPageClient.tsx`). Users can now toggle between "Camera Mode" and "Upload Mode".
+-   **"Power 5" Protocol:** Refined the requirements from 10 photos down to the 5 essential angles that provide full geometric coverage: **Front, Left 45°, Right 45°, Chin Up, and Chin Down**.
+-   **Advanced Calibration:**
+    -   Upgraded `FaceCapture.tsx` to support vertical pitch validation for "Chin Up/Down" poses.
+    -   Calibrated target angles based on real-world landscape usage (Chin Up: +20°, Chin Down: -30°).
+    -   Implemented logic inversion for directional guidance to ensure "Look Up/Down" instructions match the physical movement required.
+-   **Seamless Handoff:** Upon completing the 5-step scan, the captured photos are automatically converted from Blob URLs to `File` objects and pre-loaded into the existing `FileUpload` component, creating a frictionless transition from capture to submission.
+
+## Previous Work: Photo Guideline Integration
 
 To improve the quality of user-submitted photos, the official photo-taking guidelines have been integrated directly into the upload page.
 

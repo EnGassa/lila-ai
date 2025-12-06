@@ -75,6 +75,22 @@ export default function CalibrationSuite({
               >
                 Right 45°
               </button>
+              <button
+                onClick={() => setCurrentPose("chinUp")}
+                className={`p-2 rounded ${
+                  currentPose === "chinUp" ? "bg-blue-600" : "bg-blue-400"
+                } text-white`}
+              >
+                Chin Up
+              </button>
+              <button
+                onClick={() => setCurrentPose("chinDown")}
+                className={`p-2 rounded ${
+                  currentPose === "chinDown" ? "bg-blue-600" : "bg-blue-400"
+                } text-white`}
+              >
+                Chin Down
+              </button>
             </div>
           </div>
           <div className="mb-4">

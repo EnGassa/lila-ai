@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import heic2any from 'heic2any'
 import { Button } from '@/components/ui/button'
 import { unstable_noStore as noStore } from 'next/cache'
@@ -13,6 +13,7 @@ import { toast } from 'sonner'
 
 interface FileUploadProps {
   userId: string
+  initialFiles?: File[]
 }
 
 interface UploadedFile {
@@ -21,12 +22,32 @@ interface UploadedFile {
   error?: string
 }
 
-export function FileUpload({ userId }: FileUploadProps) {
+export function FileUpload({ userId, initialFiles = [] }: FileUploadProps) {
   const [files, setFiles] = useState<UploadedFile[]>([])
   const [uploadProgress, setUploadProgress] = useState<number | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [isConverting, setIsConverting] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (initialFiles && initialFiles.length > 0) {
+      const newFiles = initialFiles.map(file => ({
+        file,
+        preview: URL.createObjectURL(file)
+      }))
+      
+      setFiles(prev => {
+        // Filter out duplicates based on file name and size
+        const uniqueNewFiles = newFiles.filter(newFile => 
+          !prev.some(existing => 
+            existing.file.name === newFile.file.name && 
+            existing.file.size === newFile.file.size
+          )
+        )
+        return [...prev, ...uniqueNewFiles]
+      })
+    }
+  }, [initialFiles])
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return
