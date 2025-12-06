@@ -112,13 +112,21 @@ export default function FaceCapture({
   const [calibrationData, setCalibrationData] = useState(initialCalibrationData);
   const [tolerance, setTolerance] = useState(8); // Slightly relaxed default tolerance
   const [isLowLight, setIsLowLight] = useState(false);
+  const [isBlurry, setIsBlurry] = useState(false);
   const [brightnessThreshold, setBrightnessThreshold] = useState(130);
+  const [blurThreshold, setBlurThreshold] = useState(400); // Increased based on user feedback
   const brightnessThresholdRef = useRef(brightnessThreshold);
+  const blurThresholdRef = useRef(blurThreshold);
   const [currentBrightness, setCurrentBrightness] = useState(0);
+  const [currentBlurScore, setCurrentBlurScore] = useState(0);
 
   useEffect(() => {
     brightnessThresholdRef.current = brightnessThreshold;
   }, [brightnessThreshold]);
+
+  useEffect(() => {
+    blurThresholdRef.current = blurThreshold;
+  }, [blurThreshold]);
 
   const {
     status,
@@ -141,6 +149,10 @@ export default function FaceCapture({
 
     if (isLowLight) {
       return { isCorrect: false, message: "Lighting too dim" };
+    }
+
+    if (isBlurry) {
+      return { isCorrect: false, message: "Hold Steady" };
     }
 
     const targetPose = calibrationData[currentPose];
@@ -351,40 +363,76 @@ export default function FaceCapture({
     };
   }, [isPoseCorrect, isTransitioning]);
 
-  // --- Low Light Detection ---
+  // --- Image Quality Check (Brightness & Blur) ---
   useEffect(() => {
     if (!webcamRunning || !videoRef.current) return;
 
-    const checkBrightness = () => {
+    const checkImageQuality = () => {
       const video = videoRef.current;
       if (!video || video.readyState < 4) return;
 
       const canvas = document.createElement("canvas");
-      canvas.width = 50;
-      canvas.height = 50;
+      const width = 100; // Increased resolution slightly for blur detection
+      const height = 100;
+      canvas.width = width;
+      canvas.height = height;
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
-      ctx.drawImage(video, 0, 0, 50, 50);
-      const imageData = ctx.getImageData(0, 0, 50, 50);
+      ctx.drawImage(video, 0, 0, width, height);
+      const imageData = ctx.getImageData(0, 0, width, height);
       const data = imageData.data;
+      
+      // 1. Brightness Calculation
       let r, g, b, avg;
       let colorSum = 0;
+      const grays = new Uint8ClampedArray(width * height);
 
-      for (let x = 0, len = data.length; x < len; x += 4) {
-        r = data[x];
-        g = data[x + 1];
-        b = data[x + 2];
+      for (let i = 0, len = data.length; i < len; i += 4) {
+        r = data[i];
+        g = data[i + 1];
+        b = data[i + 2];
         avg = Math.floor((r + g + b) / 3);
         colorSum += avg;
+        grays[i / 4] = avg; // Store grayscale for blur check
       }
 
-      const brightness = Math.floor(colorSum / (50 * 50));
+      const brightness = Math.floor(colorSum / (width * height));
       setCurrentBrightness(brightness);
       setIsLowLight(brightness < brightnessThresholdRef.current);
+
+      // 2. Blur Calculation (Laplacian Variance)
+      // Kernel: [[0, 1, 0], [1, -4, 1], [0, 1, 0]]
+      let laplacianSum = 0;
+      let laplacianSqSum = 0;
+      let count = 0;
+
+      // Iterate excluding borders
+      for (let y = 1; y < height - 1; y++) {
+        for (let x = 1; x < width - 1; x++) {
+          const i = y * width + x;
+          const val =
+            grays[i - width] + // Top
+            grays[i + width] + // Bottom
+            grays[i - 1] +     // Left
+            grays[i + 1] -     // Right
+            4 * grays[i];      // Center
+
+          laplacianSum += val;
+          laplacianSqSum += val * val;
+          count++;
+        }
+      }
+
+      const mean = laplacianSum / count;
+      const variance = (laplacianSqSum / count) - (mean * mean);
+      const blurScore = Math.floor(variance);
+
+      setCurrentBlurScore(blurScore);
+      setIsBlurry(blurScore < blurThresholdRef.current);
     };
 
-    const intervalId = setInterval(checkBrightness, 1000);
+    const intervalId = setInterval(checkImageQuality, 500); // Check every 500ms
     return () => clearInterval(intervalId);
   }, [webcamRunning]);
 
@@ -626,6 +674,9 @@ export default function FaceCapture({
             brightnessThreshold={brightnessThreshold}
             setBrightnessThreshold={setBrightnessThreshold}
             currentBrightness={currentBrightness}
+            blurThreshold={blurThreshold}
+            setBlurThreshold={setBlurThreshold}
+            currentBlurScore={currentBlurScore}
             guidanceMessage={guidanceMessage}
           />
         </div>

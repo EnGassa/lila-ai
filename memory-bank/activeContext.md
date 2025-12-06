@@ -1,6 +1,18 @@
 # Active Context
 
-## Current Work: Face Capture UI Polish
+## Current Work: Blur Detection (Quality Assurance)
+
+To ensure high-fidelity skin analysis, we have implemented a realtime **Blur Detection** system.
+
+-   **Problem:** Blurry photos are the primary cause of failure for AI skin analysis. Relying on post-capture review creates a frustrating "retake loop" for the user.
+-   **Solution:** Implemented a **"Smart Shutter"** mechanism that prevents auto-capture until the image is sharp.
+-   **Technical Implementation:**
+    -   **Algorithm:** Uses **Laplacian Variance** (edge detection) to calculate a "sharpness score" for every frame.
+    -   **Performance:** Optimized for mobile by processing a downscaled 100x100 thumbnail at a throttled rate (2Hz / every 500ms). This ensures negligible CPU usage.
+    -   **Feedback:** If the image is blurry, the UI displays a "Hold Steady" warning and blocks auto-capture.
+    -   **Calibration:** Added a **Blur Threshold Slider** and live **Sharpness Score** to the `CalibrationSuite`. Updated the default threshold to **400** (strict) based on user feedback, with a slider range up to 1000.
+
+## Previous Work: Face Capture UI Polish
 
 The Face Capture interface has been refined to address usability issues on mobile devices.
 
@@ -14,7 +26,7 @@ The Face Capture interface has been refined to address usability issues on mobil
     -   **Bug Fix:** Resolved a stale closure issue in the low-light detection loop where the brightness threshold was not updating dynamically. Implemented a `useRef` to track live state.
     -   **Configuration:** Updated the default brightness threshold to `150` to better filter out low-quality lighting conditions based on initial testing.
 
-## Current Work: Interactive User Onboarding
+## Previous Work: Interactive User Onboarding
 
 The `onboard_beta_user.py` script has been enhanced to provide more control and safety during user creation.
 
@@ -23,7 +35,7 @@ The `onboard_beta_user.py` script has been enhanced to provide more control and 
 
 This change prevents accidental data loss and makes the onboarding tool more flexible for developers and administrators.
 
-## Current Work: Smart Scanner Integration (Power 5 Poses)
+## Previous Work: Smart Scanner Integration (Power 5 Poses)
 
 The experimental "Smart Scanner" prototype has been successfully matured and fully integrated into the main user upload flow, replacing the cumbersome manual process with an AI-guided experience.
 

@@ -19,6 +19,9 @@ interface CalibrationSuiteProps {
   brightnessThreshold: number;
   setBrightnessThreshold: (val: number) => void;
   currentBrightness: number;
+  blurThreshold: number;
+  setBlurThreshold: (val: number) => void;
+  currentBlurScore: number;
   guidanceMessage: string;
 }
 
@@ -39,6 +42,9 @@ export default function CalibrationSuite({
   brightnessThreshold,
   setBrightnessThreshold,
   currentBrightness,
+  blurThreshold,
+  setBlurThreshold,
+  currentBlurScore,
   guidanceMessage,
 }: CalibrationSuiteProps) {
   if (!webcamRunning) {
@@ -211,6 +217,32 @@ export default function CalibrationSuite({
                   }
                 >
                   {currentBrightness}
+                </span>
+              </p>
+            </div>
+
+            <div className="mt-4">
+              <label className="block mb-1 text-sm font-bold">
+                Min Sharpness (Blur Threshold: {blurThreshold})
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="1000" // Increased range based on sharper camera feeds
+                value={blurThreshold}
+                onChange={(e) => setBlurThreshold(Number(e.target.value))}
+                className="w-full"
+              />
+              <p className="text-xs text-gray-400 mt-1">
+                Current Score:{" "}
+                <span
+                  className={
+                    currentBlurScore < blurThreshold
+                      ? "text-red-400"
+                      : "text-green-400"
+                  }
+                >
+                  {currentBlurScore}
                 </span>
               </p>
             </div>
