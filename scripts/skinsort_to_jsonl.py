@@ -33,13 +33,15 @@ load_dotenv()
 
 # --- AI Classification Setup ---
 class SkincareCategory(str, Enum):
-    CLEANSER = "Cleanser"
+    CLEANSER = "Water Cleanser"
+    OIL_CLEANSER = "Oil Cleanser"
     TONER_ESSENCE = "Toner & Essence"
-    SERUM_TREATMENT = "Serum & Treatment"
+    VITAMIN_C_SERUM = "Vitamin C Serum"
+    TREATMENT_SERUM = "Treatment Serum"
+    AMPOULE = "Ampoule"
     MOISTURIZER = "Moisturizer"
     SUNSCREEN = "Sunscreen"
     EYE_CARE = "Eye Care"
-    MASK_PEEL = "Mask & Peel"
     OTHER = "Other"
 
 class Classification(BaseModel):
@@ -75,28 +77,57 @@ class SkinsortScraper:
             output_type=Classification,
             instructions=f"""
             You are a skincare product classification expert. Your task is to categorize a product
-            into one of the following predefined categories based on its name and description.
+            into one of the following predefined categories based on the provided product details.
             Choose the single best fit.
 
             Valid Categories:
-            - {SkincareCategory.CLEANSER.value}
+            - {SkincareCategory.CLEANSER.value} (Gel, foam, or cream cleansers; 2nd step)
+            - {SkincareCategory.OIL_CLEANSER.value} (Oil or balm cleansers; 1st step)
             - {SkincareCategory.TONER_ESSENCE.value}
-            - {SkincareCategory.SERUM_TREATMENT.value}
+            - {SkincareCategory.VITAMIN_C_SERUM.value} (Serums primarily featuring Vitamin C/Ascorbic Acid)
+            - {SkincareCategory.TREATMENT_SERUM.value} (Serums for specific concerns like acne/aging, excluding Vit C)
+            - {SkincareCategory.AMPOULE.value} (High-concentration treatments)
             - {SkincareCategory.MOISTURIZER.value}
             - {SkincareCategory.SUNSCREEN.value}
             - {SkincareCategory.EYE_CARE.value}
-            - {SkincareCategory.MASK_PEEL.value}
             - {SkincareCategory.OTHER.value}
             """
         )
 
-    async def classify_product_category(self, name: str, description: str) -> SkincareCategory:
+    async def classify_product_category(
+        self, 
+        name: str, 
+        description: str,
+        brand: Optional[str] = None,
+        what_it_is: Optional[str] = None,
+        active_ingredients: Optional[List[str]] = None,
+        benefits: Optional[List[str]] = None
+    ) -> SkincareCategory:
         """Uses an LLM to classify a product into a standard category."""
         if not name or not description:
             return SkincareCategory.OTHER
 
         try:
-            prompt = f"Product Name: {name}\nDescription: {description}"
+            # Build a rich context prompt
+            prompt_parts = [f"Product Name: {name}"]
+            if brand:
+                prompt_parts.append(f"Brand: {brand}")
+            
+            prompt_parts.append(f"Description: {description}")
+            
+            if what_it_is:
+                prompt_parts.append(f"What it is: {what_it_is}")
+            
+            if active_ingredients:
+                ing_list = ", ".join(active_ingredients)
+                prompt_parts.append(f"Active Ingredients: {ing_list}")
+            
+            if benefits:
+                ben_list = ", ".join(benefits)
+                prompt_parts.append(f"Benefits: {ben_list}")
+
+            prompt = "\n".join(prompt_parts)
+            
             result = await self.classifier_agent.run(prompt)
             return result.output.category
         except Exception as e:
@@ -527,13 +558,21 @@ class SkinsortScraper:
         async def process_product_url(p_url):
             product_data = await self.parse_product(p_url)
             if product_data and "error" not in product_data:
+                # Extract extra fields for classification
+                overview = product_data.get("overview", {}) or {}
+                highlights = product_data.get("highlights", {}) or {}
+                
                 # Classify the product category
                 category = await self.classify_product_category(
-                    product_data.get("name"),
-                    product_data.get("description")
+                    name=product_data.get("name") or "",
+                    description=product_data.get("description") or "",
+                    brand=product_data.get("brand"),
+                    what_it_is=overview.get("what_it_is"),
+                    active_ingredients=product_data.get("active_ingredients"), # already extracted in parse_product
+                    benefits=product_data.get("benefits")
                 )
                 product_data["category"] = category.value
-                logger.info(f"Classified '{product_data.get('name')}' as '{category.value}'")
+                # logger.info(f"Classified '{product_data.get('name')}' as '{category.value}'")
 
                 # Download image and update path
                 local_image_path = await self.download_and_save_image(product_data)

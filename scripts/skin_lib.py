@@ -302,13 +302,13 @@ def format_products_as_markdown(products: List[Dict[str, Any]]) -> str:
     BLACKLIST_KEYS = {
         'embedding', 'vectors', 'vector', 'html_content', 'search_index',
         'created_at', 'updated_at', 'disabled_at',
-        'product_slug', 'ingredient_slugs', 'image_url',
+        'ingredient_slugs', 'image_url',
         'highlights', # Redundant if we show top-level benefits/concerns
         'id'
     }
 
     PRIORITY_KEYS = [
-        'category', 'rating', 'review_count', 'price',
+        'product_slug', 'category', 'rating', 'review_count', 'price',
         'description',
         'active_ingredients', 'matched_key_ingredients',
         'benefits', 'concerns', 'attributes'

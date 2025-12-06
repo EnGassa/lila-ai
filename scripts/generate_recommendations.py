@@ -121,8 +121,7 @@ def find_relevant_products(
         )
         
         # Log the first query to verify structure
-        if category == categories[0]:
-            logger.debug(f"Example Smart Query for '{category}': {category_query}")
+        logger.debug(f"Query for '{category}': {category_query}")
 
         query_embedding = model.encode(category_query).tolist()
 
@@ -140,6 +139,9 @@ def find_relevant_products(
                 if product['url'] not in all_relevant_products:
                     # The RPC returns exactly the columns we need, no need to copy or del
                     all_relevant_products[product['url']] = product
+                    product_to_log = product.copy()
+                    product_to_log.pop('ingredient_slugs', None)
+                    logger.info(f"Retrieved Product: {json.dumps(product_to_log, indent=2)}")
 
         except Exception as e:
             logger.error(f"Error calling match_products_by_category RPC for category '{category}': {e}")
