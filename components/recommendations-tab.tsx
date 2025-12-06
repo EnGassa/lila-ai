@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -185,22 +186,35 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
                                 </div>
 
                                 <div className="mt-4">
-                                  <p className="text-sm text-[#1C1B1F] leading-relaxed">
-                                    <span className="font-semibold">Why:</span>{" "}
-                                    {product.rationale}
-                                  </p>
+                                  <div className="prose prose-sm max-w-none">
+                                    <p className="text-sm text-[#1C1B1F] leading-relaxed mb-0">
+                                      <span className="font-semibold">Why:</span>{" "}
+                                    </p>
+                                    <ReactMarkdown
+                                      components={{
+                                        p: ({node, ...props}) => <p className="text-sm text-[#1C1B1F] leading-relaxed mt-1" {...props} />,
+                                        strong: ({node, ...props}) => <strong className="font-semibold" {...props} />,
+                                      }}
+                                    >
+                                      {product.rationale.replace(/\\n/g, '\n')}
+                                    </ReactMarkdown>
+                                  </div>
                                 </div>
                               </div>
 
                               {/* How to Use Section */}
                               {step.instructions && (
-                                <div className="bg-[#ECE0DE] p-6 rounded-t-lg">
-                                  <p className="text-sm text-[#1C1B1F] leading-relaxed">
-                                    <span className="font-semibold">
-                                      How to use:
-                                    </span>{" "}
-                                    {step.instructions}
-                                  </p>
+                                <div className="bg-[#ECE0DE] p-6 rounded-t-lg prose prose-sm max-w-none">
+                                  <h4 className="font-semibold mb-2">How to use:</h4>
+                                  <ReactMarkdown
+                                    components={{
+                                      p: ({node, ...props}) => <p className="text-sm text-[#1C1B1F] leading-relaxed" {...props} />,
+                                      ul: ({node, ...props}) => <ul className="list-disc list-inside" {...props} />,
+                                      li: ({node, ...props}) => <li className="text-sm text-[#1C1B1F] leading-relaxed" {...props} />,
+                                    }}
+                                  >
+                                    {step.instructions.replace(/\\n/g, '\n')}
+                                  </ReactMarkdown>
                                 </div>
                               )}
                             </div>
