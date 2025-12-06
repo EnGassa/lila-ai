@@ -45,14 +45,14 @@ const initialCalibrationData: Record<CapturePose, PoseData> = {
     boundingBox: { top: 0.15, bottom: 0.85, left: 0.05, right: 0.95 },
   },
   left45: {
-    yaw: -22.0,
-    pitch: -5.0,
+    yaw: -28.0,
+    pitch: -3.0,
     roll: 0,
     eyeDistance: { landscape: 0.13, portrait: 0.24 },
   },
   right45: {
-    yaw: 22.0,
-    pitch: -5.0,
+    yaw: 28.0,
+    pitch: -3.0,
     roll: 0,
     eyeDistance: { landscape: 0.13, portrait: 0.24 },
   },
