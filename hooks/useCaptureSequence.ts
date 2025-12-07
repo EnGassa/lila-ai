@@ -7,8 +7,12 @@ interface UseCaptureSequenceOptions {
 }
 
 /**
- * Custom hook to manage the multi-step photo capture sequence
- * Handles progression through poses, image storage, and sequence completion
+ * Custom hook to manage the multi-step photo capture sequence.
+ * Handles progression through poses, image storage, and sequence completion.
+ *
+ * @param setWebcamRunning - A state setter function to control the webcam.
+ * @param options - Configuration options for the hook.
+ * @returns An object with the current state of the capture sequence and functions to manage it.
  */
 export function useCaptureSequence(
   setWebcamRunning: (value: boolean) => void,
@@ -36,7 +40,9 @@ export function useCaptureSequence(
   const isSequenceComplete = currentStepIndex >= GUIDELINES.length;
 
   /**
-   * Store a captured image for a specific pose
+   * Store a captured image for a specific pose.
+   * @param pose The pose to store the image for.
+   * @param imageUrl The URL of the captured image.
    */
   const storeImage = useCallback((pose: CapturePose, imageUrl: string) => {
     setCapturedImages((prev) => ({
@@ -46,7 +52,8 @@ export function useCaptureSequence(
   }, []);
 
   /**
-   * Advance to the next step in the sequence with transition animation
+   * Advance to the next step in the sequence with transition animation.
+   * @param currentIndex The current step index.
    */
   const advanceStep = useCallback(
     (currentIndex: number) => {
@@ -67,7 +74,7 @@ export function useCaptureSequence(
   );
 
   /**
-   * Reset the entire sequence - clear all images and restart from step 0
+   * Reset the entire sequence - clear all images and restart from step 0.
    */
   const resetSequence = useCallback(() => {
     setCapturedImages({
@@ -83,7 +90,7 @@ export function useCaptureSequence(
   }, [setWebcamRunning]);
 
   /**
-   * Complete the sequence - convert blob URLs to Files and call onComplete callback
+   * Complete the sequence - convert blob URLs to Files and call onComplete callback.
    */
   const finishSequence = useCallback(async () => {
     if (!onComplete) return;

@@ -1,51 +1,31 @@
-import { useRef, useState, RefObject, useCallback } from "react";
+import { useState, RefObject, useCallback } from "react";
 import { FaceCropper } from "@/lib/utils";
 
 export interface UseImageCaptureOptions {
   disableCropping?: boolean;
 }
 
-export interface UseImageCaptureReturn {
-  // Capture functions
-  captureFromVideo: () => Promise<string | null>;
-  cropImage: (imageUrl: string) => Promise<string>;
-  
-  // Refs for auto-capture coordination
-  countdownCompletedRef: RefObject<boolean>;
-  tempImageRef: RefObject<string | null>;
-  
-  // Processing state
-  isProcessing: boolean;
-  setIsProcessing: (value: boolean) => void;
-}
-
 /**
- * Custom hook for managing image capture from video stream.
- * Handles canvas creation, blob generation, cropping, and auto-capture coordination.
- * 
- * @param videoRef - Reference to the video element
- * @param options - Configuration options (cropping, etc.)
+ * Custom hook for managing image capture from a video stream.
+ *
+ * @param videoRef - A React ref to the video element.
+ * @param options - Configuration options for image capture.
+ * @returns An object with functions to capture and crop images, and state for processing.
  */
 export function useImageCapture(
   videoRef: RefObject<HTMLVideoElement | null>,
   options: UseImageCaptureOptions = {}
-): UseImageCaptureReturn {
+) {
   const { disableCropping = true } = options;
-
-  // Refs for auto-capture coordination with timer hook
-  const countdownCompletedRef = useRef(false);
-  const tempImageRef = useRef<string | null>(null);
 
   // Processing state (for cropping operations)
   const [isProcessing, setIsProcessing] = useState(false);
 
   /**
    * Crops an image using FaceCropper.
-   * Takes an existing blob URL, crops it, and returns a new blob URL.
-   * Cleans up the original blob URL.
-   * 
-   * @param imageUrl - The blob URL of the image to crop
-   * @returns Promise<string> - The blob URL of the cropped image
+   *
+   * @param imageUrl - The blob URL of the image to crop.
+   * @returns The blob URL of the cropped image.
    */
   const cropImage = useCallback(async (imageUrl: string): Promise<string> => {
     try {
@@ -77,9 +57,8 @@ export function useImageCapture(
 
   /**
    * Captures an image from the video element.
-   * Creates a canvas, draws the current video frame, and generates a blob URL.
-   * 
-   * @returns Promise<string | null> - The blob URL of the captured image, or null on error
+   *
+   * @returns The blob URL of the captured image, or null on error.
    */
   const captureFromVideo = useCallback(async (): Promise<string | null> => {
     const video = videoRef.current;
@@ -135,8 +114,6 @@ export function useImageCapture(
   return {
     captureFromVideo,
     cropImage,
-    countdownCompletedRef,
-    tempImageRef,
     isProcessing,
     setIsProcessing,
   };

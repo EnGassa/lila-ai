@@ -120,8 +120,6 @@ export default function FaceCapture({
   const {
     captureFromVideo,
     cropImage,
-    countdownCompletedRef,
-    tempImageRef,
     isProcessing,
     setIsProcessing,
   } = useImageCapture(videoRef, { disableCropping });
@@ -135,69 +133,42 @@ export default function FaceCapture({
   }, [webcamRunning, setWebcamRunning]);
 
   // --- Capture Logic ---
-  const handleCommitCapture = useCallback(
-    async (imageUrl: string) => {
-      playCaptureSound();
+  const handleCapture = useCallback(async () => {
+    if (isProcessing) return; // Prevent double capture
 
-      // Crop image if enabled
-      setIsProcessing(true);
-      const finalImageUrl = disableCropping
-        ? imageUrl
-        : await cropImage(imageUrl);
-      setIsProcessing(false);
+    const imageUrl = await captureFromVideo();
+    if (!imageUrl) return;
 
-      // Store image and advance to next step
-      storeImage(currentPose, finalImageUrl);
-      advanceStep(currentStepIndex);
-    },
-    [
-      currentPose,
-      currentStepIndex,
-      disableCropping,
-      cropImage,
-      setIsProcessing,
-      storeImage,
-      advanceStep,
-    ]
-  );
+    playCaptureSound();
 
-  // Auto-capture callback - uses hook's captureFromVideo function
-  const handleAutoCapture = useCallback(async () => {
-    const url = await captureFromVideo();
-    if (!url) return;
+    setIsProcessing(true);
+    const finalImageUrl = disableCropping ? imageUrl : await cropImage(imageUrl);
+    setIsProcessing(false);
 
-    // Store in ref - will be committed when countdown completes
-    if (countdownCompletedRef.current) {
-      handleCommitCapture(url);
-    } else {
-      tempImageRef.current = url;
-    }
-  }, [captureFromVideo, handleCommitCapture]);
-
-  // Auto-commit callback - triggered at end
-  const handleAutoCommit = useCallback(() => {
-    countdownCompletedRef.current = true;
-    if (tempImageRef.current) {
-      handleCommitCapture(tempImageRef.current);
-      tempImageRef.current = null;
-    }
-  }, [handleCommitCapture]);
+    storeImage(currentPose, finalImageUrl);
+    advanceStep(currentStepIndex);
+  }, [
+    isProcessing,
+    captureFromVideo,
+    disableCropping,
+    cropImage,
+    storeImage,
+    currentPose,
+    advanceStep,
+    currentStepIndex,
+    setIsProcessing,
+  ]);
 
   // Use auto-capture timer hook
   const { progress } = useAutoCaptureTimer(
     isPoseCorrect && !isSequenceComplete,
     isTransitioning,
-    handleAutoCapture,
-    handleAutoCommit
+    () => {}, // The new handleCapture does everything on commit
+    handleCapture
   );
 
-  // Manual capture handler (uses hook's capture function)
-  const handleManualCapture = useCallback(async () => {
-    const url = await captureFromVideo();
-    if (url) {
-      handleCommitCapture(url);
-    }
-  }, [captureFromVideo, handleCommitCapture]);
+  // Manual capture handler
+  const handleManualCapture = handleCapture;
 
   // --- Event Handlers ---
   const handleCamClick = () => {

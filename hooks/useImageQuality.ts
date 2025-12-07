@@ -1,8 +1,3 @@
-/**
- * Custom hook for real-time image quality monitoring
- * Monitors brightness and blur levels from video feed
- */
-
 import { useEffect, useRef, useState, RefObject } from "react";
 import { calculateBrightness, calculateBlurScore } from "@/lib/imageQuality";
 
@@ -12,42 +7,19 @@ interface UseImageQualityOptions {
   checkInterval?: number;
 }
 
-interface UseImageQualityReturn {
-  isLowLight: boolean;
-  isBlurry: boolean;
-  currentBrightness: number;
-  currentBlurScore: number;
-  brightnessThreshold: number;
-  setBrightnessThreshold: (value: number) => void;
-  blurThreshold: number;
-  setBlurThreshold: (value: number) => void;
-}
-
 /**
- * Monitors video feed for brightness and blur quality in real-time
- * 
- * @param videoRef - Reference to video element
- * @param webcamRunning - Whether webcam is currently active
- * @param options - Configuration options
- * @returns Image quality state and threshold setters
- * 
- * @example
- * ```typescript
- * const quality = useImageQuality(videoRef, webcamRunning, {
- *   brightnessThreshold: 100,
- *   blurThreshold: 500,
- * });
- * 
- * if (quality.isLowLight) {
- *   console.log("Warning: Low light detected");
- * }
- * ```
+ * Custom hook for real-time image quality monitoring.
+ *
+ * @param videoRef - A React ref to the video element.
+ * @param webcamRunning - Whether the webcam is currently active.
+ * @param options - Configuration options for image quality checks.
+ * @returns An object with the current image quality state and functions to update thresholds.
  */
 export function useImageQuality(
   videoRef: RefObject<HTMLVideoElement | null>,
   webcamRunning: boolean,
   options: UseImageQualityOptions = {}
-): UseImageQualityReturn {
+) {
   const {
     brightnessThreshold: initialBrightnessThreshold = 100,
     blurThreshold: initialBlurThreshold = 500,

@@ -7,27 +7,21 @@ interface UseAutoCaptureTimerOptions {
 }
 
 /**
- * Hook to manage auto-capture timer with smooth progress animation
- * 
- * Workflow:
- * - When pose becomes correct, starts countdown
- * - At midpoint (1s): triggers capture callback
- * - At end (2s): triggers commit callback
- * - Resets if pose becomes incorrect during countdown
- * 
- * @param isPoseCorrect - Whether the current pose is correct
- * @param isTransitioning - Whether currently transitioning between poses
- * @param onCapture - Callback to trigger capture at midpoint
- * @param onCommit - Callback to trigger commit at end
- * @param options - Optional configuration (duration)
- * @returns Object containing progress value (0-1) for UI animation and refs for capture state
+ * Hook to manage auto-capture timer with smooth progress animation.
+ *
+ * @param isPoseCorrect Whether the current pose is correct.
+ * @param isTransitioning Whether the component is currently transitioning between poses.
+ * @param onCapture Callback to trigger the capture.
+ * @param onCommit Callback to commit the capture.
+ * @param options Optional configuration for the timer.
+ * @returns The progress of the auto-capture timer (0-1).
  */
 export function useAutoCaptureTimer(
   isPoseCorrect: boolean,
   isTransitioning: boolean,
   onCapture: () => void,
   onCommit: () => void,
-  options?: UseAutoCaptureTimerOptions
+  options: UseAutoCaptureTimerOptions = {}
 ) {
   const duration = options?.duration ?? AUTO_CAPTURE_HOLD_DURATION;
 
@@ -37,8 +31,6 @@ export function useAutoCaptureTimer(
   // Refs to track capture state
   const autoCaptureTimerRef = useRef<NodeJS.Timeout | null>(null);
   const captureTriggeredRef = useRef(false);
-  const countdownCompletedRef = useRef(false);
-  const tempImageRef = useRef<string | null>(null);
 
   // Stable refs for callbacks
   const onCaptureRef = useRef(onCapture);
@@ -62,7 +54,6 @@ export function useAutoCaptureTimer(
 
       // 2. Commit at end
       const commitTimer = setTimeout(() => {
-        countdownCompletedRef.current = true;
         onCommitRef.current();
       }, duration);
 
@@ -72,16 +63,12 @@ export function useAutoCaptureTimer(
         clearTimeout(captureTimer);
         clearTimeout(commitTimer);
         captureTriggeredRef.current = false;
-        countdownCompletedRef.current = false;
-        tempImageRef.current = null;
       };
     } else {
       if (autoCaptureTimerRef.current) {
         clearTimeout(autoCaptureTimerRef.current);
       }
       captureTriggeredRef.current = false;
-      countdownCompletedRef.current = false;
-      tempImageRef.current = null;
     }
   }, [isPoseCorrect, isTransitioning, duration]);
 

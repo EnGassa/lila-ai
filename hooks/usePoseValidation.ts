@@ -94,32 +94,17 @@ export interface UsePoseValidationOptions {
   smileThreshold?: number;
 }
 
-export interface UsePoseValidationReturn {
-  // Validation state
-  validationState: ValidationResult;
-  isPoseCorrect: boolean;
-  guidanceMessage: string;
-  
-  // Calibration state
-  calibrationData: Record<CapturePose, PoseData>;
-  tolerance: number;
-  smileThreshold: number;
-  
-  // Actions
-  calibrate: () => void;
-  setTolerance: (value: number) => void;
-  setSmileThreshold: (value: number) => void;
-}
-
 /**
  * Custom hook for pose validation logic.
- * Combines validation state computation with calibration data management.
- * Uses extracted lib/poseValidation.ts functions for validation logic.
+ *
+ * @param params - The parameters for pose validation.
+ * @param options - The options for pose validation.
+ * @returns The state and functions for pose validation.
  */
 export function usePoseValidation(
   params: UsePoseValidationParams,
   options: UsePoseValidationOptions = {}
-): UsePoseValidationReturn {
+) {
   const {
     webcamRunning,
     isTransitioning,
@@ -226,7 +211,6 @@ export function usePoseValidation(
   })();
 
   return {
-    validationState,
     isPoseCorrect: validationState.isCorrect,
     guidanceMessage: validationState.message,
     calibrationData,
