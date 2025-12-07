@@ -6,6 +6,7 @@ import { getEulerAngles, FaceCropper } from "@/lib/utils";
 import { playCaptureSound } from "@/lib/audioFeedback";
 import { validatePose, validateDistance } from "@/lib/poseValidation";
 import { useImageQuality } from "@/hooks/useImageQuality";
+import { useAutoCaptureTimer } from "@/hooks/useAutoCaptureTimer";
 import CalibrationSuite from "./CalibrationSuite";
 import { useFaceLandmarker } from "@/hooks/useFaceLandmarker";
 import AutoCaptureIndicator from "./AutoCaptureIndicator";
@@ -116,13 +117,6 @@ export default function FaceCapture({
   // --- Live Detection State ---
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-
-  // --- Auto-Capture State ---
-  const [autoCaptureProgress, setAutoCaptureProgress] = useState(0);
-  const autoCaptureTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const captureTriggeredRef = useRef(false);
-  const countdownCompletedRef = useRef(false);
-  const tempImageRef = useRef<string | null>(null);
 
   // --- Calibration State ---
   const [calibrationData, setCalibrationData] = useState(
@@ -280,8 +274,83 @@ export default function FaceCapture({
     [currentPose, currentStepIndex, setWebcamRunning, disableCropping]
   );
 
+  // Refs for auto-capture state
+  const countdownCompletedRef = useRef(false);
+  const tempImageRef = useRef<string | null>(null);
+
+  // Auto-capture callback - triggered at midpoint
+  const handleAutoCapture = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || video.readyState < 2) {
+      console.error("Video not ready");
+      return;
+    }
+
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        console.error("Failed to get canvas context");
+        return;
+      }
+
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            console.error("Failed to create blob from canvas");
+            return;
+          }
+
+          console.log(
+            "Auto-captured photo:",
+            canvas.width,
+            "x",
+            canvas.height,
+            "Size:",
+            (blob.size / 1024).toFixed(2),
+            "KB"
+          );
+          const url = URL.createObjectURL(blob);
+          
+          // Store in ref - will be committed when countdown completes
+          if (countdownCompletedRef.current) {
+            handleCommitCapture(url);
+          } else {
+            tempImageRef.current = url;
+          }
+        },
+        "image/png"
+      );
+    } catch (error) {
+      console.error("Error capturing photo:", error);
+    }
+  }, [handleCommitCapture]);
+
+  // Auto-commit callback - triggered at end
+  const handleAutoCommit = useCallback(() => {
+    countdownCompletedRef.current = true;
+    if (tempImageRef.current) {
+      handleCommitCapture(tempImageRef.current);
+      tempImageRef.current = null;
+    }
+  }, [handleCommitCapture]);
+
+  // Use auto-capture timer hook
+  const { progress } = useAutoCaptureTimer(
+    isPoseCorrect && !isSequenceComplete,
+    isTransitioning,
+    handleAutoCapture,
+    handleAutoCommit
+  );
+
+  // Manual capture handler (separate from auto-capture)
   const handleCapture = useCallback(
-    async (isManual = false) => {
+    async () => {
       const video = videoRef.current;
       if (!video || video.readyState < 2) {
         console.error("Video not ready");
@@ -289,7 +358,6 @@ export default function FaceCapture({
       }
 
       try {
-        // Create canvas with video dimensions
         const canvas = document.createElement("canvas");
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -300,10 +368,8 @@ export default function FaceCapture({
           return;
         }
 
-        // Draw current video frame to canvas
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        // Convert canvas to Blob with lossless PNG
         canvas.toBlob(
           (blob) => {
             if (!blob) {
@@ -312,7 +378,7 @@ export default function FaceCapture({
             }
 
             console.log(
-              "Captured photo dimensions:",
+              "Manual capture:",
               canvas.width,
               "x",
               canvas.height,
@@ -321,20 +387,9 @@ export default function FaceCapture({
               "KB"
             );
             const url = URL.createObjectURL(blob);
-
-            if (isManual) {
-              handleCommitCapture(url);
-              return;
-            }
-
-            // Auto-capture logic
-            if (countdownCompletedRef.current) {
-              handleCommitCapture(url);
-            } else {
-              tempImageRef.current = url;
-            }
+            handleCommitCapture(url);
           },
-          "image/png" // Lossless format for maximum quality
+          "image/png"
         );
       } catch (error) {
         console.error("Error capturing photo:", error);
@@ -342,77 +397,6 @@ export default function FaceCapture({
     },
     [videoRef, handleCommitCapture]
   );
-
-  // --- Auto-Capture Effect ---
-  useEffect(() => {
-    if (isPoseCorrect && !isSequenceComplete && !isTransitioning) {
-      // 1. Trigger capture at midpoint
-      const captureTimer = setTimeout(() => {
-        if (!captureTriggeredRef.current) {
-          handleCapture(false);
-          captureTriggeredRef.current = true;
-        }
-      }, AUTO_CAPTURE_HOLD_DURATION / 2);
-
-      // 2. Commit at end
-      const commitTimer = setTimeout(() => {
-        countdownCompletedRef.current = true;
-        if (tempImageRef.current) {
-          handleCommitCapture(tempImageRef.current);
-          tempImageRef.current = null;
-        }
-      }, AUTO_CAPTURE_HOLD_DURATION);
-
-      autoCaptureTimerRef.current = commitTimer;
-
-      return () => {
-        clearTimeout(captureTimer);
-        clearTimeout(commitTimer);
-        captureTriggeredRef.current = false;
-        countdownCompletedRef.current = false;
-        tempImageRef.current = null;
-      };
-    } else {
-      if (autoCaptureTimerRef.current) {
-        clearTimeout(autoCaptureTimerRef.current);
-      }
-      captureTriggeredRef.current = false;
-      countdownCompletedRef.current = false;
-      tempImageRef.current = null;
-    }
-  }, [
-    isPoseCorrect,
-    handleCapture,
-    handleCommitCapture,
-    isSequenceComplete,
-    isTransitioning,
-  ]);
-
-  // --- Animation Frame for Progress Ring ---
-  useEffect(() => {
-    let animationFrameId: number;
-    let startTime: number;
-
-    const animate = (timestamp: number) => {
-      if (startTime === undefined) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const progress = Math.min(elapsed / AUTO_CAPTURE_HOLD_DURATION, 1);
-      setAutoCaptureProgress(progress);
-
-      if (elapsed < AUTO_CAPTURE_HOLD_DURATION) {
-        animationFrameId = requestAnimationFrame(animate);
-      }
-    };
-
-    if (isPoseCorrect && !isTransitioning) {
-      animationFrameId = requestAnimationFrame(animate);
-    }
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      setAutoCaptureProgress(0);
-    };
-  }, [isPoseCorrect, isTransitioning]);
 
   // --- Event Handlers ---
   const handleCamClick = () => {
@@ -437,7 +421,7 @@ export default function FaceCapture({
   };
 
   const handleManualCapture = () => {
-    handleCapture(true);
+    handleCapture();
   };
 
   const handleFinish = async () => {
@@ -564,7 +548,7 @@ export default function FaceCapture({
                 {/* Center Guidance */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   {isPoseCorrect && (
-                    <AutoCaptureIndicator progress={autoCaptureProgress} />
+                    <AutoCaptureIndicator progress={progress} />
                   )}
                 </div>
 
