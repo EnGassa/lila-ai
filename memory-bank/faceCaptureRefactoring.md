@@ -135,48 +135,55 @@ Target: Reduce main component to ~150 lines that orchestrates the refactored mod
 
 ## Phase 3: Extract UI Components (Medium Risk)
 
-### Step 3.1: Extract StartScreen Component
-**Status**: PENDING
-**New File**: `components/analysis/FaceCapture/StartScreen.tsx`
+### ✅ Step 3.1: Extract StartScreen Component
+**Status**: COMPLETED & VERIFIED ✅
+**New File**: `components/analysis/FaceCapture/StartScreen.tsx` (30 lines)
 **Changes**:
-- Extract "Ready to Analyze?" overlay
-- Accept onClick handler as prop
-**Test**: Verify start screen appears before camera and button works
+- ✅ Extracted "Ready to Analyze?" overlay
+- ✅ Accepts isVisible and onStartCamera props
+- ✅ Component reduced by ~15 lines
+**Test**: ✅ VERIFIED - Start screen, button click, camera start all working
+**Commit**: 7b7348f - "refactor(FaceCapture): Extract StartScreen component (Step 3.1)"
 
-### Step 3.2: Extract TransitionOverlay Component
-**Status**: PENDING
-**New File**: `components/analysis/FaceCapture/TransitionOverlay.tsx`
+### ✅ Step 3.2: Extract TransitionOverlay Component
+**Status**: COMPLETED & VERIFIED ✅
+**New File**: `components/analysis/FaceCapture/TransitionOverlay.tsx` (18 lines)
 **Changes**:
-- Extract "Captured!" transition screen
-- Accept visibility prop
-**Test**: Verify transition animation plays between captures
+- ✅ Extracted "Captured!" transition screen
+- ✅ Accepts isVisible prop
+- ✅ Component reduced by ~7 lines
+**Test**: ✅ VERIFIED - Transition animation plays correctly between all 6 poses
 
-### Step 3.3: Extract StatusOverlay Component
-**Status**: PENDING
-**New File**: `components/analysis/FaceCapture/StatusOverlay.tsx`
+### ✅ Step 3.3: Extract StatusOverlay Component
+**Status**: COMPLETED & VERIFIED ✅
+**New File**: `components/analysis/FaceCapture/StatusOverlay.tsx` (82 lines)
 **Changes**:
-- Extract guidance message display
-- Extract brightness meter UI
-- Extract manual capture button
-- Accept all display state as props
-**Test**: Verify live guidance and brightness meter display correctly
+- ✅ Extracted guidance message display with conditional styling
+- ✅ Extracted iOS-style brightness meter UI
+- ✅ Extracted manual capture button (floating)
+- ✅ Accepts 7 props (isVisible, isPoseCorrect, guidanceMessage, etc.)
+- ✅ Component reduced by ~58 lines
+**Test**: ✅ VERIFIED - Guidance, brightness meter, auto/manual capture all working
 
-### Step 3.4: Extract ReviewGrid Component
-**Status**: PENDING
-**New File**: `components/analysis/FaceCapture/ReviewGrid.tsx`
+### ✅ Step 3.4: Extract ReviewGrid Component
+**Status**: COMPLETED & VERIFIED ✅
+**New File**: `components/analysis/FaceCapture/ReviewGrid.tsx` (28 lines)
 **Changes**:
-- Extract photo review grid
-- Accept captured images as props
-**Test**: Verify captured images display correctly in 2x3 grid
+- ✅ Extracted 2x3 photo review grid
+- ✅ Accepts capturedImages prop (Record<string, string | null>)
+- ✅ Component reduced by ~17 lines
+- ✅ Fixed TypeScript typing for nullable images
+**Test**: ✅ VERIFIED - Review grid displays all 6 photos correctly, buttons work
 
-### Step 3.5: Extract CameraView Component
-**Status**: PENDING
-**New File**: `components/analysis/FaceCapture/CameraView.tsx`
+### ✅ Step 3.5: Extract CameraView Component
+**Status**: COMPLETED & VERIFIED ✅
+**New File**: `components/analysis/FaceCapture/CameraView.tsx` (87 lines)
 **Changes**:
-- Extract video/canvas feed container
-- Compose all camera overlays (start, status, transition)
-- Accept refs and state as props
-**Test**: Verify camera feed and landmark overlay render correctly
+- ✅ Extracted entire camera feed container (video + canvas)
+- ✅ Composes StartScreen, StatusOverlay, TransitionOverlay, reference image
+- ✅ Accepts 12 props (videoRef, canvasRef, webcamRunning, etc.)
+- ✅ Component reduced from ~400 → ~300 lines (25% reduction in this step!)
+**Test**: ✅ VERIFIED - Complete capture sequence, all overlays, all 6 poses working
 
 ---
 
@@ -234,18 +241,18 @@ lib/
 ## Progress Tracking
 
 - **Total Steps**: 16 (including Step 0)
-- **Completed**: 9 (Steps 0, 1.1-1.3, 2.1-2.5) ✅
-- **Remaining**: 7
-- **Current Phase**: Phase 2 COMPLETE ✅ | Ready for Phase 3
-- **Next Step**: Step 3.1 (Extract StartScreen Component)
-- **Component Size**: 800 → ~400 lines (50% reduction!) 🎉
-- **Latest Commit**: 780afed (Step 2.5)
+- **Completed**: 15 (Steps 0, 1.1-1.3, 2.1-2.5, 3.1-3.5) ✅
+- **Remaining**: 2 (Steps 4.1-4.2)
+- **Current Phase**: Phase 3 COMPLETE ✅ | Ready for Phase 4
+- **Next Step**: Step 4.1 (Cleanup unused imports and simplify)
+- **Component Size**: 800 → ~300 lines (62.5% reduction!) 🎉
+- **Latest Commit**: 7b7348f (Step 3.1)
 
 ### Phase Summary:
 - ✅ **Phase 1** (100%): All 3 utility functions extracted
 - ✅ **Phase 2** (100%): All 5 custom hooks extracted
-- ⏳ **Phase 3** (0%): UI components extraction pending
-- ⏳ **Phase 4** (0%): Final cleanup pending
+- ✅ **Phase 3** (100%): All 5 UI components extracted
+- ⏳ **Phase 4** (0%): Final cleanup pending (2 steps)
 
 ## Notes
 
