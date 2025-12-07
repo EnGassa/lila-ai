@@ -90,7 +90,7 @@ Target: Reduce main component to ~150 lines that orchestrates the refactored mod
 **Commit**: fd0987c - "refactor(FaceCapture): Extract auto-capture timer hook (Step 2.2)"
 
 ### ✅ Step 2.3: Extract Pose Validation Hook
-**Status**: COMPLETED
+**Status**: COMPLETED & VERIFIED ✅
 **New File**: `hooks/usePoseValidation.ts` (244 lines)
 **Changes**:
 - ✅ Extracted calibration data management for all 6 poses
@@ -101,25 +101,35 @@ Target: Reduce main component to ~150 lines that orchestrates the refactored mod
 - ✅ Updated FaceCapture to use single hook call (~105 lines removed)
 - ✅ Fixed TypeScript imports in `lib/poseValidation.ts` and `CalibrationSuite.tsx`
 - ✅ Component reduced from 470 → 365 lines (22% reduction)
-**Test**: ⚠️ PENDING USER VERIFICATION - Verify pose validation, calibration suite, and all 6 poses work correctly
+**Test**: ✅ VERIFIED - Pose validation, calibration suite, and all 6 poses working correctly
+**Commit**: 003b51b - "refactor(FaceCapture): Extract pose validation hook (Step 2.3)"
 
-### Step 2.4: Extract Image Capture Hook
-**Status**: PENDING
-**New File**: `hooks/useImageCapture.ts`
+### ✅ Step 2.4: Extract Image Capture Hook
+**Status**: COMPLETED & VERIFIED ✅
+**New File**: `hooks/useImageCapture.ts` (140 lines)
 **Changes**:
-- Move capture logic (canvas creation, blob generation)
-- Move cropping integration with FaceCropper
-- Return capture handlers for manual and auto modes
-**Test**: Verify both manual and auto-capture work, images are cropped correctly
+- ✅ Extracted refs for auto-capture coordination (countdownCompletedRef, tempImageRef)
+- ✅ Extracted pure capture function: captureFromVideo() (canvas → blob → URL)
+- ✅ Extracted cropping integration: cropImage() (FaceCropper utility)
+- ✅ Tracks processing state for UI feedback
+- ✅ Refactored auto-capture handlers to use hook's functions
+- ✅ Removed unused imports (FaceCropper, FaceLandmarker, etc.)
+- ✅ Component reduced from 473 → 464 lines
+**Test**: ✅ VERIFIED - Manual capture, auto-capture, cropping all working on desktop and mobile
+**Commit**: 146a346 - "refactor(FaceCapture): Complete image capture hook extraction (Step 2.4.4-2.4.5)"
 
-### Step 2.5: Extract Capture Sequence Hook
-**Status**: PENDING
-**New File**: `hooks/useCaptureSequence.ts`
+### ✅ Step 2.5: Extract Capture Sequence Hook
+**Status**: COMPLETED & VERIFIED ✅
+**New File**: `hooks/useCaptureSequence.ts` (118 lines)
 **Changes**:
-- Move sequence state (currentStepIndex, capturedImages, isTransitioning)
-- Move sequence progression logic
-- Return sequence state and navigation handlers
-**Test**: Verify multi-step sequence progression works through all 6 poses
+- ✅ Extracted sequence state (currentStepIndex, capturedImages, isTransitioning)
+- ✅ Extracted derived values (currentGuideline, currentPose, isSequenceComplete)
+- ✅ Extracted progression logic with transition animations (1.5s delay)
+- ✅ Provides actions: storeImage(), advanceStep(), resetSequence(), finishSequence()
+- ✅ Handles blob URL to File conversion for completion callback
+- ✅ Component reduced from 464 → ~400 lines
+**Test**: ✅ VERIFIED - Full sequence progression through all 6 poses working correctly on desktop
+**Commit**: 780afed - "refactor(FaceCapture): Extract capture sequence hook (Step 2.5)"
 
 ---
 
@@ -224,11 +234,18 @@ lib/
 ## Progress Tracking
 
 - **Total Steps**: 16 (including Step 0)
-- **Completed**: 7 (Steps 0, 1.1, 1.2, 1.3, 2.1, 2.2, 2.3)
-- **Remaining**: 9
-- **Current Phase**: Phase 2 - Custom Hooks (60% complete - 3/5 hooks done)
-- **Next Step**: Step 2.4 (Extract Image Capture Hook)
-- **Component Size**: 800 → 365 lines (54% reduction so far) 🎉
+- **Completed**: 9 (Steps 0, 1.1-1.3, 2.1-2.5) ✅
+- **Remaining**: 7
+- **Current Phase**: Phase 2 COMPLETE ✅ | Ready for Phase 3
+- **Next Step**: Step 3.1 (Extract StartScreen Component)
+- **Component Size**: 800 → ~400 lines (50% reduction!) 🎉
+- **Latest Commit**: 780afed (Step 2.5)
+
+### Phase Summary:
+- ✅ **Phase 1** (100%): All 3 utility functions extracted
+- ✅ **Phase 2** (100%): All 5 custom hooks extracted
+- ⏳ **Phase 3** (0%): UI components extraction pending
+- ⏳ **Phase 4** (0%): Final cleanup pending
 
 ## Notes
 
