@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Camera, Sun } from "lucide-react";
+import { Camera, Sun, SwitchCamera } from "lucide-react";
 import AutoCaptureIndicator from "../AutoCaptureIndicator";
 
 interface StatusOverlayProps {
@@ -10,6 +10,8 @@ interface StatusOverlayProps {
   brightnessThreshold: number;
   progress: number;
   onManualCapture: () => void;
+  onCycleCamera: () => void;
+  videoDevices: MediaDeviceInfo[];
 }
 
 export function StatusOverlay({
@@ -20,6 +22,8 @@ export function StatusOverlay({
   brightnessThreshold,
   progress,
   onManualCapture,
+  onCycleCamera,
+  videoDevices,
 }: StatusOverlayProps) {
   if (!isVisible) return null;
 
@@ -75,6 +79,18 @@ export function StatusOverlay({
       >
         <Camera className="h-6 w-6 text-black" />
       </Button>
+
+      {/* Cycle Camera Button */}
+      {videoDevices.length > 1 && (
+        <Button
+          variant="secondary"
+          size="icon"
+          className="absolute top-6 right-6 h-14 w-14 rounded-full shadow-lg border-4 border-white/20 bg-white hover:bg-white/90"
+          onClick={onCycleCamera}
+        >
+          <SwitchCamera className="h-6 w-6 text-black" />
+        </Button>
+      )}
     </>
   );
 }

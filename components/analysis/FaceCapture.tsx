@@ -9,10 +9,8 @@ import { useImageCapture } from "@/hooks/useImageCapture";
 import { useCaptureSequence } from "@/hooks/useCaptureSequence";
 import CalibrationSuite from "./CalibrationSuite";
 import { useFaceLandmarker } from "@/hooks/useFaceLandmarker";
-import AutoCaptureIndicator from "./AutoCaptureIndicator";
 import { StartScreen } from "./FaceCapture/StartScreen";
 import { TransitionOverlay } from "./FaceCapture/TransitionOverlay";
-import { StatusOverlay } from "./FaceCapture/StatusOverlay";
 import { ReviewGrid } from "./FaceCapture/ReviewGrid";
 import { CameraView } from "./FaceCapture/CameraView";
 import {
@@ -24,7 +22,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Camera, RefreshCw, Check, Sun } from "lucide-react";
+import { RefreshCw, Check } from "lucide-react";
 import { GUIDELINES } from "@/components/guidelines";
 import type { CapturePose } from "@/hooks/usePoseValidation";
 
@@ -53,6 +51,8 @@ export default function FaceCapture({
     detectedEyeDistance,
     landmarks,
     isPortrait,
+    videoDevices,
+    cycleCamera,
   } = useFaceLandmarker(videoRef, canvasRef);
 
   // Use capture sequence hook
@@ -224,6 +224,8 @@ export default function FaceCapture({
             progress={progress}
             onStartCamera={handleCamClick}
             onManualCapture={handleManualCapture}
+            onCycleCamera={cycleCamera}
+            videoDevices={videoDevices}
           />
         )}
       </CardContent>

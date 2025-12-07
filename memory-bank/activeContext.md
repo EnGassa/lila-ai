@@ -1,6 +1,18 @@
 # Active Context
 
-## Current Work: FaceCapture Component Refactoring (Complete!)
+## Current Work: Camera Flipping Feature (Complete!)
+
+A new feature has been added to the `FaceCapture` component to allow users to flip between multiple cameras. This resolves an issue where the wrong camera was sometimes being activated on mobile devices.
+
+### Key Achievements:
+- **Camera Detection:** The `useFaceLandmarker` hook now detects all available video devices.
+- **Camera Cycling:** A new `cycleCamera` function allows users to switch between cameras.
+- **UI Button:** A button is now displayed in the camera view if more than one camera is available.
+- **Bug Fix:** MediaPipe errors that occurred when switching cameras have been resolved.
+
+---
+
+## Previous Work: FaceCapture Component Refactoring (Complete!)
 
 The 800-line `FaceCapture` component has been successfully refactored into a collection of modular, single-responsibility components, custom hooks, and utility functions. The main component is now a clean orchestrator, and the entire feature is more maintainable, testable, and reusable.
 
@@ -175,7 +187,7 @@ The AI recommendation engine has been upgraded with two major architectural impr
 -   **New Feature:** The `find_relevant_products` function in `scripts/generate_recommendations.py` was completely overhauled.
 -   **Logic:**
     -   It now iterates through every available product category ("Brute Force") to ensure a balanced set of product types.
-    -   For each category, it constructs a highly specific, enriched vector search query that includes the user's skin profile, primary goals, and, most importantly, the `key_ingredients_to_target` from the `SkincarePhilosophy` ("Smart").
+    -   For each category, it constructs a highly specific, enriched vector search query that includes the.
 -   **Impact:** This guarantees the Generator agent receives a product pool that is both comprehensive (all categories represented) and highly relevant (pre-filtered for key ingredients), solving previous issues where the AI was "starved" of good candidates.
 
 ### 2. **"Full Transparency" Tracing**

@@ -16,6 +16,8 @@ interface CameraViewProps {
   progress: number;
   onStartCamera: () => void;
   onManualCapture: () => void;
+  onCycleCamera: () => void;
+  videoDevices: MediaDeviceInfo[];
 }
 
 export function CameraView({
@@ -31,6 +33,8 @@ export function CameraView({
   progress,
   onStartCamera,
   onManualCapture,
+  onCycleCamera,
+  videoDevices,
 }: CameraViewProps) {
   return (
     <div className="relative w-full max-w-lg mx-auto aspect-[3/4] md:aspect-video overflow-hidden rounded-xl bg-black">
@@ -54,7 +58,7 @@ export function CameraView({
 
       {/* Reference Image Overlay (Optional Ghost) */}
       {webcamRunning && currentGuidelineImgSrc && (
-        <div className="absolute top-4 right-4 w-20 h-28 opacity-75 border-2 border-white/30 rounded-lg overflow-hidden pointer-events-none">
+        <div className="absolute top-4 left-4 w-20 h-28 opacity-75 border-2 border-white/30 rounded-lg overflow-hidden pointer-events-none">
           <img
             src={currentGuidelineImgSrc}
             alt="Reference"
@@ -72,6 +76,8 @@ export function CameraView({
         brightnessThreshold={brightnessThreshold}
         progress={progress}
         onManualCapture={onManualCapture}
+        onCycleCamera={onCycleCamera}
+        videoDevices={videoDevices}
       />
 
       {/* Transition Overlay */}

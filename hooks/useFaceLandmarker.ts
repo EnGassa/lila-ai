@@ -24,6 +24,8 @@ export function useFaceLandmarker(
   const [landmarks, setLandmarks] = useState<NormalizedLandmark[]>([]);
   const [isPortrait, setIsPortrait] = useState(false);
   const [maxResolution, setMaxResolution] = useState<{width: number, height: number} | null>(null);
+  const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([]);
+  const [selectedDeviceId, setSelectedDeviceId] = useState<string | undefined>(undefined);
 
   const faceLandmarkerRef = useRef<FaceLandmarker | null>(null);
   const imageCaptureRef = useRef<ImageCapture | null>(null);
@@ -49,18 +51,53 @@ export function useFaceLandmarker(
       );
       faceLandmarkerRef.current = landmarker;
       setStatus("Ready to start webcam");
+
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoDevices = devices.filter((device) => device.kind === "videoinput");
+      setVideoDevices(videoDevices);
+      console.log("Available video devices:", videoDevices);
     }
     setup();
-
-    return () => {
-      if (animationFrameId.current) {
-        window.cancelAnimationFrame(animationFrameId.current);
-      }
-      faceLandmarkerRef.current?.close();
-    };
   }, []);
 
   useEffect(() => {
+    async function setupWebcam() {
+      if (webcamRunning && faceLandmarkerRef.current) {
+        const constraints = {
+          video: { 
+            width: { ideal: 1920 }, 
+            height: { ideal: 1080 },
+            deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
+          },
+        };
+
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.addEventListener("loadeddata", predictWebcam);
+          const track = stream.getVideoTracks()[0];
+          const capabilities = track.getCapabilities();
+          const {width, height} = capabilities;
+          if (width && height) {
+            const maxWidth = width.max ?? 1920;
+            const maxHeight = height.max ?? 1080;
+            setMaxResolution({width: maxWidth, height: maxHeight});
+            track.applyConstraints({width: {ideal: maxWidth}, height: {ideal: maxHeight}});
+          }
+          imageCaptureRef.current = new ImageCapture(track);
+        }
+      } else {
+        if (videoRef.current && videoRef.current.srcObject) {
+          (videoRef.current.srcObject as MediaStream)
+            .getTracks()
+            .forEach((track) => track.stop());
+        }
+        if (animationFrameId.current) {
+          window.cancelAnimationFrame(animationFrameId.current);
+        }
+      }
+    }
+
     let lastVideoTime = -1;
 
     const predictWebcam = () => {
@@ -206,27 +243,9 @@ export function useFaceLandmarker(
       animationFrameId.current = window.requestAnimationFrame(predictWebcam);
     };
 
-    if (webcamRunning) {
-      const constraints = {
-        video: { width: { ideal: 1920 }, height: { ideal: 1080 } },
-      };
-      navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.addEventListener("loadeddata", predictWebcam);
-          const track = stream.getVideoTracks()[0];
-          const capabilities = track.getCapabilities();
-          const {width, height} = capabilities;
-          if (width && height) {
-            const maxWidth = width.max ?? 1920;
-            const maxHeight = height.max ?? 1080;
-            setMaxResolution({width: maxWidth, height: maxHeight});
-            track.applyConstraints({width: {ideal: maxWidth}, height: {ideal: maxHeight}});
-          }
-          imageCaptureRef.current = new ImageCapture(track);
-        }
-      });
-    } else {
+    setupWebcam();
+
+    return () => {
       if (videoRef.current && videoRef.current.srcObject) {
         (videoRef.current.srcObject as MediaStream)
           .getTracks()
@@ -235,8 +254,20 @@ export function useFaceLandmarker(
       if (animationFrameId.current) {
         window.cancelAnimationFrame(animationFrameId.current);
       }
+    };
+  }, [webcamRunning, selectedDeviceId]);
+
+  const cycleCamera = async () => {
+    if (videoDevices.length > 1) {
+      setWebcamRunning(false); // Stop the current stream
+      const currentDeviceIndex = videoDevices.findIndex(
+        (device) => device.deviceId === selectedDeviceId
+      );
+      const nextDeviceIndex = (currentDeviceIndex + 1) % videoDevices.length;
+      setSelectedDeviceId(videoDevices[nextDeviceIndex].deviceId);
+      setWebcamRunning(true); // Start the new stream
     }
-  }, [webcamRunning, videoRef, canvasRef]);
+  };
 
   return {
     status,
@@ -251,5 +282,7 @@ export function useFaceLandmarker(
     imageCaptureRef,
     isPortrait,
     maxResolution,
+    videoDevices,
+    cycleCamera,
   };
 }
