@@ -7,6 +7,7 @@ import { playCaptureSound } from "@/lib/audioFeedback";
 import { useImageQuality } from "@/hooks/useImageQuality";
 import { useAutoCaptureTimer } from "@/hooks/useAutoCaptureTimer";
 import { usePoseValidation } from "@/hooks/usePoseValidation";
+import { useImageCapture } from "@/hooks/useImageCapture";
 import CalibrationSuite from "./CalibrationSuite";
 import { useFaceLandmarker } from "@/hooks/useFaceLandmarker";
 import AutoCaptureIndicator from "./AutoCaptureIndicator";
@@ -34,7 +35,7 @@ interface FaceCaptureProps {
 export default function FaceCapture({
   showCalibrationSuite = false,
   onComplete,
-  disableCropping = true,
+  disableCropping = false,
 }: FaceCaptureProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -58,7 +59,16 @@ export default function FaceCapture({
 
   // --- Live Detection State ---
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Use image capture hook
+  const {
+    captureFromVideo,
+    cropImage,
+    countdownCompletedRef,
+    tempImageRef,
+    isProcessing,
+    setIsProcessing,
+  } = useImageCapture(videoRef, { disableCropping });
 
   const {
     status,
@@ -136,31 +146,12 @@ export default function FaceCapture({
     async (imageUrl: string) => {
       playCaptureSound();
 
-      // --- Start Cropping ---
+      // Crop image if enabled
       setIsProcessing(true);
-      let finalImageUrl = imageUrl;
-      if (!disableCropping) {
-        try {
-          const cropper = await FaceCropper.getInstance();
-          const response = await fetch(imageUrl);
-          const blob = await response.blob();
-          console.log("Pre-crop size:", (blob.size / 1024).toFixed(2), "KB");
-          const croppedBlob = await cropper.crop(blob);
-          if (croppedBlob) {
-            URL.revokeObjectURL(imageUrl); // Clean up original blob URL
-            finalImageUrl = URL.createObjectURL(croppedBlob);
-            console.log(
-              "Post-crop size:",
-              (croppedBlob.size / 1024).toFixed(2),
-              "KB"
-            );
-          }
-        } catch (error) {
-          console.error("Failed to crop image, using original:", error);
-        }
-      }
+      const finalImageUrl = disableCropping
+        ? imageUrl
+        : await cropImage(imageUrl);
       setIsProcessing(false);
-      // --- End Cropping ---
 
       setCapturedImages((prev) => ({
         ...prev,
@@ -180,12 +171,15 @@ export default function FaceCapture({
         }
       }, 1500);
     },
-    [currentPose, currentStepIndex, setWebcamRunning, disableCropping]
+    [
+      currentPose,
+      currentStepIndex,
+      setWebcamRunning,
+      disableCropping,
+      cropImage,
+      setIsProcessing,
+    ]
   );
-
-  // Refs for auto-capture state
-  const countdownCompletedRef = useRef(false);
-  const tempImageRef = useRef<string | null>(null);
 
   // Auto-capture callback - triggered at midpoint
   const handleAutoCapture = useCallback(() => {
@@ -208,33 +202,30 @@ export default function FaceCapture({
 
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      canvas.toBlob(
-        (blob) => {
-          if (!blob) {
-            console.error("Failed to create blob from canvas");
-            return;
-          }
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          console.error("Failed to create blob from canvas");
+          return;
+        }
 
-          console.log(
-            "Auto-captured photo:",
-            canvas.width,
-            "x",
-            canvas.height,
-            "Size:",
-            (blob.size / 1024).toFixed(2),
-            "KB"
-          );
-          const url = URL.createObjectURL(blob);
-          
-          // Store in ref - will be committed when countdown completes
-          if (countdownCompletedRef.current) {
-            handleCommitCapture(url);
-          } else {
-            tempImageRef.current = url;
-          }
-        },
-        "image/png"
-      );
+        console.log(
+          "Auto-captured photo:",
+          canvas.width,
+          "x",
+          canvas.height,
+          "Size:",
+          (blob.size / 1024).toFixed(2),
+          "KB"
+        );
+        const url = URL.createObjectURL(blob);
+
+        // Store in ref - will be committed when countdown completes
+        if (countdownCompletedRef.current) {
+          handleCommitCapture(url);
+        } else {
+          tempImageRef.current = url;
+        }
+      }, "image/png");
     } catch (error) {
       console.error("Error capturing photo:", error);
     }
@@ -257,55 +248,13 @@ export default function FaceCapture({
     handleAutoCommit
   );
 
-  // Manual capture handler (separate from auto-capture)
-  const handleCapture = useCallback(
-    async () => {
-      const video = videoRef.current;
-      if (!video || video.readyState < 2) {
-        console.error("Video not ready");
-        return;
-      }
-
-      try {
-        const canvas = document.createElement("canvas");
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-
-        const ctx = canvas.getContext("2d");
-        if (!ctx) {
-          console.error("Failed to get canvas context");
-          return;
-        }
-
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) {
-              console.error("Failed to create blob from canvas");
-              return;
-            }
-
-            console.log(
-              "Manual capture:",
-              canvas.width,
-              "x",
-              canvas.height,
-              "Size:",
-              (blob.size / 1024).toFixed(2),
-              "KB"
-            );
-            const url = URL.createObjectURL(blob);
-            handleCommitCapture(url);
-          },
-          "image/png"
-        );
-      } catch (error) {
-        console.error("Error capturing photo:", error);
-      }
-    },
-    [videoRef, handleCommitCapture]
-  );
+  // Manual capture handler (uses hook's capture function)
+  const handleManualCapture = useCallback(async () => {
+    const url = await captureFromVideo();
+    if (url) {
+      handleCommitCapture(url);
+    }
+  }, [captureFromVideo, handleCommitCapture]);
 
   // --- Event Handlers ---
   const handleCamClick = () => {
@@ -327,10 +276,6 @@ export default function FaceCapture({
     });
     setCurrentStepIndex(0);
     setWebcamRunning(true);
-  };
-
-  const handleManualCapture = () => {
-    handleCapture();
   };
 
   const handleFinish = async () => {
