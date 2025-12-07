@@ -146,55 +146,55 @@ export function useFaceLandmarker(
           drawingUtils.drawConnectors(
             landmarksData,
             FaceLandmarker.FACE_LANDMARKS_TESSELATION,
-            { color: "#dda377", lineWidth: 1 }
+            { color: "#dda377b3", lineWidth: 1 }
           );
 
           // Unified eye styling (no color differentiation)
           drawingUtils.drawConnectors(
             landmarksData,
             FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE,
-            { color: "#dda377", lineWidth: 1 }
+            { color: "#dda377b3", lineWidth: 1 }
           );
           drawingUtils.drawConnectors(
             landmarksData,
             FaceLandmarker.FACE_LANDMARKS_RIGHT_EYEBROW,
-            { color: "#dda377", lineWidth: 1 }
+            { color: "#dda377b3", lineWidth: 1 }
           );
           drawingUtils.drawConnectors(
             landmarksData,
             FaceLandmarker.FACE_LANDMARKS_LEFT_EYE,
-            { color: "#dda377", lineWidth: 1 }
+            { color: "#dda377b3", lineWidth: 1 }
           );
           drawingUtils.drawConnectors(
             landmarksData,
             FaceLandmarker.FACE_LANDMARKS_LEFT_EYEBROW,
-            { color: "#dda377", lineWidth: 1 }
+            { color: "#dda377b3", lineWidth: 1 }
           );
 
           // Face oval
           drawingUtils.drawConnectors(
             landmarksData,
             FaceLandmarker.FACE_LANDMARKS_FACE_OVAL,
-            { color: "#dda377", lineWidth: 1 }
+            { color: "#dda377b3", lineWidth: 1 }
           );
 
           // Lips
           drawingUtils.drawConnectors(
             landmarksData,
             FaceLandmarker.FACE_LANDMARKS_LIPS,
-            { color: "#dda377", lineWidth: 1 }
+            { color: "#dda377b3", lineWidth: 1 }
           );
 
           // Unified iris styling (no color differentiation)
           drawingUtils.drawConnectors(
             landmarksData,
             FaceLandmarker.FACE_LANDMARKS_RIGHT_IRIS,
-            { color: "#dda377", lineWidth: 1 }
+            { color: "#dda377b3", lineWidth: 1 }
           );
           drawingUtils.drawConnectors(
             landmarksData,
             FaceLandmarker.FACE_LANDMARKS_LEFT_IRIS,
-            { color: "#dda377", lineWidth: 1 }
+            { color: "#dda377b3", lineWidth: 1 }
           );
         }
         canvasCtx.restore();
