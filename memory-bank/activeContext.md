@@ -1,6 +1,44 @@
 # Active Context
 
-## Current Work: Camera Flipping Feature (Complete!)
+## Current Work: Full Dark Mode Implementation (Complete!)
+
+A comprehensive dark mode system has been successfully implemented across the entire application, using Tailwind CSS v4's modern theming architecture.
+
+### Key Achievements:
+
+1. **Tailwind v4 Configuration:**
+   - Simplified `tailwind.config.js` to work with v4's CSS-based theme system
+   - Removed incompatible v3-style color mappings
+
+2. **Theme System (globals.css):**
+   - Implemented `@theme` directive with comprehensive light/dark color schemes
+   - Created adaptive brand colors that maintain optimal contrast:
+     - Light mode: `#B98579` (warm brown)
+     - Dark mode: `#d4a599` (brighter for better visibility)
+   - Added semantic color utilities: `bg-brand`, `hover:bg-brand-hover`, `border-brand-border`, `bg-brand-light`
+
+3. **Component Updates:**
+   - **SummaryOverview**: Replaced hardcoded `bg-white` with semantic `bg-card`
+   - **RegionWiseBreakdown**: Updated to use theme-aware colors
+   - **RecommendationsTab**: Comprehensive update with brand color utilities for buttons and product cards
+   - **FileUpload**: Brand color button now adapts to theme
+   - **IngredientCard**: All colors converted to semantic classes
+
+4. **User Experience:**
+   - **Default Theme**: Set to 'system' to respect OS preference
+   - **Visual Feedback**: Theme toggle dropdown now shows checkmark (✓) next to active mode
+   - **Smooth Transitions**: All UI elements seamlessly adapt between themes
+   - **Accessible Toggle**: Sun/moon icon button positioned in bottom-right corner
+
+### Technical Implementation:
+- Used Tailwind v4's `@theme` directive for color definitions
+- Leveraged CSS custom properties for runtime theme switching
+- Maintained design consistency with semantic color tokens
+- All Fitzpatrick skin tone colors preserved (they represent actual skin tones)
+
+---
+
+## Previous Work: Camera Flipping Feature (Complete!)
 
 A new feature has been added to the `FaceCapture` component to allow users to flip between multiple cameras. This resolves an issue where the wrong camera was sometimes being activated on mobile devices.
 

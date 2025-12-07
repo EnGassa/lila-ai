@@ -191,10 +191,10 @@ export function FileUpload({ userId, initialFiles = [] }: FileUploadProps) {
                   />
                   <button
                     onClick={() => handleRemoveFile(index)}
-                    className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md border border-gray-200 hover:bg-gray-100 transition-colors"
+                    className="absolute -top-2 -right-2 bg-card rounded-full p-1 shadow-md border hover:bg-muted transition-colors"
                     type="button"
                   >
-                    <X className="h-4 w-4 text-gray-600" />
+                    <X className="h-4 w-4 text-muted-foreground" />
                   </button>
                     {uploadedFile.error && (
                       <Alert variant="destructive" className="mt-2 text-xs">
@@ -213,7 +213,7 @@ export function FileUpload({ userId, initialFiles = [] }: FileUploadProps) {
       
       <div className="h-24" /> {/* Spacer for sticky footer */}
 
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-lg z-50">
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t shadow-lg z-50">
         <div className="max-w-md mx-auto space-y-4">
           {uploadProgress !== null && (
             <div className="space-y-2">
@@ -228,7 +228,7 @@ export function FileUpload({ userId, initialFiles = [] }: FileUploadProps) {
           <Button
             onClick={handleUpload}
             disabled={files.length === 0 || isUploading || isConverting}
-            className="w-full bg-[#B98579] text-white hover:bg-[#a06e63] shadow-sm"
+            className="w-full bg-brand text-white hover:bg-brand-hover shadow-sm"
             size="lg"
           >
             {isUploading ? 'Uploading...' : `Upload ${files.length} File(s)`}

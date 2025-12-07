@@ -2,6 +2,14 @@
 
 ## What Works
 
+*   **Full Dark Mode System:** A comprehensive dark mode implementation using Tailwind CSS v4's modern theming architecture.
+    *   **Tailwind v4 Configuration:** Simplified config to work with v4's CSS-based theme system.
+    *   **Adaptive Brand Colors:** Light mode uses `#B98579` (warm brown), dark mode uses `#d4a599` (brighter for better contrast).
+    *   **Semantic Color System:** All components updated to use theme-aware utilities (`bg-card`, `bg-brand`, `text-foreground`, etc.).
+    *   **Component Coverage:** SummaryOverview, RegionWiseBreakdown, RecommendationsTab, FileUpload, and IngredientCard all support dark mode.
+    *   **User Experience:** Default theme set to 'system' to respect OS preference, with visual checkmark indicator in theme toggle dropdown.
+    *   **Smooth Transitions:** All UI elements seamlessly adapt between light and dark modes with proper contrast and readability.
+
 *   **Lossless PNG Pipeline:** The entire image pipeline has been converted to use lossless PNG format for maximum quality, ensuring pristine data for AI analysis.
     *   **Camera Capture:** Canvas-based capture now outputs PNG format (~3.7MB) instead of JPEG (~1.6MB), providing perfect pixel preservation.
     *   **Face Cropping:** The `FaceCropper` utility now outputs lossless PNG (~650KB) instead of JPEG 0.95 quality (123KB), maintaining zero quality loss from the source image.

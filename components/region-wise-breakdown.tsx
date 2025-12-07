@@ -13,7 +13,7 @@ interface RegionWiseBreakdownProps {
 
 export function RegionWiseBreakdown({ regionSummaries }: RegionWiseBreakdownProps) {
   return (
-    <Card className="p-4 rounded-lg bg-white">
+    <Card className="p-4 rounded-lg bg-card">
       <p className="text-sm font-light text-muted-foreground">REGION-WISE BREAKDOWN</p>
       <div className="mt-2 space-y-2">
         {regionSummaries.map(summary => (

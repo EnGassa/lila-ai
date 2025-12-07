@@ -12,7 +12,7 @@ import { IngredientCard } from './ingredient-card';
 
 function InfoCard({ label, value, description, className }: { label: string, value: React.ReactNode, description?: string, className?: string }) {
   return (
-    <Card className={`p-4 rounded-lg bg-white ${className}`}>
+    <Card className={`p-4 rounded-lg bg-card ${className}`}>
       <p className="text-sm font-light text-muted-foreground">{label}</p>
       <div>{value}</div>
       {description && (
@@ -88,17 +88,17 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
       </div>
 
       <div>
-        <h2 className="text-lg font-medium text-muted-foreground p-4 bg-white rounded-t-lg">
+        <h2 className="text-lg font-medium text-muted-foreground p-4 bg-card rounded-t-lg">
           YOUR ROUTINE
         </h2>
-        <div className="p-2 bg-white rounded-b-lg">
+        <div className="p-2 bg-card rounded-b-lg">
           <div className="flex space-x-2 mb-6">
             <Button
               onClick={() => setActiveTab("AM")}
               className={
                 activeTab === "AM"
-                  ? "bg-[#B98579] text-white hover:bg-[#a06e63]"
-                  : "bg-[rgba(174,104,86,0.03)] text-[#646464] border border-[rgba(170,103,90,0.34)] hover:bg-[rgba(174,104,86,0.1)]"
+                  ? "bg-brand text-white hover:bg-brand-hover"
+                  : "bg-brand-light text-muted-foreground border border-brand-border hover:bg-brand-light/50"
               }
               variant={activeTab === "AM" ? "default" : "outline"}
             >
@@ -108,8 +108,8 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
               onClick={() => setActiveTab("PM")}
               className={
                 activeTab === "PM"
-                  ? "bg-[#B98579] text-white hover:bg-[#a06e63]"
-                  : "bg-[rgba(174,104,86,0.03)] text-[#646464] border border-[rgba(170,103,90,0.34)] hover:bg-[rgba(174,104,86,0.1)]"
+                  ? "bg-brand text-white hover:bg-brand-hover"
+                  : "bg-brand-light text-muted-foreground border border-brand-border hover:bg-brand-light/50"
               }
               variant={activeTab === "PM" ? "default" : "outline"}
             >
@@ -119,8 +119,8 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
               onClick={() => setActiveTab("Weekly")}
               className={
                 activeTab === "Weekly"
-                  ? "bg-[#B98579] text-white hover:bg-[#a06e63]"
-                  : "bg-[rgba(174,104,86,0.03)] text-[#646464] border border-[rgba(170,103,90,0.34)] hover:bg-[rgba(174,104,86,0.1)]"
+                  ? "bg-brand text-white hover:bg-brand-hover"
+                  : "bg-brand-light text-muted-foreground border border-brand-border hover:bg-brand-light/50"
               }
               variant={activeTab === "Weekly" ? "default" : "outline"}
             >
@@ -143,9 +143,9 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
                 <AccordionItem
                   value={`item-${index}`}
                   key={index}
-                  className="border-b border-[#BC8B80]"
+                  className="border-b border-brand-border"
                 >
-                  <AccordionTrigger className="text-lg font-bold text-[#1C1B1F] capitalize hover:no-underline">
+                  <AccordionTrigger className="text-lg font-bold text-foreground capitalize hover:no-underline">
                     <div className="flex items-center gap-2">
                       Step {index + 1}: {step.step}
                       {step.is_optional && (
@@ -161,12 +161,12 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
                           (product: Product, pIndex: number) => (
                             <div
                               key={pIndex}
-                              className="bg-[#F9F9F8] rounded-2xl border border-[#BC8B80] overflow-hidden"
+                              className="bg-secondary rounded-2xl border border-brand-border overflow-hidden"
                             >
                               <div className="p-6">
                                 <div className="flex gap-6">
                                   {/* Product Image */}
-                                  <div className="w-[117px] h-[117px] bg-white rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                  <div className="w-[117px] h-[117px] bg-background rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center">
                                     <img
                                       src={
                                         product.image_url ||
@@ -179,7 +179,7 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
 
                                   {/* Product Title & Brand */}
                                   <div className="flex-grow">
-                                    <h3 className="font-bold text-lg text-[#1C1B1F] leading-tight">
+                                    <h3 className="font-bold text-lg text-foreground leading-tight">
                                       {product.brand} - {product.name}
                                     </h3>
                                   </div>
@@ -187,12 +187,12 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
 
                                 <div className="mt-4">
                                   <div className="prose prose-sm max-w-none">
-                                    <p className="text-sm text-[#1C1B1F] leading-relaxed mb-0">
+                                    <p className="text-sm text-foreground leading-relaxed mb-0">
                                       <span className="font-semibold">Why:</span>{" "}
                                     </p>
                                     <ReactMarkdown
                                       components={{
-                                        p: ({node, ...props}) => <p className="text-sm text-[#1C1B1F] leading-relaxed mt-1" {...props} />,
+                                        p: ({node, ...props}) => <p className="text-sm text-foreground leading-relaxed mt-1" {...props} />,
                                         strong: ({node, ...props}) => <strong className="font-semibold" {...props} />,
                                       }}
                                     >
@@ -204,13 +204,13 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
 
                               {/* How to Use Section */}
                               {step.instructions && (
-                                <div className="bg-[#ECE0DE] p-6 rounded-t-lg prose prose-sm max-w-none">
-                                  <h4 className="font-semibold mb-2">How to use:</h4>
+                                <div className="bg-brand-light p-6 rounded-t-lg prose prose-sm max-w-none">
+                                  <h4 className="font-semibold mb-2 text-foreground">How to use:</h4>
                                   <ReactMarkdown
                                     components={{
-                                      p: ({node, ...props}) => <p className="text-sm text-[#1C1B1F] leading-relaxed" {...props} />,
+                                      p: ({node, ...props}) => <p className="text-sm text-foreground leading-relaxed" {...props} />,
                                       ul: ({node, ...props}) => <ul className="list-disc list-inside" {...props} />,
-                                      li: ({node, ...props}) => <li className="text-sm text-[#1C1B1F] leading-relaxed" {...props} />,
+                                      li: ({node, ...props}) => <li className="text-sm text-foreground leading-relaxed" {...props} />,
                                     }}
                                   >
                                     {step.instructions.replace(/\\n/g, '\n')}

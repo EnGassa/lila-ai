@@ -15,7 +15,7 @@ const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 function InfoCard({ label, value, description, className }: { label: string; value: React.ReactNode; description?: string; className?: string }) {
   return (
-    <Card className={`p-4 rounded-lg bg-white ${className}`}>
+    <Card className={`p-4 rounded-lg bg-card ${className}`}>
       <p className="text-sm font-light text-muted-foreground">{label}</p>
       <div>{value}</div>
       {description && (
@@ -29,7 +29,7 @@ function InfoCard({ label, value, description, className }: { label: string; val
 
 function SubtypeCard({ subtype }: { subtype: any }) {
   return (
-    <div className="p-4 rounded-lg bg-gray-50 border border-gray-200">
+    <div className="p-4 rounded-lg bg-muted border">
       <p className="text-md font-semibold text-foreground">{capitalize(subtype.key.replace(/_/g, ' '))}</p>
       <p className="text-sm font-light text-muted-foreground mt-1">{subtype.explanation}</p>
       
@@ -80,7 +80,7 @@ export function ConcernDetailPage({ userId, concernName, onClose, userData }: Co
       </div>
 
       {concernData.identified_subtypes && concernData.identified_subtypes.length > 0 && (
-        <Card className="p-4 rounded-lg bg-white">
+        <Card className="p-4 rounded-lg bg-card">
           <p className="text-sm font-light text-muted-foreground">TYPE</p>
           <div className="mt-2 space-y-4">
             {concernData.identified_subtypes.map((subtype: any, index: number) => (
@@ -90,7 +90,7 @@ export function ConcernDetailPage({ userId, concernName, onClose, userData }: Co
         </Card>
       )}
 
-      <Card className="p-4 rounded-lg bg-white">
+      <Card className="p-4 rounded-lg bg-card">
         <p className="text-sm font-light text-muted-foreground">CITATIONS</p>
         <div className="mt-2 flex flex-col space-y-2">
           {concernData.citations.map((citation: { title: string; url: string }, index: number) => (

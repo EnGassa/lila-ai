@@ -49,7 +49,7 @@ export function SkincareDashboard({ analysis, recommendations, userId }: Skincar
   );
 
   return (
-    <div className="p-4 space-y-6 bg-gray-50">
+    <div className="p-4 space-y-6 bg-background">
       <UserProfile userData={analysis} userId={userId} />
       <Tabs defaultValue="overview" className="w-full">
         <TabsList>
@@ -58,7 +58,7 @@ export function SkincareDashboard({ analysis, recommendations, userId }: Skincar
         </TabsList>
         <TabsContent value="overview" className="space-y-6">
           <SummaryOverview analysis={analysisData} charts={charts} />
-          <div className="p-4 rounded-lg bg-white">
+          <div className="p-4 rounded-lg bg-card border">
             <h2 className="text-base font-light text-muted-foreground">
               SEVERITY RADAR
             </h2>
@@ -70,7 +70,7 @@ export function SkincareDashboard({ analysis, recommendations, userId }: Skincar
               <SeverityRadar radarData={charts.overview_radar} />
             </div>
           </div>
-          <div className="p-4 rounded-lg bg-white">
+          <div className="p-4 rounded-lg bg-card border">
             <h2 className="text-base font-light text-muted-foreground">
               SKIN CONCERNS
             </h2>

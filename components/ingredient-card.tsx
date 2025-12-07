@@ -19,12 +19,12 @@ export function IngredientCard({ name, imageUrl, tags, description, className }:
             <img src={imageUrl} alt={name} className="w-full h-auto object-contain" />
           </div>
           <div className="flex-grow">
-            <h3 className="text-lg font-bold text-gray-800">{name}</h3>
+            <h3 className="text-lg font-bold text-foreground">{name}</h3>
             <div className="flex flex-wrap gap-2 mt-2">
               {tags.map((tag) => (
                 <Badge
                   key={tag}
-                  className="bg-[#BC8B80] text-white hover:bg-[#b98579] rounded-md px-3 py-1"
+                  className="bg-brand text-white hover:bg-brand-hover rounded-md px-3 py-1"
                 >
                   {tag}
                 </Badge>
@@ -32,7 +32,7 @@ export function IngredientCard({ name, imageUrl, tags, description, className }:
             </div>
           </div>
         </div>
-        <p className="text-sm text-gray-600 mt-4">{description}</p>
+        <p className="text-sm text-muted-foreground mt-4">{description}</p>
       </CardContent>
     </Card>
   );

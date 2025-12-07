@@ -26,7 +26,7 @@ interface InfoCardProps {
 
 function InfoCard({ label, value, description, className }: InfoCardProps) {
   return (
-    <Card className={`p-4 rounded-lg bg-white ${className}`}>
+    <Card className={`p-4 rounded-lg bg-card ${className}`}>
       <p className="text-sm font-light text-muted-foreground">{label}</p>
       <div>{value}</div>
       {description && (

@@ -66,10 +66,10 @@ export const GUIDELINES: GuidelineStep[] = [
 
 export function PhotoGuidelines() {
   return (
-    <div className="bg-white text-black p-6 font-sans">
+    <div className="bg-background text-foreground p-6 font-sans">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-medium mb-6">How to Take Photos</h1>
-        <div className="bg-gray-50 p-6 rounded-lg mb-8">
+        <div className="bg-muted p-6 rounded-lg mb-8">
           <p className="text-base font-light">
             For best results, before clicking the photo make sure to:
           </p>

@@ -53,9 +53,9 @@ export function ConcernCard({ concern, onClick }: ConcernCardProps) {
       <CardHeader className="flex flex-row items-start justify-between">
         <div className="flex items-center gap-2">
           <div
-            className={`flex h-8 w-8 items-center justify-center rounded-full bg-gray-100`}
+            className={`flex h-8 w-8 items-center justify-center rounded-full bg-muted`}
           >
-            <Icon className="h-5 w-5 text-gray-500" />
+            <Icon className="h-5 w-5 text-muted-foreground" />
           </div>
           <CardTitle className="text-lg font-regular">
             {concern.name.replace(/_/g, ' ')}
@@ -74,7 +74,7 @@ export function ConcernCard({ concern, onClick }: ConcernCardProps) {
         <p className="text-sm text-muted-foreground">
           {concern.description}
         </p>
-        <div className="flex items-center gap-1 text-sm font-bold text-gray-700">
+        <div className="flex items-center gap-1 text-sm font-bold text-foreground">
           <span>View Details</span>
           <ChevronRight className="h-4 w-4" />
         </div>
