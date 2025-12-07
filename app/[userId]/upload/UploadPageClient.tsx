@@ -26,7 +26,7 @@ export function UploadPageClient({ userId, displayName }: { userId: string, disp
   }
 
   return (
-    <div className="p-4 space-y-6 bg-gray-50 min-h-screen">
+    <div className="p-4 space-y-6 bg-background min-h-screen">
        <div className="flex items-center gap-4">
         <UserAvatar userId={userId} displayName={displayName} />
         <div>
@@ -44,7 +44,7 @@ export function UploadPageClient({ userId, displayName }: { userId: string, disp
         </div>
       ) : (
         <>
-            <div className="p-6 rounded-lg bg-white shadow-sm">
+            <div className="p-6 rounded-lg bg-card shadow-sm">
                 <h1 className="text-xl font-semibold mb-2">Upload Your Photos</h1>
                 <p className="text-muted-foreground mb-6">
                 We need 5 specific photos for a complete analysis. You can use our Smart Scanner to guide you, or upload them manually.
@@ -53,7 +53,7 @@ export function UploadPageClient({ userId, displayName }: { userId: string, disp
                 <div className="flex flex-col sm:flex-row gap-4 mb-4">
                     <Button 
                         onClick={() => setViewMode('camera')} 
-                        className="bg-brown-500 hover:bg-brown-500/90 text-white h-12 text-lg px-6"
+                        className="bg-brand hover:bg-brand-hover text-white h-12 text-lg px-6"
                     >
                         <Camera className="mr-2 h-5 w-5" />
                         Start Smart Scan
