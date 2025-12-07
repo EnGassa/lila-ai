@@ -1,8 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FaceLandmarker, DrawingUtils } from "@mediapipe/tasks-vision";
-import { getEulerAngles, FaceCropper } from "@/lib/utils";
 import { playCaptureSound } from "@/lib/audioFeedback";
 import { useImageQuality } from "@/hooks/useImageQuality";
 import { useAutoCaptureTimer } from "@/hooks/useAutoCaptureTimer";
@@ -21,10 +19,8 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Camera, RefreshCw, Check, Sun } from "lucide-react";
-import { GUIDELINES, PoseId } from "@/components/guidelines";
+import { GUIDELINES } from "@/components/guidelines";
 import type { CapturePose } from "@/hooks/usePoseValidation";
-
-const AUTO_CAPTURE_HOLD_DURATION = 2000; // 2 seconds
 
 interface FaceCaptureProps {
   showCalibrationSuite?: boolean;
@@ -35,7 +31,7 @@ interface FaceCaptureProps {
 export default function FaceCapture({
   showCalibrationSuite = false,
   onComplete,
-  disableCropping = false,
+  disableCropping = true,
 }: FaceCaptureProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -60,16 +56,6 @@ export default function FaceCapture({
   // --- Live Detection State ---
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Use image capture hook
-  const {
-    captureFromVideo,
-    cropImage,
-    countdownCompletedRef,
-    tempImageRef,
-    isProcessing,
-    setIsProcessing,
-  } = useImageCapture(videoRef, { disableCropping });
-
   const {
     status,
     webcamRunning,
@@ -80,9 +66,7 @@ export default function FaceCapture({
     detectedSmile,
     detectedEyeDistance,
     landmarks,
-    imageCaptureRef,
     isPortrait,
-    maxResolution,
   } = useFaceLandmarker(videoRef, canvasRef);
 
   // Use image quality hook
@@ -102,7 +86,6 @@ export default function FaceCapture({
 
   // Use pose validation hook
   const {
-    validationState,
     isPoseCorrect,
     guidanceMessage,
     calibrationData,
@@ -132,6 +115,16 @@ export default function FaceCapture({
       smileThreshold: 0.6,
     }
   );
+
+  // Use image capture hook
+  const {
+    captureFromVideo,
+    cropImage,
+    countdownCompletedRef,
+    tempImageRef,
+    isProcessing,
+    setIsProcessing,
+  } = useImageCapture(videoRef, { disableCropping });
 
   useEffect(() => {
     return () => {
@@ -181,55 +174,18 @@ export default function FaceCapture({
     ]
   );
 
-  // Auto-capture callback - triggered at midpoint
-  const handleAutoCapture = useCallback(() => {
-    const video = videoRef.current;
-    if (!video || video.readyState < 2) {
-      console.error("Video not ready");
-      return;
+  // Auto-capture callback - uses hook's captureFromVideo function
+  const handleAutoCapture = useCallback(async () => {
+    const url = await captureFromVideo();
+    if (!url) return;
+
+    // Store in ref - will be committed when countdown completes
+    if (countdownCompletedRef.current) {
+      handleCommitCapture(url);
+    } else {
+      tempImageRef.current = url;
     }
-
-    try {
-      const canvas = document.createElement("canvas");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        console.error("Failed to get canvas context");
-        return;
-      }
-
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      canvas.toBlob((blob) => {
-        if (!blob) {
-          console.error("Failed to create blob from canvas");
-          return;
-        }
-
-        console.log(
-          "Auto-captured photo:",
-          canvas.width,
-          "x",
-          canvas.height,
-          "Size:",
-          (blob.size / 1024).toFixed(2),
-          "KB"
-        );
-        const url = URL.createObjectURL(blob);
-
-        // Store in ref - will be committed when countdown completes
-        if (countdownCompletedRef.current) {
-          handleCommitCapture(url);
-        } else {
-          tempImageRef.current = url;
-        }
-      }, "image/png");
-    } catch (error) {
-      console.error("Error capturing photo:", error);
-    }
-  }, [handleCommitCapture]);
+  }, [captureFromVideo, handleCommitCapture]);
 
   // Auto-commit callback - triggered at end
   const handleAutoCommit = useCallback(() => {
