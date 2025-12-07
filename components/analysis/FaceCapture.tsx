@@ -1,11 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { playCaptureSound } from "@/lib/audioFeedback";
 import { useImageQuality } from "@/hooks/useImageQuality";
 import { useAutoCaptureTimer } from "@/hooks/useAutoCaptureTimer";
 import { usePoseValidation } from "@/hooks/usePoseValidation";
 import { useImageCapture } from "@/hooks/useImageCapture";
+import { useCaptureSequence } from "@/hooks/useCaptureSequence";
 import CalibrationSuite from "./CalibrationSuite";
 import { useFaceLandmarker } from "@/hooks/useFaceLandmarker";
 import AutoCaptureIndicator from "./AutoCaptureIndicator";
@@ -36,26 +37,6 @@ export default function FaceCapture({
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // --- Sequence State ---
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [capturedImages, setCapturedImages] = useState<
-    Record<CapturePose, string | null>
-  >({
-    front: null,
-    left45: null,
-    right45: null,
-    chinUp: null,
-    chinDown: null,
-    frontSmiling: null,
-  });
-
-  const currentGuideline = GUIDELINES[currentStepIndex];
-  const currentPose = currentGuideline?.id;
-  const isSequenceComplete = currentStepIndex >= GUIDELINES.length;
-
-  // --- Live Detection State ---
-  const [isTransitioning, setIsTransitioning] = useState(false);
-
   const {
     status,
     webcamRunning,
@@ -68,6 +49,20 @@ export default function FaceCapture({
     landmarks,
     isPortrait,
   } = useFaceLandmarker(videoRef, canvasRef);
+
+  // Use capture sequence hook
+  const {
+    currentStepIndex,
+    capturedImages,
+    isTransitioning,
+    currentGuideline,
+    currentPose,
+    isSequenceComplete,
+    storeImage,
+    advanceStep,
+    resetSequence,
+    finishSequence,
+  } = useCaptureSequence(setWebcamRunning, { onComplete });
 
   // Use image quality hook
   const {
@@ -146,31 +141,18 @@ export default function FaceCapture({
         : await cropImage(imageUrl);
       setIsProcessing(false);
 
-      setCapturedImages((prev) => ({
-        ...prev,
-        [currentPose]: finalImageUrl,
-      }));
-
-      const nextStep = currentStepIndex + 1;
-
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setIsTransitioning(false);
-        if (nextStep >= GUIDELINES.length) {
-          setCurrentStepIndex(nextStep);
-          setWebcamRunning(false);
-        } else {
-          setCurrentStepIndex(nextStep);
-        }
-      }, 1500);
+      // Store image and advance to next step
+      storeImage(currentPose, finalImageUrl);
+      advanceStep(currentStepIndex);
     },
     [
       currentPose,
       currentStepIndex,
-      setWebcamRunning,
       disableCropping,
       cropImage,
       setIsProcessing,
+      storeImage,
+      advanceStep,
     ]
   );
 
@@ -221,35 +203,19 @@ export default function FaceCapture({
     setWebcamRunning((prev) => !prev);
   };
 
-  const handleRetakeAll = () => {
-    setCapturedImages({
-      front: null,
-      left45: null,
-      right45: null,
-      chinUp: null,
-      chinDown: null,
-      frontSmiling: null,
-    });
-    setCurrentStepIndex(0);
-    setWebcamRunning(true);
-  };
-
-  const handleFinish = async () => {
-    if (!onComplete) return;
-
-    // Convert blob URLs to Files
-    const files: File[] = [];
-    for (const [pose, url] of Object.entries(capturedImages)) {
-      if (url) {
-        const response = await fetch(url);
-        const blob = await response.blob();
-        const filename = `${pose}.png`;
-        const file = new File([blob], filename, { type: "image/png" });
-        files.push(file);
+  // Helper for calibration suite to change current pose
+  const setCurrentPose = useCallback(
+    (pose: CapturePose) => {
+      const idx = GUIDELINES.findIndex((g) => g.id === pose);
+      if (idx !== -1) {
+        // This is a temporary workaround for calibration suite
+        // The hook manages the actual step index, this just syncs for calibration
+        const event = new CustomEvent("setStepIndex", { detail: idx });
+        window.dispatchEvent(event);
       }
-    }
-    onComplete(files);
-  };
+    },
+    []
+  );
 
   return (
     <Card className="w-full max-w-4xl mx-auto border-none shadow-none md:shadow-sm md:border">
@@ -414,12 +380,12 @@ export default function FaceCapture({
 
         {isSequenceComplete && (
           <>
-            <Button onClick={handleRetakeAll} variant="outline">
+            <Button onClick={resetSequence} variant="outline">
               <RefreshCw className="mr-2 h-4 w-4" />
               Retake All
             </Button>
             <Button
-              onClick={handleFinish}
+              onClick={finishSequence}
               className="bg-brown-500 hover:bg-brown-500/90"
             >
               <Check className="mr-2 h-4 w-4" />
@@ -434,10 +400,7 @@ export default function FaceCapture({
           <CalibrationSuite
             webcamRunning={webcamRunning}
             currentPose={currentPose}
-            setCurrentPose={(pose) => {
-              const idx = GUIDELINES.findIndex((g) => g.id === pose);
-              if (idx !== -1) setCurrentStepIndex(idx);
-            }}
+            setCurrentPose={setCurrentPose}
             handleCalibrate={handleCalibrate}
             tolerance={tolerance}
             setTolerance={setTolerance}
