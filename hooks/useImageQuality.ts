@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState, RefObject } from "react";
 import { calculateBrightness, calculateBlurScore } from "@/lib/imageQuality";
 
+interface BoundingBox {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+}
+
 interface UseImageQualityOptions {
   brightnessThreshold?: number;
   blurThreshold?: number;
@@ -12,12 +19,14 @@ interface UseImageQualityOptions {
  *
  * @param videoRef - A React ref to the video element.
  * @param webcamRunning - Whether the webcam is currently active.
+ * @param faceBoundingBox - The bounding box of the detected face.
  * @param options - Configuration options for image quality checks.
  * @returns An object with the current image quality state and functions to update thresholds.
  */
 export function useImageQuality(
   videoRef: RefObject<HTMLVideoElement | null>,
   webcamRunning: boolean,
+  faceBoundingBox: BoundingBox | null,
   options: UseImageQualityOptions = {}
 ) {
   const {
@@ -41,6 +50,7 @@ export function useImageQuality(
   // Refs to access latest threshold values in effect
   const brightnessThresholdRef = useRef(brightnessThreshold);
   const blurThresholdRef = useRef(blurThreshold);
+  const faceBoundingBoxRef = useRef(faceBoundingBox);
 
   // Sync refs with state
   useEffect(() => {
@@ -50,6 +60,10 @@ export function useImageQuality(
   useEffect(() => {
     blurThresholdRef.current = blurThreshold;
   }, [blurThreshold]);
+
+  useEffect(() => {
+    faceBoundingBoxRef.current = faceBoundingBox;
+  }, [faceBoundingBox]);
 
   // Image quality monitoring effect
   useEffect(() => {
@@ -71,7 +85,7 @@ export function useImageQuality(
       const imageData = ctx.getImageData(0, 0, width, height);
 
       // Calculate brightness using extracted function
-      const { brightness, grays } = calculateBrightness(imageData);
+      const { brightness, grays } = calculateBrightness(imageData, faceBoundingBoxRef.current);
       setCurrentBrightness(brightness);
       setIsLowLight(brightness < brightnessThresholdRef.current);
 

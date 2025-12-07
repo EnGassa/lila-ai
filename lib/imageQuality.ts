@@ -3,41 +3,67 @@
  * Provides brightness and blur detection algorithms
  */
 
+interface BoundingBox {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+}
+
 /**
- * Calculates the average brightness of an image
- * 
- * @param imageData - ImageData from canvas context
- * @returns Object containing brightness value (0-255) and grayscale array for blur detection
- * 
- * @example
- * ```typescript
- * const ctx = canvas.getContext('2d');
- * const imageData = ctx.getImageData(0, 0, width, height);
- * const { brightness, grays } = calculateBrightness(imageData);
- * console.log(`Brightness: ${brightness}`);
- * ```
+ * Calculates the average brightness of an image, optionally within a bounding box.
+ *
+ * @param imageData - ImageData from canvas context.
+ * @param boundingBox - Optional bounding box to calculate brightness within.
+ * @returns Object containing brightness value (0-255) and grayscale array for blur detection.
  */
-export function calculateBrightness(imageData: ImageData): { 
-  brightness: number; 
-  grays: Uint8ClampedArray 
+export function calculateBrightness(
+  imageData: ImageData,
+  boundingBox: BoundingBox | null
+): {
+  brightness: number;
+  grays: Uint8ClampedArray;
 } {
   const data = imageData.data;
   const width = imageData.width;
   const height = imageData.height;
-  
+
   let colorSum = 0;
   const grays = new Uint8ClampedArray(width * height);
+  let pixelCount = 0;
 
-  for (let i = 0, len = data.length; i < len; i += 4) {
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
-    const avg = Math.floor((r + g + b) / 3);
-    colorSum += avg;
-    grays[i / 4] = avg; // Store grayscale for blur check
+  const startX = boundingBox ? Math.floor(boundingBox.minX * width) : 0;
+  const startY = boundingBox ? Math.floor(boundingBox.minY * height) : 0;
+  const endX = boundingBox ? Math.ceil(boundingBox.maxX * width) : width;
+  const endY = boundingBox ? Math.ceil(boundingBox.maxY * height) : height;
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const i = (y * width + x) * 4;
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      const avg = Math.floor((r + g + b) / 3);
+      grays[i / 4] = avg; // Store grayscale for blur check
+
+      if (x >= startX && x < endX && y >= startY && y < endY) {
+        colorSum += avg;
+        pixelCount++;
+      }
+    }
   }
 
-  const brightness = Math.floor(colorSum / (width * height));
+  if (pixelCount === 0) {
+    // Fallback to whole image if bounding box is empty or invalid
+    const totalPixels = width * height;
+    let totalColorSum = 0;
+    for (let i = 0; i < grays.length; i++) {
+      totalColorSum += grays[i];
+    }
+    return { brightness: Math.floor(totalColorSum / totalPixels), grays };
+  }
+
+  const brightness = Math.floor(colorSum / pixelCount);
   
   return { brightness, grays };
 }

@@ -10,6 +10,13 @@ import {
 } from "@mediapipe/tasks-vision";
 import { getEulerAngles } from "@/lib/utils";
 
+interface BoundingBox {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+}
+
 export function useFaceLandmarker(
   videoRef: React.RefObject<HTMLVideoElement | null>,
   canvasRef: React.RefObject<HTMLCanvasElement | null>
@@ -22,6 +29,7 @@ export function useFaceLandmarker(
   const [detectedSmile, setDetectedSmile] = useState<number>(0);
   const [detectedEyeDistance, setDetectedEyeDistance] = useState<number>(0);
   const [landmarks, setLandmarks] = useState<NormalizedLandmark[]>([]);
+  const [faceBoundingBox, setFaceBoundingBox] = useState<BoundingBox | null>(null);
   const [isPortrait, setIsPortrait] = useState(false);
   const [maxResolution, setMaxResolution] = useState<{width: number, height: number} | null>(null);
   const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([]);
@@ -146,6 +154,15 @@ export function useFaceLandmarker(
           const landmarksData = results.faceLandmarks[0];
           setLandmarks(landmarksData);
 
+          let minX = 1.0, minY = 1.0, maxX = 0.0, maxY = 0.0;
+          for (const landmark of landmarksData) {
+            minX = Math.min(minX, landmark.x);
+            minY = Math.min(minY, landmark.y);
+            maxX = Math.max(maxX, landmark.x);
+            maxY = Math.max(maxY, landmark.y);
+          }
+          setFaceBoundingBox({ minX, minY, maxX, maxY });
+
           if (
             results.facialTransformationMatrixes &&
             results.facialTransformationMatrixes.length > 0
@@ -237,6 +254,8 @@ export function useFaceLandmarker(
             FaceLandmarker.FACE_LANDMARKS_LEFT_IRIS,
             { color: "#dda377b3", lineWidth: 1 }
           );
+        } else {
+          setFaceBoundingBox(null);
         }
         canvasCtx.restore();
       }
@@ -279,6 +298,7 @@ export function useFaceLandmarker(
     detectedSmile,
     detectedEyeDistance,
     landmarks,
+    faceBoundingBox,
     imageCaptureRef,
     isPortrait,
     maxResolution,
