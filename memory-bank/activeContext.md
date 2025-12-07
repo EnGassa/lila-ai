@@ -4,11 +4,12 @@
 
 A series of targeted UI refinements have been implemented to improve the stability, clarity, and aesthetic of the Face Capture component.
 
--   **Layout Shift Eliminated:** Fixed a "jumpy" layout issue where conditional text would push UI elements. The guidance text container now has a fixed height and uses opacity for smooth fade-in/out transitions, creating a more stable and professional feel.
+-   **Layout Shift Eliminated:** Fixed a "jumpy" layout issue by removing redundant conditional text and its spacer, which created a cleaner and more stable UI.
 -   **Visual Polish:**
     -   **Light Meter:** The on-screen light meter has been narrowed from `240px` to `200px` for a less obtrusive look.
-    -   **PIP Guide:** The opacity of the Picture-in-Picture reference image was increased from `50%` to `75%` to make it easier to see.
--   **Guideline Asset Update:** All placeholder images in the photo guidelines have been replaced with new, high-quality reference photos from the `/public/guide` directory. The old `/public/guidelines` directory has been removed.
+    -   **PIP Guide:** The Picture-in-Picture reference image has been iteratively polished, adjusting opacity and removing the border for a cleaner "ghosted" effect.
+-   **Guideline Asset Update:** All placeholder images in the photo guidelines have been replaced with new, high-quality reference photos from the `/public/guide` directory.
+-   **Post-Capture Cropping:** Implemented a "Crop-then-Preview" flow. Images are now automatically cropped to a tight facial frame immediately after capture, ensuring the user previews the exact images that will be submitted for analysis. This is achieved via a client-side `FaceCropper` utility that re-runs a lightweight face detection on the final high-res image.
 
 ## Previous Work: "Front Smiling" Pose Integration
 

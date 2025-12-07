@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaceLandmarker, DrawingUtils } from "@mediapipe/tasks-vision";
-import { getEulerAngles } from "@/lib/utils";
+import { getEulerAngles, FaceCropper } from "@/lib/utils";
 import CalibrationSuite from "./CalibrationSuite";
 import { useFaceLandmarker } from "@/hooks/useFaceLandmarker";
 import AutoCaptureIndicator from "./AutoCaptureIndicator";
@@ -108,6 +108,7 @@ export default function FaceCapture({
 
   // --- Live Detection State ---
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // --- Auto-Capture State ---
   const [autoCaptureProgress, setAutoCaptureProgress] = useState(0);
@@ -279,11 +280,30 @@ export default function FaceCapture({
 
   // --- Capture Logic ---
   const handleCommitCapture = useCallback(
-    (imageUrl: string) => {
+    async (imageUrl: string) => {
       playCaptureSound();
+
+      // --- Start Cropping ---
+      setIsProcessing(true);
+      let finalImageUrl = imageUrl;
+      try {
+        const cropper = await FaceCropper.getInstance();
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const croppedBlob = await cropper.crop(blob);
+        if (croppedBlob) {
+          URL.revokeObjectURL(imageUrl); // Clean up original blob URL
+          finalImageUrl = URL.createObjectURL(croppedBlob);
+        }
+      } catch (error) {
+        console.error("Failed to crop image, using original:", error);
+      }
+      setIsProcessing(false);
+      // --- End Cropping ---
+
       setCapturedImages((prev) => ({
         ...prev,
-        [currentPose]: imageUrl,
+        [currentPose]: finalImageUrl,
       }));
 
       const nextStep = currentStepIndex + 1;
@@ -626,9 +646,7 @@ export default function FaceCapture({
                             </div>
                         </div>
 
-                        <p className={`text-white/70 text-sm h-5 transition-opacity duration-300 ${!isLowLight && !isBlurry ? "opacity-100" : "opacity-0"}`}>
-                            Position your face to match the guidelines
-                        </p>
+                        
                     </div>
                 </>
             )}
