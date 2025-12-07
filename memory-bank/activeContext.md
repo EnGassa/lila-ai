@@ -1,6 +1,34 @@
 # Active Context
 
-## Current Work: Lossless PNG Pipeline for Maximum Image Quality
+## Current Work: FaceCapture Component Refactoring (In Progress)
+
+The 800-line FaceCapture component has been systematically refactored to improve maintainability, testability, and code organization.
+
+### Progress Summary (Steps 1-4 Complete)
+**Component size reduced from 800 → 540 lines (33% reduction so far)**
+
+**✅ Phase 1 Complete - Pure Utility Functions Extracted:**
+1. **lib/audioFeedback.ts** - Extracted capture sound effect (~30 lines)
+2. **lib/imageQuality.ts** - Brightness & blur calculation algorithms (~60 lines)  
+3. **lib/poseValidation.ts** - Pose validation logic for all 6 poses (~100 lines)
+
+**✅ Phase 2 Started - Custom Hooks:**
+4. **hooks/useImageQuality.ts** - Real-time image quality monitoring (~60 lines)
+   - VERIFIED: Low-light and blur warnings working correctly
+
+**Benefits Achieved:**
+- All extracted utilities are now pure, testable functions
+- Business logic separated from UI concerns
+- Reusable across other components if needed
+- TypeScript typing improved throughout
+
+**Next Steps:** Continue with remaining custom hooks (auto-capture timer, pose validation hook, image capture hook, sequence hook), then extract UI components.
+
+**Documentation:** Full refactoring plan tracked in `memory-bank/faceCaptureRefactoring.md`
+
+---
+
+## Previous Work: Lossless PNG Pipeline for Maximum Image Quality
 
 To ensure the highest possible quality for AI skin analysis ("garbage in, garbage out"), the entire image pipeline has been converted to use lossless PNG format.
 
