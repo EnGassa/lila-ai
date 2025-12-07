@@ -65,11 +65,10 @@ export function FileUpload({ userId, initialFiles = [] }: FileUploadProps) {
         try {
           const convertedBlob = await heic2any({
             blob: file,
-            toType: 'image/jpeg',
-            quality: 0.8,
+            toType: 'image/png', // Lossless format for maximum quality
           })
-          processedFile = new File([convertedBlob as Blob], `${file.name.split('.')[0]}.jpeg`, {
-            type: 'image/jpeg',
+          processedFile = new File([convertedBlob as Blob], `${file.name.split('.')[0]}.png`, {
+            type: 'image/png',
           })
         } catch (error) {
           console.error('Error converting HEIC file:', error)

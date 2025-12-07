@@ -122,8 +122,8 @@ export default function FaceCapture({
   const [tolerance, setTolerance] = useState(8); // Slightly relaxed default tolerance
   const [isLowLight, setIsLowLight] = useState(false);
   const [isBlurry, setIsBlurry] = useState(false);
-  const [brightnessThreshold, setBrightnessThreshold] = useState(130);
-  const [blurThreshold, setBlurThreshold] = useState(400); // Increased based on user feedback
+  const [brightnessThreshold, setBrightnessThreshold] = useState(100);
+  const [blurThreshold, setBlurThreshold] = useState(500); // Increased based on user feedback
   const [smileThreshold, setSmileThreshold] = useState(0.6); // Default 60%
   const brightnessThresholdRef = useRef(brightnessThreshold);
   const blurThresholdRef = useRef(blurThreshold);
@@ -155,6 +155,7 @@ export default function FaceCapture({
     landmarks,
     imageCaptureRef,
     isPortrait,
+    maxResolution,
   } = useFaceLandmarker(videoRef, canvasRef);
 
   // --- Derived Validation Logic ---
@@ -290,10 +291,12 @@ export default function FaceCapture({
         const cropper = await FaceCropper.getInstance();
         const response = await fetch(imageUrl);
         const blob = await response.blob();
+        console.log("Pre-crop size:", (blob.size / 1024).toFixed(2), "KB");
         const croppedBlob = await cropper.crop(blob);
         if (croppedBlob) {
           URL.revokeObjectURL(imageUrl); // Clean up original blob URL
           finalImageUrl = URL.createObjectURL(croppedBlob);
+          console.log("Post-crop size:", (croppedBlob.size / 1024).toFixed(2), "KB");
         }
       } catch (error) {
         console.error("Failed to crop image, using original:", error);
@@ -323,27 +326,56 @@ export default function FaceCapture({
   );
 
   const handleCapture = useCallback(async (isManual = false) => {
-    if (imageCaptureRef.current) {
-      try {
-        const blob = await imageCaptureRef.current.takePhoto();
-        const url = URL.createObjectURL(blob);
-
-        if (isManual) {
-           handleCommitCapture(url);
-           return;
-        }
-
-        // Auto-capture logic
-        if (countdownCompletedRef.current) {
-          handleCommitCapture(url);
-        } else {
-          tempImageRef.current = url;
-        }
-      } catch (error) {
-        console.error("Error taking photo:", error);
-      }
+    const video = videoRef.current;
+    if (!video || video.readyState < 2) {
+      console.error("Video not ready");
+      return;
     }
-  }, [imageCaptureRef, handleCommitCapture]);
+
+    try {
+      // Create canvas with video dimensions
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        console.error("Failed to get canvas context");
+        return;
+      }
+
+      // Draw current video frame to canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      // Convert canvas to Blob with lossless PNG
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            console.error("Failed to create blob from canvas");
+            return;
+          }
+
+          console.log("Captured photo dimensions:", canvas.width, "x", canvas.height, "Size:", (blob.size / 1024).toFixed(2), "KB");
+          const url = URL.createObjectURL(blob);
+
+          if (isManual) {
+            handleCommitCapture(url);
+            return;
+          }
+
+          // Auto-capture logic
+          if (countdownCompletedRef.current) {
+            handleCommitCapture(url);
+          } else {
+            tempImageRef.current = url;
+          }
+        },
+        'image/png' // Lossless format for maximum quality
+      );
+    } catch (error) {
+      console.error("Error capturing photo:", error);
+    }
+  }, [videoRef, handleCommitCapture]);
 
   // --- Auto-Capture Effect ---
   useEffect(() => {
@@ -511,8 +543,8 @@ export default function FaceCapture({
         if (url) {
             const response = await fetch(url);
             const blob = await response.blob();
-            const filename = `${pose}.jpg`;
-            const file = new File([blob], filename, { type: "image/jpeg" });
+            const filename = `${pose}.png`;
+            const file = new File([blob], filename, { type: "image/png" });
             files.push(file);
         }
     }

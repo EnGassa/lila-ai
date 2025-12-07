@@ -23,6 +23,7 @@ export function useFaceLandmarker(
   const [detectedEyeDistance, setDetectedEyeDistance] = useState<number>(0);
   const [landmarks, setLandmarks] = useState<NormalizedLandmark[]>([]);
   const [isPortrait, setIsPortrait] = useState(false);
+  const [maxResolution, setMaxResolution] = useState<{width: number, height: number} | null>(null);
 
   const faceLandmarkerRef = useRef<FaceLandmarker | null>(null);
   const imageCaptureRef = useRef<ImageCapture | null>(null);
@@ -83,7 +84,10 @@ export function useFaceLandmarker(
 
         const videoWidth = video.videoWidth;
         const videoHeight = video.videoHeight;
-        if (canvas.width !== videoWidth) canvas.width = videoWidth;
+        if (canvas.width !== videoWidth) {
+            canvas.width = videoWidth;
+            console.log("Video dimensions:", videoWidth, "x", videoHeight);
+        }
         if (canvas.height !== videoHeight) canvas.height = videoHeight;
 
         if (videoWidth > 0) {
@@ -211,6 +215,14 @@ export function useFaceLandmarker(
           videoRef.current.srcObject = stream;
           videoRef.current.addEventListener("loadeddata", predictWebcam);
           const track = stream.getVideoTracks()[0];
+          const capabilities = track.getCapabilities();
+          const {width, height} = capabilities;
+          if (width && height) {
+            const maxWidth = width.max ?? 1920;
+            const maxHeight = height.max ?? 1080;
+            setMaxResolution({width: maxWidth, height: maxHeight});
+            track.applyConstraints({width: {ideal: maxWidth}, height: {ideal: maxHeight}});
+          }
           imageCaptureRef.current = new ImageCapture(track);
         }
       });
@@ -238,5 +250,6 @@ export function useFaceLandmarker(
     landmarks,
     imageCaptureRef,
     isPortrait,
+    maxResolution,
   };
 }

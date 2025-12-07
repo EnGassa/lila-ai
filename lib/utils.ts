@@ -150,7 +150,7 @@ export class FaceCropper {
     );
 
     return new Promise((resolve) => {
-      canvas.toBlob(resolve, 'image/jpeg', 0.95);
+      canvas.toBlob(resolve, 'image/png'); // Lossless format
     });
   }
 }
