@@ -21,7 +21,7 @@ export function useImageQuality(
   options: UseImageQualityOptions = {}
 ) {
   const {
-    brightnessThreshold: initialBrightnessThreshold = 100,
+    brightnessThreshold: initialBrightnessThreshold = 130,
     blurThreshold: initialBlurThreshold = 500,
     checkInterval = 500,
   } = options;
