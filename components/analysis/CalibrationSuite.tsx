@@ -1,6 +1,6 @@
 "use client";
 
-import { CapturePose, PoseData } from "./FaceCapture";
+import type { CapturePose, PoseData } from "@/hooks/usePoseValidation";
 
 interface CalibrationSuiteProps {
   webcamRunning: boolean;

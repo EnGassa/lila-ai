@@ -77,23 +77,31 @@ Target: Reduce main component to ~150 lines that orchestrates the refactored mod
 - ✅ Fixed TypeScript typing to accept nullable video ref
 **Test**: ✅ VERIFIED - Low-light and blur warnings working correctly
 
-### Step 2.2: Extract Auto-Capture Timer Hook
-**Status**: PENDING
+### ✅ Step 2.2: Extract Auto-Capture Timer Hook
+**Status**: COMPLETED & VERIFIED ✅
 **New File**: `hooks/useAutoCaptureTimer.ts`
 **Changes**:
-- Move all auto-capture timer logic + refs
-- Move progress animation frame effect
-- Return progress value and timer control functions
-**Test**: Verify auto-capture countdown and timing works (2-second hold)
+- ✅ Extracted timer countdown logic (2s total: capture at 1s, commit at 2s)
+- ✅ Extracted smooth progress animation using requestAnimationFrame
+- ✅ Uses callback pattern (not Promises) for mobile browser compatibility
+- ✅ Returns progress value (0-1) for UI animation
+- ✅ Component reduced from 540 → 470 lines (~13% reduction)
+**Test**: ✅ VERIFIED - Works on both laptop and mobile (Android Chrome via Cloudflare tunnel)
+**Commit**: fd0987c - "refactor(FaceCapture): Extract auto-capture timer hook (Step 2.2)"
 
-### Step 2.3: Extract Pose Validation Hook
-**Status**: PENDING
-**New File**: `hooks/usePoseValidation.ts`
+### ✅ Step 2.3: Extract Pose Validation Hook
+**Status**: COMPLETED
+**New File**: `hooks/usePoseValidation.ts` (244 lines)
 **Changes**:
-- Combine validation state computation with calibration data
-- Use extracted `lib/poseValidation.ts` functions
-- Return validation state, calibration data, and handlers
-**Test**: Verify pose validation feedback is accurate
+- ✅ Extracted calibration data management for all 6 poses
+- ✅ Extracted validation state computation using `lib/poseValidation.ts` functions
+- ✅ Moved tolerance and smileThreshold state management
+- ✅ Exported CapturePose and PoseData types
+- ✅ Returns validation state, calibration data, calibrate() action, and setters
+- ✅ Updated FaceCapture to use single hook call (~105 lines removed)
+- ✅ Fixed TypeScript imports in `lib/poseValidation.ts` and `CalibrationSuite.tsx`
+- ✅ Component reduced from 470 → 365 lines (22% reduction)
+**Test**: ⚠️ PENDING USER VERIFICATION - Verify pose validation, calibration suite, and all 6 poses work correctly
 
 ### Step 2.4: Extract Image Capture Hook
 **Status**: PENDING
@@ -216,9 +224,11 @@ lib/
 ## Progress Tracking
 
 - **Total Steps**: 16 (including Step 0)
-- **Completed**: 1 (Step 0)
-- **Remaining**: 15
-- **Current Step**: Step 1.1 (Extract Audio Feedback)
+- **Completed**: 7 (Steps 0, 1.1, 1.2, 1.3, 2.1, 2.2, 2.3)
+- **Remaining**: 9
+- **Current Phase**: Phase 2 - Custom Hooks (60% complete - 3/5 hooks done)
+- **Next Step**: Step 2.4 (Extract Image Capture Hook)
+- **Component Size**: 800 → 365 lines (54% reduction so far) 🎉
 
 ## Notes
 

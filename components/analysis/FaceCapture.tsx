@@ -4,9 +4,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { FaceLandmarker, DrawingUtils } from "@mediapipe/tasks-vision";
 import { getEulerAngles, FaceCropper } from "@/lib/utils";
 import { playCaptureSound } from "@/lib/audioFeedback";
-import { validatePose, validateDistance } from "@/lib/poseValidation";
 import { useImageQuality } from "@/hooks/useImageQuality";
 import { useAutoCaptureTimer } from "@/hooks/useAutoCaptureTimer";
+import { usePoseValidation } from "@/hooks/usePoseValidation";
 import CalibrationSuite from "./CalibrationSuite";
 import { useFaceLandmarker } from "@/hooks/useFaceLandmarker";
 import AutoCaptureIndicator from "./AutoCaptureIndicator";
@@ -21,65 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Camera, RefreshCw, Check, Sun } from "lucide-react";
 import { GUIDELINES, PoseId } from "@/components/guidelines";
-
-export type CapturePose = PoseId;
-
-export interface PoseData {
-  yaw: number;
-  pitch: number;
-  roll: number;
-  eyeDistance: { landscape: number; portrait: number };
-  noseX?: number;
-  noseY?: number;
-  boundingBox?: {
-    top: number;
-    bottom: number;
-    left: number;
-    right: number;
-  };
-}
-
-// Initial targets based on calibration
-const initialCalibrationData: Record<CapturePose, PoseData> = {
-  front: {
-    yaw: 0,
-    pitch: -5.0,
-    roll: 0,
-    eyeDistance: { landscape: 0.13, portrait: 0.24 },
-    boundingBox: { top: 0.15, bottom: 0.85, left: 0.05, right: 0.95 },
-  },
-  left45: {
-    yaw: -28.0,
-    pitch: -3.0,
-    roll: 0,
-    eyeDistance: { landscape: 0.13, portrait: 0.24 },
-  },
-  right45: {
-    yaw: 28.0,
-    pitch: -3.0,
-    roll: 0,
-    eyeDistance: { landscape: 0.13, portrait: 0.24 },
-  },
-  chinUp: {
-    yaw: 0,
-    pitch: 20.0, // Looking up (positive pitch based on calibration)
-    roll: 0,
-    eyeDistance: { landscape: 0.1, portrait: 0.18 },
-  },
-  chinDown: {
-    yaw: 0,
-    pitch: -30.0, // Looking down (negative pitch based on calibration)
-    roll: 0,
-    eyeDistance: { landscape: 0.1, portrait: 0.23 },
-  },
-  frontSmiling: {
-    yaw: 0,
-    pitch: -5.0,
-    roll: 0,
-    eyeDistance: { landscape: 0.13, portrait: 0.24 },
-    boundingBox: { top: 0.15, bottom: 0.85, left: 0.05, right: 0.95 },
-  },
-};
+import type { CapturePose } from "@/hooks/usePoseValidation";
 
 const AUTO_CAPTURE_HOLD_DURATION = 2000; // 2 seconds
 
@@ -118,14 +60,6 @@ export default function FaceCapture({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // --- Calibration State ---
-  const [calibrationData, setCalibrationData] = useState(
-    initialCalibrationData
-  );
-  const [tolerance, setTolerance] = useState(8); // Slightly relaxed default tolerance
-  const [smileThreshold, setSmileThreshold] = useState(0.6); // Default 60%
-  const smileThresholdRef = useRef(smileThreshold);
-
   const {
     status,
     webcamRunning,
@@ -156,6 +90,39 @@ export default function FaceCapture({
     blurThreshold: 500,
   });
 
+  // Use pose validation hook
+  const {
+    validationState,
+    isPoseCorrect,
+    guidanceMessage,
+    calibrationData,
+    tolerance,
+    smileThreshold,
+    calibrate: handleCalibrate,
+    setTolerance,
+    setSmileThreshold,
+  } = usePoseValidation(
+    {
+      webcamRunning,
+      isTransitioning,
+      isSequenceComplete,
+      currentPose,
+      landmarks: landmarks.length,
+      detectedYaw,
+      detectedPitch,
+      detectedRoll,
+      detectedSmile,
+      detectedEyeDistance,
+      isLowLight,
+      isBlurry,
+      isPortrait,
+    },
+    {
+      tolerance: 8,
+      smileThreshold: 0.6,
+    }
+  );
+
   useEffect(() => {
     return () => {
       if (webcamRunning) {
@@ -163,64 +130,6 @@ export default function FaceCapture({
       }
     };
   }, [webcamRunning, setWebcamRunning]);
-
-  useEffect(() => {
-    smileThresholdRef.current = smileThreshold;
-  }, [smileThreshold]);
-
-  // --- Derived Validation Logic ---
-  const validationState = (() => {
-    if (
-      !webcamRunning ||
-      isTransitioning ||
-      isSequenceComplete ||
-      landmarks.length === 0
-    ) {
-      return { isCorrect: false, message: "Align your face" };
-    }
-
-    if (isLowLight) {
-      return { isCorrect: false, message: "Lighting too dim" };
-    }
-
-    if (isBlurry) {
-      return { isCorrect: false, message: "Hold Steady" };
-    }
-
-    const targetPose = calibrationData[currentPose];
-    const targetEyeDistance = isPortrait
-      ? targetPose.eyeDistance.portrait
-      : targetPose.eyeDistance.landscape;
-
-    // 1. Check Face Distance using extracted function
-    const distanceResult = validateDistance(
-      detectedEyeDistance,
-      targetEyeDistance
-    );
-    if (!distanceResult.isCorrect) {
-      return distanceResult;
-    }
-
-    // 2. Check Angles using extracted function
-    const poseResult = validatePose(
-      currentPose,
-      {
-        yaw: detectedYaw,
-        pitch: detectedPitch,
-        roll: detectedRoll,
-        eyeDistance: detectedEyeDistance,
-        smile: detectedSmile,
-      },
-      targetPose,
-      tolerance,
-      smileThreshold
-    );
-
-    return poseResult;
-  })();
-
-  const isPoseCorrect = validationState.isCorrect;
-  const guidanceMessage = validationState.message;
 
   // --- Capture Logic ---
   const handleCommitCapture = useCallback(
@@ -439,26 +348,6 @@ export default function FaceCapture({
       }
     }
     onComplete(files);
-  };
-
-  // --- Calibration Handler ---
-  const handleCalibrate = () => {
-    if (landmarks.length > 0) {
-      const newPoseData = {
-        ...calibrationData[currentPose],
-        yaw: detectedYaw,
-        pitch: detectedPitch,
-        roll: detectedRoll,
-        eyeDistance: {
-          ...calibrationData[currentPose].eyeDistance,
-          [isPortrait ? "portrait" : "landscape"]: detectedEyeDistance,
-        },
-      };
-      setCalibrationData((prev) => ({
-        ...prev,
-        [currentPose]: newPoseData,
-      }));
-    }
   };
 
   return (

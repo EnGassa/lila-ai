@@ -3,7 +3,7 @@
  * Validates face pose angles against target calibration data
  */
 
-import type { PoseData } from "@/components/analysis/FaceCapture";
+import type { PoseData } from "@/hooks/usePoseValidation";
 import type { PoseId } from "@/components/guidelines";
 
 /**
