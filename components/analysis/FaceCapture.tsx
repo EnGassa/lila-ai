@@ -68,6 +68,13 @@ const initialCalibrationData: Record<CapturePose, PoseData> = {
     roll: 0,
     eyeDistance: { landscape: 0.1, portrait: 0.23 },
   },
+  frontSmiling: {
+    yaw: 0,
+    pitch: -5.0,
+    roll: 0,
+    eyeDistance: { landscape: 0.13, portrait: 0.24 },
+    boundingBox: { top: 0.15, bottom: 0.85, left: 0.05, right: 0.95 },
+  },
 };
 
 const AUTO_CAPTURE_HOLD_DURATION = 2000; // 2 seconds
@@ -92,6 +99,7 @@ export default function FaceCapture({
     right45: null,
     chinUp: null,
     chinDown: null,
+    frontSmiling: null,
   });
 
   const currentGuideline = GUIDELINES[currentStepIndex];
@@ -115,8 +123,10 @@ export default function FaceCapture({
   const [isBlurry, setIsBlurry] = useState(false);
   const [brightnessThreshold, setBrightnessThreshold] = useState(130);
   const [blurThreshold, setBlurThreshold] = useState(400); // Increased based on user feedback
+  const [smileThreshold, setSmileThreshold] = useState(0.6); // Default 60%
   const brightnessThresholdRef = useRef(brightnessThreshold);
   const blurThresholdRef = useRef(blurThreshold);
+  const smileThresholdRef = useRef(smileThreshold);
   const [currentBrightness, setCurrentBrightness] = useState(0);
   const [currentBlurScore, setCurrentBlurScore] = useState(0);
 
@@ -128,6 +138,10 @@ export default function FaceCapture({
     blurThresholdRef.current = blurThreshold;
   }, [blurThreshold]);
 
+  useEffect(() => {
+    smileThresholdRef.current = smileThreshold;
+  }, [smileThreshold]);
+
   const {
     status,
     webcamRunning,
@@ -135,6 +149,7 @@ export default function FaceCapture({
     detectedYaw,
     detectedPitch,
     detectedRoll,
+    detectedSmile,
     detectedEyeDistance,
     landmarks,
     imageCaptureRef,
@@ -212,6 +227,18 @@ export default function FaceCapture({
                       pitchDiff > 0 ? "Look Down" : "Look Up (Too much)";
                     correct = false;
                  }
+                break;
+            case 'frontSmiling':
+                if (Math.abs(yawDiff) > tolerance) {
+                    message = yawDiff < 0 ? "Turn Right" : "Turn Left";
+                    correct = false;
+                } else if (Math.abs(pitchDiff) > tolerance) {
+                    message = pitchDiff < 0 ? "Look Down" : "Look Up";
+                    correct = false;
+                } else if (detectedSmile < smileThreshold) {
+                    message = "Show us a smile!";
+                    correct = false;
+                }
                 break;
         }
       }
@@ -446,7 +473,7 @@ export default function FaceCapture({
   };
 
   const handleRetakeAll = () => {
-    setCapturedImages({ front: null, left45: null, right45: null, chinUp: null, chinDown: null });
+    setCapturedImages({ front: null, left45: null, right45: null, chinUp: null, chinDown: null, frontSmiling: null });
     setCurrentStepIndex(0);
     setWebcamRunning(true);
   };
@@ -556,7 +583,7 @@ export default function FaceCapture({
 
             {/* Reference Image Overlay (Optional Ghost) */}
             {webcamRunning && (
-              <div className="absolute top-4 right-4 w-20 h-28 opacity-50 border-2 border-white/30 rounded-lg overflow-hidden pointer-events-none">
+              <div className="absolute top-4 right-4 w-20 h-28 opacity-75 border-2 border-white/30 rounded-lg overflow-hidden pointer-events-none">
                 <img src={currentGuideline?.imgSrc} alt="Reference" className="w-full h-full object-cover" />
               </div>
             )}
@@ -576,7 +603,7 @@ export default function FaceCapture({
                         </h3>
 
                         {/* iOS-style Brightness Meter (Grayscale & Subtle) */}
-                        <div className="w-full max-w-[240px] mx-auto mt-4 mb-2 relative group opacity-90 hover:opacity-100 transition-opacity">
+                        <div className="w-full max-w-[200px] mx-auto mt-4 mb-2 relative group opacity-90 hover:opacity-100 transition-opacity">
                             {/* Backdrop */}
                             <div className="relative h-6 bg-black/20 rounded-full overflow-hidden backdrop-blur-md border border-white/10">
                                 
@@ -599,11 +626,9 @@ export default function FaceCapture({
                             </div>
                         </div>
 
-                        {!isLowLight && (
-                            <p className="text-white/70 text-sm">
-                                Position your face to match the guidelines
-                            </p>
-                        )}
+                        <p className={`text-white/70 text-sm h-5 transition-opacity duration-300 ${!isLowLight && !isBlurry ? "opacity-100" : "opacity-0"}`}>
+                            Position your face to match the guidelines
+                        </p>
                     </div>
                 </>
             )}
@@ -669,6 +694,7 @@ export default function FaceCapture({
             detectedYaw={detectedYaw}
             detectedPitch={detectedPitch}
             detectedRoll={detectedRoll}
+            detectedSmile={detectedSmile}
             detectedEyeDistance={detectedEyeDistance}
             calibrationData={calibrationData}
             brightnessThreshold={brightnessThreshold}
@@ -677,6 +703,8 @@ export default function FaceCapture({
             blurThreshold={blurThreshold}
             setBlurThreshold={setBlurThreshold}
             currentBlurScore={currentBlurScore}
+            smileThreshold={smileThreshold}
+            setSmileThreshold={setSmileThreshold}
             guidanceMessage={guidanceMessage}
           />
         </div>

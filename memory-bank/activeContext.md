@@ -1,6 +1,36 @@
 # Active Context
 
-## Current Work: Blur Detection (Quality Assurance)
+## Current Work: Smart Scanner UI & Asset Polish
+
+A series of targeted UI refinements have been implemented to improve the stability, clarity, and aesthetic of the Face Capture component.
+
+-   **Layout Shift Eliminated:** Fixed a "jumpy" layout issue where conditional text would push UI elements. The guidance text container now has a fixed height and uses opacity for smooth fade-in/out transitions, creating a more stable and professional feel.
+-   **Visual Polish:**
+    -   **Light Meter:** The on-screen light meter has been narrowed from `240px` to `200px` for a less obtrusive look.
+    -   **PIP Guide:** The opacity of the Picture-in-Picture reference image was increased from `50%` to `75%` to make it easier to see.
+-   **Guideline Asset Update:** All placeholder images in the photo guidelines have been replaced with new, high-quality reference photos from the `/public/guide` directory. The old `/public/guidelines` directory has been removed.
+
+## Previous Work: "Front Smiling" Pose Integration
+
+To enhance dynamic wrinkle detection, we have added a **"Front Smiling"** pose to the capture sequence.
+
+-   **Problem:** Static photos don't reveal how skin behaves in motion (e.g., nasolabial folds, crow's feet).
+-   **Solution:** Added a 6th step to the scan sequence: "Front Smiling".
+-   **Innovation:** This step uses **Active Expression Detection**. The camera will *only* snap if the AI detects a smile above a configurable threshold (default 60%).
+
+### Technical Implementation
+1.  **AI Upgrade (`useFaceLandmarker.ts`):**
+    -   Enabled `outputFaceBlendshapes`.
+    -   Calculated a real-time `detectedSmile` score (0.0 - 1.0) by averaging `mouthSmileLeft` and `mouthSmileRight`.
+2.  **Logic Update (`FaceCapture.tsx`):**
+    -   Added `frontSmiling` to the pose state machine.
+    -   Implemented a new validation gate: `detectedSmile > smileThreshold`.
+    -   Added specific user feedback: "Show us a smile!" vs. "Perfect!".
+3.  **Calibration Suite:**
+    -   Added a live **Smile Score** readout.
+    -   Added a **Smile Threshold Slider** to tune sensitivity (Range: 0% - 100%).
+
+## Previous Work: Blur Detection (Quality Assurance)
 
 To ensure high-fidelity skin analysis, we have implemented a realtime **Blur Detection** system.
 

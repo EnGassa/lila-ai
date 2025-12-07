@@ -19,6 +19,7 @@ export function useFaceLandmarker(
   const [detectedYaw, setDetectedYaw] = useState<number>(0);
   const [detectedPitch, setDetectedPitch] = useState<number>(0);
   const [detectedRoll, setDetectedRoll] = useState<number>(0);
+  const [detectedSmile, setDetectedSmile] = useState<number>(0);
   const [detectedEyeDistance, setDetectedEyeDistance] = useState<number>(0);
   const [landmarks, setLandmarks] = useState<NormalizedLandmark[]>([]);
   const [isPortrait, setIsPortrait] = useState(false);
@@ -113,6 +114,22 @@ export function useFaceLandmarker(
             setDetectedYaw(yaw);
             setDetectedPitch(pitch);
             setDetectedRoll(roll);
+          }
+
+          // Extract Smile Score from Blendshapes
+          if (
+            results.faceBlendshapes &&
+            results.faceBlendshapes.length > 0 &&
+            results.faceBlendshapes[0].categories
+          ) {
+            const categories = results.faceBlendshapes[0].categories;
+            const smileLeft =
+              categories.find((c) => c.categoryName === "mouthSmileLeft")
+                ?.score ?? 0;
+            const smileRight =
+              categories.find((c) => c.categoryName === "mouthSmileRight")
+                ?.score ?? 0;
+            setDetectedSmile((smileLeft + smileRight) / 2);
           }
 
           const leftIris = landmarksData[473];
@@ -216,6 +233,7 @@ export function useFaceLandmarker(
     detectedYaw,
     detectedPitch,
     detectedRoll,
+    detectedSmile,
     detectedEyeDistance,
     landmarks,
     imageCaptureRef,

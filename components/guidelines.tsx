@@ -2,7 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 
-export type PoseId = 'front' | 'left45' | 'right45' | 'chinUp' | 'chinDown';
+export type PoseId = 'front' | 'left45' | 'right45' | 'chinUp' | 'chinDown' | 'frontSmiling';
 
 export interface GuidelineStep {
   id: PoseId;
@@ -18,7 +18,7 @@ export const GUIDELINES: GuidelineStep[] = [
     id: 'front',
     title: 'Front Face',
     description: <><strong>Look straight at the camera</strong> with a neutral expression (mouth closed, not smiling). Click at eye level. Do not focus on a single part of the face so that the whole face is in focus.</>,
-    imgSrc: '/guidelines/guideline-1.png',
+    imgSrc: '/guide/guide-front.png',
     width: 1536,
     height: 2040,
   },
@@ -26,7 +26,7 @@ export const GUIDELINES: GuidelineStep[] = [
     id: 'left45',
     title: 'Left 45 degree',
     description: <><strong>Turn your face slightly</strong> so that the camera sees your left side at a 45-degree angle. We want to see the cheek and jawline on that side clearly.</>,
-    imgSrc: '/guidelines/guideline-2.png',
+    imgSrc: '/guide/guide-left.png',
     width: 1536,
     height: 2040,
   },
@@ -34,7 +34,7 @@ export const GUIDELINES: GuidelineStep[] = [
     id: 'right45',
     title: 'Right 45 degree',
     description: <>Same as above, but show the other side of your face. <strong>Turn the other way</strong> so the camera sees your right side at 45°.</>,
-    imgSrc: '/guidelines/guideline-3.png',
+    imgSrc: '/guide/guide-right.png',
     width: 1536,
     height: 2040,
   },
@@ -42,7 +42,7 @@ export const GUIDELINES: GuidelineStep[] = [
     id: 'chinUp',
     title: 'Chin Up',
     description: <><strong>Face front and look up slightly</strong> to capture your chin and neck area.</>,
-    imgSrc: '/guidelines/guideline-4.png',
+    imgSrc: '/guide/guide-up.png',
     width: 1536,
     height: 2040,
   },
@@ -50,7 +50,15 @@ export const GUIDELINES: GuidelineStep[] = [
     id: 'chinDown',
     title: 'Chin Down',
     description: <><strong>Look down and tuck your chin slightly.</strong> We want a clear image of your forehead from the top.</>,
-    imgSrc: '/guidelines/guideline-5.png',
+    imgSrc: '/guide/guide-down.png',
+    width: 1536,
+    height: 2040,
+  },
+  {
+    id: 'frontSmiling',
+    title: 'Front Smiling',
+    description: <><strong>Look straight ahead and smile broadly!</strong> We want to see how your skin moves to detect dynamic lines and wrinkles.</>,
+    imgSrc: '/guide/guide-smiling.png',
     width: 1536,
     height: 2040,
   },

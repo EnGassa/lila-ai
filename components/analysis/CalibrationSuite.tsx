@@ -14,6 +14,7 @@ interface CalibrationSuiteProps {
   detectedYaw: number;
   detectedPitch: number;
   detectedRoll: number;
+  detectedSmile: number;
   detectedEyeDistance: number;
   calibrationData: Record<CapturePose, PoseData>;
   brightnessThreshold: number;
@@ -22,6 +23,8 @@ interface CalibrationSuiteProps {
   blurThreshold: number;
   setBlurThreshold: (val: number) => void;
   currentBlurScore: number;
+  smileThreshold: number;
+  setSmileThreshold: (val: number) => void;
   guidanceMessage: string;
 }
 
@@ -37,6 +40,7 @@ export default function CalibrationSuite({
   detectedYaw,
   detectedPitch,
   detectedRoll,
+  detectedSmile,
   detectedEyeDistance,
   calibrationData,
   brightnessThreshold,
@@ -45,6 +49,8 @@ export default function CalibrationSuite({
   blurThreshold,
   setBlurThreshold,
   currentBlurScore,
+  smileThreshold,
+  setSmileThreshold,
   guidanceMessage,
 }: CalibrationSuiteProps) {
   if (!webcamRunning) {
@@ -104,6 +110,14 @@ export default function CalibrationSuite({
                 } text-white`}
               >
                 Chin Down
+              </button>
+              <button
+                onClick={() => setCurrentPose("frontSmiling")}
+                className={`px-3 py-2 text-sm rounded ${
+                  currentPose === "frontSmiling" ? "bg-blue-600" : "bg-blue-400"
+                } text-white`}
+              >
+                Front Smiling
               </button>
             </div>
           </div>
@@ -189,6 +203,21 @@ export default function CalibrationSuite({
                   ).toFixed(3)}
                 </p>
               </div>
+              <div className="col-span-2 mt-2 pt-2 border-t border-gray-600">
+                <p className="font-bold">Expression Analysis</p>
+                <div className="flex gap-4">
+                  <p>
+                    Smile Score:{" "}
+                    <span
+                      className={
+                        detectedSmile > smileThreshold ? "text-green-400" : "text-yellow-400"
+                      }
+                    >
+                      {(detectedSmile * 100).toFixed(0)}%
+                    </span>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -245,6 +274,20 @@ export default function CalibrationSuite({
                   {currentBlurScore}
                 </span>
               </p>
+            </div>
+
+            <div className="mt-4">
+              <label className="block mb-1 text-sm font-bold">
+                Smile Threshold ({(smileThreshold * 100).toFixed(0)}%)
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={smileThreshold * 100}
+                onChange={(e) => setSmileThreshold(Number(e.target.value) / 100)}
+                className="w-full"
+              />
             </div>
           </div>
         </div>
