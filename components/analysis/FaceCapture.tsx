@@ -22,8 +22,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Check } from "lucide-react";
-import { GUIDELINES } from "@/components/guidelines";
+import { RefreshCw, Check } from 'lucide-react';
+import { GUIDELINES } from '@/components/guidelines-new';
 import type { CapturePose } from "@/hooks/usePoseValidation";
 
 interface FaceCaptureProps {
