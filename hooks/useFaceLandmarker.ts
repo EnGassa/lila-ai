@@ -99,6 +99,7 @@ export function useFaceLandmarker(
           (videoRef.current.srcObject as MediaStream)
             .getTracks()
             .forEach((track) => track.stop());
+          videoRef.current.srcObject = null;
         }
         if (animationFrameId.current) {
           window.cancelAnimationFrame(animationFrameId.current);
@@ -269,6 +270,7 @@ export function useFaceLandmarker(
         (videoRef.current.srcObject as MediaStream)
           .getTracks()
           .forEach((track) => track.stop());
+        videoRef.current.srcObject = null;
       }
       if (animationFrameId.current) {
         window.cancelAnimationFrame(animationFrameId.current);

@@ -68,6 +68,7 @@ export default function FaceCapture({
     advanceStep,
     resetSequence,
     finishSequence,
+    stopCamera,
   } = useCaptureSequence(setWebcamRunning, { onComplete });
 
   // Use image quality hook
@@ -131,12 +132,13 @@ export default function FaceCapture({
   } = useImageCapture(videoRef, { disableCropping });
 
   useEffect(() => {
+    if (isSequenceComplete) {
+      stopCamera();
+    }
     return () => {
-      if (webcamRunning) {
-        setWebcamRunning(false);
-      }
+      stopCamera(); // Cleanup on unmount
     };
-  }, [webcamRunning, setWebcamRunning]);
+  }, [isSequenceComplete, stopCamera]);
 
   // --- Capture Logic ---
   const handleCapture = useCallback(async () => {
@@ -164,6 +166,11 @@ export default function FaceCapture({
     currentStepIndex,
     setIsProcessing,
   ]);
+  
+  const finishSequenceAndStopCamera = useCallback(() => {
+    finishSequence();
+    stopCamera();
+  }, [finishSequence, stopCamera]);
 
   // Use auto-capture timer hook
   const { progress } = useAutoCaptureTimer(
@@ -249,7 +256,7 @@ export default function FaceCapture({
               Retake All
             </Button>
             <Button
-              onClick={finishSequence}
+              onClick={finishSequenceAndStopCamera}
               className="bg-brown-500 hover:bg-brown-500/90"
             >
               <Check className="mr-2 h-4 w-4" />

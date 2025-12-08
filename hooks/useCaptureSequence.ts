@@ -40,6 +40,13 @@ export function useCaptureSequence(
   const isSequenceComplete = currentStepIndex >= GUIDELINES.length;
 
   /**
+   * Stop the webcam.
+   */
+  const stopCamera = useCallback(() => {
+    setWebcamRunning(false);
+  }, [setWebcamRunning]);
+
+  /**
    * Store a captured image for a specific pose.
    * @param pose The pose to store the image for.
    * @param imageUrl The URL of the captured image.
@@ -64,13 +71,13 @@ export function useCaptureSequence(
         setIsTransitioning(false);
         if (nextStep >= GUIDELINES.length) {
           setCurrentStepIndex(nextStep);
-          setWebcamRunning(false);
+          stopCamera();
         } else {
           setCurrentStepIndex(nextStep);
         }
       }, 1500);
     },
-    [setWebcamRunning]
+    [stopCamera]
   );
 
   /**
@@ -125,5 +132,6 @@ export function useCaptureSequence(
     advanceStep,
     resetSequence,
     finishSequence,
+    stopCamera,
   };
 }
