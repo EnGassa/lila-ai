@@ -1,34 +1,45 @@
 # Active Context
 
-## Current Work: Full Dark Mode Implementation (Complete!)
+## Current Work: Reverted Photo Guidelines
+
+The photo guidelines have been reverted to the previous version, which requires 10 photos instead of 5. This change was requested by the user.
+
+### Key Changes:
+-   **Restored `app/guidelines/page.tsx`:** The guidelines page has been restored to its previous state, now displaying instructions for 10 photos.
+-   **Removed `components/guidelines.tsx`:** The reusable component for the 5-photo guidelines has been deleted.
+-   **Updated Upload Page:** The photo upload page no longer shows a modal with the 5-photo guidelines. The text has been updated to reflect the requirement of 10 photos.
+
+---
+
+## Previous Work: Full Dark Mode Implementation (Complete!)
 
 A comprehensive dark mode system has been successfully implemented across the entire application, using Tailwind CSS v4's modern theming architecture.
 
 ### Key Achievements:
 
-1. **Tailwind v4 Configuration:**
-   - Simplified `tailwind.config.js` to work with v4's CSS-based theme system
-   - Removed incompatible v3-style color mappings
+1.  **Tailwind v4 Configuration:**
+    *   Simplified `tailwind.config.js` to work with v4's CSS-based theme system
+    *   Removed incompatible v3-style color mappings
 
-2. **Theme System (globals.css):**
-   - Implemented `@theme` directive with comprehensive light/dark color schemes
-   - Created adaptive brand colors that maintain optimal contrast:
-     - Light mode: `#B98579` (warm brown)
-     - Dark mode: `#d4a599` (brighter for better visibility)
-   - Added semantic color utilities: `bg-brand`, `hover:bg-brand-hover`, `border-brand-border`, `bg-brand-light`
+2.  **Theme System (globals.css):**
+    *   Implemented `@theme` directive with comprehensive light/dark color schemes
+    *   Created adaptive brand colors that maintain optimal contrast:
+        *   Light mode: `#B98579` (warm brown)
+        *   Dark mode: `#d4a599` (brighter for better visibility)
+    *   Added semantic color utilities: `bg-brand`, `hover:bg-brand-hover`, `border-brand-border`, `bg-brand-light`
 
-3. **Component Updates:**
-   - **SummaryOverview**: Replaced hardcoded `bg-white` with semantic `bg-card`
-   - **RegionWiseBreakdown**: Updated to use theme-aware colors
-   - **RecommendationsTab**: Comprehensive update with brand color utilities for buttons and product cards
-   - **FileUpload**: Brand color button now adapts to theme
-   - **IngredientCard**: All colors converted to semantic classes
+3.  **Component Updates:**
+    *   **SummaryOverview**: Replaced hardcoded `bg-white` with semantic `bg-card`
+    *   **RegionWiseBreakdown**: Updated to use theme-aware colors
+    *   **RecommendationsTab**: Comprehensive update with brand color utilities for buttons and product cards
+    *   **FileUpload**: Brand color button now adapts to theme
+    *   **IngredientCard**: All colors converted to semantic classes
 
-4. **User Experience:**
-   - **Default Theme**: Set to 'system' to respect OS preference
-   - **Visual Feedback**: Theme toggle dropdown now shows checkmark (✓) next to active mode
-   - **Smooth Transitions**: All UI elements seamlessly adapt between themes
-   - **Accessible Toggle**: Sun/moon icon button positioned in bottom-right corner
+4.  **User Experience:**
+    *   **Default Theme**: Set to 'system' to respect OS preference
+    *   **Visual Feedback**: Theme toggle dropdown now shows checkmark (✓) next to active mode
+    *   **Smooth Transitions**: All UI elements seamlessly adapt between themes
+    *   **Accessible Toggle**: Sun/moon icon button positioned in bottom-right corner
 
 ### Technical Implementation:
 - Used Tailwind v4's `@theme` directive for color definitions

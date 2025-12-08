@@ -2,13 +2,11 @@
 
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 import { DynamicFileUpload } from '@/components/dynamic-file-upload'
 import { UserAvatar } from '@/components/user-avatar'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { PhotoGuidelines } from '@/components/guidelines'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Info, Camera, ArrowLeft } from 'lucide-react'
+import { Camera, ArrowLeft, Info } from 'lucide-react'
 
 // Dynamically import FaceCapture to avoid SSR issues with MediaPipe
 const FaceCapture = dynamic(() => import('@/components/analysis/FaceCapture'), {
@@ -47,34 +45,23 @@ export function UploadPageClient({ userId, displayName }: { userId: string, disp
             <div className="p-6 rounded-lg bg-card shadow-sm">
                 <h1 className="text-xl font-semibold mb-2">Upload Your Photos</h1>
                 <p className="text-muted-foreground mb-6">
-                We need 5 specific photos for a complete analysis. You can use our Smart Scanner to guide you, or upload them manually.
+                We need 10 specific photos for a complete analysis. You can use our Smart Scanner to guide you, or upload them manually.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 mb-4">
-                    <Button 
+                    {/* <Button 
                         onClick={() => setViewMode('camera')} 
                         className="bg-brand hover:bg-brand-hover text-white h-12 text-lg px-6"
                     >
                         <Camera className="mr-2 h-5 w-5" />
                         Start Smart Scan
-                    </Button>
-                    
-                    <Dialog>
-                    <DialogTrigger asChild>
-                        <Button variant="outline" className="h-12">
-                        <Info className="w-4 h-4 mr-2" />
-                        View Guidelines
+                    </Button> */}
+                    <Link href="/guidelines" passHref>
+                        <Button variant="outline" className="h-12 text-lg px-6">
+                            <Info className="mr-2 h-5 w-5" />
+                            View Guidelines
                         </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-3xl">
-                        <DialogHeader>
-                        <DialogTitle>Photo Upload Guidelines</DialogTitle>
-                        </DialogHeader>
-                        <ScrollArea className="h-[70vh] pr-4">
-                        <PhotoGuidelines />
-                        </ScrollArea>
-                    </DialogContent>
-                    </Dialog>
+                    </Link>
                 </div>
             </div>
             

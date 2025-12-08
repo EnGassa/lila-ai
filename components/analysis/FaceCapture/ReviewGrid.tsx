@@ -1,4 +1,4 @@
-import { GUIDELINES } from "@/components/guidelines";
+import { GUIDELINES } from "@/lib/guidelines";
 
 interface ReviewGridProps {
   capturedImages: Record<string, string | null>;
