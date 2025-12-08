@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { validatePose, validateDistance } from "@/lib/poseValidation";
-import { PoseId } from "@/lib/guidelines";
+import { PoseId } from "@/components/guidelines";
 
 export type CapturePose = PoseId;
 

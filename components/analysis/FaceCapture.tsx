@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, Check } from "lucide-react";
-import { GUIDELINES } from "@/lib/guidelines";
+import { GUIDELINES } from "@/components/guidelines";
 import type { CapturePose } from "@/hooks/usePoseValidation";
 
 interface FaceCaptureProps {
