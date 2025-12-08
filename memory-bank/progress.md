@@ -2,6 +2,13 @@
 
 ## What Works
 
+*   **Dual Upload Page System:**
+    *   The original `/upload` page has been restored to its previous version, requiring 10 photos.
+    *   The new upload page with the face scanner is now located at `/upload/new` and requires 6 photos.
+    *   The `/upload` page and the `/guidelines` page now use the 10-image guide.
+    *   The `/upload/new` page now uses the 6-image guide.
+    *   The theme toggle button is now visible on both upload pages.
+
 *   **Full Dark Mode System:** A comprehensive dark mode implementation using Tailwind CSS v4's modern theming architecture.
     *   **Tailwind v4 Configuration:** Simplified config to work with v4's CSS-based theme system.
     *   **Adaptive Brand Colors:** Light mode uses `#B98579` (warm brown), dark mode uses `#d4a599` (brighter for better contrast).

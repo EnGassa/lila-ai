@@ -1,6 +1,25 @@
 # Active Context
 
-## Current Work: Full Dark Mode Implementation (Complete!)
+## Current Work: Reverted Upload Page and Moved New Upload Page
+
+Reverted the `/upload` page to its pre-scanner version and moved the new scanner version to `/upload/new`.
+
+### Key Achievements:
+
+1.  **Dual Upload Page System:**
+    *   The original `/upload` page has been restored to its previous version, requiring 10 photos.
+    *   The new upload page with the face scanner is now located at `/upload/new` and requires 6 photos.
+
+2.  **Separate Guidelines:**
+    *   The `/upload` page and the `/guidelines` page now use the 10-image guide.
+    *   The `/upload/new` page now uses the 6-image guide.
+
+3.  **Theme Toggle Button:**
+    *   The theme toggle button is now visible on both upload pages.
+
+---
+
+## Previous Work: Full Dark Mode Implementation (Complete!)
 
 A comprehensive dark mode system has been successfully implemented across the entire application, using Tailwind CSS v4's modern theming architecture.
 

@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Terminal, UploadCloud, X } from 'lucide-react'
-import { getSignedUploadUrl, notifyOnUploadComplete } from '@/app/[userId]/upload/actions'
+import { getSignedUploadUrl, notifyOnUploadComplete } from '@/app/[userId]/upload/new/actions'
 import { toast } from 'sonner'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 

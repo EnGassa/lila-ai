@@ -6,7 +6,8 @@ export const metadata: Metadata = {
   title: "Guidelines to take photos",
 };
 
-export const GUIDELINES = [
+const GuidelinesPage = () => {
+  const guidelines = [
     {
       title: "Front Face",
       description: (
@@ -16,7 +17,7 @@ export const GUIDELINES = [
           single part of the face so that the whole face is in focus.
         </>
       ),
-      imgSrc: "/guidelines/front.png",
+      imgSrc: "/guide/front.jpeg",
       width: 1536,
       height: 2040,
     },
@@ -29,7 +30,7 @@ export const GUIDELINES = [
           on that side clearly.
         </>
       ),
-      imgSrc: "/guidelines/left45.png",
+      imgSrc: "/guide/left45.jpeg",
       width: 1536,
       height: 2040,
     },
@@ -42,7 +43,7 @@ export const GUIDELINES = [
           at 45°.
         </>
       ),
-      imgSrc: "/guidelines/right45.png",
+      imgSrc: "/guide/right45.jpeg",
       width: 1536,
       height: 2040,
     },
@@ -54,7 +55,7 @@ export const GUIDELINES = [
           and neck area.
         </>
       ),
-      imgSrc: "/guidelines/chun_up.png",
+      imgSrc: "/guide/chin_up.jpeg",
       width: 1536,
       height: 2040,
     },
@@ -66,7 +67,7 @@ export const GUIDELINES = [
           clear image of your forehead from the top.
         </>
       ),
-      imgSrc: "/guidelines/chin_down.png",
+      imgSrc: "/guide/chin_down.jpeg",
       width: 1536,
       height: 2040,
     },
@@ -78,7 +79,7 @@ export const GUIDELINES = [
           entire face is in focus.
         </>
       ),
-      imgSrc: "/guidelines/cheek_left.png",
+      imgSrc: "/guide/cheek_left.jpeg",
       width: 1536,
       height: 2040,
     },
@@ -89,7 +90,7 @@ export const GUIDELINES = [
           <strong>Do the same cheek close up for the right side.</strong>
         </>
       ),
-      imgSrc: "/guidelines/cheek_right.png",
+      imgSrc: "/guide/cheek_right.jpeg",
       width: 1536,
       height: 2040,
     },
@@ -102,7 +103,7 @@ export const GUIDELINES = [
           under-eye skin be visible without shadow.
         </>
       ),
-      imgSrc: "/guidelines/undereye_left.png",
+      imgSrc: "/guide/undereye_left.jpeg",
       width: 1536,
       height: 2040,
     },
@@ -113,7 +114,7 @@ export const GUIDELINES = [
           <strong>Do the same for the right side.</strong>
         </>
       ),
-      imgSrc: "/guidelines/undereye_right.png",
+      imgSrc: "/guide/undereye_right.jpeg",
       width: 1536,
       height: 2040,
     },
@@ -126,13 +127,12 @@ export const GUIDELINES = [
           make sure the nose is not blurred.
         </>
       ),
-      imgSrc: "/guidelines/nose_closeup.png",
+      imgSrc: "/guide/nose_closeup.jpeg",
       width: 1536,
       height: 2040,
     },
   ];
 
-export const PhotoGuidelines = () => {
   return (
     <div className="bg-white text-black p-6 font-sans">
       <div className="max-w-2xl mx-auto">
@@ -173,12 +173,12 @@ export const PhotoGuidelines = () => {
 
         <h2 className="text-2xl font-medium mb-4">What Angles to Click</h2>
         <p className="text-base font-light mb-8">
-          You need to click {GUIDELINES.length} photos. See examples and
+          You need to click {guidelines.length} photos. See examples and
           instructions below.
         </p>
 
         <div className="space-y-12">
-          {GUIDELINES.map((guideline, index) => (
+          {guidelines.map((guideline, index) => (
             <div key={guideline.title}>
               <h3 className="text-xl font-medium mb-4">
                 {index + 1}. {guideline.title}
@@ -203,3 +203,5 @@ export const PhotoGuidelines = () => {
     </div>
   );
 };
+
+export default GuidelinesPage;
