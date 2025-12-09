@@ -34,7 +34,7 @@ interface Concern {
 
 export function SkincareDashboard({ analysis, recommendations, userId }: SkincareDashboardProps) {
   const [selectedConcern, setSelectedConcern] = useState<Concern | null>(null);
-  
+
   // Extract nested analysis and charts from the database structure
   const analysisData = analysis.analysis || analysis;
   const charts = analysis.charts || {};
@@ -58,7 +58,7 @@ export function SkincareDashboard({ analysis, recommendations, userId }: Skincar
         </TabsList>
         <TabsContent value="overview" className="space-y-6">
           <SummaryOverview analysis={analysisData} charts={charts} />
-          <div className="p-4 rounded-lg bg-card border">
+          <div className="p-4 rounded-lg bg-card border border-border">
             <h2 className="text-base font-light text-muted-foreground">
               SEVERITY RADAR
             </h2>
@@ -70,7 +70,7 @@ export function SkincareDashboard({ analysis, recommendations, userId }: Skincar
               <SeverityRadar radarData={charts.overview_radar} />
             </div>
           </div>
-          <div className="p-4 rounded-lg bg-card border">
+          <div className="p-4 rounded-lg bg-card border border-border">
             <h2 className="text-base font-light text-muted-foreground">
               SKIN CONCERNS
             </h2>

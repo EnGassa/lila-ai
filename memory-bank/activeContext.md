@@ -1,6 +1,17 @@
 # Active Context
 
-## Current Work: Reverted Upload Page and Moved New Upload Page
+## Current Work: UI Polish (Border Colors)
+
+Fixed an issue where border colors were defaulting to #333 (dark gray) in light mode instead of the correct #e5e5e5.
+
+### Key Achievements:
+1. **Card Component:** Added `border-border` to ensure correct theme variable usage.
+2. **Dashboard Components:** Fixed border colors for Severity Radar and Skin Concerns containers.
+3. **Tabs Component:** Fixed the dark underline for Analysis/Recommendation tabs.
+
+---
+
+## Previous Work: Reverted Upload Page and Moved New Upload Page
 
 Reverted the `/upload` page to its pre-scanner version and moved the new scanner version to `/upload/new`.
 
@@ -24,6 +35,9 @@ Reverted the `/upload` page to its pre-scanner version and moved the new scanner
 
 3.  **Theme Toggle Button:**
     *   The theme toggle button is now visible on both upload pages.
+
+*   **UI Polish (Border Colors):** Fixed incorrect border colors in light mode.
+    *   **Consolidated Fix:** Applied `border-border` utility class to `Card`, `TabsList`, and dashboard containers to ensure they respect the theme-defined light gray (#e5e5e5) instead of defaulting to dark gray/black.
 
 ---
 
