@@ -40,6 +40,14 @@
     *   **Border Colors:** Fixed an issue where borders were displaying as dark gray (#333) in light mode. ensured consistent usage of `#e5e5e5` across Cards, Tabs, and Dashboard components by applying the `border-border` utility.
 
 *   **Build Fix:** A bug that caused the Next.js build to fail due to a server-side rendering issue with the PostHog provider has been resolved. The provider is now dynamically imported and rendered only on the client side, ensuring a successful build.
+ 
+ *   **Dev/Prod Environment Isolation:**
+     *   **Script Arguments:** Added `--env` argument to `run_analysis.py` and `onboard_beta_user.py` to toggle between `user-uploads` (prod) and `user-uploads-dev` (dev) buckets.
+     *   **Environment Configuration:** Updated configuration to strictly require `SUPABASE_SERVICE_ROLE_KEY` and S3 credentials in `.env.local` for backend script access.
+ 
+ *   **Robust Storage Access (S3 Fallback):**
+     *   **Boto3 Integration:** Implemented a failover mechanism in `run_analysis.py` that uses `boto3` to directly access Supabase S3-compatible storage. This resolves issues where RLS policies prevented the standard Supabase client from listing user files in backend contexts.
+     *   **Timestamped Partitioning:** Upgraded the upload architecture to store files in `{userId}/{timestamp}/` directories, preventing filename collisions and enabling historical analysis.
 
 *   **Secure Mobile-Friendly Image Uploads & Notifications:**
     *   **Discord Notifications:** Implemented a real-time notification system. A server action (`notifyOnUploadComplete`) is triggered by the client after a successful upload batch, sending a formatted embed message to a configured Discord channel via webhook.

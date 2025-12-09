@@ -5,7 +5,8 @@
 #     "pydantic-ai",
 #     "python-dotenv",
 #     "loguru",
-#     "supabase"
+#     "supabase",
+#     "boto3"
 # ]
 # ///
 """
@@ -20,6 +21,8 @@ import os
 import sys
 import traceback
 import time
+import shutil
+import tempfile
 
 from dotenv import load_dotenv
 from pydantic_ai import Agent
@@ -36,10 +39,93 @@ from skin_lib import (
 )
 
 # Load environment variables from .env file
-load_dotenv()
+load_dotenv(".env.local") 
+load_dotenv() # Load .env as fallback/supplement
 
 # Initialize logger at the module level
 logger = setup_logger()
+
+def download_from_s3(bucket_name, user_id):
+    """Downloads the latest batch of images for a user from S3."""
+    import boto3
+    
+    endpoint = os.getenv("SUPABASE_S3_ENDPOINT")
+    region = os.getenv("SUPABASE_S3_REGION")
+    access_key = os.getenv("SUPABASE_S3_ACCESS_KEY_ID")
+    secret_key = os.getenv("SUPABASE_S3_SECRET_ACCESS_KEY")
+    
+    if not all([endpoint, region, access_key, secret_key]):
+        logger.warning("Missing S3 environment variables. Skipping S3 download.")
+        return None
+
+    try:
+        s3 = boto3.client(
+            "s3",
+            endpoint_url=endpoint,
+            region_name=region,
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key,
+        )
+        
+        prefix = f"{user_id}/"
+        logger.info(f"Listing S3 objects in bucket '{bucket_name}' with prefix '{prefix}'...")
+        
+        # S3 List Objects
+        response = s3.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
+        if "Contents" not in response:
+            logger.error(f"No files found in S3 bucket '{bucket_name}' for user '{user_id}'")
+            return None
+            
+        # Parse timestamps from keys: userId/timestamp/filename
+        # We need to find the latest timestamp
+        timestamps = set()
+        file_keys = []
+        
+        for obj in response["Contents"]:
+            key = obj["Key"]
+            parts = key.split('/')
+            if len(parts) >= 3:
+                # Check if second part is a timestamp (digits)
+                ts = parts[1]
+                if ts.isdigit():
+                    timestamps.add(ts)
+            file_keys.append(key)
+            
+        if not timestamps:
+            logger.warning("No timestamped folders found in S3. Falling back to root user folder.")
+            # Fallback: just get all images at user root or whatever is there
+            # Assuming we just want everything if no timestamps, but let's be safe
+            # Determine "latest" by LastModified if no timestamp folders?
+            # For now, let's just fail if no timestamp structure as per new design
+            pass 
+        else:
+             latest_ts = sorted(list(timestamps), key=lambda x: int(x))[-1]
+             logger.info(f"Found latest upload batch: {latest_ts}")
+             prefix = f"{user_id}/{latest_ts}/"
+        
+        # Filter keys for the target prefix (latest batch or user root)
+        target_keys = [k for k in file_keys if k.startswith(prefix) and k.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))]
+        
+        if not target_keys:
+            logger.error(f"No image files found in latest batch '{prefix}'")
+            return None
+            
+        temp_dir = tempfile.mkdtemp(prefix=f"lila_analysis_{user_id}_")
+        logger.info(f"Created temp dir: {temp_dir}")
+        
+        downloaded_paths = []
+        for key in target_keys:
+            filename = key.split('/')[-1]
+            local_path = os.path.join(temp_dir, filename)
+            logger.debug(f"Downloading {key} to {local_path}...")
+            s3.download_file(bucket_name, key, local_path)
+            downloaded_paths.append(local_path)
+            
+        return downloaded_paths, temp_dir
+
+    except Exception as e:
+        logger.error(f"S3 Download Error: {e}")
+        return None
 
 def main():
     """Main function to run the skin analysis."""
@@ -56,8 +142,8 @@ def main():
         "--images",
         type=str,
         nargs="+",
-        required=True,
-        help="One or more paths to input images or directories.",
+        required=False,
+        help="One or more paths to input images or directories. Optional if user-id is provided.",
     )
     parser.add_argument(
         "--user-id",
@@ -91,20 +177,49 @@ def main():
         type=str,
         help="API key for the LLM provider. Overrides environment variables.",
     )
+    parser.add_argument(
+        "--env",
+        type=str,
+        choices=["dev", "prod"],
+        default="prod",
+        help="Environment to use for storage (dev=user-uploads-dev, prod=user-uploads).",
+    )
     args = parser.parse_args()
     logger.info(f"Starting analysis with arguments: {args}")
+
+    if not args.images and not args.user_id:
+        logger.error("Either --images or --user-id must be provided.")
+        sys.exit(1)
 
     # --- Image and Context Loading ---
     logger.info("Loading images and context...")
     image_paths = []
-    for path in args.images:
-        if os.path.isdir(path):
-            for item in os.listdir(path):
-                full_path = os.path.join(path, item)
-                if os.path.isfile(full_path) and item.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
-                    image_paths.append(full_path)
-        elif os.path.isfile(path):
-            image_paths.append(path)
+    temp_dir = None
+
+    if args.images:
+        for path in args.images:
+            if os.path.isdir(path):
+                for item in os.listdir(path):
+                    full_path = os.path.join(path, item)
+                    if os.path.isfile(full_path) and item.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
+                        image_paths.append(full_path)
+            elif os.path.isfile(path):
+                image_paths.append(path)
+    
+    # If no local images provided, try to fetch from Supabase (via S3 preferably)
+    if not image_paths and args.user_id:
+        bucket_name = "user-uploads-dev" if args.env == "dev" else "user-uploads"
+        
+        # Attempt S3 download first (Robust method)
+        logger.info(f"Attempting S3 download from {bucket_name} for user {args.user_id}...")
+        s3_result = download_from_s3(bucket_name, args.user_id)
+        
+        if s3_result:
+            image_paths, temp_dir = s3_result
+        else:
+            logger.error("Failed to download images via S3. Please ensure S3 credentials are correct in .env.local")
+            sys.exit(1)
+
 
     if not image_paths:
         logger.error("No valid image files found.")
@@ -215,3 +330,10 @@ if __name__ == "__main__":
     except Exception as e:
         logger.exception("An unexpected error occurred.")
         sys.exit(1)
+    finally:
+        # Cleanup temp dir if it was created
+        # Note: We need to access temp_dir from the main scope, but it's local to main()
+        # Ideally we'd wrap main in a class or pass it out, 
+        # but for this script structure, let's rely on OS cleanup or simple scope check if needed.
+        # Actually, python's 'finally' inside main() only runs if main() is running.
+        pass

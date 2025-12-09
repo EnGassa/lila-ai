@@ -13,7 +13,12 @@
     *   `react-hook-form` for form management.
 *   **Analytics:** PostHog for web analytics and session recordings.
 *   **Logging:** Loguru
-*   **Package Manager:** pnpm
+*   **Package Manager:** pnpm (Frontend), uv (Python Scripts)
+*   **Python Dependencies:**
+    *   `pydantic-ai`
+    *   `supabase`
+    *   `boto3` (for robust S3 storage access)
+    *   `python-dotenv`
 
 ## Development Setup
 

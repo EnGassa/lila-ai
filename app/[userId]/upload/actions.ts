@@ -32,19 +32,21 @@ export async function getSignedUploadUrl(userId: string, files: { name: string; 
     return { error: 'Invalid user ID' }
   }
 
-  const signedUrls = []
+  const timestamp = Date.now().toString()
+  const signedUrls: { fileName: string, signedUrl: string, path: string }[] = []
 
   for (const file of files) {
     try {
-      const key = `${userId}/${file.name}`
+      // Use timestamp directory to prevent overwrites
+      const path = `${userId}/${timestamp}/${file.name}`
       const command = new PutObjectCommand({
         Bucket: process.env.SUPABASE_S3_BUCKET || 'user-uploads',
-        Key: key,
+        Key: path,
         ContentType: file.type,
       })
 
       const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 })
-      signedUrls.push({ fileName: file.name, signedUrl })
+      signedUrls.push({ fileName: file.name, signedUrl, path })
     } catch (error) {
       console.error(`Error generating signed URL for ${file.name}:`, error)
       return { error: `Failed to generate signed URL for ${file.name}` }
@@ -54,7 +56,7 @@ export async function getSignedUploadUrl(userId: string, files: { name: string; 
   return { signedUrls }
 }
 
-export async function notifyOnUploadComplete(userId: string, fileNames: string[]) {
+export async function notifyOnUploadComplete(userId: string, filePaths: string[]) {
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL
   if (!webhookUrl) {
     console.error('DISCORD_WEBHOOK_URL is not set.')
@@ -62,18 +64,22 @@ export async function notifyOnUploadComplete(userId: string, fileNames: string[]
   }
 
   const signedUrls = []
-  for (const fileName of fileNames) {
+  const fileNames = [] 
+  
+  for (const path of filePaths) {
     try {
-      const key = `${userId}/${fileName}`
+      const fileName = path.split('/').pop() || 'unknown'
+      fileNames.push(fileName)
+      
       const command = new GetObjectCommand({
         Bucket: process.env.SUPABASE_S3_BUCKET || 'user-uploads',
-        Key: key,
+        Key: path,
       })
 
       const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 86400 }) // 24 hours
       signedUrls.push(signedUrl)
     } catch (error) {
-      console.error(`Error generating signed URL for ${fileName}:`, error)
+      console.error(`Error generating signed URL for ${path}:`, error)
       // Continue even if one fails
     }
   }
@@ -81,7 +87,7 @@ export async function notifyOnUploadComplete(userId: string, fileNames: string[]
   const embeds: DiscordEmbed[] = [
     {
       title: 'New Photo Upload!',
-      description: `User **${userId}** has uploaded **${fileNames.length}** new photo(s).`,
+      description: `User **${userId}** has uploaded **${filePaths.length}** new photo(s).`,
       fields: [
         {
           name: 'Files',

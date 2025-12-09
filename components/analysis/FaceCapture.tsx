@@ -82,7 +82,7 @@ export default function FaceCapture({
     blurThreshold,
     setBlurThreshold,
   } = useImageQuality(videoRef, webcamRunning, faceBoundingBox, {
-    brightnessThreshold: 100,
+    brightnessThreshold: 20,
     blurThreshold: 500,
   });
 

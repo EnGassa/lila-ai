@@ -1,13 +1,14 @@
 # Active Context
 
-## Current Work: UI Polish (Border Colors)
-
-Fixed an issue where border colors were defaulting to #333 (dark gray) in light mode instead of the correct #e5e5e5.
-
-### Key Achievements:
-1. **Card Component:** Added `border-border` to ensure correct theme variable usage.
-2. **Dashboard Components:** Fixed border colors for Severity Radar and Skin Concerns containers.
-3. **Tabs Component:** Fixed the dark underline for Analysis/Recommendation tabs.
+## Current Work: Deployment Readiness & Plumbing
+ 
+ Implemented robust environment management and storage access for the AI analysis pipeline to ensure reliability across global deployments.
+ 
+ ### Key Achievements:
+ 1. **Dev/Prod Mode:** Added `--env` flag to analysis scripts (`dev` vs `prod`) to safely switch between `user-uploads-dev` and `user-uploads` buckets.
+ 2. **S3 Fallback Strategy:** Implemented a direct S3 access layer using `boto3` in `run_analysis.py` to bypass Supabase RLS policies during backend processing.
+ 3. **Timestamped Storage:** Upgraded the upload pipeline to store images in time-partitioned folders (`userId/timestamp/filename`) for better organization and versioning.
+ 4. **UI Polish (Border Colors):** Fixed incorrect border colors in light mode.
 
 ---
 

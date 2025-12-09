@@ -112,8 +112,9 @@ export function FileUpload({ userId, initialFiles = [] }: FileUploadProps) {
       // Step 2: Upload files directly to S3
       const totalFiles = signedUrls.length
       let completedFiles = 0
+      const uploadedPaths: string[] = [] // Track full paths for notification
 
-      await Promise.all(signedUrls.map(async ({ signedUrl, fileName }: { signedUrl: string, fileName: string }) => {
+      await Promise.all(signedUrls.map(async ({ signedUrl, fileName, path }: { signedUrl: string, fileName: string, path: string }) => {
         const file = validFiles.find(f => f.name === fileName)
         if (!file) return
 
@@ -130,6 +131,7 @@ export function FileUpload({ userId, initialFiles = [] }: FileUploadProps) {
         }
 
         completedFiles++
+        uploadedPaths.push(path) // Store the full storage path
         setUploadProgress(Math.round((completedFiles / totalFiles) * 100))
       }))
 
@@ -138,7 +140,9 @@ export function FileUpload({ userId, initialFiles = [] }: FileUploadProps) {
       // Fire and forget the notification
       try {
         noStore();
-        await notifyOnUploadComplete(userId, validFiles.map(f => f.name))
+        if (uploadedPaths.length > 0) {
+            await notifyOnUploadComplete(userId, uploadedPaths)
+        }
       } catch (e) {
         console.warn("Failed to send upload notification:", e)
       }

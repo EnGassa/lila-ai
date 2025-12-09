@@ -111,13 +111,14 @@ def main():
     parser = argparse.ArgumentParser(description="Onboard a beta user.")
     parser.add_argument("--name", required=True, help="Full name of the user.")
     parser.add_argument("--email", help="Email of the user (optional).")
-    parser.add_argument("--image-dir", help="Directory containing user's face images.")
+    parser.add_argument("--image-dir", help="Directory containing user's face images. If not provided, will assume images are uploaded to Supabase.")
     parser.add_argument("--model", default="google-gla:gemini-2.5-pro", help="Model to use for analysis and recommendations.")
     parser.add_argument("--api-key", help="API key for the model provider.")
     parser.add_argument("--context-file", help="Path to a JSON file containing user context.")
     parser.add_argument("--analysis-prompt", help="Path to the analysis prompt file.")
     parser.add_argument("--setup-only", action="store_true", help="Only create the user and print the upload link.")
     parser.add_argument("--overwrite", action="store_true", help="Overwrite existing user without prompting.")
+    parser.add_argument("--env", choices=["dev", "prod"], default="prod", help="Environment to use for storage (dev=user-uploads-dev, prod=user-uploads).")
 
     args = parser.parse_args()
     
@@ -134,9 +135,11 @@ def main():
         print("="*50 + "\n")
         sys.exit(0)
 
-    # Validate image-dir for full onboarding
+    # Validate image-dir for full onboarding IF we are not relying on supabase
+    # Actually, we can just proceed. run_analysis.py will fail if no images and no user-id (but we have user-id)
+    # or if it can't find images in Supabase.
     if not args.image_dir:
-        parser.error("the following arguments are required: --image-dir")
+         logger.info("No --image-dir provided. Assuming images are already uploaded to Supabase.")
 
     # Create a directory for this test run's logs
     log_dir = f"logs/test_run_{user_id}"
@@ -147,13 +150,15 @@ def main():
     analysis_output_path = os.path.join(log_dir, "analysis_full_output.json")
     analysis_args = [
         "--model", args.model,
-        "--images", args.image_dir,
         "--user-id", user_id,
         "--reasoning-effort", "high",
-        "--output", analysis_output_path
+        "--output", analysis_output_path,
+        "--env", args.env
     ]
     if args.analysis_prompt:
         analysis_args.extend(["--analysis-prompt", args.analysis_prompt])
+    if args.image_dir:
+        analysis_args.extend(["--images", args.image_dir])
     if args.api_key:
         analysis_args.extend(["--api-key", args.api_key])
     if args.context_file:

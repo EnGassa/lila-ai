@@ -22,6 +22,13 @@ To handle sensitive file uploads securely without exposing storage credentials o
 2.  **Verify & Sign:** The server verifies the user's identity and generates a pre-signed URL with a short expiration time using the `@aws-sdk/s3-request-presigner`.
 3.  **Direct Upload:** The client receives the URL and uploads the file directly to Supabase Storage (S3 compatible) using a standard `PUT` request.
 This pattern bypasses server body size limits and reduces server load.
+ 
+ ### Backend Storage Access (S3 Direct)
+ While the frontend uses the "Secure Broker" pattern to upload, backend scripts (like `run_analysis.py`) require privileged access to read these files.
+ 1.  **Challenge:** Standard Supabase client libraries adhere to RLS policies. The backend script, even with a Service Role Key, can sometimes face listing limitations or complexity with user-scoped folders.
+ 2.  **Solution:** The scripts use `boto3` to interact directly with the Supabase S3-compatible endpoint.
+ 3.  **Credentialing:** This requires `SUPABASE_S3_ACCESS_KEY_ID`, `SUPABASE_S3_SECRET_ACCESS_KEY`, `SUPABASE_S3_REGION`, and `SUPABASE_S3_ENDPOINT` to be present in `.env.local`.
+ 4.  **Benefit:** This provides a robust, policy-agnostic way to list and download user files for processing, ensuring the analysis pipeline never fails due to frontend permission changes.
 
 ### Event-Driven Notifications (Discord)
 To provide real-time alerts for important system events, such as a user uploading new photos, a notification pattern leveraging Next.js Server Actions and external webhooks is used.
