@@ -4,7 +4,7 @@
  */
 
 import type { PoseData } from "@/hooks/usePoseValidation";
-import type { PoseId } from "@/components/guidelines";
+import type { PoseId } from "@/components/guidelines-new";
 
 /**
  * Detected face angles and measurements from MediaPipe
@@ -28,7 +28,7 @@ export interface ValidationResult {
 /**
  * Validates the detected face pose against target calibration data
  * 
- * @param currentPose - The pose being validated (e.g., 'front', 'left45')
+ * @param currentPose - The pose being validated (e.g., 'front', 'left_45')
  * @param detected - Detected angles and measurements from MediaPipe
  * @param target - Target calibration data for the current pose
  * @param tolerance - Angle tolerance in degrees (default: 8)
@@ -81,35 +81,35 @@ export function validatePose(
       }
       break;
 
-    case 'left45':
+    case 'left_45':
       if (Math.abs(yawDiff) > tolerance) {
         message = yawDiff > 0 ? "Turn Left" : "Turn Right (Too much)";
         correct = false;
       }
       break;
 
-    case 'right45':
+    case 'right_45':
       if (Math.abs(yawDiff) > tolerance) {
         message = yawDiff < 0 ? "Turn Right" : "Turn Left (Too much)";
         correct = false;
       }
       break;
 
-    case 'chinUp':
+    case 'chin_up':
       if (Math.abs(pitchDiff) > tolerance) {
         message = pitchDiff < 0 ? "Look Up" : "Look Down (Too much)";
         correct = false;
       }
       break;
 
-    case 'chinDown':
+    case 'chin_down':
       if (Math.abs(pitchDiff) > tolerance) {
         message = pitchDiff > 0 ? "Look Down" : "Look Up (Too much)";
         correct = false;
       }
       break;
 
-    case 'frontSmiling':
+    case 'front_smiling':
       if (Math.abs(yawDiff) > tolerance) {
         message = yawDiff < 0 ? "Turn Right" : "Turn Left";
         correct = false;
@@ -146,7 +146,7 @@ export function validateDistance(
   tolerance: number = 0.25
 ): ValidationResult {
   const distanceDiff = detectedEyeDistance - targetEyeDistance;
-  
+
   if (Math.abs(distanceDiff) > targetEyeDistance * tolerance) {
     return {
       isCorrect: false,

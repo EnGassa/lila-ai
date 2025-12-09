@@ -73,49 +73,43 @@ export default function CalibrationSuite({
             <div className="flex flex-wrap gap-2 justify-center md:justify-start">
               <button
                 onClick={() => setCurrentPose("front")}
-                className={`px-3 py-2 text-sm rounded ${
-                  currentPose === "front" ? "bg-blue-600" : "bg-blue-400"
-                } text-white`}
+                className={`px-3 py-2 text-sm rounded ${currentPose === "front" ? "bg-blue-600" : "bg-blue-400"
+                  } text-white`}
               >
                 Front
               </button>
               <button
-                onClick={() => setCurrentPose("left45")}
-                className={`px-3 py-2 text-sm rounded ${
-                  currentPose === "left45" ? "bg-blue-600" : "bg-blue-400"
-                } text-white`}
+                onClick={() => setCurrentPose("left_45")}
+                className={`px-3 py-2 text-sm rounded ${currentPose === "left_45" ? "bg-blue-600" : "bg-blue-400"
+                  } text-white`}
               >
                 Left 45°
               </button>
               <button
-                onClick={() => setCurrentPose("right45")}
-                className={`px-3 py-2 text-sm rounded ${
-                  currentPose === "right45" ? "bg-blue-600" : "bg-blue-400"
-                } text-white`}
+                onClick={() => setCurrentPose("right_45")}
+                className={`px-3 py-2 text-sm rounded ${currentPose === "right_45" ? "bg-blue-600" : "bg-blue-400"
+                  } text-white`}
               >
                 Right 45°
               </button>
               <button
-                onClick={() => setCurrentPose("chinUp")}
-                className={`px-3 py-2 text-sm rounded ${
-                  currentPose === "chinUp" ? "bg-blue-600" : "bg-blue-400"
-                } text-white`}
+                onClick={() => setCurrentPose("chin_up")}
+                className={`px-3 py-2 text-sm rounded ${currentPose === "chin_up" ? "bg-blue-600" : "bg-blue-400"
+                  } text-white`}
               >
                 Chin Up
               </button>
               <button
-                onClick={() => setCurrentPose("chinDown")}
-                className={`px-3 py-2 text-sm rounded ${
-                  currentPose === "chinDown" ? "bg-blue-600" : "bg-blue-400"
-                } text-white`}
+                onClick={() => setCurrentPose("chin_down")}
+                className={`px-3 py-2 text-sm rounded ${currentPose === "chin_down" ? "bg-blue-600" : "bg-blue-400"
+                  } text-white`}
               >
                 Chin Down
               </button>
               <button
-                onClick={() => setCurrentPose("frontSmiling")}
-                className={`px-3 py-2 text-sm rounded ${
-                  currentPose === "frontSmiling" ? "bg-blue-600" : "bg-blue-400"
-                } text-white`}
+                onClick={() => setCurrentPose("front_smiling")}
+                className={`px-3 py-2 text-sm rounded ${currentPose === "front_smiling" ? "bg-blue-600" : "bg-blue-400"
+                  } text-white`}
               >
                 Front Smiling
               </button>
@@ -165,9 +159,8 @@ export default function CalibrationSuite({
           <div>
             <h4 className="font-bold text-lg mb-2 text-center">Live Data</h4>
             <p
-              className={`font-bold text-2xl text-center mb-1 ${
-                isPoseCorrect ? "text-green-400" : "text-red-400"
-              }`}
+              className={`font-bold text-2xl text-center mb-1 ${isPoseCorrect ? "text-green-400" : "text-red-400"
+                }`}
             >
               POSE CORRECT: {isPoseCorrect ? "YES" : "NO"}
             </p>

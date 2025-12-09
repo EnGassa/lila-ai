@@ -2,7 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 
-export type PoseId = 'front' | 'left45' | 'right45' | 'chinUp' | 'chinDown' | 'frontSmiling';
+export type PoseId = 'front' | 'left_45' | 'right_45' | 'chin_up' | 'chin_down' | 'front_smiling';
 
 export interface GuidelineStep {
   id: PoseId;
@@ -23,7 +23,7 @@ export const GUIDELINES: GuidelineStep[] = [
     height: 2040,
   },
   {
-    id: 'left45',
+    id: 'left_45',
     title: 'Left 45 degree',
     description: <><strong>Turn your face slightly</strong> so that the camera sees your left side at a 45-degree angle. We want to see the cheek and jawline on that side clearly.</>,
     imgSrc: '/guide/guide-left.png',
@@ -31,7 +31,7 @@ export const GUIDELINES: GuidelineStep[] = [
     height: 2040,
   },
   {
-    id: 'right45',
+    id: 'right_45',
     title: 'Right 45 degree',
     description: <>Same as above, but show the other side of your face. <strong>Turn the other way</strong> so the camera sees your right side at 45°.</>,
     imgSrc: '/guide/guide-right.png',
@@ -39,7 +39,7 @@ export const GUIDELINES: GuidelineStep[] = [
     height: 2040,
   },
   {
-    id: 'chinUp',
+    id: 'chin_up',
     title: 'Chin Up',
     description: <><strong>Face front and look up slightly</strong> to capture your chin and neck area.</>,
     imgSrc: '/guide/guide-up.png',
@@ -47,7 +47,7 @@ export const GUIDELINES: GuidelineStep[] = [
     height: 2040,
   },
   {
-    id: 'chinDown',
+    id: 'chin_down',
     title: 'Chin Down',
     description: <><strong>Look down and tuck your chin slightly.</strong> We want a clear image of your forehead from the top.</>,
     imgSrc: '/guide/guide-down.png',
@@ -55,7 +55,7 @@ export const GUIDELINES: GuidelineStep[] = [
     height: 2040,
   },
   {
-    id: 'frontSmiling',
+    id: 'front_smiling',
     title: 'Front Smiling',
     description: <><strong>Look straight ahead and smile broadly!</strong> We want to see how your skin moves to detect dynamic lines and wrinkles.</>,
     imgSrc: '/guide/guide-smiling.png',

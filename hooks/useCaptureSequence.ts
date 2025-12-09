@@ -26,11 +26,11 @@ export function useCaptureSequence(
     Record<CapturePose, string | null>
   >({
     front: null,
-    left45: null,
-    right45: null,
-    chinUp: null,
-    chinDown: null,
-    frontSmiling: null,
+    left_45: null,
+    right_45: null,
+    chin_up: null,
+    chin_down: null,
+    front_smiling: null,
   });
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -86,11 +86,11 @@ export function useCaptureSequence(
   const resetSequence = useCallback(() => {
     setCapturedImages({
       front: null,
-      left45: null,
-      right45: null,
-      chinUp: null,
-      chinDown: null,
-      frontSmiling: null,
+      left_45: null,
+      right_45: null,
+      chin_up: null,
+      chin_down: null,
+      front_smiling: null,
     });
     setCurrentStepIndex(0);
     setWebcamRunning(true);

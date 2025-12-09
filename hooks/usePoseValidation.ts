@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { validatePose, validateDistance } from "@/lib/poseValidation";
-import { PoseId } from "@/components/guidelines";
+import { PoseId } from "@/components/guidelines-new";
 
 export type CapturePose = PoseId;
 
@@ -28,31 +28,31 @@ const initialCalibrationData: Record<CapturePose, PoseData> = {
     eyeDistance: { landscape: 0.13, portrait: 0.24 },
     boundingBox: { top: 0.15, bottom: 0.85, left: 0.05, right: 0.95 },
   },
-  left45: {
+  left_45: {
     yaw: -28.0,
     pitch: -3.0,
     roll: 0,
     eyeDistance: { landscape: 0.13, portrait: 0.24 },
   },
-  right45: {
+  right_45: {
     yaw: 28.0,
     pitch: -3.0,
     roll: 0,
     eyeDistance: { landscape: 0.13, portrait: 0.24 },
   },
-  chinUp: {
+  chin_up: {
     yaw: 0,
     pitch: 20.0, // Looking up (positive pitch based on calibration)
     roll: 0,
     eyeDistance: { landscape: 0.1, portrait: 0.18 },
   },
-  chinDown: {
+  chin_down: {
     yaw: 0,
     pitch: -30.0, // Looking down (negative pitch based on calibration)
     roll: 0,
     eyeDistance: { landscape: 0.1, portrait: 0.23 },
   },
-  frontSmiling: {
+  front_smiling: {
     yaw: 0,
     pitch: -5.0,
     roll: 0,
@@ -72,7 +72,7 @@ export interface UsePoseValidationParams {
   isTransitioning: boolean;
   isSequenceComplete: boolean;
   currentPose: CapturePose;
-  
+
   // Detection state
   landmarks: number;
   detectedYaw: number;
@@ -80,11 +80,11 @@ export interface UsePoseValidationParams {
   detectedRoll: number;
   detectedSmile: number;
   detectedEyeDistance: number;
-  
+
   // Image quality state
   isLowLight: boolean;
   isBlurry: boolean;
-  
+
   // Device state
   isPortrait: boolean;
 }
