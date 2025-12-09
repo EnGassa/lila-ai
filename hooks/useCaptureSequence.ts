@@ -75,7 +75,7 @@ export function useCaptureSequence(
         } else {
           setCurrentStepIndex(nextStep);
         }
-      }, 1500);
+      }, 1000);
     },
     [stopCamera]
   );
@@ -98,6 +98,7 @@ export function useCaptureSequence(
 
   /**
    * Complete the sequence - convert blob URLs to Files and call onComplete callback.
+   * Automatically detects the format (WebP or PNG) from the blob type.
    */
   const finishSequence = useCallback(async () => {
     if (!onComplete) return;
@@ -108,8 +109,13 @@ export function useCaptureSequence(
       if (url) {
         const response = await fetch(url);
         const blob = await response.blob();
-        const filename = `${pose}.png`;
-        const file = new File([blob], filename, { type: "image/png" });
+
+        // Determine file extension and type from blob
+        const isWebP = blob.type === "image/webp";
+        const extension = isWebP ? "webp" : "png";
+        const filename = `${pose}.${extension}`;
+
+        const file = new File([blob], filename, { type: blob.type });
         files.push(file);
       }
     }

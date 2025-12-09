@@ -1,5 +1,6 @@
 import { useState, RefObject, useCallback } from "react";
 import { FaceCropper } from "@/lib/utils";
+import { toast } from "sonner";
 
 export interface UseImageCaptureOptions {
   disableCropping?: boolean;
@@ -33,7 +34,7 @@ export function useImageCapture(
       const response = await fetch(imageUrl);
       const blob = await response.blob();
       console.log("Pre-crop size:", (blob.size / 1024).toFixed(2), "KB");
-      
+
       const croppedBlob = await cropper.crop(blob);
       if (croppedBlob) {
         URL.revokeObjectURL(imageUrl); // Clean up original blob URL
@@ -45,7 +46,7 @@ export function useImageCapture(
         );
         return croppedUrl;
       }
-      
+
       // If cropping fails, return original
       console.warn("Cropping failed, returning original image");
       return imageUrl;
@@ -57,6 +58,8 @@ export function useImageCapture(
 
   /**
    * Captures an image from the video element.
+   * Uses WebP format for faster encoding with near-lossless quality.
+   * Falls back to PNG if WebP is not supported.
    *
    * @returns The blob URL of the captured image, or null on error.
    */
@@ -68,6 +71,8 @@ export function useImageCapture(
     }
 
     try {
+      const captureStartTime = performance.now();
+
       const canvas = document.createElement("canvas");
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
@@ -80,31 +85,90 @@ export function useImageCapture(
 
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      // Convert canvas to blob and return URL
-      return new Promise<string | null>((resolve) => {
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) {
-              console.error("Failed to create blob from canvas");
-              resolve(null);
-              return;
-            }
+      const canvasDrawTime = performance.now() - captureStartTime;
+
+      // Try WebP first (fastest, high quality), fallback to PNG
+      const formats = [
+        { type: "image/webp", quality: 0.95, name: "WebP" },
+        { type: "image/png", quality: undefined, name: "PNG" },
+      ];
+
+      for (const format of formats) {
+        try {
+          const result = await new Promise<{
+            blob: Blob;
+            time: number;
+            formatName: string;
+          } | null>((resolve) => {
+            const encodingStartTime = performance.now();
+
+            canvas.toBlob(
+              (blob) => {
+                const encodingTime = performance.now() - encodingStartTime;
+
+                if (!blob) {
+                  resolve(null);
+                  return;
+                }
+
+                resolve({ blob, time: encodingTime, formatName: format.name });
+              },
+              format.type,
+              format.quality
+            );
+          });
+
+          if (result) {
+            const { blob, time: encodingTime, formatName } = result;
+            const totalTime = performance.now() - captureStartTime;
 
             console.log(
               "Captured photo:",
               canvas.width,
               "x",
               canvas.height,
+              "Format:",
+              formatName,
               "Size:",
               (blob.size / 1024).toFixed(2),
               "KB"
             );
+
+            // 🔍 DIAGNOSTIC: Show timing breakdown on screen
+            console.log(
+              `[DIAGNOSTIC] Canvas draw: ${canvasDrawTime.toFixed(0)}ms`
+            );
+            console.log(
+              `[DIAGNOSTIC] ${formatName} encoding: ${encodingTime.toFixed(
+                0
+              )}ms`
+            );
+            console.log(
+              `[DIAGNOSTIC] Total capture: ${totalTime.toFixed(0)}ms`
+            );
+
+            toast("📊 Capture Timing", {
+              description: `${formatName} | Canvas: ${canvasDrawTime.toFixed(
+                0
+              )}ms | Encode: ${encodingTime.toFixed(
+                0
+              )}ms | Total: ${totalTime.toFixed(0)}ms`,
+              duration: 3000,
+            });
+
             const url = URL.createObjectURL(blob);
-            resolve(url);
-          },
-          "image/png"
-        );
-      });
+            return url;
+          }
+        } catch (formatError) {
+          console.warn(
+            `${format.name} encoding failed, trying next format:`,
+            formatError
+          );
+        }
+      }
+
+      console.error("All image formats failed");
+      return null;
     } catch (error) {
       console.error("Error capturing photo:", error);
       return null;

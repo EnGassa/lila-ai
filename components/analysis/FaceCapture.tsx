@@ -81,15 +81,10 @@ export default function FaceCapture({
     setBrightnessThreshold,
     blurThreshold,
     setBlurThreshold,
-  } = useImageQuality(
-    videoRef,
-    webcamRunning,
-    faceBoundingBox,
-    {
-      brightnessThreshold: 100,
-      blurThreshold: 500,
-    }
-  );
+  } = useImageQuality(videoRef, webcamRunning, faceBoundingBox, {
+    brightnessThreshold: 100,
+    blurThreshold: 500,
+  });
 
   // Use pose validation hook
   const {

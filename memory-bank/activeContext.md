@@ -6,9 +6,17 @@ Reverted the `/upload` page to its pre-scanner version and moved the new scanner
 
 ### Key Achievements:
 
-1.  **Dual Upload Page System:**
-    *   The original `/upload` page has been restored to its previous version, requiring 10 photos.
-    *   The new upload page with the face scanner is now located at `/upload/new` and requires 6 photos.
+1.  **Image Capture Optimization (WebP):**
+    *   Switched capture format from PNG to WebP (Quality: 0.95).
+    *   Significantly reduced capture latency and file size while maintaining near-lossless quality.
+    *   Ensured correct file extension handling (`.webp`) throughout the pipeline.
+    *   Reduced UI transition delay to 1000ms for snappier feel.
+
+2.  **UI/UX Improvements:**
+    *   **Fixed Transparent Toasts:** Updated `sonner` component styling to use valid Tailwind classes instead of missing CSS variables.
+    *   **Dual Upload Page System:**
+        *   The original `/upload` page has been restored to its previous version, requiring 10 photos.
+        *   The new upload page with the face scanner is now located at `/upload/new` and requires 6 photos.
 
 2.  **Separate Guidelines:**
     *   The `/upload` page and the `/guidelines` page now use the 10-image guide.
@@ -260,8 +268,22 @@ This enhancement provides a complete "flight recorder" for the AI's decision-mak
 -   **New Feature:** The `generate_recommendations.py` script was updated to use a dynamic Markdown formatter (`format_products_as_markdown`) for RAG context.
 -   **Logic:** This function is more token-efficient than the previous JSON-based approach and is resilient to changes in the product database schema by dynamically discovering and formatting fields.
 
-## Next Steps
-With the secure upload workflow in place, the immediate next steps are:
-1.  **Backend Integration:** Connect the newly uploaded images to the existing backend analysis pipeline (currently triggered manually).
-2.  **Optimize Ingestion:** Refactor the classification script to process products in batches for better performance.
-3.  **UI/UX for Traces:** Explore how to surface the new reasoning traces in the user dashboard to build trust and explain the "why" behind the recommendations.
+
+## Previous Work: WebP Image Capture Optimization
+
+To address slow capture speeds on mobile devices (4-5s latency), the image capture pipeline was optimized to use the WebP format.
+
+### Problem Identified
+- **PNG Overhead:** processing large PNGs (lossless) on mobile devices was causing significant "shutter lag".
+- **Transparent Toasts:** The `sonner` toast notifications were rendering transparently due to invalid CSS variable references.
+
+### Solution Implemented
+1.  **WebP Adoption:**
+    -   Switched `useImageCapture` to encoded images as `image/webp` with 0.95 quality.
+    -   WebP offers near-lossless quality for faces at a fraction of the encoding cost of PNG.
+    -   Updated `useCaptureSequence` to correctly handle `.webp` extensions for the `File` objects.
+
+2.  **UI Polish:**
+    -   Fixed `components/ui/sonner.tsx` to use `bg-popover text-popover-foreground` Tailwind classes instead of `var(--popover)`.
+    -   Reduced the post-capture transition delay from 1.5s to 1.0s for a faster perceived flow.
+    -   Restored the default brightness threshold to 100 in `FaceCapture.tsx`.
