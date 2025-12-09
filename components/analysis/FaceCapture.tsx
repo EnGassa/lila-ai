@@ -82,7 +82,7 @@ export default function FaceCapture({
     blurThreshold,
     setBlurThreshold,
   } = useImageQuality(videoRef, webcamRunning, faceBoundingBox, {
-    brightnessThreshold: 20,
+    brightnessThreshold: 100,
     blurThreshold: 500,
   });
 
@@ -161,7 +161,7 @@ export default function FaceCapture({
     currentStepIndex,
     setIsProcessing,
   ]);
-  
+
   const finishSequenceAndStopCamera = useCallback(() => {
     finishSequence();
     stopCamera();
@@ -171,7 +171,7 @@ export default function FaceCapture({
   const { progress } = useAutoCaptureTimer(
     isPoseCorrect && !isSequenceComplete,
     isTransitioning,
-    () => {}, // The new handleCapture does everything on commit
+    () => { }, // The new handleCapture does everything on commit
     handleCapture
   );
 
