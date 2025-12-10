@@ -76,11 +76,10 @@ export function PhotoGuidelinesNew() {
           <ul className="list-disc list-inside text-base font-light mt-4 space-y-2">
             <li><strong>Wash your face with a cleanser</strong>, remove any makeup and moisturizer</li>
             <li>Tie your hair back, keep face clean and dry</li>
-            <li><strong>Preferably use your BACK camera for better quality images.</strong> If incase that is not possible, you can the front camera. </li>
+            <li>Remove any obstructions such as glasses, hats, etc. </li>
             <li><strong>Click it indoors </strong> during the day using natural light</li>
             <li>Stand <strong>facing a window in daylight</strong></li>
             <li>Avoid direct <strong>harsh sunlight, glares or dark shadows</strong></li>
-            <li>Disable any <strong>face retouching options or filters</strong> (usually turned off by default for the back camera)</li>
           </ul>
         </div>
 

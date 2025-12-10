@@ -47,7 +47,7 @@ export function UploadPageClient({ userId, displayName }: { userId: string, disp
             <div className="p-6 rounded-lg bg-card shadow-sm">
                 <h1 className="text-xl font-semibold mb-2">Upload Your Photos</h1>
                 <p className="text-muted-foreground mb-6">
-                We need 5 specific photos for a complete analysis. You can use our Smart Scanner to guide you, or upload them manually.
+                We need 6 specific angles for a complete analysis. You can use our Smart Scanner to guide you, or upload them manually (refer to guidelines)
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 mb-4">
