@@ -31,10 +31,13 @@ _All generated philosophies must adhere to this structural backbone while allowi
 
 **The Non-Negotiable Backbone:**
 
-1.  **Cleanser:** Always start with a gentle, non-stripping cleanser (AM & PM).
+1.  **Cleanser:**
+    *   **Dry/Sensitive/Barrier-Damaged:** Gentle, non-stripping cleanser (AM & PM).
+    *   **Oily/Acne-Prone:** May use an "Active Cleanser" (Salicylic Acid/Enzyme) in the PM *IF* the barrier is healthy.
+    *   **Mature/Dehydrated:** Nourishing Cream or Milk cleanser.
 2.  **Toner:** A hydrating toner is mandatory to prep the skin for absorption.
-3.  **AM Active:** A dedicated **Vitamin C Serum** is **MANDATORY** for every routine to ensure potent antioxidant protection and brightening.
-4.  **PM Treatment:** A targeted treatment step is **MANDATORY**. This slot MUST be filled based on the user's specific Clinical Protocol (e.g., Retinoids, Exfoliants, or Barrier Repair).
+3.  **AM Active:** A dedicated **Vitamin C Serum** is **MANDATORY** for every routine.
+4.  **PM Treatment:** A targeted treatment step is **MANDATORY** (Retinoids, Exfoliants, or Barrier Repair).
 5.  **Moisturizer:** Essential for barrier support.
 6.  **Sunscreen:** The final, non-negotiable step in the AM.
 

@@ -113,9 +113,15 @@ def find_relevant_products(
 
     for category in categories:
         # Smart Brute Force Query Construction
-        # We explicitly explicitly mention the ingredients in the query to align with the product embeddings
+        # We now inject the user's specific skin type and concerns to "bias" the vector search
+        # towards products that share those same semantic tags (e.g. "Good for Oily Skin").
+        skin_type_label = analysis_data.get('analysis', {}).get('skin_type', {}).get('label', 'user')
+        concerns_list = analysis_data.get('analysis', {}).get('top_concerns', [])
+        concerns_str = ", ".join(concerns_list).replace('_', ' ')
+
         category_query = (
-            f"Best {category} containing {ingredients_str} for {analysis_data.get('analysis', {}).get('skin_type', {}).get('label', 'user')} skin. "
+            f"Best {category} for {skin_type_label} skin to treat {concerns_str}. "
+            f"Contains ingredients: {ingredients_str}. "
             f"Goals: {goals_str}. "
             f"{base_context}"
         )
@@ -127,10 +133,12 @@ def find_relevant_products(
 
         try:
             # Revert to simpler call: disable strict ingredient filtering at DB level
+            # We increase top_k to 15 to allow for more "vibes-based" matches to surface
+            # even if they aren't the mathematical ingredient perfection.
             rpc_params = {
                 'query_embedding': query_embedding,
                 'p_category': category,
-                'match_count': top_k_per_category,
+                'match_count': 15, # Increased from 7 to 15 for variety
                 'p_active_ingredients': None # Pass None to use vector search only
             }
             response = supabase.rpc('match_products_by_category', rpc_params).execute()

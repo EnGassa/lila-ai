@@ -52,10 +52,13 @@ Available Active Ingredients:
 
 **CRITICAL INSTRUCTIONS:**
 1.  **Adhere to the Blueprint:** The `SkincarePhilosophy` is your single source of truth. Every decision you make—from product selection to instructions—must directly support its goals.
-2.  **Select from the Provided List:** You MUST choose products exclusively from the curated list of candidates. Each product in the list now includes a `category` and a `matched_key_ingredients` field. You MUST use these fields to make logical selections.
-3.  **Ground Your Choices in Facts:**
+2.  **Select from the Provided List:** You MUST choose products exclusively from the curated list of candidates. Each product in the list now includes a `category`, `matched_key_ingredients`, and `attributes`.
+3.  **Match Product Personality (Context-Aware Selection):**
+    *   **Skin Type Check:** If the user has **Oily** skin, prioritize products with attributes like 'Good For Oily Skin', 'Matte', or 'Pore Controlling'. UNLESS it is a specific treatment, avoid products heavily tagged 'Good For Dry Skin' or 'Rich'.
+    *   **Concern Check:** If the user has **Sensitive** skin, prioritize products with 'Redness Reducing' or 'Unscented' attributes.
+4.  **Ground Your Choices in Facts:**
     *   When the philosophy requires a specific ingredient (e.g., 'Retinoid'), you MUST select a product where the `matched_key_ingredients` list explicitly contains 'Retinoid'.
-    *   When building a step for a specific category (e.g., an 'Exfoliator'), you MUST select a product where the `category` field is 'Exfoliator' or a similar treatment category like 'Mask & Peel'. Do not use a 'Cleanser' for an exfoliation step.
+    *   When building a step for a specific category (e.g., an 'Exfoliator'), you MUST select a product where the `category` field is 'Exfoliator'. Do not use a 'Cleanser' for an exfoliation step.
 4.  **Follow Clinical Safety Rules (Non-Negotiable):**
     *   **Placement:**
         *   Retinoids MUST only be in the PM routine.
