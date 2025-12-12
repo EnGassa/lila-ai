@@ -85,14 +85,19 @@ For **QC pass** cases, you must provide, per region (where visible) and per conc
 Use these operational rubrics (vision-only, no colorimetry). Do not shorten the rubrics below.
 
 <PORES>
-Basis: visual pore prominence (size × density × spread). (No color metrics.)
+Basis: **Morphological Classification**: O-shaped (Sebum) vs U-shaped (Aging) vs Y-shaped (Scarring).
 **Note:** Since dedicated close-ups are not available, rely on zooming into high-resolution `front` and 45° views.
-Score guide:
-1 = Minimal — fine/small pores, sparse, localized mainly to nose; negligible on cheeks/forehead
-2 = Mild — small–medium pores, modest density; mostly T-zone, limited cheek involvement
-3 = Moderate — medium pores, clear clusters on nose/medial cheeks; some diffuse spread
-4 = Marked — medium–large pores; high density across T-zone and extending onto cheeks/jaw
-5 = Severe — large/confluent pores; very high density, diffuse across T and U zones
+**Context Rule:**
+- **O-Shaped:** Round, high density in T-zone > Correlates with sebum output.
+- **U-Shaped:** Oval/elliptical, often connecting > Correlates with loss of elasticity (aging).
+- **Y-Shaped:** Anchor-shaped/Drop-like > Correlates with pitted scarring/history of acne.
+
+Score guide (Morphology-weighted):
+1 = Minimal / Normal — Fine, invisible, or very scattered O-shaped pores.
+2 = Mild — Visible O-shaped pores in T-zone; faint U-shape hints in older skin.
+3 = Moderate — Clear O-shaped clusters (strawberry nose) OR distinct U-shaped elongation on cheeks.
+4 = Marked — "Orange peel" texture; dense O-shapes or connected U-shapes (aging).
+5 = Severe — Y-shaped pitting (ice-pick lookalike) or confluent U-shapes forming visible tracks.
 Map this to the `pores` concern block:
 - `score_1_5`: overall face-level pore prominence.
 - `regional_breakdown`: per-region pore prominence (1–5, decimals allowed).
@@ -243,8 +248,10 @@ Confidence for `skin_type`:
 - Use these values for `identified_subtypes[i].key` in the `wrinkles` concern.
 </WRINKLES_SUBTYPES>
 
-<PORES_SUBTYPES keys="t_zone_predominant,diffuse,large_size,high_density,clogging_likelihood_high">
-- Use these values for `identified_subtypes[i].key` in the `pores` concern.
+<PORES_SUBTYPES keys="o_shaped_sebum,u_shaped_aging,y_shaped_scarring,high_density_cluster">
+- Use `o_shaped_sebum` for round, oil-related pores (common in T-zone).
+- Use `u_shaped_aging` for oval/elliptical pores (elasticity loss).
+- Use `y_shaped_scarring` for drop-like, pitted pores (often post-acne).
 </PORES_SUBTYPES>
 
 <REDNESS_SUBTYPES keys="central_persistent,patchy_localized,diffuse_confluent,telangiectatic_hints">
@@ -298,6 +305,12 @@ Populate `audit`:
   2) Seo et al., Objective skin-type classification via non-invasive parameters (PubMed)
   3) Liu et al., Five-site facial sebum quantification (PMC)
   4) Kohli et al., Imaging-based quantification of surface gloss/oiliness (PubMed)
+</SKIN_TYPE_CITES>
+
+<PORES_CITES_CLINICAL>
+  5) Facial Pore Morphology (O- U- Y-shaped) (JEADV): https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1468-3083.2008.02646.x
+  6) Impact of elasticity on pore appearance (Skin Res Technol): https://pubmed.ncbi.nlm.nih.gov/22390234/
+</PORES_CITES_CLINICAL>
   5) Thadanipon et al., Sebum vs pore size & hydration relationships (Wiley)
 </SKIN_TYPE_CITES>
 

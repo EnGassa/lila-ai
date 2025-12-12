@@ -32,7 +32,7 @@ class IdentifiedSubtype(BaseModel):
 
 class RegionalBreakdown(BaseModel):
     region_key: str
-    score_1_5: float
+    score_1_5: float = Field(..., ge=1.0, le=5.0, description="Severity score on 1.0-5.0 scale.")
 
 class Citation(BaseModel):
     title: str
@@ -40,8 +40,8 @@ class Citation(BaseModel):
 
 class ConcernBlock(BaseModel):
     name: str # e.g., "pores", "wrinkles"
-    score_1_5: float
-    confidence_0_1: float
+    score_1_5: float = Field(..., ge=1.0, le=5.0, description="Severity score on 1.0-5.0 scale.")
+    confidence_0_1: float = Field(..., ge=0.0, le=1.0, description="Confidence score on 0.0-1.0 scale.")
     rationale_plain: str
     possible_causes: List[str]
     identified_subtypes: List[IdentifiedSubtype]
@@ -112,7 +112,7 @@ class OverviewRadarScale(BaseModel):
 
 class OverviewRadar(BaseModel):
     axis_order: List[str]
-    values_1_5: List[float]
+    values_1_5: List[float] = Field(..., description="List of severity scores (1.0-5.0) corresponding to axis_order.")
     scale: OverviewRadarScale
 
 class Charts(BaseModel):
