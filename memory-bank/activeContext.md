@@ -1,6 +1,20 @@
 # Active Context
 
-## Current Work: Deployment Readiness & Plumbing
+## Current Work: Clinical Accuracy & Robustness
+ 
+ Addressed critical scoring discrepancies and improved clinical depth for "Pores" analysis.
+ 
+ ### Key Achievements:
+ 1. **Fixed Scoring Bug:** Resolved an issue where the AI was outputting 0-1 scores for concern cards while using 1-5 for radars. Added strict Pydantic validation (`ge=1.0`, `le=5.0`) to `scripts/skin_lib.py` to transparently enforce the correct scale at the schema level.
+ 2. **Clinical Pores Analysis:** Updated `prompts/01_analyse_images_6_photos_prompt.md` to use dermatological morphology for pores:
+    *   **O-shaped:** Sebum-related (T-zone).
+    *   **U-shaped:** Aging/Elastosis-related.
+    *   **Y-shaped:** Scarring/Acne-related.
+    *   Added relevant clinical citations to the prompt.
+ 
+ ---
+ 
+ ## Previous Work: Deployment Readiness & Plumbing
  
  Implemented robust environment management and storage access for the AI analysis pipeline to ensure reliability across global deployments.
  
