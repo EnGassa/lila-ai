@@ -100,26 +100,40 @@ Map this to the `pores` concern block:
 </PORES>
 
 <WRINKLES>
-Basis: visible line/ridge prominence (depth/length/continuity; static vs dynamic where feasible).
-**Important:** Use the `front_smiling` pose to assess dynamic lines (e.g., crow's feet, nasolabial changes) vs static lines seen in `front` at rest.
-Score guide:
-1 = Minimal — no lines at rest; faint lines only on expression (smiling)
-2 = Mild — fine lines at rest in limited areas (e.g., crow’s feet), short length
-3 = Moderate — multiple fine-to-moderate lines at rest; some continuous tracks (forehead/crow’s feet)
-4 = Marked — long, deeper lines/folds visible at rest; multi-region involvement
-5 = Severe — deep, redundant folds with shadowing; extensive multi-region involvement
+Basis: visible line/ridge prominence (depth/length/continuity); separation of **Dynamic Rhytides** (expression-only) vs **Static Rhytides** (at rest).
+
+**Clinical Rules:**
+1. **Dynamic Rule:** Deep lines visible *only* in `front_smiling` but absent in `front` (at rest) are **Dynamic Rhytides**. These are physiologic (normal) and should usually score 1 (Minimal/Normal), regardless of depth.
+2. **Static Rule:** Score severity based primarily on **Static Rhytides** (lines present at rest).
+3. **Age Benchmark (Glogau-based):**
+   - **<35y (Glogau I):** Expect NO static lines. Any static lines = Concern (Score 2+).
+   - **35-50y (Glogau II):** Expect "Wrinkles in Motion". Fine static lines are Normal (Score 1).
+   - **50y+ (Glogau III/IV):** Expect "Wrinkles at rest". Moderate static lines are Normal (Score 1).
+
+Score guide (Apply Age Context):
+1 = Minimal / Clinically Normal — No static lines OR static lines consistent with healthy aging (e.g. fine at 40, moderate at 60). Strong dynamic lines are OK.
+2 = Mild — Early static lines slightly exceeding age norms (e.g. fine static lines at 25).
+3 = Moderate — Clear static tracks visible at rest.
+4 = Marked — Deep static folds/furrows visible at rest.
+5 = Severe — Very deep, elastotic folds with shadowing.
 Map this to the `wrinkles` concern block.
 </WRINKLES>
 
 <PIGMENTATION>
-Basis: visible dyschromia by extent × contrast × pattern (mottled vs clustered). (No absolute colorimetry.)
-Score guide:
-1 = Minimal — faint, <5% of region; subtle mottling/few macules
-2 = Mild — light contrast, ~5–15% of region; scattered macules
-3 = Moderate — moderate contrast, ~15–30% of region; mottled/clustered
-4 = Marked — strong contrast, ~30–50% of region; larger patches or numerous macules
-5 = Severe — very strong contrast, >50% of region and/or confluent patches
-Map this to the `pigmentation` concern block.
+Basis: visible dyschromia source × extent × contrast.
+**Context Rule:** Distinguish **UV/Age-related** (Lentigines) vs **Hormonal** (Melasma) vs **Post-Inflammatory** (PIH).
+**Age Benchmark:**
+- **<35y:** Minimal pigment expected. Any clear spots = Concern.
+- **35-50y:** Scattered solar lentigines are common. "Mild" physical pigment = Score 1-2 (Normal/Mild).
+- **50y+:** Accumulated photo-damage is expected. "Moderate" physical pigment = Score 2 (Normal).
+
+Score guide (Apply Age Context):
+1 = Minimal / Normal — None or faint spots consistent with age.
+2 = Mild — Visible pigment slightly exceeding age expectations (e.g. clearly visible sun spots at 25).
+3 = Moderate — Clear dyschromia; Melasma-like patterns or widespread photo-damage.
+4 = Marked — High contrast; confluent patches or extensive mottling.
+5 = Severe — Very high contrast; dyschromia covering >50% of face.
+Map this to the `pigmentation` concern block. Use `identified_subtypes` to specify (e.g. `sun_spots`, `melasma_like`).
 
 <PIGMENTATION_RESOURCE_RULES>
 If the external pigmentation resource in <EXTERNAL_PIGMENTATION_RESOURCE> is present:
@@ -130,14 +144,16 @@ If the external pigmentation resource in <EXTERNAL_PIGMENTATION_RESOURCE> is pre
 </PIGMENTATION>
 
 <REDNESS>
-Basis: relative erythema prominence and spread (central face predilection), ignoring transient flush. (No a* or devices.)
-Score guide:
-1 = Minimal — none/trace; localized pinpoints only
-2 = Mild — faint, localized (e.g., alar/cheek)
-3 = Moderate — definite central facial redness; partial confluence
-4 = Marked — diffuse, persistent central redness; often with telangiectatic hints
-5 = Severe — intense, widespread, confluent facial redness
-Map this to the `redness` concern block.
+Basis: **Clinician’s Erythema Assessment (CEA)** concept: background erythema vs telangiectasia.
+**Context Rule:** Lower threshold for "Concern" in darker skin types (where redness is harder to see). Standard for lighter types.
+
+Score guide (CEA-based):
+1 = Minimal / Clear — No redness or trace transient flushing.
+2 = Mild — Slight background redness (CEA 1); faint/limited spread.
+3 = Moderate — Definite redness (CEA 2); clearly visible erythema `central_persistent` or `patchy_localized`.
+4 = Marked — Fiery redness (CEA 3); papules/pustules may be present (synergistic with acne).
+5 = Severe — Deep purple/red clumping (CEA 4); intense diffuse erythema + telangiectasia.
+Map this to the `redness` concern block. Use `identified_subtypes` (e.g. `telangiectatic_hints`).
 </REDNESS>
 
 <TEXTURE>
@@ -152,26 +168,31 @@ Map this to the `texture` concern block.
 </TEXTURE>
 
 <ACNE>
-Basis: visible lesion candidates and type (comedonal vs inflammatory; nodulocystic presence).
-Score guide (face-only simplification):
-1 = Minimal — 1–5 comedones; no inflammatory lesions
-2 = Mild — 6–20 mixed comedones; ≤5 small inflammatory papules/pustules
-3 = Moderate — 21–40 total; 6–20 inflammatory; scattered across ≥2 regions
-4 = Marked — 41–60 or ≥1 nodule; clustering with post-inflammatory change
-5 = Severe — >60 and/or multiple nodules/cysts and/or scarring
-Map this to the `acne` concern block. If you refer to counts, mention them only in narrative evidence; do not return raw counts as fields.
+Basis: **Investigator's Global Assessment (IGA)** logic: lesion count + type (comedonal vs inflammatory).
+**Context Rule:** Inflammation drives higher severity than simple comedones.
+
+Score guide (IGA-adapted):
+1 = Minimal / Clear (IGA 0) — Skin appears clear; rare non-inflammatory comedones.
+2 = Mild (IGA 1-2) — Few comedones (open/closed) AND/OR few small papules/pustules.
+3 = Moderate (IGA 3) — Many comedones OR many papules/pustules; < 1 nodule.
+4 = Marked (IGA 4) — Covered spread of lesions; presence of few nodules/cysts.
+5 = Severe (IGA 5) — Extensive inflammatory nodules/cysts; sinus tracts or scarring.
+Map this to the `acne` concern block. Matches `identified_subtypes` keys strictly.
 </ACNE>
 
 <UNDER_EYE>
-Basis: relative darkness vs adjacent cheek, extent beyond infraorbital fold; optional puffiness/tear-trough depth as qualitative modifiers.
-**Note:** Use zoomed-in regions from `front` and 45° views.
+Basis: **Etiology Classification**: Vascular (blue/purple) vs Pigmented (brown/black) vs Structural (shadow).
+**Context Rule:**
+- **Structural** (tear troughs) is common with age/anatomy > Score relative to age (like wrinkles).
+- **Vascular** (lifestyle) > Score based on intensity.
+
 Score guide:
-1 = Minimal — no visible difference
-2 = Mild — faint infraorbital darkening
-3 = Moderate — clear darkening all lower lids
-4 = Marked — deep darkening all lids; noticeable spread
-5 = Severe — darkening extends beyond eyelids and/or strong hollow/shadow effect
-Map this to the `under_eye` concern block. If region not visible, describe uncertainty in `uncertainty_notes` and lower `confidence_0_1`.
+1 = Minimal — No visible circles or slight shadow consistent with anatomy/age.
+2 = Mild — Faint coloration (vascular/pigment) or mild tear troughing.
+3 = Moderate — Clearly visible darkness or distinct hollowing.
+4 = Marked — Strong, dark semicircles (often mixed vascular/pigment); deep troughs.
+5 = Severe — Very dark, extensive periorbital shadowing extending to cheek.
+Map this to the `under_eye` concern block.
 </UNDER_EYE>
 </METRICS>
 
@@ -311,7 +332,19 @@ Populate `audit`:
 <UNDER_EYE_CITES>
   1) Validated photonumeric scale for infraorbital dark circles (PMC): https://pmc.ncbi.nlm.nih.gov/articles/PMC7898348/
   2) Periorbital hyperpigmentation study (PubMed): https://pubmed.ncbi.nlm.nih.gov/24700933/
+  3) Classification of periorbital hyperpigmentation (Vascular/Pigmented) (J Cutan Aesthet Surg): https://www.jcasonline.com/article.asp?issn=0974-2077;year=2012;volume=5;issue=4;spage=260;epage=264;aulast=Sheth
 </UNDER_EYE_CITES>
+
+<!-- ADDED CLINICAL REFERENCES -->
+<ACNE_CITES_CLINICAL>
+  3) Investigator's Global Assessment (IGA) Scale for Acne (FDA).
+  4) Global Evaluation Acne (GEA) Scale (JEADV): https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1468-3083.2010.03844.x
+</ACNE_CITES_CLINICAL>
+
+<REDNESS_CITES_CLINICAL>
+  3) Clinician’s Erythema Assessment (CEA) Scale (Rosacea).
+  4) Standard Grading System for Rosacea (NRS): https://www.rosacea.org/physicians/grading-system
+</REDNESS_CITES_CLINICAL>
 </REFERENCE_BANK>
 
 <EXTERNAL_PIGMENTATION_RESOURCE>

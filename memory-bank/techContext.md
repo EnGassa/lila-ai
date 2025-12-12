@@ -46,7 +46,8 @@
     *   **Execution**: Designed to be run via `uv run`, which manages its Python dependencies.
 *   **`scripts/skin_lib.py`**: A shared Python library for the analysis and recommendation scripts.
     *   **Purpose**: Contains all shared Pydantic models for the pipeline (`SkincarePhilosophy`, `Recommendations`, `ReviewResult`), which now include dedicated fields for AI reasoning traces (`diagnosis_rationale`, `reasoning`, `audit_log`). Also includes helper functions, agent configuration, and prompt utilities.
-*   **`prompts/01_analyse_images_prompt.md`**: The system prompt used for the skin analysis step.
+*   **`prompts/01_analyse_images_prompt.md`**: The system prompt used for the skin analysis step (10-photo legacy).
+*   **`prompts/01_analyse_images_6_photos_prompt.md`**: The system prompt used for the 6-photo skin analysis (new standard).
 *   **`prompts/01a_generate_philosophy_prompt.md`**: The system prompt for the Strategist agent, instructing it to create the high-level skincare plan and explain its clinical reasoning.
 *   **`prompts/02_generate_recommendations_prompt.md`**: The system prompt for the Generator agent, instructing it to build the final routine and provide a step-by-step trace of its logic.
 *   **`prompts/03_review_recommendations_prompt.md`**: The system prompt for the Reviewer agent, instructing it to perform safety checks and output a detailed audit log.

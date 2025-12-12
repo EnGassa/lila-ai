@@ -220,6 +220,7 @@ The experimental "Smart Scanner" prototype has been successfully matured and ful
     -   Calibrated target angles based on real-world landscape usage (Chin Up: +20°, Chin Down: -30°).
     -   Implemented logic inversion for directional guidance to ensure "Look Up/Down" instructions match the physical movement required.
 -   **Seamless Handoff:** Upon completing the 5-step scan, the captured photos are automatically converted from Blob URLs to `File` objects and pre-loaded into the existing `FileUpload` component, creating a frictionless transition from capture to submission.
+-   **6-Photo Analysis Prompt:** Added `prompts/01_analyse_images_6_photos_prompt.md` to support the new 6-pose capture flow (including "Front Smiling"). This prompt is available for use with the analysis scripts via the `--analysis-prompt` argument.
 
 ## Previous Work: Photo Guideline Integration
 
