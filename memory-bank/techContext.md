@@ -10,7 +10,8 @@
 *   **Key Libraries:**
     *   `@supabase/ssr` and `@supabase/supabase-js` for database interaction.
     *   `recharts` for data visualization.
-    *   `react-hook-form` for form management.
+    *   `react-hook-form` + `zod` for strictly typed form management.
+    *   `sonner` for toast notifications.
 *   **Analytics:** PostHog for web analytics and session recordings.
 *   **Logging:** Loguru
 *   **Package Manager:** pnpm (Frontend), uv (Python Scripts)
@@ -29,6 +30,10 @@
     *   **Tool:** GitHub Issues (via GitHub MCP).
     *   **Requirement:** GitHub Issues is the single source of truth for all project tasks, backlog items, and development planning. The Memory Bank provides high-level context but does not track individual work items.
     *   **Instruction:** Always use the GitHub MCP to read and manage issues. If the GitHub MCP is not available or connected, instruct the user to set it up immediately.
+*   **Admin Access:**
+    *   Managed via the `is_admin` column in `public.users`.
+    *   Requires manual promotion (SQL) for new admin users.
+    *   Protected by `middleware.ts` (Session) + `layout.tsx` (Role).
 
 ## Dependencies
 

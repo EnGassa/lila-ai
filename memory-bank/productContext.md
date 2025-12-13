@@ -13,3 +13,4 @@ This application will provide a personalized, data-driven approach to skincare. 
 *   **Onboarding:** A simple and engaging onboarding process to capture user information.
 *   **Dashboard:** A clear and informative dashboard that displays the user's current routine, progress, and recommendations.
 *   **Interaction:** An intuitive way to log product usage and track skin changes.
+*   **Admin Management:** A secure, dedicated portal for administrators to oversee the user base and manage platform content, ensuring operational efficiency.
