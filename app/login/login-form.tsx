@@ -73,7 +73,7 @@ export function LoginForm() {
         <Card className="w-full max-w-sm">
             <CardHeader>
                 <CardTitle className="text-2xl">Login</CardTitle>
-                <CardDescription>
+                <CardDescription className="text-center">
                     Enter your credentials to access the admin panel
                 </CardDescription>
             </CardHeader>
