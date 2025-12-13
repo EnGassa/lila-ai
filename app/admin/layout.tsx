@@ -2,6 +2,8 @@ import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
+import { SignOutButton } from "@/components/admin/sign-out-button"
+
 export default async function AdminLayout({
     children,
 }: {
@@ -42,8 +44,9 @@ export default async function AdminLayout({
 
     return (
         <div className="flex min-h-screen flex-col">
-            <header className="border-b bg-background px-6 py-4">
+            <header className="border-b bg-background px-6 py-4 flex items-center justify-between">
                 <h1 className="text-xl font-bold">Lila Admin</h1>
+                <SignOutButton />
             </header>
             <main className="flex-1 p-6">{children}</main>
         </div>
