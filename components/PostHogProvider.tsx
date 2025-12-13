@@ -34,18 +34,12 @@ function PostHogPageView() {
 }
 
 export function PHProvider({ children }: { children: React.ReactNode }) {
-    const [isClient, setIsClient] = useState(false)
-
-    useEffect(() => {
-        setIsClient(true)
-    }, [])
-
-    return isClient ? (
-        <PostHogProvider client={posthog}>
-            <Suspense>
-                <PostHogPageView />
-            </Suspense>
-            {children}
-        </PostHogProvider>
-    ) : <>{children}</>
+  return (
+    <PostHogProvider client={posthog}>
+      <Suspense>
+        <PostHogPageView />
+      </Suspense>
+      {children}
+    </PostHogProvider>
+  )
 }
