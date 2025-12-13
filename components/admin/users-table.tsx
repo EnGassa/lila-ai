@@ -17,6 +17,8 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { CreateUserDialog } from "@/components/admin/create-user-dialog"
+import { EditUserDialog } from "@/components/admin/edit-user-dialog"
+import { DeleteUserAlert } from "@/components/admin/delete-user-alert"
 import {
     Tooltip,
     TooltipContent,
@@ -110,14 +112,18 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
                                         {format(new Date(user.created_at), "PPP")}
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => copyUploadLink(user.id)}
-                                        >
-                                            <Link className="mr-2 h-4 w-4" />
-                                            Copy Upload Link
-                                        </Button>
+                                        <div className="flex justify-end gap-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => copyUploadLink(user.id)}
+                                            >
+                                                <Link className="mr-2 h-4 w-4" />
+                                                Copy Link
+                                            </Button>
+                                            <EditUserDialog user={user} />
+                                            <DeleteUserAlert userId={user.id} />
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))

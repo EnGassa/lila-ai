@@ -28,6 +28,12 @@ For administrative tasks that require permissions beyond the logged-in user's sc
 2.  **Strict Validation:** Input is validated (Zod) *server-side* before any database interaction to prevent injection or invalid state, as RLS is bypassed.
 3.  **Dual-Write:** The action coordinates writes to both `auth.users` (Supabase Auth) and `public.users` (Business Logic) in a single flow to maintain consistency.
 
+### Admin State Synchronization
+To ensure the Admin UI (Client Components) immediately reflects changes made by Server Actions (mutations):
+1.  **Server Side:** Call `revalidatePath("/admin")` in the Server Action to purge the Next.js server cache for that route.
+2.  **Client Side:** Call `router.refresh()` (from `next/navigation`) in the `onSuccess` callback of the UI component (e.g., Dialog). This forces the Next.js client to re-request the server component payload, fetching the fresh data.
+3.  **Data Consistency:** For deletions, explicitly delete from `public.users` *before* `auth.users` to avoid race conditions where the database query still returns a "zombie" user record while the Auth user is being deleted asynchronously.
+
 ### Secure Broker Pattern (File Uploads)
 To handle sensitive file uploads securely without exposing storage credentials or routing large files through the Next.js server:
 1.  **Request Access:** The client requests a signed upload URL from a Server Action (`getSignedUploadUrl`), providing only file metadata.

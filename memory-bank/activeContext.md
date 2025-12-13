@@ -1,18 +1,5 @@
 # Active Context
 
-## Current Work: Admin Dashboard (Phase 3 Complete)
-
-Phase 3 (User Management) is complete. The implementation focus has shifted to testing and refinement.
-
-### Key Achievements (Phase 3):
-1.  **User Creation:**
-    *   Implemented `CreateUserDialog` (Shadcn UI) for admins to provision new users.
-    *   **Secure Backend:** Created `createUser` Server Action in `/app/admin/actions.ts` using `SUPABASE_SERVICE_ROLE_KEY` to bypass RLS and create users in Supabase Auth + `public.users` table simultaneously.
-    *   **Validation:** Name and Email are required; Phone is optional.
-2.  **Enhanced Users Table:**
-    *   **Search:** Real-time client-side searching by Name, Email, or Phone.
-    *   **Data:** Added `phone` column to table display.
-    *   **Actions:** Added "Copy Upload Link" button (Outline style) to easily generate user-specific upload URLs (`/[userId]/upload/new`).
 3.  **UI Refinements:**
     *   Cleaned up `UsersTable` by removing the outer Card container and lightening borders for a cleaner look.
 
@@ -33,6 +20,8 @@ Implementation of the core secure Admin Dashboard structure.
     *   Includes **Sign Out** button in the header.
 4.  **Middleware Fix:**
     *   Created `middleware.ts` to properly manage Supabase Auth sessions.
+5.  **UI Refinements:**
+    *   Cleaned up `UsersTable` by removing the outer Card container and lightening borders for a cleaner look.
 
 ---
 
