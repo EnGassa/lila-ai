@@ -16,7 +16,6 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CreateUserDialog } from "@/components/admin/create-user-dialog"
 import {
     Tooltip,
@@ -57,77 +56,75 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
     }
 
     return (
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                <CardTitle className="text-xl font-bold">Users</CardTitle>
+        <div className="space-y-4">
+            <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold tracking-tight">Users</h2>
                 <CreateUserDialog />
-            </CardHeader>
-            <CardContent>
-                <div className="flex items-center py-4">
-                    <div className="relative w-full max-w-sm">
-                        <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            placeholder="Search by name, email, or phone..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-8"
-                        />
-                    </div>
+            </div>
+            <div className="flex items-center py-4">
+                <div className="relative w-full max-w-sm">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        placeholder="Search by name, email, or phone..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-8"
+                    />
                 </div>
-                <div className="rounded-md border">
-                    <Table>
-                        <TableHeader>
+            </div>
+            <div className="rounded-md">
+                <Table>
+                    <TableHeader>
+                        <TableRow className="border-b-2 border-gray-500">
+                            <TableHead>Name</TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Phone</TableHead>
+                            <TableHead>Role</TableHead>
+                            <TableHead>Joined</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {filteredUsers.length === 0 ? (
                             <TableRow>
-                                <TableHead>Name</TableHead>
-                                <TableHead>Email</TableHead>
-                                <TableHead>Phone</TableHead>
-                                <TableHead>Role</TableHead>
-                                <TableHead>Joined</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
+                                <TableCell colSpan={6} className="h-24 text-center">
+                                    No users found.
+                                </TableCell>
                             </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {filteredUsers.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={6} className="h-24 text-center">
-                                        No users found.
+                        ) : (
+                            filteredUsers.map((user) => (
+                                <TableRow key={user.id} className="border-b-gray-300">
+                                    <TableCell className="font-medium">
+                                        {user.full_name || "N/A"}
+                                    </TableCell>
+                                    <TableCell>{user.email || "N/A"}</TableCell>
+                                    <TableCell>{user.phone || "-"}</TableCell>
+                                    <TableCell>
+                                        {user.is_admin ? (
+                                            <Badge variant="default">Admin</Badge>
+                                        ) : (
+                                            <Badge variant="secondary">User</Badge>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {format(new Date(user.created_at), "PPP")}
+                                    </TableCell>
+                                    <TableCell className="text-right">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => copyUploadLink(user.id)}
+                                        >
+                                            <Link className="mr-2 h-4 w-4" />
+                                            Copy Upload Link
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
-                            ) : (
-                                filteredUsers.map((user) => (
-                                    <TableRow key={user.id}>
-                                        <TableCell className="font-medium">
-                                            {user.full_name || "N/A"}
-                                        </TableCell>
-                                        <TableCell>{user.email || "N/A"}</TableCell>
-                                        <TableCell>{user.phone || "-"}</TableCell>
-                                        <TableCell>
-                                            {user.is_admin ? (
-                                                <Badge variant="default">Admin</Badge>
-                                            ) : (
-                                                <Badge variant="secondary">User</Badge>
-                                            )}
-                                        </TableCell>
-                                        <TableCell>
-                                            {format(new Date(user.created_at), "PPP")}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => copyUploadLink(user.id)}
-                                            >
-                                                <Link className="mr-2 h-4 w-4" />
-                                                Copy Upload Link
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-                </div>
-            </CardContent>
-        </Card>
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+        </div>
     )
 }

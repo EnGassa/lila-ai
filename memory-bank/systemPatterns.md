@@ -22,6 +22,12 @@ The admin panel implements a dual-layer security model:
 2.  **Authorization:** The `/admin/layout.tsx` Server Component queries the `public.users` table for the `is_admin` boolean flag. Access is granted *only* if `is_admin === true`.
 3.  **Redirection:** Unauthorized attempts are redirected to root (`/`) or login (`/login`), ensuring no admin routes are exposed to regular users.
 
+### Admin Action Pattern (Privileged Operations)
+For administrative tasks that require permissions beyond the logged-in user's scope (e.g., creating a *new* user in specific Auth tables):
+1.  **Service Role Bypass:** Use a highly specific Server Action (e.g., `createUser` in `app/admin/actions.ts`) that instantiates a Supabase client with `SUPABASE_SERVICE_ROLE_KEY`.
+2.  **Strict Validation:** Input is validated (Zod) *server-side* before any database interaction to prevent injection or invalid state, as RLS is bypassed.
+3.  **Dual-Write:** The action coordinates writes to both `auth.users` (Supabase Auth) and `public.users` (Business Logic) in a single flow to maintain consistency.
+
 ### Secure Broker Pattern (File Uploads)
 To handle sensitive file uploads securely without exposing storage credentials or routing large files through the Next.js server:
 1.  **Request Access:** The client requests a signed upload URL from a Server Action (`getSignedUploadUrl`), providing only file metadata.

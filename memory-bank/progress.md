@@ -2,10 +2,13 @@
 
 ## What Works
 
-*   **Admin Dashboard (New):**
+*   **Admin Dashboard (Phase 3 Complete):**
     *   **Route:** `/admin` (Protected).
     *   **Access Control:** Role-based access control (RBAC) via `public.users.is_admin` flag.
-    *   **Features:** Read-only table of all users, admin/user role badges, sign-out functionality.
+    *   **User Management:**
+        *   **Create User:** Secure Server Action (`createUser`) provisioning in Auth & DB.
+        *   **Search**: Real-time filtering by Name, Email, Phone.
+        *   **Actions**: "Copy Upload Link" for quick user onboarding.
     *   **Infrastructure:** Dedicated `middleware.ts` for robust Supabase session handling.
 
 *   **Clinical Accuracy Updates:**

@@ -1,23 +1,38 @@
 # Active Context
 
-## Current Work: Admin Dashboard (Phase 1 & 2 Complete)
+## Current Work: Admin Dashboard (Phase 3 Complete)
 
-Implementation of a secure, read-only Admin Dashboard is complete. This provides a central interface for managing the user base.
+Phase 3 (User Management) is complete. The implementation focus has shifted to testing and refinement.
+
+### Key Achievements (Phase 3):
+1.  **User Creation:**
+    *   Implemented `CreateUserDialog` (Shadcn UI) for admins to provision new users.
+    *   **Secure Backend:** Created `createUser` Server Action in `/app/admin/actions.ts` using `SUPABASE_SERVICE_ROLE_KEY` to bypass RLS and create users in Supabase Auth + `public.users` table simultaneously.
+    *   **Validation:** Name and Email are required; Phone is optional.
+2.  **Enhanced Users Table:**
+    *   **Search:** Real-time client-side searching by Name, Email, or Phone.
+    *   **Data:** Added `phone` column to table display.
+    *   **Actions:** Added "Copy Upload Link" button (Outline style) to easily generate user-specific upload URLs (`/[userId]/upload/new`).
+3.  **UI Refinements:**
+    *   Cleaned up `UsersTable` by removing the outer Card container and lightening borders for a cleaner look.
+
+---
+
+## Previous Work: Admin Setup (Phase 1 & 2)
+
+Implementation of the core secure Admin Dashboard structure.
 
 ### Key Achievements:
 1.  **Secure Access Control:**
     *   Added `is_admin` boolean flag to `public.users`.
     *   Implemented Server Side Logic in `/admin/layout.tsx` to restrict access strictly to users with `is_admin=true`.
-    *   Unauthorized users are redirected to the root.
 2.  **Authentication UI:**
-    *   Created a responsive Login page (`/login`) with email/password authentication.
-    *   Added "Welcome to Lila.Skin Admin Page" branding.
+    *   Created responsive Login page (`/login`) with "Welcome to Lila.Skin Admin Page" branding.
 3.  **User Management UI:**
-    *   Implemented a read-only **Users Table** fetching directly from `public.users`.
-    *   Displays Name, Email, Role (Badge), and Joined Date.
-    *   Includes a **Sign Out** button in the header for secure session termination.
+    *   Implemented read-only **Users Table** fetching directly from `public.users`.
+    *   Includes **Sign Out** button in the header.
 4.  **Middleware Fix:**
-    *   Created `middleware.ts` to properly manage Supabase Auth sessions across Server Components and Cookies, fixing issues with session persistence and redirection.
+    *   Created `middleware.ts` to properly manage Supabase Auth sessions.
 
 ---
 
