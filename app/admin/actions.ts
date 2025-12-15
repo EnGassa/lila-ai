@@ -39,10 +39,19 @@ export async function createUser(prevState: CreateUserState, formData: FormData)
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-    if (!supabaseUrl || !supabaseServiceRoleKey) {
+    if (!supabaseUrl) {
+        console.error("ADMIN ACTION ERROR: Missing NEXT_PUBLIC_SUPABASE_URL")
         return {
             success: false,
-            message: "Server configuration error: Missing Supabase Admin credentials.",
+            message: "Configuration Error: Missing NEXT_PUBLIC_SUPABASE_URL",
+        }
+    }
+
+    if (!supabaseServiceRoleKey) {
+        console.error("ADMIN ACTION ERROR: Missing SUPABASE_SERVICE_ROLE_KEY")
+        return {
+            success: false,
+            message: "Configuration Error: Missing SUPABASE_SERVICE_ROLE_KEY",
         }
     }
 
@@ -136,10 +145,19 @@ export async function updateUser(prevState: CreateUserState, formData: FormData)
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-    if (!supabaseUrl || !supabaseServiceRoleKey) {
+    if (!supabaseUrl) {
+        console.error("ADMIN ACTION ERROR: Missing NEXT_PUBLIC_SUPABASE_URL")
         return {
             success: false,
-            message: "Server configuration error: Missing Supabase Admin credentials.",
+            message: "Configuration Error: Missing NEXT_PUBLIC_SUPABASE_URL",
+        }
+    }
+
+    if (!supabaseServiceRoleKey) {
+        console.error("ADMIN ACTION ERROR: Missing SUPABASE_SERVICE_ROLE_KEY")
+        return {
+            success: false,
+            message: "Configuration Error: Missing SUPABASE_SERVICE_ROLE_KEY",
         }
     }
 
@@ -199,10 +217,19 @@ export async function deleteUser(userId: string): Promise<{ success: boolean; me
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-    if (!supabaseUrl || !supabaseServiceRoleKey) {
+    if (!supabaseUrl) {
+        console.error("ADMIN ACTION ERROR: Missing NEXT_PUBLIC_SUPABASE_URL")
         return {
             success: false,
-            message: "Server configuration error: Missing Supabase Admin credentials.",
+            message: "Configuration Error: Missing NEXT_PUBLIC_SUPABASE_URL",
+        }
+    }
+
+    if (!supabaseServiceRoleKey) {
+        console.error("ADMIN ACTION ERROR: Missing SUPABASE_SERVICE_ROLE_KEY")
+        return {
+            success: false,
+            message: "Configuration Error: Missing SUPABASE_SERVICE_ROLE_KEY",
         }
     }
 
