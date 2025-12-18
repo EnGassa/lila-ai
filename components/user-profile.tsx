@@ -4,9 +4,10 @@ import { UserAvatar } from "@/components/user-avatar";
 interface UserProfileProps {
   userData: any;
   userId: string;
+  userName?: string;
 }
 
-export function UserProfile({ userData, userId }: UserProfileProps) {
+export function UserProfile({ userData, userId, userName }: UserProfileProps) {
   const { analysis, name } = userData;
   const ageRange = analysis.skin_age_range;
 
@@ -15,12 +16,12 @@ export function UserProfile({ userData, userId }: UserProfileProps) {
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
 
-  const displayName = name
+  const displayName = userName || (name
     ? name
-        .split(" ")
-        .map((n: string) => capitalize(n))
-        .join(" ")
-    : capitalize(userId);
+      .split(" ")
+      .map((n: string) => capitalize(n))
+      .join(" ")
+    : capitalize(userId));
 
   return (
     <div className="flex items-center gap-4">

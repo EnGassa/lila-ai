@@ -39,24 +39,33 @@ def get_supabase_client() -> Client:
 
 def create_user(supabase: Client, name: str, email: Optional[str] = None, overwrite: bool = False) -> str:
     """Creates or updates a user in the public.users table, handling conflicts."""
+    
+    # 1. Search for existing user by name (Case-insensitive)
+    logger.info(f"Searching for existing user with name '{name}'...")
+    res = supabase.table('users').select('id, full_name, email').ilike('full_name', f"%{name}%").execute()
+    
+    if res.data:
+        # Found match(es), pick the first one
+        user = res.data[0]
+        logger.success(f"Found existing user: {user['full_name']} (ID: {user['id']})")
+        return user['id']
+
+    # 2. If not found, fall back to creating a slug-based ID (Old Behavior)
     base_user_id = name.lower().replace(" ", "_")
     user_id = base_user_id
 
     existing_user_res = supabase.table('users').select('id').eq('id', user_id).limit(1).execute()
 
     if existing_user_res.data:
-        # User exists, handle conflict
+        # User exists with slug ID, handle conflict
         if overwrite:
             logger.warning(f"User ID '{user_id}' already exists. Overwriting as requested.")
         else:
             while True:
                 print(f"\nUser ID '{user_id}' already exists.")
-                action = input("Choose an action: [o]verwrite, [r]ename to create a new user, or [a]bort: ").lower()
+                action = input("Choose an action: [r]ename to create a new user, or [a]bort (Overwrite not recommended for slugs): ").lower() # Removed overwrite option to encourage UUIDs generally
 
-                if action == 'o':
-                    logger.info(f"Proceeding to overwrite user '{user_id}'.")
-                    break
-                elif action == 'r':
+                if action == 'r':
                     # Find next available user_id
                     suffix = 2
                     new_user_id = f"{base_user_id}_{suffix}"

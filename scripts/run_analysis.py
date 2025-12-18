@@ -178,6 +178,11 @@ def main():
         help="API key for the LLM provider. Overrides environment variables.",
     )
     parser.add_argument(
+        "--name",
+        type=str,
+        help="The user's full name to search for (case-insensitive).",
+    )
+    parser.add_argument(
         "--env",
         type=str,
         choices=["dev", "prod"],
@@ -187,9 +192,37 @@ def main():
     args = parser.parse_args()
     logger.info(f"Starting analysis with arguments: {args}")
 
-    if not args.images and not args.user_id:
-        logger.error("Either --images or --user-id must be provided.")
+    if not args.images and not args.user_id and not args.name:
+        logger.error("Either --images, --user-id, or --name must be provided.")
         sys.exit(1)
+
+    # --- Resolve User ID from Name if provided ---
+    if args.name:
+        try:
+            supabase = get_supabase_client()
+            logger.info(f"Searching for user with name matching '{args.name}'...")
+            # Perform a case-insensitive search
+            response = supabase.table("users").select("id, full_name").ilike("full_name", f"%{args.name}%").execute()
+            
+            users = response.data
+            if not users:
+                logger.error(f"No users found matching name '{args.name}'.")
+                sys.exit(1)
+            elif len(users) > 1:
+                logger.warning(f"Multiple users found matching '{args.name}':")
+                for u in users:
+                    logger.info(f" - {u['full_name']} (ID: {u['id']})")
+                logger.error("Please be more specific or use --user-id.")
+                sys.exit(1)
+            else:
+                user = users[0]
+                args.user_id = user['id']
+                logger.info(f"Resolved user '{args.name}' to ID: {args.user_id} ({user['full_name']})")
+                
+        except Exception as e:
+            logger.error(f"Failed to resolve user by name: {e}")
+            sys.exit(1)
+
 
     # --- Image and Context Loading ---
     logger.info("Loading images and context...")

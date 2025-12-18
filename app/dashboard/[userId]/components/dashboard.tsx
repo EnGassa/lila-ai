@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import { KeyIngredient, Product, Recommendations, Step } from '@/lib/types';
 
-export async function Dashboard({ params }: { params: Promise<{ userId: string }> }) {
+export async function Dashboard({ params, fullName }: { params: Promise<{ userId: string }>, fullName: string }) {
   const { userId } = await params;
   const supabase = await createClient();
 
@@ -138,6 +138,7 @@ export async function Dashboard({ params }: { params: Promise<{ userId: string }
       analysis={analysisData}
       recommendations={recommendationsData}
       userId={userId}
+      userName={fullName}
     />
   );
 }

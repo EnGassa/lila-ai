@@ -22,10 +22,20 @@ export async function generateMetadata({ params }: { params: Promise<{ userId: s
   };
 }
 
-export default function DashboardPage({ params }: { params: { userId: string } }) {
+export default async function DashboardPage({ params }: { params: Promise<{ userId: string }> }) {
+  const { userId } = await params;
+  const supabase = await createClient();
+  const { data: user } = await supabase
+    .from('users')
+    .select('full_name')
+    .eq('id', userId)
+    .single();
+
+  const fullName = user?.full_name || userId;
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Dashboard params={params} />
+      <Dashboard params={params} fullName={fullName} />
     </Suspense>
   )
 }
