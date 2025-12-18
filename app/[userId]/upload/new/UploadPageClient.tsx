@@ -51,14 +51,13 @@ export function UploadPageClient({ userId, displayName }: { userId: string, disp
             </p>
 
             <div className="bg-muted/50 p-4 rounded-lg mb-6 text-sm">
-              <p className="font-medium mb-2">For best results, before clicking the photo make sure to:</p>
+              <p className="font-medium mb-2">For best results make sure to:</p>
               <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
-                <li>Wash your face with a cleanser, remove any makeup and moisturizer</li>
+                <li>Wash your face with a cleanser, remove any makeup and moisturizer.</li>
                 <li>Tie your hair back, keep face clean and dry</li>
                 <li>Remove any obstructions such as glasses, hats, etc.</li>
-                <li>Click it indoors during the day using natural light</li>
-                <li>Stand facing a window in daylight</li>
-                <li>Avoid direct harsh sunlight, glares or dark shadows</li>
+                <li>Click it indoors during the day using natural light. Stand facing a window in daylight</li>
+                <li>Avoid direct sunlight, glares or dark shadows</li>
               </ul>
             </div>
 
