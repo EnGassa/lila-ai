@@ -119,6 +119,7 @@ def main():
     
     parser = argparse.ArgumentParser(description="Onboard a beta user.")
     parser.add_argument("--name", required=True, help="Full name of the user.")
+    parser.add_argument("--user-id", help="Explicit ID of the user (skips creation/lookup).")
     parser.add_argument("--email", help="Email of the user (optional).")
     parser.add_argument("--image-dir", help="Directory containing user's face images. If not provided, will assume images are uploaded to Supabase.")
     parser.add_argument("--model", default="google-gla:gemini-2.5-pro", help="Model to use for analysis and recommendations.")
@@ -133,8 +134,12 @@ def main():
     
     supabase = get_supabase_client()
     
-    # 1. Create User
-    user_id = create_user(supabase, args.name, args.email, overwrite=args.overwrite)
+    # 1. Resolve User ID
+    if args.user_id:
+        user_id = args.user_id
+        logger.info(f"Using provided User ID: {user_id}")
+    else:
+        user_id = create_user(supabase, args.name, args.email, overwrite=args.overwrite)
 
     # Handle --setup-only flag
     if args.setup_only:
