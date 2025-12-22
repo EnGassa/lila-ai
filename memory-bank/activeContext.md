@@ -1,6 +1,9 @@
 # Active Context
 
-3.  **UI Refinements:**
+## Current Work: Latency Instrumentation (L-82)
+- Removed the capture latency stat popup (toast) and moved metrics logging to PostHog for better analytical tracking without UI distractions.
+
+## Previous Work: UI Refinements
     *   Cleaned up `UsersTable` by removing the outer Card container and lightening borders for a cleaner look.
 
 ---
@@ -50,6 +53,10 @@ Implementation of the core secure Admin Dashboard structure.
  4. **UI Polish (Border Colors):** Fixed incorrect border colors in light mode.
 
 ---
+
+*   **Latency Instrumentation (L-82):**
+    - [x] Remove capture latency stat popup (toast).
+    - [x] Migrate latency metrics to PostHog.
 
 ## Previous Work: Reverted Upload Page and Moved New Upload Page
 ...

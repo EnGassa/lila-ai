@@ -1,6 +1,6 @@
 import { useState, RefObject, useCallback } from "react";
+import posthog from "posthog-js";
 import { FaceCropper } from "@/lib/utils";
-import { toast } from "sonner";
 
 export interface UseImageCaptureOptions {
   disableCropping?: boolean;
@@ -134,26 +134,15 @@ export function useImageCapture(
               "KB"
             );
 
-            // 🔍 DIAGNOSTIC: Show timing breakdown on screen
-            console.log(
-              `[DIAGNOSTIC] Canvas draw: ${canvasDrawTime.toFixed(0)}ms`
-            );
-            console.log(
-              `[DIAGNOSTIC] ${formatName} encoding: ${encodingTime.toFixed(
-                0
-              )}ms`
-            );
-            console.log(
-              `[DIAGNOSTIC] Total capture: ${totalTime.toFixed(0)}ms`
-            );
-
-            toast("📊 Capture Timing", {
-              description: `${formatName} | Canvas: ${canvasDrawTime.toFixed(
-                0
-              )}ms | Encode: ${encodingTime.toFixed(
-                0
-              )}ms | Total: ${totalTime.toFixed(0)}ms`,
-              duration: 3000,
+            // Log capture metrics to PostHog
+            posthog.capture("capture_timing", {
+              format: formatName,
+              canvas_draw_ms: canvasDrawTime,
+              encoding_ms: encodingTime,
+              total_capture_ms: totalTime,
+              image_size_kb: parseFloat((blob.size / 1024).toFixed(2)),
+              image_width: canvas.width,
+              image_height: canvas.height,
             });
 
             const url = URL.createObjectURL(blob);
