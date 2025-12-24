@@ -18,6 +18,12 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { updateUser } from "@/app/admin/actions"
 
 type User = {
@@ -71,12 +77,21 @@ export function EditUserDialog({ user }: { user: User }) {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                    <Pencil className="h-4 w-4" />
-                    <span className="sr-only">Edit user</span>
-                </Button>
-            </DialogTrigger>
+            <TooltipProvider>
+                <Tooltip>
+                    <DialogTrigger asChild>
+                        <TooltipTrigger asChild>
+                            <Button variant="outline" size="icon-sm">
+                                <Pencil className="h-4 w-4" />
+                                <span className="sr-only">Edit user</span>
+                            </Button>
+                        </TooltipTrigger>
+                    </DialogTrigger>
+                    <TooltipContent>
+                        <p>Edit user</p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>Edit User</DialogTitle>

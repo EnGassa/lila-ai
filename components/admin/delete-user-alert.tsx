@@ -16,6 +16,12 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
 import { deleteUser } from "@/app/admin/actions"
 
@@ -44,12 +50,21 @@ export function DeleteUserAlert({ userId }: { userId: string }) {
 
     return (
         <AlertDialog open={open} onOpenChange={setOpen}>
-            <AlertDialogTrigger asChild>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50">
-                    <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">Delete user</span>
-                </Button>
-            </AlertDialogTrigger>
+            <TooltipProvider>
+                <Tooltip>
+                    <AlertDialogTrigger asChild>
+                        <TooltipTrigger asChild>
+                            <Button variant="outline" size="icon-sm" className="text-red-500 hover:text-red-600 hover:bg-red-50">
+                                <Trash2 className="h-4 w-4" />
+                                <span className="sr-only">Delete user</span>
+                            </Button>
+                        </TooltipTrigger>
+                    </AlertDialogTrigger>
+                    <TooltipContent>
+                        <p>Delete user</p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

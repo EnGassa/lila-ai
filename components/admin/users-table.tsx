@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import { format } from "date-fns"
-import { Search, Link, Copy } from "lucide-react"
+import { Search, Link as LinkIcon, Copy, LayoutDashboard } from "lucide-react"
+import Link from "next/link"
 import { toast } from "sonner"
 
 import {
@@ -113,14 +114,42 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex justify-end gap-2">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => copyUploadLink(user.id)}
-                                            >
-                                                <Link className="mr-2 h-4 w-4" />
-                                                Copy Link
-                                            </Button>
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="icon-sm"
+                                                            onClick={() => copyUploadLink(user.id)}
+                                                        >
+                                                            <LinkIcon className="h-4 w-4" />
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        <p>Copy upload link</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="icon-sm"
+                                                            asChild
+                                                        >
+                                                            <Link href={`/dashboard/${user.id}`} target="_blank">
+                                                                <LayoutDashboard className="h-4 w-4" />
+                                                            </Link>
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        <p>View dashboard</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+
                                             <EditUserDialog user={user} />
                                             <DeleteUserAlert userId={user.id} />
                                         </div>

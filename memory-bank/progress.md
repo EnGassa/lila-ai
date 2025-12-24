@@ -11,6 +11,7 @@
         - [x] Users Table (View All Users)
         - [x] User Management (Create, Edit, Delete)
         - [x] Deployment Configuration (Env Vars)
+        - [x] **Dashboard Access**: Direct link to user dashboard from admin table.
         - [ ] Reporting Dashboard (Future)
         - [x] **User Creation**: Admin can create users (Auth + DB) via Modal.
         - [x] **Real-time Search**: Client-side search for users.

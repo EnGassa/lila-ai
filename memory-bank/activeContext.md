@@ -5,6 +5,7 @@
 
 ## Previous Work: UI Refinements
     *   Cleaned up `UsersTable` by removing the outer Card container and lightening borders for a cleaner look.
+    *   Refined `UsersTable` actions: Added direct dashboard links (opens in new tab), converted buttons to icon-only with tooltips, and unified button sizes/cursors.
 
 ---
 
