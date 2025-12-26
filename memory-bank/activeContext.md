@@ -2,7 +2,14 @@
 
 ## Current Work: Verification & Commit
 - Verifying all changes are committed and pushed.
-- Updating Memory Bank to reflect the latest UI/UX overhaul.
+- Updated Memory Bank to reflect Admin Dashboard enhancements.
+
+## Previous Work: Admin Dashboard Enhancements
+- **Admin Management:**
+    -  Added "Grant Admin Access" toggle to `CreateUserDialog` and `EditUserDialog`.
+    -  Implemented robust Safety Confirmation logic (Alert Dialog) when creating new Admin users to prevent accidental privilege grants.
+    -  Updated `actions.ts` to fully support `is_admin` state mutations.
+    -  Updated `schema.sql` documentation.
 
 ## Previous Work: UI & UX Overhaul
     *   **Global Theme Unification:** Implemented a consistent beige/earthy theme (`#F2F0E9` bg, `#4A4238` text) across the entire application (Intake, Dashboard, Admin, Login).

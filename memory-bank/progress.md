@@ -13,10 +13,11 @@
         - [x] Deployment Configuration (Env Vars)
         - [x] **Dashboard Access**: Direct link to user dashboard from admin table.
         - [ ] Reporting Dashboard (Future)
-        - [x] **User Creation**: Admin can create users (Auth + DB) via Modal.
+        - [x] **User Creation**: Admin can create users (Auth + DB) via Modal (Includes Admin Role toggle).
         - [x] **Real-time Search**: Client-side search for users.
         - [x] **Copy Upload Link**: Action to copy user-specific upload URL.
-        - [x] **User Editing**: Admins can update Name, Email, Phone.
+        - [x] **User Editing**: Admins can update Name, Email, Phone, and Admin Role.
+        - [x] **Safety**: Added confirmation dialog for granting Admin privileges.
         - [x] **User Deletion**: Admins can securely delete users.
     *   **Infrastructure:** Dedicated `middleware.ts` for robust Supabase session handling.
 

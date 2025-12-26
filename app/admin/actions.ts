@@ -9,6 +9,7 @@ const CreateUserSchema = z.object({
     fullName: z.string().min(1, "Name is required"),
     email: z.string().email("Invalid email address"),
     phone: z.string().optional(),
+    isAdmin: z.boolean().optional(),
 })
 
 type CreateUserState = {
@@ -22,6 +23,7 @@ export async function createUser(prevState: CreateUserState, formData: FormData)
         fullName: formData.get("fullName"),
         email: formData.get("email"),
         phone: formData.get("phone") || undefined, // Handle empty string as undefined
+        isAdmin: formData.get("isAdmin") === "true",
     })
 
     if (!validatedFields.success) {
@@ -31,7 +33,7 @@ export async function createUser(prevState: CreateUserState, formData: FormData)
         }
     }
 
-    const { fullName, email, phone } = validatedFields.data
+    const { fullName, email, phone, isAdmin } = validatedFields.data
 
     // Initialize Supabase Admin Client
     // Using direct supabase-js client with Service Role Key for Admin operations
@@ -91,6 +93,7 @@ export async function createUser(prevState: CreateUserState, formData: FormData)
                 full_name: fullName,
                 email: email,
                 phone: phone,
+                is_admin: isAdmin || false,
             })
 
         if (profileError) {
@@ -123,6 +126,7 @@ const UpdateUserSchema = z.object({
     fullName: z.string().min(1, "Name is required"),
     email: z.string().email("Invalid email address"),
     phone: z.string().optional(),
+    isAdmin: z.boolean().optional(),
 })
 
 export async function updateUser(prevState: CreateUserState, formData: FormData): Promise<CreateUserState> {
@@ -131,6 +135,7 @@ export async function updateUser(prevState: CreateUserState, formData: FormData)
         fullName: formData.get("fullName"),
         email: formData.get("email"),
         phone: formData.get("phone") || undefined,
+        isAdmin: formData.get("isAdmin") === "true",
     })
 
     if (!validatedFields.success) {
@@ -140,7 +145,7 @@ export async function updateUser(prevState: CreateUserState, formData: FormData)
         }
     }
 
-    const { userId, fullName, email, phone } = validatedFields.data
+    const { userId, fullName, email, phone, isAdmin } = validatedFields.data
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY

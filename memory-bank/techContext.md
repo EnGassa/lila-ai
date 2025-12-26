@@ -32,7 +32,7 @@
     *   **Instruction:** Always use the GitHub MCP to read and manage issues. If the GitHub MCP is not available or connected, instruct the user to set it up immediately.
 *   **Admin Access:**
     *   Managed via the `is_admin` column in `public.users`.
-    *   Requires manual promotion (SQL) for new admin users.
+    *   **New:** Can be managed via UI (Create/Edit User) with safety confirmation.
     *   Protected by `middleware.ts` (Session) + `layout.tsx` (Role).
 
 ## Dependencies

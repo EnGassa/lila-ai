@@ -7,6 +7,8 @@ create table if not exists public.users (
   id text not null primary key,
   full_name text,
   email text unique,
+  phone text,
+  is_admin boolean default false,
   created_at timestamptz default now()
 );
 

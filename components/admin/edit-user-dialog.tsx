@@ -7,6 +7,7 @@ import { Pencil, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
     Dialog,
     DialogContent,
@@ -55,6 +56,7 @@ function SubmitButton() {
 export function EditUserDialog({ user }: { user: User }) {
     const [open, setOpen] = useState(false)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
+    const [isAdmin, setIsAdmin] = useState(user.is_admin === true)
     const router = useRouter()
 
     async function clientAction(formData: FormData) {
@@ -100,6 +102,7 @@ export function EditUserDialog({ user }: { user: User }) {
                     </DialogDescription>
                 </DialogHeader>
                 <form action={clientAction} className="grid gap-4 py-4">
+                    <input type="hidden" name="isAdmin" value={isAdmin.toString()} />
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="fullName" className="text-right">
                             Name <span className="text-red-500">*</span>
@@ -136,6 +139,24 @@ export function EditUserDialog({ user }: { user: User }) {
                             defaultValue={user.phone || ""}
                             className="col-span-3"
                         />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="isAdmin" className="text-right">
+                            Role
+                        </Label>
+                        <div className="flex items-center space-x-2 col-span-3">
+                            <Checkbox 
+                                id="isAdmin" 
+                                checked={isAdmin}
+                                onCheckedChange={(checked) => setIsAdmin(checked as boolean)}
+                            />
+                            <label
+                                htmlFor="isAdmin"
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                                Grant Admin Access
+                            </label>
+                        </div>
                     </div>
 
                     {errorMessage && (
