@@ -102,6 +102,17 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
       const { error } = await supabase.from('intake_submissions').upsert(payload, { onConflict: 'user_id' });
       if (error) throw error;
 
+      // Fire-and-forget Discord Notification
+      fetch('/api/webhooks/discord', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            type: 'intake',
+            user_id: userId,
+            data: data
+        })
+      }).catch(err => console.error('Failed to send Discord notification:', err));
+
       toast.success('Skin profile updated!');
       router.push(`/${userId}/upload`);
     } catch (error) {

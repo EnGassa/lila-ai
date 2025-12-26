@@ -46,3 +46,9 @@ To maintain design consistency and reduce duplication:
 *   **Reusable UI Elements:** Common patterns like selection buttons grids and section headers are extracted into atomic components (`components/ui/selection-button.tsx`, `components/ui/section-header.tsx`).
 *   **Centralized Theming:** Theme colors (`--color-background`, `--color-accent`) are defined in `globals.css` and accessed via Tailwind utility classes, ensuring a unified "Beige/Earthy" aesthetic across all pages.
 
+### Notification Proxy Pattern
+To securely send third-party notifications (Discord) without exposing webhook URLs to the client:
+1.  **Server-Side Proxy:** A Next.js API route (`app/api/webhooks/discord/route.ts`) acts as the intermediary.
+2.  **Environment Config:** Webhook URLs are stored strictly in server-side environment variables (`.env.local`).
+3.  **Client Abstraction:** The frontend calls this internal API with a normalized payload (`type`, `data`), isolating it from the implementation details of the external service.
+

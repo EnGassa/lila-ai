@@ -15,6 +15,14 @@
         *   Fixed critical mobile layout bug where the footer overlapped content (`pb-24`).
     *   **Component Standardization:** Extracted `SelectionButton` and `SectionHeader` into reusable components (`components/ui/`) to reduce code duplication.
     *   **Feedback Modal:** Refactored to align with the new design system and fixed duplicate code issues.
+    *   **Skin Profile Logic:**
+        *   Refined gender options and renamed "Gender Identity" to "Gender".
+        *   Added conditional logic to hide "Hormonal Health", "Pregnancy", and "Makeup" sections for male users.
+        *   Added `pregnancy_status` field.
+    *   **Discord Notifications:**
+        *   Implemented a server-side API proxy (`/api/webhooks/discord`) to securely dispatch form submissions to Discord.
+        *   Configured separate channels for Intake and Feedback.
+        *   Formatted notifications with a clean, vertical layout.
 
 ---
 

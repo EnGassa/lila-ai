@@ -102,6 +102,17 @@ export function FeedbackModal({ userId, recommendationId }: FeedbackModalProps) 
 
       if (error) throw error;
 
+      // Fire-and-forget Discord Notification
+      fetch('/api/webhooks/discord', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            type: 'feedback',
+            user_id: userId,
+            data: { ...data, recommendation_id: recommendationId }
+        })
+      }).catch(err => console.error('Failed to send Discord notification:', err));
+
       toast.success('Thank you for your feedback!', {
         className: 'bg-[#F2F0E9] text-[#4A4238] border-[#D6CDBF]',
       });
