@@ -109,13 +109,7 @@ def main():
         type=str,
         help="The user's full name to search for (case-insensitive).",
     )
-    parser.add_argument(
-        "--env",
-        type=str,
-        choices=["dev", "prod"],
-        default="prod",
-        help="Environment to use for storage (dev=user-uploads-dev, prod=user-uploads).",
-    )
+
     args = parser.parse_args()
     logger.info(f"Starting analysis with arguments: {args}")
 
