@@ -1,8 +1,14 @@
 # Active Context
 
 ## Current Work: Verification & Commit
-- Verifying all changes are committed and pushed.
-- Updated Memory Bank to reflect Admin Dashboard enhancements.
+- Verified `generate_recommendations.py` works with DB-backed context.
+- Updating Memory Bank and committing changes.
+
+## Recent Work: Intake Data Migration
+- **Back-end Script Update:**
+    - Updated `scripts/generate_recommendations.py` to automatically fetch user context (budget, lifestyle) from the `intake_submissions` table if no local context file is provided.
+    - Implemented "Smart Fallback": Script prioritizes `--context-file` (legacy/manual), falls back to DB, and defaults to generic recommendations if neither exists.
+    - **Context Injection:** Cleaned DB data is injected directly into the prompt for both the Strategist (Philosophy) and Generator (Routine) agents, ensuring personalized constraints are respected.
 
 ## Previous Work: Admin Dashboard Enhancements
 - **Admin Management:**

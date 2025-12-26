@@ -194,9 +194,44 @@ def main():
     analysis_data = full_analysis_record['analysis_data']
     logger.success(f"Loaded analysis {analysis_id}.")
 
+    # --- Load User Context (Intake Data) ---
+    # Priority:
+    # 1. Explicit --context-file argument (Legacy/Manual Override)
+    # 2. Database 'intake_submissions' table (New Standard)
+    
+    user_context = {}
+    
+    if args.context_file:
+         logger.info(f"Loading context from file: {args.context_file}")
+         user_context = load_json_context(args.context_file)
+    else:
+         logger.info(f"Fetching intake submission from DB for user {args.user_id}...")
+         try:
+             intake_res = supabase.table('intake_submissions').select('*').eq('user_id', args.user_id).limit(1).execute()
+             if intake_res.data:
+                 raw_context = intake_res.data[0]
+                 # Filter out technical fields to keep context clean for the LLM
+                 ignored_keys = {'id', 'user_id', 'created_at', 'updated_at', 'form_id'}
+                 user_context = {k: v for k, v in raw_context.items() if k not in ignored_keys and v is not None}
+                 logger.success("Loaded and cleaned user context from Supabase.")
+                 logger.debug(f"Context keys: {list(user_context.keys())}")
+             else:
+                 logger.warning("No intake submission found in database. Recommendations will be generic.")
+         except Exception as e:
+             logger.error(f"Failed to fetch context from DB: {e}")
+
+    # Merge context into analysis_summary or pass separately? 
+    # The current flow generates philosophy from 'analysis_summary'. 
+    # We should append the context to that summary string so the Strategist sees it.
+
     # --- Phase 1: Generate Skincare Philosophy (Blueprint) ---
     logger.info("--- Generating Skincare Philosophy ---")
     analysis_summary = distill_analysis_for_prompt(analysis_data)
+    
+    # Append User Context if available
+    if user_context:
+        analysis_summary += "\n\n**Patient Lifestyle & Constraints (User Context):**\n"
+        analysis_summary += json.dumps(user_context, indent=2)
     
     strategist_llm, strategist_settings = create_agent(args.model, args.api_key, None)
     strategist_agent = Agent(
@@ -272,6 +307,9 @@ def main():
             "Here is the strategic Skincare Philosophy to follow:", philosophy.model_dump_json(indent=2),
             "Here is a curated list of relevant products based on the philosophy:", format_products_as_markdown(relevant_products),
         ]
+        
+        if user_context:
+             message_content.insert(1, f"Here is the user's intake/context (Budget, Habits, etc.):\n{json.dumps(user_context, indent=2)}")
         
         if feedback_history:
             message_content.append("Previous attempts were rejected. Please correct the following issues:")

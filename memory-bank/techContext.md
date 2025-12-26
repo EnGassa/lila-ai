@@ -47,6 +47,7 @@
     *   **Execution**: Designed to be run via `uv run`, which manages its Python dependencies.
 *   **`scripts/generate_recommendations.py`**: A Python script for generating personalized skincare recommendations.
     *   **Purpose**: Orchestrates a multi-agent system (Strategist, Generator, Reviewer) to create a safe and effective skincare routine. It implements a "Smart Brute Force" retrieval strategy, querying all product categories with enriched, ingredient-specific search terms.
+    *   **Data Source**: Fetches skin analysis from `skin_analyses` tables. **New:** Automatically fetches user context (budget, lifestyle) from `intake_submissions` if no context file is provided.
     *   **Framework**: Uses `pydantic-ai` for interfacing with LLMs and `sentence-transformers` for creating embeddings.
     *   **Execution**: Designed to be run via `uv run`, which manages its Python dependencies.
 *   **`scripts/skin_lib.py`**: A shared Python library for the analysis and recommendation scripts.
