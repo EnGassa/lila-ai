@@ -29,7 +29,7 @@ async function UserUploadContent({ userId }: { userId: string }) {
 
   const { data: user } = await supabase
     .from('users')
-    .select('full_name')
+    .select('full_name, avatar_url')
     .eq('id', userId)
     .single()
 
@@ -38,8 +38,9 @@ async function UserUploadContent({ userId }: { userId: string }) {
   }
   
   const displayName = user.full_name || userId;
+  const avatarUrl = user.avatar_url;
 
-  return <UploadPageClient userId={userId} displayName={displayName} />
+  return <UploadPageClient userId={userId} displayName={displayName} avatarUrl={avatarUrl} />
 }
 
 function UploadPageSkeleton() {

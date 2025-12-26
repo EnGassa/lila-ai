@@ -18,7 +18,7 @@ const FaceCapture = dynamic(() => import('@/components/analysis/FaceCapture'), {
   loading: () => <div className="p-12 text-center">Loading Camera...</div>
 })
 
-export function UploadPageClient({ userId, displayName }: { userId: string, displayName: string }) {
+export function UploadPageClient({ userId, displayName, avatarUrl }: { userId: string, displayName: string, avatarUrl?: string | null }) {
   const router = useRouter();
   const [viewMode, setViewMode] = useState<'upload' | 'camera'>('upload')
   const [capturedFiles, setCapturedFiles] = useState<File[]>([])
@@ -58,7 +58,7 @@ export function UploadPageClient({ userId, displayName }: { userId: string, disp
   return (
     <div className="p-4 pb-32 space-y-6 bg-background min-h-screen">
       <div className="flex items-center gap-4">
-        <UserAvatar userId={userId} displayName={displayName} />
+        <UserAvatar userId={userId} displayName={displayName} avatarUrl={avatarUrl} />
         <div>
           <p className="text-2xl font-light">{displayName}</p>
         </div>
