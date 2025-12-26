@@ -1,0 +1,57 @@
+name: Run Skin Analysis & Recommendations
+
+on:
+  repository_dispatch:
+    types: [run_analysis]
+
+jobs:
+  analyze_and_recommend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12" # Matches project requirement
+
+      - name: Run Onboarding Script
+        env:
+          # Supabase DB
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} # Fallback if script needs it
+
+          # Supabase Storage (S3)
+          SUPABASE_S3_ENDPOINT: ${{ secrets.SUPABASE_S3_ENDPOINT }}
+          SUPABASE_S3_REGION: ${{ secrets.SUPABASE_S3_REGION }}
+          SUPABASE_S3_ACCESS_KEY_ID: ${{ secrets.SUPABASE_S3_ACCESS_KEY_ID }}
+          SUPABASE_S3_SECRET_ACCESS_KEY: ${{ secrets.SUPABASE_S3_SECRET_ACCESS_KEY }}
+          # Buckets are determined by env flag (prod or dev)
+
+          # AI Provider
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          
+          # Script Config
+          PYTHONUNBUFFERED: "1"
+
+        run: |
+          echo "Starting analysis for User ID: ${{ github.event.client_payload.user_id }}"
+          echo "Environment: ${{ github.event.client_payload.env }}"
+          
+          # Install dependencies and run script
+          # Note: 'uv run --script' handles dependency installation automatically from the inline script metadata
+          uv run scripts/onboard_beta_user.py \
+            --user-id "${{ github.event.client_payload.user_id }}" \
+            --env "${{ github.event.client_payload.env }}" \
+            --model "google-gla:gemini-2.5-pro" \
+            --api-key "${{ secrets.GOOGLE_API_KEY }}"

@@ -38,5 +38,8 @@
 *   **Intake Data Integration:**
     - [x] Migrate `generate_recommendations.py` to fetch user context (Budget, Habits) directly from Supabase `intake_submissions`.
 
+*   **Automation:**
+    - [x] Automated Skin Analysis & Recommendations via GitHub Actions (Triggered by Upload).
+
 *   **Dual Upload Page System:**
 ...

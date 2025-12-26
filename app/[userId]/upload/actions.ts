@@ -155,9 +155,10 @@ export async function notifyOnUploadComplete(userId: string, filePaths: string[]
     embeds,
   }
 
+  // 1. Send Discord Notification (Fire and Forget or Await, depending on criticality)
   try {
     console.log('[notifyOnUploadComplete] Sending notification to Discord...')
-    const response = await fetch(webhookUrl, {
+    const discordResponse = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -165,17 +166,76 @@ export async function notifyOnUploadComplete(userId: string, filePaths: string[]
       body: JSON.stringify(content),
     })
 
-    if (!response.ok) {
-      const errorBody = await response.text();
-      console.error('[notifyOnUploadComplete] Failed to send Discord notification:', response.status, response.statusText, errorBody);
-      return { error: `Failed to send notification. Status: ${response.status}` };
+    if (!discordResponse.ok) {
+      const errorBody = await discordResponse.text();
+      console.error('[notifyOnUploadComplete] Failed to send Discord notification:', discordResponse.status, discordResponse.statusText, errorBody);
+    } else {
+        console.log('[notifyOnUploadComplete] Successfully sent Discord notification.')
     }
-    
-    console.log('[notifyOnUploadComplete] Successfully sent Discord notification.')
-    return { success: true }
 
   } catch (error) {
     console.error('[notifyOnUploadComplete] Error sending Discord notification:', error)
-    return { error: 'An unexpected error occurred while sending the notification.' }
   }
+
+  // 2. Trigger GitHub Action for Analysis (Automation)
+  // We do this independently so a Discord failure doesn't block analysis, and vice versa.
+  const analysisResult = await triggerAnalysisWorkflow(userId);
+  if (analysisResult.error) {
+     console.error('[notifyOnUploadComplete] Failed to trigger analysis workflow:', analysisResult.error);
+     // We return a specialized warning but success true because the upload itself was successful
+     // and we don't want to show an error to the user just because automation failed to start.
+     return { success: true, warning: 'Upload successful, but analysis failed to start automatically.' };
+  }
+
+  return { success: true }
+}
+
+async function triggerAnalysisWorkflow(userId: string) {
+    const isDev = process.env.NODE_ENV === 'development';
+    const env = isDev ? 'dev' : 'prod';
+    
+    // In local dev, we might not want to spam GitHub Actions unless explicitly desired.
+    // But for this feature test, we likely want it.
+    // check for PAT
+    const pat = process.env.GITHUB_PAT;
+    const owner = process.env.GITHUB_OWNER;
+    const repo = process.env.GITHUB_REPO;
+
+    if (!pat || !owner || !repo) {
+        console.warn('Missing GitHub Configuration (GITHUB_PAT, GITHUB_OWNER, GITHUB_REPO). Skipping automation trigger.');
+        return { error: 'Missing GitHub Configuration' };
+    }
+
+    try {
+        console.log(`[triggerAnalysisWorkflow] Triggering 'run_analysis' for user ${userId} on ${owner}/${repo}...`);
+        
+        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/dispatches`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${pat}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                event_type: 'run_analysis',
+                client_payload: {
+                    user_id: userId,
+                    env: env
+                }
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`[triggerAnalysisWorkflow] GitHub API Error: ${response.status} ${response.statusText}`, errorText);
+            return { error: `GitHub API Error: ${response.status}` };
+        }
+
+        console.log('[triggerAnalysisWorkflow] Successfully triggered GitHub Action.');
+        return { success: true };
+
+    } catch (error) {
+        console.error('[triggerAnalysisWorkflow] Unexpected error:', error);
+        return { error: 'Unexpected error triggering workflow' };
+    }
 }
