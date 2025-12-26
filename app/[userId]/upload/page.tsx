@@ -2,8 +2,27 @@ import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Metadata } from 'next'
 import { UploadPageClient } from './UploadPageClient'
 
+
+export async function generateMetadata({ params }: { params: Promise<{ userId: string }> }): Promise<Metadata> {
+  const { userId } = await params
+  const supabase = await createClient()
+
+  const { data: user } = await supabase
+    .from('users')
+    .select('full_name')
+    .eq('id', userId)
+    .single()
+
+  const displayName = user?.full_name || 'User'
+
+  return {
+    title: `${displayName} - Upload Photos`,
+    description: 'Upload your photos for skin analysis',
+  }
+}
 
 async function UserUploadContent({ userId }: { userId: string }) {
   const supabase = await createClient()

@@ -41,4 +41,8 @@ To handle sensitive file uploads securely without exposing storage credentials o
 3.  **Direct Upload:** The client receives the URL and uploads the file directly to Supabase Storage (S3 compatible) using a standard `PUT` request.
 This pattern bypasses server body size limits and reduces server load.
 
- ...
+### Component Standardization
+To maintain design consistency and reduce duplication:
+*   **Reusable UI Elements:** Common patterns like selection buttons grids and section headers are extracted into atomic components (`components/ui/selection-button.tsx`, `components/ui/section-header.tsx`).
+*   **Centralized Theming:** Theme colors (`--color-background`, `--color-accent`) are defined in `globals.css` and accessed via Tailwind utility classes, ensuring a unified "Beige/Earthy" aesthetic across all pages.
+

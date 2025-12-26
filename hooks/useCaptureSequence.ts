@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { GUIDELINES } from "@/components/guidelines-new";
+import { GUIDELINES } from "@/components/guidelines";
 import type { CapturePose } from "./usePoseValidation";
 
 interface UseCaptureSequenceOptions {

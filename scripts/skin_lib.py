@@ -140,9 +140,51 @@ class Ingredient(BaseModel):
     our_take: Optional[str] = None
     quick_facts: Optional[List[str]] = None
     image_url: Optional[str] = None
-    embedding: Optional[List[float]] = None
     created_at: str
     updated_at: str
+
+class IntakeSubmission(BaseModel):
+    id: str
+    user_id: str
+    age: Optional[int]
+    gender: Optional[str]
+    city: Optional[str]
+    skin_conditions: Optional[List[str]]
+    sleep_hours: Optional[str]
+    stress_level: Optional[int]
+    hormonal_status: Optional[Dict[str, Any]]
+    medication: Optional[str]
+    allergies: Optional[str]
+    pregnancy_status: Optional[str]
+    makeup_frequency: Optional[str]
+    smoking: Optional[str]
+    daily_routine_frequency: Optional[str]
+    current_routine: Optional[Dict[str, Any]]
+    budget: Optional[str]
+    created_at: str
+
+class FeedbackSubmission(BaseModel):
+    id: str
+    user_id: str
+    recommendation_id: Optional[str]
+    helpfulness_score: Optional[int]
+    accuracy_score: Optional[int]
+    qualitative_feedback: Optional[str]
+    clarity_score: Optional[int]
+    explanation_quality: Optional[str]
+    trust_score: Optional[int]
+    personalization_suggestions: Optional[str]
+    ux_score: Optional[int]
+    frustration_points: Optional[str]
+    improvement_suggestions: Optional[str]
+    procurement_preference: Optional[str]
+    subscription_interest: Optional[str]
+    subscription_features: Optional[List[str]]
+    willingness_to_pay_sub: Optional[str]
+    willingness_to_pay_one_time: Optional[str]
+    derm_consult_interest: Optional[str]
+    interview_willingness: Optional[bool]
+    created_at: str
 
 # --- Pydantic Output Models for Recommendations ---
 

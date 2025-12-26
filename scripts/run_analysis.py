@@ -260,7 +260,30 @@ def main():
     logger.info(f"Found {len(image_paths)} images to analyze.")
 
     analysis_prompt = load_system_prompt(args.analysis_prompt)
-    context = load_json_context(args.context_file)
+    analysis_prompt = load_system_prompt(args.analysis_prompt)
+    
+    # --- Context Loading Strategy ---
+    # Priority 1: Context File (Explicit Override)
+    # Priority 2: Database (Intake Submission)
+    # Fallback: None
+    
+    context = {}
+    if args.context_file:
+         logger.info(f"Loading context from local file: {args.context_file}")
+         context = load_json_context(args.context_file)
+    elif args.user_id:
+        try:
+             supabase = get_supabase_client()
+             logger.info(f"Fetching intake submission for user {args.user_id}...")
+             res = supabase.table("intake_submissions").select("*").eq("user_id", args.user_id).limit(1).execute()
+             if res.data:
+                 context = res.data[0]
+                 logger.success("Loaded user context from Supabase.")
+             else:
+                 logger.warning("No intake submission found in database for this user.")
+        except Exception as e:
+             logger.error(f"Failed to fetch context from DB: {e}")
+             
     logger.success("Images and context loaded successfully.")
 
     # --- Construct User Message ---

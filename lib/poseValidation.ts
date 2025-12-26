@@ -4,7 +4,7 @@
  */
 
 import type { PoseData } from "@/hooks/usePoseValidation";
-import type { PoseId } from "@/components/guidelines-new";
+import type { PoseId } from "@/components/guidelines";
 
 /**
  * Detected face angles and measurements from MediaPipe

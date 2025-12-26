@@ -1,6 +1,24 @@
 # Active Context
 
-## Current Work: Latency Instrumentation (L-82)
+## Current Work: Verification & Commit
+- Verifying all changes are committed and pushed.
+- Updating Memory Bank to reflect the latest UI/UX overhaul.
+
+## Previous Work: UI & UX Overhaul
+    *   **Global Theme Unification:** Implemented a consistent beige/earthy theme (`#F2F0E9` bg, `#4A4238` text) across the entire application (Intake, Dashboard, Admin, Login).
+    *   **Skin Profile (formerly Intake):**
+        *   Renamed "Intake" to "Skin Profile" to better reflect its purpose.
+        *   Refactored into a single-page scrolling form for better usability.
+        *   Implemented data pre-filling for returning users using `upsert` logic.
+    *   **Upload Flow:**
+        *   Promoted experimental `/upload/new` to the main `/upload` route.
+        *   Fixed critical mobile layout bug where the footer overlapped content (`pb-24`).
+    *   **Component Standardization:** Extracted `SelectionButton` and `SectionHeader` into reusable components (`components/ui/`) to reduce code duplication.
+    *   **Feedback Modal:** Refactored to align with the new design system and fixed duplicate code issues.
+
+---
+
+## Previous Work: Latency Instrumentation (L-82)
 - Removed the capture latency stat popup (toast) and moved metrics logging to PostHog for better analytical tracking without UI distractions.
 
 ## Previous Work: UI Refinements

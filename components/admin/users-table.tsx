@@ -53,7 +53,7 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
     })
 
     const copyUploadLink = (userId: string) => {
-        const link = `${window.location.origin}/${userId}/upload/new`
+        const link = `${window.location.origin}/${userId}/upload`
         navigator.clipboard.writeText(link)
         toast.success("Upload link copied to clipboard")
     }

@@ -20,7 +20,13 @@
         - [x] **User Deletion**: Admins can securely delete users.
     *   **Infrastructure:** Dedicated `middleware.ts` for robust Supabase session handling.
 
-*   **Clinical Accuracy Updates:**
+*   **User Interface & Experience (Phase 4):**
+    *   **Global Theme:** Unified "Beige/Earthy" theme across all flows.
+    *   **Skin Profile:** Single-page pre-filled form with `upsert` logic.
+    *   **Upload Flow:** Promoted to `/upload` with fixed mobile layout.
+    *   **Components:** Standardized `SelectionButton` and `SectionHeader`.
+32: 
+33: *   **Clinical Accuracy Updates:**
     *   **Clinical Pores Rubric:** Updated the AI prompt to classify pores by morphology (O-shaped for sebum, U-shaped for aging, Y-shaped for scarring) rather than just size, enabling targeted treatment paths.
     *   **Scoring Reliability:** Implemented strict Pydantic schema validation (`ge=1.0`, `le=5.0`) in `skin_lib.py` to prevent the AI from drifting into 0-1 normalized scoring, ensuring perfect synchronization between the UI cards and radar charts.
 

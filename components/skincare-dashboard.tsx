@@ -18,6 +18,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { FeedbackModal } from "@/components/FeedbackModal";
 
 interface SkincareDashboardProps {
   analysis: any;
@@ -118,6 +119,32 @@ export function SkincareDashboard({ analysis, recommendations, userId, userName 
           )}
         </SheetContent>
       </Sheet>
+      <Sheet
+        open={!!selectedConcern}
+        onOpenChange={(isOpen) => !isOpen && setSelectedConcern(null)}
+      >
+        <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+          {selectedConcern && (
+            <>
+              <SheetHeader>
+                <SheetTitle>
+                  {selectedConcern.name.replace(/_/g, " ")}
+                </SheetTitle>
+              </SheetHeader>
+              <ConcernDetailPage
+                userId={userId}
+                concernName={selectedConcern.name}
+                onClose={() => setSelectedConcern(null)}
+                userData={analysis}
+              />
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
+      
+      <div className="flex justify-center py-8">
+        <FeedbackModal userId={userId} recommendationId={recommendations?.id} />
+      </div>
     </div>
   );
 }
