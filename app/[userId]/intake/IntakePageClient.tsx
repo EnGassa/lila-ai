@@ -140,7 +140,7 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                             name="gender"
                             render={({ field }) => (
                                 <div className="space-y-4">
-                                    <label className="text-xl font-medium">Gender Identity</label>
+                                    <label className="text-xl font-medium">Gender</label>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         {["Female", "Male", "Non-binary", "Prefer not to say"].map(opt => (
                                             <SelectionButton 
@@ -269,32 +269,56 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                     <SectionHeader title="Habits" />
                     
                     <div className="space-y-10">
-                         <FormField
-                            control={form.control}
-                            name="hormonal_status"
-                            render={({ field }) => (
-                                <div className="space-y-4">
-                                    <label className="text-xl font-medium">Hormonal Health</label>
-                                    <div className="grid grid-cols-1 gap-3">
-                                        {["Regular periods", "Irregular periods", "PCOD/PCOS", "None / Not Applicable"].map(opt => {
-                                            const isSelected = field.value?.includes(opt);
-                                            return (
-                                                <SelectionButton 
-                                                    key={opt}
-                                                    label={opt}
-                                                    selected={!!isSelected}
-                                                    onClick={() => {
-                                                        const current = field.value || [];
-                                                        if (isSelected) field.onChange(current.filter(x => x !== opt));
-                                                        else field.onChange([...current, opt]);
-                                                    }}
-                                                />
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            )}
-                        />
+                        {form.watch("gender") !== "Male" && (
+                            <>
+                                <FormField
+                                    control={form.control}
+                                    name="hormonal_status"
+                                    render={({ field }) => (
+                                        <div className="space-y-4">
+                                            <label className="text-xl font-medium">Hormonal Health</label>
+                                            <div className="grid grid-cols-1 gap-3">
+                                                {["Regular periods", "Irregular periods", "PCOD/PCOS", "None / Not Applicable"].map(opt => {
+                                                    const isSelected = field.value?.includes(opt);
+                                                    return (
+                                                        <SelectionButton 
+                                                            key={opt}
+                                                            label={opt}
+                                                            selected={!!isSelected}
+                                                            onClick={() => {
+                                                                const current = field.value || [];
+                                                                if (isSelected) field.onChange(current.filter(x => x !== opt));
+                                                                else field.onChange([...current, opt]);
+                                                            }}
+                                                        />
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="pregnancy_status"
+                                    render={({ field }) => (
+                                        <div className="space-y-4">
+                                            <label className="text-xl font-medium">Pregnancy / Breastfeeding</label>
+                                            <div className="flex flex-col gap-2">
+                                                {["Pregnant", "Breastfeeding", "Trying to Conceive", "None"].map(opt => (
+                                                    <SelectionButton 
+                                                        key={opt}
+                                                        label={opt}
+                                                        selected={field.value === opt}
+                                                        onClick={() => field.onChange(opt)}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                />
+                            </>
+                         )}
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                             <FormField
@@ -316,25 +340,27 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                                     </div>
                                 )}
                             />
-                             <FormField
-                                control={form.control}
-                                name="makeup_frequency"
-                                render={({ field }) => (
-                                    <div className="space-y-4">
-                                        <label className="text-xl font-medium">Makeup</label>
-                                        <div className="flex flex-col gap-2">
-                                            {["Daily", "Often", "Occasionally", "Never"].map(opt => (
-                                                <SelectionButton 
-                                                    key={opt}
-                                                    label={opt}
-                                                    selected={field.value === opt}
-                                                    onClick={() => field.onChange(opt)}
-                                                />
-                                            ))}
+                             {form.watch("gender") !== "Male" && (
+                                 <FormField
+                                    control={form.control}
+                                    name="makeup_frequency"
+                                    render={({ field }) => (
+                                        <div className="space-y-4">
+                                            <label className="text-xl font-medium">Makeup</label>
+                                            <div className="flex flex-col gap-2">
+                                                {["Daily", "Often", "Occasionally", "Never"].map(opt => (
+                                                    <SelectionButton 
+                                                        key={opt}
+                                                        label={opt}
+                                                        selected={field.value === opt}
+                                                        onClick={() => field.onChange(opt)}
+                                                    />
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
-                            />
+                                    )}
+                                />
+                             )}
                         </div>
                     </div>
                  </section>
