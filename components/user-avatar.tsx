@@ -21,8 +21,8 @@ export function UserAvatar({ userId, displayName, avatarUrl }: { userId: string;
       setImgSrc(userImg)
     }
     img.onerror = () => {
-      // If legacy file not found, fallback to placeholder/initials (handled by onError in rendering)
-      setImgSrc(null) 
+      // If legacy file not found, fallback to placeholder
+      setImgSrc('/placeholder.png') 
     }
   }, [userId, avatarUrl])
 
@@ -41,8 +41,12 @@ export function UserAvatar({ userId, displayName, avatarUrl }: { userId: string;
         alt="User"
         className="object-cover"
         onError={() => {
-            // If the set src fails (e.g. broken URL or missing legacy file)
-             setImgSrc(null)
+            // If the set src fails (e.g. broken URL), fallback to placeholder if not already there, else initials
+            if (imgSrc !== '/placeholder.png') {
+                setImgSrc('/placeholder.png')
+            } else {
+                setImgSrc(null) // Prevent infinite loop if placeholder missing
+            }
         }}
       />
       <AvatarFallback className="rounded-lg">{displayName.charAt(0)}</AvatarFallback>
