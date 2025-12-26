@@ -118,7 +118,7 @@ def main():
     logger.add(sys.stderr, format="<level>{message}</level>", colorize=True)
     
     parser = argparse.ArgumentParser(description="Onboard a beta user.")
-    parser.add_argument("--name", required=True, help="Full name of the user.")
+    parser.add_argument("--name", help="Full name of the user (required if --user-id not provided).")
     parser.add_argument("--user-id", help="Explicit ID of the user (skips creation/lookup).")
     parser.add_argument("--email", help="Email of the user (optional).")
     parser.add_argument("--image-dir", help="Directory containing user's face images. If not provided, will assume images are uploaded to Supabase.")
@@ -138,8 +138,13 @@ def main():
     if args.user_id:
         user_id = args.user_id
         logger.info(f"Using provided User ID: {user_id}")
-    else:
+        name_for_logs = args.name if args.name else f"User {user_id}"
+    elif args.name:
         user_id = create_user(supabase, args.name, args.email, overwrite=args.overwrite)
+        name_for_logs = args.name
+    else:
+        logger.error("Error: Either --name or --user-id must be provided.")
+        sys.exit(1)
 
     # Handle --setup-only flag
     if args.setup_only:
