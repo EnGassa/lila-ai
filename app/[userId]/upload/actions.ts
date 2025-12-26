@@ -3,6 +3,7 @@
 import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { DiscordEmbed } from '@/lib/types'
 
 const s3Client = new S3Client({
@@ -63,6 +64,29 @@ export async function notifyOnUploadComplete(userId: string, filePaths: string[]
     return { error: 'Server configuration error: webhook URL is missing.' }
   }
 
+  // Fetch user details for the notification
+  // Use Service Role to bypass RLS for test users (like "radhika") or if the actor is not the user themselves
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    }
+  )
+
+  const { data: user } = await supabaseAdmin
+    .from('users')
+    .select('full_name, email, phone')
+    .eq('id', userId)
+    .single()
+
+  const userName = user?.full_name || 'Unknown User'
+  const userEmail = user?.email || 'N/A'
+  const userPhone = user?.phone || 'N/A'
+
   const signedUrls = []
   const fileNames = [] 
   
@@ -86,9 +110,19 @@ export async function notifyOnUploadComplete(userId: string, filePaths: string[]
 
   const embeds: DiscordEmbed[] = [
     {
-      title: 'New Photo Upload!',
-      description: `User **${userId}** has uploaded **${filePaths.length}** new photo(s).`,
+      title: '📸 New Photo Upload',
+      description: `**${userName}** has uploaded **${filePaths.length}** new photo(s).`,
       fields: [
+        {
+            name: 'User',
+            value: `${userName}\n${userEmail}\n${userPhone}`,
+            inline: true
+        },
+        {
+            name: 'User ID',
+            value: `\`${userId}\``,
+            inline: true
+        },
         {
           name: 'Files',
           value: fileNames.join('\n'),
@@ -99,6 +133,9 @@ export async function notifyOnUploadComplete(userId: string, filePaths: string[]
       image: {
         url: signedUrls[0],
       },
+      footer: {
+        text: 'Lila AI Notification System'
+      }
     },
   ]
 

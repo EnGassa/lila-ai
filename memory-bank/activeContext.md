@@ -22,11 +22,18 @@
     *   **Discord Notifications:**
         *   Implemented a server-side API proxy (`/api/webhooks/discord`) to securely dispatch form submissions to Discord.
         *   Configured separate channels for Intake and Feedback.
+        *   Configured separate channels for Intake and Feedback.
         *   Formatted notifications with a clean, vertical layout.
+        *   **Enriched Notifications:** Now includes user name, email, and phone number (fetched via server action) instead of just UUID.
     *   **URL Standardization:**
         *   Unified route structure to `/[userId]/[feature]` (Dashboard, Intake, Upload).
         *   Moved `dashboard` from `/dashboard/[userId]` to `/[userId]/dashboard`.
         *   Added temporary redirect for legacy support (Tracked in Linear L-101).
+    *   **Face Capture Theme:**
+        *   Updated `FaceCapture` UI (buttons, borders) to match the "Beige/Earthy" theme.
+    *   **Bug Fix (Critical):**
+        *   Fixed an issue where `FaceCapture` results were not being passed to the `FileUpload` component (missing state update in `handleCameraComplete`).
+        *   Fixed camera stream not stopping on unmount by introducing `streamRef` to track and stop media tracks independently of the video element.
 
 ---
 

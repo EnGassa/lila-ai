@@ -38,6 +38,7 @@ export function useFaceLandmarker(
   const faceLandmarkerRef = useRef<FaceLandmarker | null>(null);
   const imageCaptureRef = useRef<ImageCapture | null>(null);
   const animationFrameId = useRef<number | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
     async function setup() {
@@ -80,6 +81,8 @@ export function useFaceLandmarker(
         };
 
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        streamRef.current = stream; // Store stream in ref
+        
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
           videoRef.current.addEventListener("loadeddata", predictWebcam);
@@ -95,11 +98,13 @@ export function useFaceLandmarker(
           imageCaptureRef.current = new ImageCapture(track);
         }
       } else {
-        if (videoRef.current && videoRef.current.srcObject) {
-          (videoRef.current.srcObject as MediaStream)
-            .getTracks()
-            .forEach((track) => track.stop());
-          videoRef.current.srcObject = null;
+        // Cleanup when toggling off
+        if (streamRef.current) {
+          streamRef.current.getTracks().forEach((track) => track.stop());
+          streamRef.current = null;
+        }
+        if (videoRef.current) {
+            videoRef.current.srcObject = null;
         }
         if (animationFrameId.current) {
           window.cancelAnimationFrame(animationFrameId.current);
@@ -110,6 +115,18 @@ export function useFaceLandmarker(
     let lastVideoTime = -1;
 
     const predictWebcam = () => {
+      // ... (rest of predictWebcam stays same, just need to ensure variable scope)
+      // Since predictWebcam is large and I'm replacing the whole effect block if I use replace_file_content with a range, 
+      // I should be careful. 
+      // Actually, predictWebcam is inside the useEffect.
+      // I will only replace the setupWebcam function and the return cleanup.
+      
+      // WAIT. replace_file_content replaces a contiguous block. 
+      // predictWebcam is IN BETWEEN setupWebcam and the return.
+      // So I have to include it or split the edit.
+      // I will include the variable definitions of predictWebcam but leave the body alone? No, that's messier.
+      // I will paste the whole useEffect content properly.
+      
       if (
         !videoRef.current ||
         !canvasRef.current ||
@@ -266,10 +283,12 @@ export function useFaceLandmarker(
     setupWebcam();
 
     return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        (videoRef.current.srcObject as MediaStream)
-          .getTracks()
-          .forEach((track) => track.stop());
+      // Robust cleanup using streamRef
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
+      }
+      if (videoRef.current) {
         videoRef.current.srcObject = null;
       }
       if (animationFrameId.current) {

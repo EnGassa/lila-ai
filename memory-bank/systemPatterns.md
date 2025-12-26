@@ -52,4 +52,5 @@ To securely send third-party notifications (Discord) without exposing webhook UR
 1.  **Server-Side Proxy:** A Next.js API route (`app/api/webhooks/discord/route.ts`) acts as the intermediary.
 2.  **Environment Config:** Webhook URLs are stored strictly in server-side environment variables (`.env.local`).
 3.  **Client Abstraction:** The frontend calls this internal API with a normalized payload (`type`, `data`), isolating it from the implementation details of the external service.
+4.  **Service Role Lookup:** When enrichment data is needed (e.g., fetching a user profile for a notification) and the request context does not contain the user's session (e.g., system-level trigger), a specialized Service Role client is instantiated to bypass RLS and securely retrieve the necessary descriptors.
 

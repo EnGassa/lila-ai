@@ -26,6 +26,7 @@ export function UploadPageClient({ userId, displayName }: { userId: string, disp
   const [isLoading, setIsLoading] = useState(true);
 
   const handleCameraComplete = (files: File[]) => {
+    setCapturedFiles(files)
     setViewMode('upload')
   }
   

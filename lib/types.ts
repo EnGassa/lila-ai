@@ -47,4 +47,8 @@ export interface DiscordEmbed {
     value: string;
     inline?: boolean;
   }[];
+  footer?: {
+      text: string;
+      icon_url?: string;
+  };
 }

@@ -202,7 +202,7 @@ export default function FaceCapture({
   );
 
   return (
-    <Card className="w-full max-w-4xl mx-auto border-none shadow-none md:shadow-sm md:border">
+    <Card className="w-full max-w-4xl mx-auto border-none shadow-none md:shadow-sm md:border md:border-[#D6CDBF]">
       <CardHeader>
         <CardTitle>
           {isSequenceComplete
@@ -252,7 +252,7 @@ export default function FaceCapture({
             </Button>
             <Button
               onClick={finishSequenceAndStopCamera}
-              className="bg-brown-500 hover:bg-brown-500/90"
+              className="bg-[#C8A28E] hover:bg-[#B6907D] text-white"
             >
               <Check className="mr-2 h-4 w-4" />
               Use These Photos

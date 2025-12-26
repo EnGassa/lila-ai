@@ -26,8 +26,9 @@
     *   **Upload Flow:** Promoted to `/upload` with fixed mobile layout.
     *   **Components:** Standardized `SelectionButton` and `SectionHeader`.
     *   **Refined Logic:** Conditional form fields based on gender (Skin Profile).
-    *   **Notifications:** Real-time Discord alerts for Intake and Feedback submissions.
+    *   **Notifications:** Real-time Discord alerts for Intake and Feedback submissions (Enriched with User Details).
     *   **URL Consistency:** Standardized `/[userId]/[feature]` routing pattern.
+    *   **Face Capture:** UI updated to match global theme, data flow and camera cleanup bugs fixed.
 32: 
 33: *   **Clinical Accuracy Updates:**
     *   **Clinical Pores Rubric:** Updated the AI prompt to classify pores by morphology (O-shaped for sebum, U-shaped for aging, Y-shaped for scarring) rather than just size, enabling targeted treatment paths.

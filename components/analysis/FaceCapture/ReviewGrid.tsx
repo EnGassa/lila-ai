@@ -12,7 +12,7 @@ export function ReviewGrid({ capturedImages }: ReviewGridProps) {
           <h3 className="font-medium text-sm text-center text-muted-foreground">
             {step.title}
           </h3>
-          <div className="aspect-[3/4] relative rounded-lg overflow-hidden border bg-muted">
+          <div className="aspect-[3/4] relative rounded-lg overflow-hidden border border-[#D6CDBF] bg-[#E6E2D6]">
             {capturedImages[step.id] && (
               <img
                 src={capturedImages[step.id]!}
