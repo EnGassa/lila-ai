@@ -23,6 +23,10 @@
         *   Implemented a server-side API proxy (`/api/webhooks/discord`) to securely dispatch form submissions to Discord.
         *   Configured separate channels for Intake and Feedback.
         *   Formatted notifications with a clean, vertical layout.
+    *   **URL Standardization:**
+        *   Unified route structure to `/[userId]/[feature]` (Dashboard, Intake, Upload).
+        *   Moved `dashboard` from `/dashboard/[userId]` to `/[userId]/dashboard`.
+        *   Added temporary redirect for legacy support (Tracked in Linear L-101).
 
 ---
 

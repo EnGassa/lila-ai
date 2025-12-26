@@ -45,6 +45,7 @@ This pattern bypasses server body size limits and reduces server load.
 To maintain design consistency and reduce duplication:
 *   **Reusable UI Elements:** Common patterns like selection buttons grids and section headers are extracted into atomic components (`components/ui/selection-button.tsx`, `components/ui/section-header.tsx`).
 *   **Centralized Theming:** Theme colors (`--color-background`, `--color-accent`) are defined in `globals.css` and accessed via Tailwind utility classes, ensuring a unified "Beige/Earthy" aesthetic across all pages.
+*   **Standardized Routing:** All user-centric routes follow the `/[userId]/[feature]` pattern (e.g., `/[userId]/dashboard`, `/[userId]/intake`) to maintain a clean, user-scoped URL structure.
 
 ### Notification Proxy Pattern
 To securely send third-party notifications (Discord) without exposing webhook URLs to the client:
