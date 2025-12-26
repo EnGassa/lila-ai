@@ -27,7 +27,7 @@ jobs:
       - name: Run Onboarding Script
         env:
           # Supabase DB
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} # Fallback if script needs it
 
@@ -47,6 +47,7 @@ jobs:
         run: |
           echo "Starting analysis for User ID: ${{ github.event.client_payload.user_id }}"
           echo "Environment: ${{ github.event.client_payload.env }}"
+          echo "${{ github.event.client_payload }}"
           
           # Install dependencies and run script
           # Note: 'uv run --script' handles dependency installation automatically from the inline script metadata
