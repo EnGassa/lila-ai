@@ -39,7 +39,7 @@ export function UserAvatar({ userId, displayName, avatarUrl }: { userId: string;
       <AvatarImage
         src={imgSrc}
         alt="User"
-        className="object-cover"
+        className="object-cover scale-125 transition-transform"
         onError={() => {
             // If the set src fails (e.g. broken URL), fallback to placeholder if not already there, else initials
             if (imgSrc !== '/placeholder.png') {

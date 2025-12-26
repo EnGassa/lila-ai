@@ -38,6 +38,7 @@ logger = setup_logger()
 AVATAR_PROMPT = """
 Positive Prompt:
 A cheerful and radiant flat vector avatar of a person, styling them with a fresh and healthy glow suitable for a skincare app.
+Composition: Close-up headshot, face filling most of the frame, centered.
 Vibe & Emotion: Warm, upbeat, friendly, and confident. The expression should be relaxed and inviting with a soft smile.
 Art Style: Modern flat illustration, lineless vector art, clean organic shapes, minimal details.
 Complexion & Skin: Focus on smooth, clear skin tones with soft, rosy blush on the cheeks to indicate health and vitality.
