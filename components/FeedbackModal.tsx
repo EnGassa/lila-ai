@@ -9,7 +9,9 @@ import {
   Dialog,
   DialogContent,
   DialogTrigger,
-  DialogClose
+  DialogClose,
+  DialogTitle,
+  DialogDescription
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -156,8 +158,8 @@ export function FeedbackModal({ userId, recommendationId }: FeedbackModalProps) 
         {/* Header */}
         <div className="p-6 border-b border-[#D6CDBF]/50 flex items-center justify-between bg-[#F2F0E9] rounded-t-lg z-10">
             <div>
-                <h2 className="text-2xl font-serif text-[#4A4238]">Your Feedback</h2>
-                <p className="text-sm opacity-60 mt-1">Help us improve your experience</p>
+                <DialogTitle className="text-2xl font-serif text-[#4A4238]">Your Feedback</DialogTitle>
+                <DialogDescription className="text-sm opacity-60 mt-1 text-[#4A4238]">Help us improve your experience</DialogDescription>
             </div>
             <DialogClose className="opacity-70 hover:opacity-100 transition-opacity">
                 <X className="h-6 w-6" />
