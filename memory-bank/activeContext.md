@@ -2,6 +2,7 @@
 
 ## Current Work: Verification & Commit
 - Verified `generate_recommendations.py` works with DB-backed context.
+- Fixed `AttributeError` by restoring `--context-file` argument.
 - Updating Memory Bank and committing changes.
 
 ## Recent Work: Intake Data Migration

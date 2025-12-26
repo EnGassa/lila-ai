@@ -190,6 +190,8 @@ def main():
     ]
     if args.api_key:
         rec_args.extend(["--api-key", args.api_key])
+    if args.context_file:
+        rec_args.extend(["--context-file", args.context_file])
         
     run_script("generate_recommendations.py", rec_args)
     

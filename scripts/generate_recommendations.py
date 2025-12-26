@@ -170,6 +170,7 @@ def main():
     parser.add_argument("--reviewer-prompt", type=str, default="prompts/03_review_recommendations_prompt.md")
     parser.add_argument("--output", type=str, help="Optional path to save the final validated output JSON.")
     parser.add_argument("--reasoning-effort", type=str, choices=["low", "medium", "high", "auto"])
+    parser.add_argument("--context-file", type=str, help="Optional path to a JSON file containing user context.")
     parser.add_argument("--api-key", type=str, help="API key for the LLM provider.")
     args = parser.parse_args()
 
