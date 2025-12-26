@@ -25,6 +25,7 @@ interface SkincareDashboardProps {
   recommendations: any;
   userId: string;
   userName?: string;
+  avatarUrl?: string | null;
 }
 
 interface Concern {
@@ -34,7 +35,7 @@ interface Concern {
   areas: any[];
 }
 
-export function SkincareDashboard({ analysis, recommendations, userId, userName }: SkincareDashboardProps) {
+export function SkincareDashboard({ analysis, recommendations, userId, userName, avatarUrl }: SkincareDashboardProps) {
   const [selectedConcern, setSelectedConcern] = useState<Concern | null>(null);
 
   // Extract nested analysis and charts from the database structure
@@ -52,7 +53,7 @@ export function SkincareDashboard({ analysis, recommendations, userId, userName 
 
   return (
     <div className="p-4 space-y-6 bg-background">
-      <UserProfile userData={analysis} userId={userId} userName={userName} />
+      <UserProfile userData={analysis} userId={userId} userName={userName} avatarUrl={avatarUrl} />
       <Tabs defaultValue="overview" className="w-full">
         <TabsList>
           <TabsTrigger value="overview">Analysis</TabsTrigger>

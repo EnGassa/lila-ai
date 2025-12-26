@@ -12,6 +12,17 @@
     - Configured GitHub Secrets (`GOOGLE_API_KEY`, etc.) for secure execution.
 - **Script Refinement:**
     - Updated `scripts/onboard_beta_user.py` to make the `--name` argument optional when `--user-id` is provided, facilitating automated execution.
+    - Added `scripts/generate_avatar.py` to automate profile picture generation using Google Gemini 2.5 Flash Image.
+    - Refactored shared S3 logic into `download_from_s3` in `skin_lib.py`.
+
+## Recent Work: AI Avatar Generation
+- **Automated Pipeline:**
+    -  Created `scripts/generate_avatar.py` to generate stylized avatars from `front_smiling` uploads.
+    -  Integrated generation step into `scripts/run_analysis.py`.
+    -  Added `avatar_url` to `public.users` schema and created `avatars` bucket in Supabase Storage.
+-  **Frontend Integration:**
+    -  Updated `UserAvatar.tsx` to prioritize DB `avatar_url` -> Legacy File -> Initials.
+    -  Updated `UserProfile` and `Dashboard` to prop-drill the new avatar URL.
 
 ## Recent Work: Intake Data Migration
 - **Back-end Script Update:**

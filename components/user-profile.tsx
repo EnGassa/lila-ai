@@ -5,9 +5,10 @@ interface UserProfileProps {
   userData: any;
   userId: string;
   userName?: string;
+  avatarUrl?: string | null;
 }
 
-export function UserProfile({ userData, userId, userName }: UserProfileProps) {
+export function UserProfile({ userData, userId, userName, avatarUrl }: UserProfileProps) {
   const { analysis, name } = userData;
   const ageRange = analysis.skin_age_range;
 
@@ -25,7 +26,7 @@ export function UserProfile({ userData, userId, userName }: UserProfileProps) {
 
   return (
     <div className="flex items-center gap-4">
-      <UserAvatar userId={userId} displayName={displayName} />
+      <UserAvatar userId={userId} displayName={displayName} avatarUrl={avatarUrl} />
       <div>
         <p className="text-2xl font-light">{displayName}</p>
         <p className="text-sm font-light text-muted-foreground">

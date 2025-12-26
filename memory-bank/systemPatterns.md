@@ -61,3 +61,12 @@ To handle long-running, resource-intensive analysis tasks without blocking the u
 3.  **Environment Sync:** The runner is hydrated with secure credentials (DB, S3, AI Keys) via GitHub Secrets, replicating the local execution environment.
 4.  **Pipeline Execution:** The runner executes the heavy Python scripts (`onboard_beta_user.py`) using `uv`, performing the analysis and writing results back to Supabase asynchronously.
 5.  **User Feedback:** The UI polling logic eventually detects the new analysis data in the DB (via SWR/React Query) and updates the dashboard, completing the async loop.
+
+### Generative Pipeline Pattern (AI Avatars)
+To automate creative asset generation (Image-to-Image) within the analysis flow:
+1.  **Trigger:** The main analysis script (`run_analysis.py`) calls the generation script (`generate_avatar.py`) as a subprocess upon successful completion.
+2.  **Source of Truth:** The script idempotently checks if an avatar exists in `public.users.avatar_url` to prevent wasteful re-generation (Cost Guard).
+3.  **Cross-Service Data Flow:**
+    *   **Input:** Downloads the specific `front_smiling` photo from Supabase Storage (S3 Layer).
+    *   **Process:** Sends the image + style prompt to Google Gemini 2.5 Flash Image.
+    *   **Output:** Uploads the generated asset to a distinct `avatars` bucket and updates the Postgres record with the public URL.

@@ -40,6 +40,7 @@
 
 *   **Automation:**
     - [x] Automated Skin Analysis & Recommendations via GitHub Actions (Triggered by Upload).
+    - [x] Automated AI Avatar Generation (Triggered after Analysis).
 
 *   **Dual Upload Page System:**
 ...

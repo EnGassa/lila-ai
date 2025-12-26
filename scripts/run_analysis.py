@@ -35,7 +35,8 @@ from skin_lib import (
     load_json_context,
     load_system_prompt,
     setup_logger,
-    get_supabase_client
+    get_supabase_client,
+    download_from_s3
 )
 
 # Load environment variables from .env file
@@ -45,87 +46,7 @@ load_dotenv() # Load .env as fallback/supplement
 # Initialize logger at the module level
 logger = setup_logger()
 
-def download_from_s3(bucket_name, user_id):
-    """Downloads the latest batch of images for a user from S3."""
-    import boto3
-    
-    endpoint = os.getenv("SUPABASE_S3_ENDPOINT")
-    region = os.getenv("SUPABASE_S3_REGION")
-    access_key = os.getenv("SUPABASE_S3_ACCESS_KEY_ID")
-    secret_key = os.getenv("SUPABASE_S3_SECRET_ACCESS_KEY")
-    
-    if not all([endpoint, region, access_key, secret_key]):
-        logger.warning("Missing S3 environment variables. Skipping S3 download.")
-        return None
 
-    try:
-        s3 = boto3.client(
-            "s3",
-            endpoint_url=endpoint,
-            region_name=region,
-            aws_access_key_id=access_key,
-            aws_secret_access_key=secret_key,
-        )
-        
-        prefix = f"{user_id}/"
-        logger.info(f"Listing S3 objects in bucket '{bucket_name}' with prefix '{prefix}'...")
-        
-        # S3 List Objects
-        response = s3.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
-        if "Contents" not in response:
-            logger.error(f"No files found in S3 bucket '{bucket_name}' for user '{user_id}'")
-            return None
-            
-        # Parse timestamps from keys: userId/timestamp/filename
-        # We need to find the latest timestamp
-        timestamps = set()
-        file_keys = []
-        
-        for obj in response["Contents"]:
-            key = obj["Key"]
-            parts = key.split('/')
-            if len(parts) >= 3:
-                # Check if second part is a timestamp (digits)
-                ts = parts[1]
-                if ts.isdigit():
-                    timestamps.add(ts)
-            file_keys.append(key)
-            
-        if not timestamps:
-            logger.warning("No timestamped folders found in S3. Falling back to root user folder.")
-            # Fallback: just get all images at user root or whatever is there
-            # Assuming we just want everything if no timestamps, but let's be safe
-            # Determine "latest" by LastModified if no timestamp folders?
-            # For now, let's just fail if no timestamp structure as per new design
-            pass 
-        else:
-             latest_ts = sorted(list(timestamps), key=lambda x: int(x))[-1]
-             logger.info(f"Found latest upload batch: {latest_ts}")
-             prefix = f"{user_id}/{latest_ts}/"
-        
-        # Filter keys for the target prefix (latest batch or user root)
-        target_keys = [k for k in file_keys if k.startswith(prefix) and k.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))]
-        
-        if not target_keys:
-            logger.error(f"No image files found in latest batch '{prefix}'")
-            return None
-            
-        temp_dir = tempfile.mkdtemp(prefix=f"lila_analysis_{user_id}_")
-        logger.info(f"Created temp dir: {temp_dir}")
-        
-        downloaded_paths = []
-        for key in target_keys:
-            filename = key.split('/')[-1]
-            local_path = os.path.join(temp_dir, filename)
-            logger.debug(f"Downloading {key} to {local_path}...")
-            s3.download_file(bucket_name, key, local_path)
-            downloaded_paths.append(local_path)
-            
-        return downloaded_paths, temp_dir
-
-    except Exception as e:
-        logger.error(f"S3 Download Error: {e}")
-        return None
 
 def main():
     """Main function to run the skin analysis."""
@@ -176,6 +97,12 @@ def main():
         "--api-key",
         type=str,
         help="API key for the LLM provider. Overrides environment variables.",
+    )
+    parser.add_argument(
+        "--env",
+        choices=["dev", "prod"],
+        default="prod",
+        help="Environment (bucket source). Defaults to prod.",
     )
     parser.add_argument(
         "--name",
@@ -364,7 +291,29 @@ def main():
                 }).execute()
                 
             logger.success(f"Successfully saved analysis for user {args.user_id} to Supabase.")
-            
+
+            # ---------------------------------------------------------
+            # TRIGGER AVATAR GENERATION
+            # ---------------------------------------------------------
+            try:
+                logger.info("Triggering Avatar Generation...")
+                import subprocess
+                
+                script_dir = os.path.dirname(os.path.abspath(__file__))
+                script_path = os.path.join(script_dir, "generate_avatar.py")
+                
+                cmd = [sys.executable, script_path, "--user-id", args.user_id, "--env", args.env]
+                # Note: We do not pass --overwrite here, so it relies on the script's default 
+                # (which is to skip if avatar exists). This is desired for cost saving.
+                
+                # Check for dry run or similar? No, just run it.
+                # We use check=False to strictly avoid crashing the analysis if avatar gen fails.
+                subprocess.run(cmd, check=False) 
+                logger.info("Avatar generation step completed.")
+                
+            except Exception as e:
+                logger.error(f"Failed to trigger avatar generation: {e}")
+
         except Exception as e:
             logger.error(f"Failed to save to database: {e}")
             # Don't exit, still try to save to file/stdout

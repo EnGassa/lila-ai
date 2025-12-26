@@ -27,15 +27,16 @@ export default async function DashboardPage({ params }: { params: Promise<{ user
   const supabase = await createClient();
   const { data: user } = await supabase
     .from('users')
-    .select('full_name')
+    .select('full_name, avatar_url')
     .eq('id', userId)
     .single();
 
   const fullName = user?.full_name || userId;
+  const avatarUrl = user?.avatar_url;
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Dashboard params={params} fullName={fullName} />
+      <Dashboard params={params} fullName={fullName} avatarUrl={avatarUrl} />
     </Suspense>
   )
 }
