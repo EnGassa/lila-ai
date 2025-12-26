@@ -40,6 +40,12 @@
 *   A comprehensive list of dependencies can be found in the `package.json` file. Key libraries include `recharts` for data visualization and `react-hook-form` for managing forms.
 
 ## Scripts and Tooling
+ 
+ *   **Automation (GitHub Actions)**:
+     *   **`.github/workflows/trigger_analysis.yml`**: The workflow definition that orchestrates the analysis pipeline.
+     *   **Triggers**: Activated via `repository_dispatch` (event type `run_analysis`) from the Next.js backend.
+     *   **Environment**: Runs on `ubuntu-latest`, heavily utilizing `uv` for consistent Python dependency management.
+     *   **Secrets**: Relies on GitHub Repository Secrets for `GOOGLE_API_KEY`, `SUPABASE_URL`, etc.
 
 *   **`scripts/run_analysis.py`**: A Python script for AI-powered skin analysis.
     *   **Purpose**: Takes a set of user images and generates a structured JSON analysis of skin concerns.

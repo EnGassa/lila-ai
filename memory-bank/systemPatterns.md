@@ -54,3 +54,10 @@ To securely send third-party notifications (Discord) without exposing webhook UR
 3.  **Client Abstraction:** The frontend calls this internal API with a normalized payload (`type`, `data`), isolating it from the implementation details of the external service.
 4.  **Service Role Lookup:** When enrichment data is needed (e.g., fetching a user profile for a notification) and the request context does not contain the user's session (e.g., system-level trigger), a specialized Service Role client is instantiated to bypass RLS and securely retrieve the necessary descriptors.
 
+### Async Automation Pattern (GitHub Actions)
+To handle long-running, resource-intensive analysis tasks without blocking the user or hitting serverless timeout limits:
+1.  **Event Trigger:** Upon successful upload completion in the client app, a Server Action (`notifyOnUploadComplete`) dispatches a `repository_dispatch` event to the GitHub API.
+2.  **Cloud Execution:** A dedicated GitHub Actions workflow (`.github/workflows/trigger_analysis.yml`) listens for this event.
+3.  **Environment Sync:** The runner is hydrated with secure credentials (DB, S3, AI Keys) via GitHub Secrets, replicating the local execution environment.
+4.  **Pipeline Execution:** The runner executes the heavy Python scripts (`onboard_beta_user.py`) using `uv`, performing the analysis and writing results back to Supabase asynchronously.
+5.  **User Feedback:** The UI polling logic eventually detects the new analysis data in the DB (via SWR/React Query) and updates the dashboard, completing the async loop.

@@ -1,9 +1,17 @@
 # Active Context
 
-## Current Work: Verification & Commit
-- Verified `generate_recommendations.py` works with DB-backed context.
-- Fixed `AttributeError` by restoring `--context-file` argument.
-- Updating Memory Bank and committing changes.
+## Current Work: Wrapping Up Automation
+- Implemented GitHub Actions workflow for automated skin analysis.
+- Patched `scripts/onboard_beta_user.py` to support automated execution.
+- Documentation and Memory Bank updates.
+
+## Recent Work: Automation Implementation
+- **GitHub Actions Integration:**
+    - Created `.github/workflows/trigger_analysis.yml` to run the analysis pipeline on the cloud.
+    - Updated `app/[userId]/upload/actions.ts` to trigger the workflow via `repository_dispatch` upon successful upload.
+    - Configured GitHub Secrets (`GOOGLE_API_KEY`, etc.) for secure execution.
+- **Script Refinement:**
+    - Updated `scripts/onboard_beta_user.py` to make the `--name` argument optional when `--user-id` is provided, facilitating automated execution.
 
 ## Recent Work: Intake Data Migration
 - **Back-end Script Update:**
