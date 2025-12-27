@@ -23,6 +23,8 @@
     - **Service Worker:** Implemented `app/sw.ts` with "Network First" strategy for fresh API data and caching for assets.
     - **Identity:** Created `manifest.json` and generated brand icons from `placeholder.png`.
     - **Native Feel:** Added `viewport` and `apple-mobile-web-app` meta tags to `layout.tsx` for a full-screen, app-like experience.
+    - **Verification:** Verified service worker registration and functionality in production build. Fixed `tsconfig.json` to include `webworker` types.
+    - **Fixes:** Added missing `start_url` to `manifest.json` to enable PWA installation prompt.
 
 ## Recent Work: Automation Implementation
 - **GitHub Actions Integration:**

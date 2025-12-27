@@ -15,5 +15,9 @@
   ],
   "theme_color": "#F2F0E9",
   "background_color": "#F2F0E9",
-  "display": "standalone"
+  "display": "standalone",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "description": "Your personalized skin analysis"
 }
