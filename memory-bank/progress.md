@@ -41,6 +41,7 @@
 *   **Automation:**
     - [x] Automated Skin Analysis & Recommendations via GitHub Actions (Triggered by Upload).
     - [x] Automated AI Avatar Generation (Triggered after Analysis).
+    - [x] **Discord Notifications for Automation**: Alerts for Start/Success/Fail states with deep links to Dashboard.
 
 *   **Dual Upload Page System:**
 ...

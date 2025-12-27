@@ -10,6 +10,7 @@
     - Created `.github/workflows/trigger_analysis.yml` to run the analysis pipeline on the cloud.
     - Updated `app/[userId]/upload/actions.ts` to trigger the workflow via `repository_dispatch` upon successful upload.
     - Configured GitHub Secrets (`GOOGLE_API_KEY`, etc.) for secure execution.
+    - **Discord Notifications:** Added real-time notifications for "Started", "Success" (with Dashboard link), and "Failure" states in the GitHub Actions workflow. Enriched server action to pass User Name for better context.
 - **Script Refinement:**
     - Updated `scripts/onboard_beta_user.py` to make the `--name` argument optional when `--user-id` is provided, facilitating automated execution.
     - Added `scripts/generate_avatar.py` to automate profile picture generation using Google Gemini 2.5 Flash Image.

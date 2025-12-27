@@ -179,7 +179,7 @@ export async function notifyOnUploadComplete(userId: string, filePaths: string[]
 
   // 2. Trigger GitHub Action for Analysis (Automation)
   // We do this independently so a Discord failure doesn't block analysis, and vice versa.
-  const analysisResult = await triggerAnalysisWorkflow(userId);
+  const analysisResult = await triggerAnalysisWorkflow(userId, userName);
   if (analysisResult.error) {
      console.error('[notifyOnUploadComplete] Failed to trigger analysis workflow:', analysisResult.error);
      // We return a specialized warning but success true because the upload itself was successful
@@ -190,7 +190,7 @@ export async function notifyOnUploadComplete(userId: string, filePaths: string[]
   return { success: true }
 }
 
-async function triggerAnalysisWorkflow(userId: string) {
+async function triggerAnalysisWorkflow(userId: string, userName: string) {
     const isDev = process.env.NODE_ENV === 'development';
     const env = isDev ? 'dev' : 'prod';
     
@@ -207,7 +207,7 @@ async function triggerAnalysisWorkflow(userId: string) {
     }
 
     try {
-        console.log(`[triggerAnalysisWorkflow] Triggering 'run_analysis' for user ${userId} on ${owner}/${repo}...`);
+        console.log(`[triggerAnalysisWorkflow] Triggering 'run_analysis' for user ${userId} (${userName}) on ${owner}/${repo}...`);
         
         const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/dispatches`, {
             method: 'POST',
@@ -220,6 +220,7 @@ async function triggerAnalysisWorkflow(userId: string) {
                 event_type: 'run_analysis',
                 client_payload: {
                     user_id: userId,
+                    user_name: userName,
                     env: env
                 }
             })
