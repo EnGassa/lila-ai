@@ -1,19 +1,51 @@
 import { SkincareDashboard } from '@/components/skincare-dashboard';
 import { createClient } from '@/lib/supabase/server';
+import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { notFound } from 'next/navigation';
 import { KeyIngredient, Product, Recommendations, Step } from '@/lib/types';
 
-export async function Dashboard({ params, fullName, avatarUrl }: { params: Promise<{ userId: string }>, fullName: string, avatarUrl?: string | null }) {
-  const { userId } = await params;
+export async function Dashboard({ 
+  userId, 
+  searchParams, 
+  fullName, 
+  avatarUrl 
+}: { 
+  userId: string;
+  searchParams?: { [key: string]: string | string[] | undefined };
+  fullName: string; 
+  avatarUrl?: string | null; 
+}) {
   const supabase = await createClient();
 
+  // 1. Fetch available analysis history (lightweight query)
+  const { data: historyList, error: historyError } = await supabase
+    .from("skin_analyses")
+    .select("id, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (historyError || !historyList || historyList.length === 0) {
+    // If no analysis at all, handle gracefully or show empty state
+    // For now, we keep notFound() if truly nothing exists, 
+    // but you might want a "No analysis yet" screen.
+    notFound(); 
+  }
+
+  // 2. Determine which analysis ID to fetch full data for
+  const selectedAnalysisId = typeof searchParams?.analysisId === 'string' 
+    ? searchParams.analysisId 
+    : historyList[0].id; // Default to latest
+
+  // 3. Fetch the full analysis record for the selected ID
   const { data: analysisRecord, error: analysisError } = await supabase
     .from("skin_analyses")
     .select("*")
-    .eq("user_id", userId)
+    .eq("id", selectedAnalysisId)
     .single();
 
   if (analysisError || !analysisRecord) {
+     // If the selected specific analysis is missing (e.g. bad URL), fall back to latest or 404
+     // For safety, let's 404 to avoid confusion, or redirect.
     notFound();
   }
 
@@ -133,6 +165,49 @@ export async function Dashboard({ params, fullName, avatarUrl }: { params: Promi
   //   JSON.stringify(recommendationsData, null, 2)
   // );
 
+  // Extract image URLs
+  const storedImageKeys: string[] = analysisRecord.image_urls || [];
+  let signedImageUrls: string[] = [];
+
+  if (storedImageKeys.length > 0) {
+    // Determine bucket: default to 'user-uploads' but respect env if set (though usually handled by build env)
+    // Note: ensure your NEXT_PUBLIC_SUPABASE_BUCKET or similar is set if using dev bucket in dev.
+    // For now, we'll try to guess based on the key or just use 'user-uploads' as primary.
+    // Actually run_analysis.py saves keys relative to the bucket root.
+    // If we are in dev, run_analysis.py might have used user-uploads-dev.
+    // We should probably check which bucket to use.
+    // Simpler: Try to sign from the configured bucket env var. 
+    // Fallback logic: If we are in a dev environment (local), we might be using user-uploads-dev.
+    const bucketName = process.env.NEXT_PUBLIC_STORAGE_BUCKET || 'user-uploads';
+    
+    try {
+      // Use Service Role to bypass RLS for creating signed URLs
+      const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+      let storageClient = supabase;
+      if (serviceRoleKey && supabaseUrl) {
+          storageClient = createAdminClient(supabaseUrl, serviceRoleKey);
+      }
+
+      const { data: signedData, error: signError } = await storageClient
+        .storage
+        .from(bucketName)
+        .createSignedUrls(storedImageKeys, 60 * 60); // 1 hour
+
+      if (signedData) {
+        signedImageUrls = signedData
+          .filter(item => item.signedUrl)
+          .map(item => item.signedUrl);
+      }
+      if (signError) {
+          console.error("Error signing URLs:", signError);
+      }
+    } catch (e) {
+        console.error("Exception signing URLs:", e);
+    }
+  }
+
   return (
     <SkincareDashboard
       analysis={analysisData}
@@ -140,6 +215,8 @@ export async function Dashboard({ params, fullName, avatarUrl }: { params: Promi
       userId={userId}
       userName={fullName}
       avatarUrl={avatarUrl}
+      analysisHistory={historyList} // Pass the history list
+      images={signedImageUrls}
     />
   );
 }

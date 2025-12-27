@@ -43,5 +43,11 @@
     - [x] Automated AI Avatar Generation (Triggered after Analysis).
     - [x] **Discord Notifications for Automation**: Alerts for Start/Success/Fail states with deep links to Dashboard.
 
+*   **Analysis History & Context:**
+    - [x] **1:N Data Model**: Users can now have multiple analyses over time (Historical tracking).
+    - [x] **History UI**: Dashboard Sheet to browse and navigate past analyses.
+    - [x] **Photo Evidence**: "View Photos" feature linking specific analyses to their source images (Schema updated with `image_urls`).
+    - [x] **UI Polish**: Refined Photo Gallery with premium "Lila Skin" styling.
+
 *   **Dual Upload Page System:**
 ...

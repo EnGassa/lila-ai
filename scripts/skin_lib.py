@@ -340,7 +340,7 @@ def download_from_s3(bucket_name: str, user_id: str):
             s3.download_file(bucket_name, key, local_path)
             downloaded_paths.append(local_path)
             
-        return downloaded_paths, temp_dir
+        return downloaded_paths, temp_dir, target_keys
 
     except Exception as e:
         logger.error(f"S3 Download Error: {e}")

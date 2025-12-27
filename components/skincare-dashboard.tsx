@@ -17,8 +17,18 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetTrigger,
 } from "@/components/ui/sheet";
 import { FeedbackModal } from "@/components/FeedbackModal";
+import { Button } from "@/components/ui/button";
+import { History, Calendar, Camera } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
+
+interface AnalysisHistoryItem {
+  id: string;
+  created_at: string;
+}
 
 interface SkincareDashboardProps {
   analysis: any;
@@ -26,6 +36,8 @@ interface SkincareDashboardProps {
   userId: string;
   userName?: string;
   avatarUrl?: string | null;
+  analysisHistory?: AnalysisHistoryItem[];
+  images?: string[];
 }
 
 interface Concern {
@@ -35,8 +47,19 @@ interface Concern {
   areas: any[];
 }
 
-export function SkincareDashboard({ analysis, recommendations, userId, userName, avatarUrl }: SkincareDashboardProps) {
+export function SkincareDashboard({ 
+  analysis, 
+  recommendations, 
+  userId, 
+  userName, 
+  avatarUrl,
+  analysisHistory = [],
+  images = []
+}: SkincareDashboardProps) {
   const [selectedConcern, setSelectedConcern] = useState<Concern | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentAnalysisId = searchParams.get('analysisId');
 
   // Extract nested analysis and charts from the database structure
   const analysisData = analysis.analysis || analysis;
@@ -50,10 +73,142 @@ export function SkincareDashboard({ analysis, recommendations, userId, userName,
       areas: value.regional_breakdown,
     }),
   );
+  
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  };
+
+  const currentAnalysisDate = analysisHistory.find(h => h.id === analysis.id || h.id === currentAnalysisId)?.created_at;
 
   return (
     <div className="p-4 space-y-6 bg-background">
-      <UserProfile userData={analysis} userId={userId} userName={userName} avatarUrl={avatarUrl} />
+      <div className="flex flex-col gap-4">
+        {/* Top Bar with History Toggle */}
+        <div className="flex justify-between items-start">
+           <UserProfile userData={analysis} userId={userId} userName={userName} avatarUrl={avatarUrl} />
+           
+        </div>
+           
+           <div className="flex gap-2">
+             {images.length > 0 && (
+               <Sheet>
+                 <SheetTrigger asChild>
+                   <Button variant="outline" size="sm" className="gap-2">
+                     <Camera className="h-4 w-4" />
+                     Photos
+                   </Button>
+                 </SheetTrigger>
+                 <SheetContent>
+                   <SheetHeader>
+                     <SheetTitle>Analysis Photos</SheetTitle>
+                   </SheetHeader>
+                   <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-6 px-2">
+                     {images.map((url, idx) => {
+                       let label = `Photo ${idx + 1}`;
+                       try {
+                         const path = url.split('?')[0];
+                         const filename = path.split('/').pop() || "";
+                         const nameWithoutExt = filename.split('.')[0];
+                         label = nameWithoutExt
+                           .split('_')
+                           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                           .join(' ');
+                       } catch (e) {
+                         // Fallback
+                       }
+
+                       return (
+                         <div 
+                            key={idx} 
+                            className="group relative flex flex-col items-center gap-3"
+                         >
+                           {/* Image Card */}
+                           <div className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden shadow-sm border border-border/50 group-hover:shadow-md group-hover:border-accent/30 transition-all duration-500 ease-out bg-secondary/20">
+                             {/* eslint-disable-next-line @next/next/no-img-element */}
+                             <img 
+                               src={url} 
+                               alt={label} 
+                               className="object-cover w-full h-full transition-transform duration-700 ease-out will-change-transform group-hover:scale-105"
+                             />
+                             {/* Inner shadow/vignette for depth */}
+                             <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-2xl pointer-events-none" />
+                           </div>
+
+                           {/* Clean Label */}
+                           <span className="text-xs font-medium tracking-wide text-muted-foreground/80 group-hover:text-foreground transition-colors duration-300">
+                             {label}
+                           </span>
+                         </div>
+                       );
+                     })}
+                   </div>
+                 </SheetContent>
+               </Sheet>
+             )}
+
+             <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <History className="h-4 w-4" />
+                  History
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Analysis History</SheetTitle>
+                </SheetHeader>
+                <div className="mt-6 flex flex-col gap-2">
+                  {analysisHistory.map((item) => (
+                    <Button
+                      key={item.id}
+                      variant={item.id === (currentAnalysisId || analysisHistory[0]?.id) ? "default" : "ghost"}
+                      className={cn(
+                        "w-full justify-start gap-2",
+                        item.id === (currentAnalysisId || analysisHistory[0]?.id) && "bg-secondary text-secondary-foreground"
+                      )}
+                      onClick={() => {
+                        // Navigate to the selected analysis
+                        router.push(`/${userId}/dashboard?analysisId=${item.id}`);
+                      }}
+                    >
+                      <Calendar className="h-4 w-4 opacity-50" />
+                      <div className="flex flex-col items-start gap-0.5">
+                        <span className="text-sm font-medium">
+                          {formatDate(item.created_at)}
+                        </span>
+                        {item.id === analysisHistory[0]?.id && (
+                          <span className="text-[10px] uppercase font-bold tracking-wider opacity-70">
+                            Latest
+                          </span>
+                        )}
+                      </div>
+                    </Button>
+                  ))}
+                  {analysisHistory.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      No history available.
+                    </p>
+                  )}
+                </div>
+              </SheetContent>
+             </Sheet>
+           </div>
+
+        
+        {currentAnalysisDate && (
+             <div className="flex items-center gap-2 text-xs text-muted-foreground px-1">
+                <Calendar className="h-3 w-3" />
+                Showing analysis from {formatDate(currentAnalysisDate)}
+             </div>
+        )}
+      </div>
+
       <Tabs defaultValue="overview" className="w-full">
         <TabsList>
           <TabsTrigger value="overview">Analysis</TabsTrigger>
@@ -98,28 +253,6 @@ export function SkincareDashboard({ analysis, recommendations, userId, userName,
           <RecommendationsTab recommendations={recommendations} />
         </TabsContent>
       </Tabs>
-      <Sheet
-        open={!!selectedConcern}
-        onOpenChange={(isOpen) => !isOpen && setSelectedConcern(null)}
-      >
-        <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
-          {selectedConcern && (
-            <>
-              <SheetHeader>
-                <SheetTitle>
-                  {selectedConcern.name.replace(/_/g, " ")}
-                </SheetTitle>
-              </SheetHeader>
-              <ConcernDetailPage
-                userId={userId}
-                concernName={selectedConcern.name}
-                onClose={() => setSelectedConcern(null)}
-                userData={analysis}
-              />
-            </>
-          )}
-        </SheetContent>
-      </Sheet>
       <Sheet
         open={!!selectedConcern}
         onOpenChange={(isOpen) => !isOpen && setSelectedConcern(null)}

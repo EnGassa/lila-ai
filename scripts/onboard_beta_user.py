@@ -125,7 +125,7 @@ def main():
     parser.add_argument("--model", default="google-gla:gemini-2.5-pro", help="Model to use for analysis and recommendations.")
     parser.add_argument("--api-key", help="API key for the model provider.")
     parser.add_argument("--context-file", help="Path to a JSON file containing user context.")
-    parser.add_argument("--analysis-prompt", help="Path to the analysis prompt file.")
+    parser.add_argument("--analysis-prompt", default="prompts/01_analyse_images_6_photos_prompt.md", help="Path to the analysis prompt file.")
     parser.add_argument("--setup-only", action="store_true", help="Only create the user and print the upload link.")
     parser.add_argument("--overwrite", action="store_true", help="Overwrite existing user without prompting.")
     parser.add_argument("--env", choices=["dev", "prod"], default="prod", help="Environment to use for storage (dev=user-uploads-dev, prod=user-uploads).")

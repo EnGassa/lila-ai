@@ -148,6 +148,7 @@ def main():
     # --- Image and Context Loading ---
     logger.info("Loading images and context...")
     image_paths = []
+    s3_keys = []
     temp_dir = None
 
     if args.images:
@@ -169,7 +170,7 @@ def main():
         s3_result = download_from_s3(bucket_name, args.user_id)
         
         if s3_result:
-            image_paths, temp_dir = s3_result
+            image_paths, temp_dir, s3_keys = s3_result
         else:
             logger.error("Failed to download images via S3. Please ensure S3 credentials are correct in .env.local")
             sys.exit(1)
@@ -268,21 +269,14 @@ def main():
             logger.info(f"Saving analysis to Supabase for user {args.user_id}...")
             supabase = get_supabase_client()
             
-            # Check if analysis already exists for this user
-            existing = supabase.table('skin_analyses').select('id').eq('user_id', args.user_id).execute()
-            
-            if existing.data:
-                analysis_id = existing.data[0]['id']
-                logger.info(f"Updating existing analysis {analysis_id}...")
-                supabase.table('skin_analyses').update({
-                    'analysis_data': output_data
-                }).eq('id', analysis_id).execute()
-            else:
-                logger.info("Inserting new analysis...")
-                supabase.table('skin_analyses').insert({
-                    'user_id': args.user_id,
-                    'analysis_data': output_data
-                }).execute()
+            # Always insert a new analysis record (1:N relationship)
+            # This preserves history for the user.
+            logger.info("Inserting new analysis...")
+            supabase.table('skin_analyses').insert({
+                'user_id': args.user_id,
+                'analysis_data': output_data,
+                'image_urls': s3_keys
+            }).execute()
                 
             logger.success(f"Successfully saved analysis for user {args.user_id} to Supabase.")
 

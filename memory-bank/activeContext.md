@@ -1,9 +1,15 @@
 # Active Context
 
-## Current Work: Wrapping Up Automation
-- Implemented GitHub Actions workflow for automated skin analysis.
-- Patched `scripts/onboard_beta_user.py` to support automated execution.
-- Documentation and Memory Bank updates.
+## Current Work: Analysis History and Robustness
+- **Analysis History V1:**
+    - Modified backend (`run_analysis.py`) to a 1:N data model (Insert vs Upsert) to preserve historical analyses.
+    - Updated Dashboard to fetch and display analysis history via a new Sheet UI.
+    - Fixed critical routing bug where selecting history items caused redirects/reloads.
+- **Analysis Photo View:**
+    - Schema Migration: Added `image_urls text[]` to `skin_analyses`.
+    - Updated pipeline to persist S3 image keys to the database, ensuring strict linkage between analysis and source photos.
+    - Implemented "View Photos" feature in the dashboard to display the specific images used for any given analysis.
+    - **Visual Polish:** Refined the Photo Gallery UI with a premium aesthetic (rounded cards, hover effects, subtle badges) to match the "Lila Skin" brand.
 
 ## Recent Work: Automation Implementation
 - **GitHub Actions Integration:**

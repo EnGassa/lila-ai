@@ -34,6 +34,7 @@ create table if not exists public.skin_analyses (
   id uuid not null primary key default gen_random_uuid(),
   user_id text references public.users(id) on delete cascade,
   analysis_data jsonb,
+  image_urls text[],
   created_at timestamptz default now()
 );
 
