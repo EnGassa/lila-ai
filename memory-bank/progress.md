@@ -49,5 +49,10 @@
     - [x] **Photo Evidence**: "View Photos" feature linking specific analyses to their source images (Schema updated with `image_urls`).
     - [x] **UI Polish**: Refined Photo Gallery with premium "Lila Skin" styling.
 
+*   **PWA Support:**
+    - [x] **Installable App:** Configured manifest and Service Worker (Serwist) for "Add to Home Screen" capability.
+    - [x] **Offline Capabilities:** Service Worker caching enabled.
+    - [x] **Mobile Optimization:** Native-like viewport settings.
+
 *   **Dual Upload Page System:**
 ...

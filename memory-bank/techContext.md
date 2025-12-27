@@ -37,7 +37,10 @@
 
 ## Dependencies
 
-*   A comprehensive list of dependencies can be found in the `package.json` file. Key libraries include `recharts` for data visualization and `react-hook-form` for managing forms.
+*   A comprehensive list of dependencies can be found in the `package.json` file. Key libraries include:
+    *   `recharts` for data visualization.
+    *   `react-hook-form` for managing forms.
+    *   `@serwist/next`: For PWA (Service Worker) support.
 
 ## Scripts and Tooling
  

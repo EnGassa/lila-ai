@@ -11,6 +11,13 @@
     - Implemented "View Photos" feature in the dashboard to display the specific images used for any given analysis.
     - **Visual Polish:** Refined the Photo Gallery UI with a premium aesthetic (rounded cards, hover effects, subtle badges) to match the "Lila Skin" brand.
 
+## Recent Work: PWA Implementation
+- **Progressive Web App (PWA):**
+    - Converted "Lila Skin" to a PWA using `@serwist/next` (modern replacement for `next-pwa`).
+    - **Service Worker:** Implemented `app/sw.ts` with "Network First" strategy for fresh API data and caching for assets.
+    - **Identity:** Created `manifest.json` and generated brand icons from `placeholder.png`.
+    - **Native Feel:** Added `viewport` and `apple-mobile-web-app` meta tags to `layout.tsx` for a full-screen, app-like experience.
+
 ## Recent Work: Automation Implementation
 - **GitHub Actions Integration:**
     - Created `.github/workflows/trigger_analysis.yml` to run the analysis pipeline on the cloud.
