@@ -37,17 +37,17 @@ logger = setup_logger()
 
 AVATAR_PROMPT = """
 Positive Prompt:
-A cheerful and radiant flat vector avatar of a person, styling them with a fresh and healthy glow.
-Composition: Close-up headshot, face filling most of the frame, centered.
+A cheerful and radiant flat vector avatar of a person.
+Composition: Extreme close-up floating head icon. The face and hair MUST fill 100% of the canvas. Zoom in significantly so the head touches the edges of the frame. Cut off at the neck. NO shoulders, NO chest, NO clothes.
 Vibe & Emotion: Warm, upbeat, friendly, and confident. The expression should be relaxed and inviting with a soft smile.
 Art Style: Modern flat illustration, lineless vector art, clean organic shapes, minimal details.
-Complexion & Skin: Focus on smooth, clear skin tones with soft, indicate health and vitality.
-Colors: A bright and airy pastel palette (mint, peach, lavender, soft cream).
+Complexion & Skin: Natural skin tones and natural hair color (no green or unnatural hair colors). Smooth, healthy look.
+Colors: Use natural colors for the face and hair. Use a bright and airy pastel palette (mint, peach, lavender) ONLY for the background.
 Texture: Soft grainy noise overlay, stippled shading, and a matte paper texture to give it a high-quality, organic editorial feel.
-Background: A solid, soft pastel solid color that contrasts gently with the subject.
+Background: Minimal background visible. A solid, soft pastel solid color that contrasts gently with the subject.
 
 Negative Prompt:
-Photorealistic, harsh outlines, black lines, messy details, dark shadows, grungy, dirty, angry, sad, textureless, plastic skin, shiny 3D render, neon colors, clutter, text, watermark, asymmetry, blurry.
+Small face, distant, zoomed out, full body, half body. Green hair, green beard, unnatural skin color. Shoulders, chest, torso, upper body, clothes, shirt, collar, necktie. Photorealistic, harsh outlines, black lines, messy details, dark shadows, grungy, dirty, angry, sad, textureless, plastic skin, shiny 3D render, neon colors, clutter, text, watermark, asymmetry, blurry.
 """
 
 def generate_avatar(client, image_path, output_path):
@@ -63,56 +63,71 @@ def generate_avatar(client, image_path, output_path):
     if not mime_type:
         mime_type = "image/png" # Default
 
-    try:
-        # Use the gemini-2.5-flash-image model usually, or whatever is latest/recommended for images
-        # The user requested 'gemini-2.5-flash-image' specifically.
-        model = "gemini-2.5-flash-image"
-        
-        contents = [
-            types.Content(
-                role="user",
-                parts=[
-                    types.Part.from_text(text=AVATAR_PROMPT),
-                    types.Part.from_bytes(data=image_bytes, mime_type=mime_type)
+    max_retries = 3
+    base_delay = 20
+    
+    for attempt in range(max_retries + 1):
+        try:
+            # Use the gemini-2.5-flash-image model usually, or whatever is latest/recommended for images
+            # The user requested 'gemini-2.5-flash-image' specifically.
+            model = "gemini-2.5-flash-image"
+            
+            contents = [
+                types.Content(
+                    role="user",
+                    parts=[
+                        types.Part.from_text(text=AVATAR_PROMPT),
+                        types.Part.from_bytes(data=image_bytes, mime_type=mime_type)
+                    ],
+                ),
+            ]
+            
+            generate_content_config = types.GenerateContentConfig(
+                response_modalities=[
+                    "IMAGE",
                 ],
-            ),
-        ]
-        
-        generate_content_config = types.GenerateContentConfig(
-            response_modalities=[
-                "IMAGE",
-            ],
-        )
-
-        response = client.models.generate_content(
-            model=model,
-            contents=contents,
-            config=generate_content_config,
-        )
-        
-        if (
-            response.candidates is None
-            or not response.candidates
-            or response.candidates[0].content is None
-            or response.candidates[0].content.parts is None
-        ):
-            logger.error("No content generated.")
-            return False
-
-        part = response.candidates[0].content.parts[0]
-        
-        if part.inline_data and part.inline_data.data:
-             with open(output_path, "wb") as f:
-                 f.write(part.inline_data.data)
-             logger.success(f"Avatar saved to {output_path}")
-             return True
-        else:
-            logger.error("No image data in response.")
-            return False
-
-    except Exception as e:
-        logger.error(f"Generation failed: {e}")
-        return False
+            )
+    
+            response = client.models.generate_content(
+                model=model,
+                contents=contents,
+                config=generate_content_config,
+            )
+            
+            if (
+                response.candidates is None
+                or not response.candidates
+                or response.candidates[0].content is None
+                or response.candidates[0].content.parts is None
+            ):
+                logger.error("No content generated.")
+                return False
+    
+            part = response.candidates[0].content.parts[0]
+            
+            if part.inline_data and part.inline_data.data:
+                 with open(output_path, "wb") as f:
+                     f.write(part.inline_data.data)
+                 logger.success(f"Avatar saved to {output_path}")
+                 return True
+            else:
+                logger.error("No image data in response.")
+                return False
+    
+        except Exception as e:
+            error_str = str(e)
+            if "RESOURCE_EXHAUSTED" in error_str or "429" in error_str:
+                if attempt < max_retries:
+                    wait_time = base_delay * (attempt + 1)
+                    logger.warning(f"Rate limit hit (429). Retrying in {wait_time}s... (Attempt {attempt + 1}/{max_retries})")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    logger.error("Max retries exceeded for rate limit.")
+                    return False
+            else:
+                logger.error(f"Generation failed: {e}")
+                return False
 
 def main():
     parser = argparse.ArgumentParser(description="Generate an AI avatar for a user.")
@@ -128,40 +143,64 @@ def main():
     # 1. Check if avatar already exists
     if not args.overwrite:
         logger.info(f"Checking for existing avatar for user {user_id}...")
-        res = supabase.table("users").select("avatar_url").eq("id", user_id).single().execute()
-        if res.data and res.data.get("avatar_url"):
-            logger.info("Avatar already exists. Skipping generation (use --overwrite to force).")
-            return
+        try:
+            res = supabase.table("users").select("avatar_url").eq("id", user_id).single().execute()
+            if res.data and res.data.get("avatar_url"):
+                logger.info("Avatar already exists. Skipping generation (use --overwrite to force).")
+                return
+        except Exception:
+            # If user not found or error, ignore and proceed (or could fetch list to check)
+            pass
 
-    # 2. Download Images
+    # 2. List & Download ONE Image
     bucket_name = "user-uploads-dev" if args.env == "dev" else "user-uploads"
-    logger.info(f"Downloading images from {bucket_name}...")
+    logger.info(f"Listing images from {bucket_name}...")
     
-    result = download_from_s3(bucket_name, user_id)
-    if not result:
-        logger.error("Failed to download images.")
+    # Use granular functions from skin_lib
+    from skin_lib import list_latest_s3_batch, download_files_from_s3
+    
+    listing = list_latest_s3_batch(bucket_name, user_id)
+    if not listing:
+        logger.error("Failed to list images from S3.")
         sys.exit(1)
         
-    image_paths, temp_dir, _ = result
+    latest_ts, all_keys, s3_client = listing
     
-    # 3. Find 'front_smiling'
-    smiling_path = None
-    for path in image_paths:
-        filename = os.path.basename(path).lower()
-        if "smiling" in filename or "front_smiling" in filename:
-            smiling_path = path
-            break
+    # Logic to pick the BEST image
+    # Priority: front_smiling > front > front_closeup > any
+    selected_key = None
+    
+    # Helper to find key containing substring (case insensitive)
+    def find_key(substring):
+        for k in all_keys:
+            if substring.lower() in os.path.basename(k).lower():
+                return k
+        return None
+
+    selected_key = find_key("front_smiling")
+    if not selected_key:
+        selected_key = find_key("front")
+    if not selected_key:
+        if all_keys:
+            selected_key = all_keys[0] # Fallback to first
+        else:
+            logger.error("No images found in batch.")
+            sys.exit(1)
             
-    if not smiling_path:
-        logger.warning("No 'front_smiling' photo found. Falling back to 'front' or first available image.")
-        for path in image_paths:
-             filename = os.path.basename(path).lower()
-             if "front" in filename and "smiling" not in filename:
-                 smiling_path = path
-                 break
-        if not smiling_path:
-             smiling_path = image_paths[0] # Fallback to first
-             
+    logger.info(f"Selected best image: {selected_key}")
+    
+    # Create temp dir
+    import tempfile
+    temp_dir = tempfile.mkdtemp(prefix=f"lila_avatar_{user_id}_")
+    
+    # Download ONLY the selected key
+    downloaded_paths = download_files_from_s3(bucket_name, [selected_key], temp_dir, s3_client)
+    
+    if not downloaded_paths:
+        logger.error("Failed to download selected image.")
+        sys.exit(1)
+        
+    smiling_path = downloaded_paths[0]
     logger.info(f"Using image: {smiling_path}")
 
     # 4. Generate Avatar
@@ -196,7 +235,13 @@ def main():
         )
         
         # Get Public URL
-        public_url = supabase.storage.from_(avatar_bucket).get_public_url(storage_path)
+        # Manually construct URL to avoid missing trailing slash warnings often seen with get_public_url
+        sb_url = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
+        # Ensure no double slash or missing slash
+        if not sb_url.endswith("/"):
+            sb_url += "/"
+            
+        public_url = f"{sb_url}storage/v1/object/public/{avatar_bucket}/{storage_path}"
         logger.info(f"Public URL: {public_url}")
         
         # 6. Update User Record

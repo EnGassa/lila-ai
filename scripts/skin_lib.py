@@ -270,8 +270,8 @@ def get_supabase_client() -> Client:
 
     return create_client(supabase_url, supabase_key)
 
-def download_from_s3(bucket_name: str, user_id: str):
-    """Downloads the latest batch of images for a user from S3."""
+def get_s3_client():
+    """Initializes and returns a boto3 S3 client."""
     import boto3
     
     endpoint = os.getenv("SUPABASE_S3_ENDPOINT")
@@ -280,28 +280,36 @@ def download_from_s3(bucket_name: str, user_id: str):
     secret_key = os.getenv("SUPABASE_S3_SECRET_ACCESS_KEY")
     
     if not all([endpoint, region, access_key, secret_key]):
-        logger.warning("Missing S3 environment variables. Skipping S3 download.")
+        logger.warning("Missing S3 environment variables.")
         return None
+        
+    return boto3.client(
+        "s3",
+        endpoint_url=endpoint,
+        region_name=region,
+        aws_access_key_id=access_key,
+        aws_secret_access_key=secret_key,
+    )
 
+def list_latest_s3_batch(bucket_name: str, user_id: str):
+    """
+    Lists files in the latest timestamped folder for a user.
+    Returns: (latest_timestamp, list_of_keys, s3_client)
+    """
+    s3 = get_s3_client()
+    if not s3:
+        return None
+        
+    prefix = f"{user_id}/"
+    logger.info(f"Listing S3 objects in bucket '{bucket_name}' with prefix '{prefix}'...")
+    
     try:
-        s3 = boto3.client(
-            "s3",
-            endpoint_url=endpoint,
-            region_name=region,
-            aws_access_key_id=access_key,
-            aws_secret_access_key=secret_key,
-        )
-        
-        prefix = f"{user_id}/"
-        logger.info(f"Listing S3 objects in bucket '{bucket_name}' with prefix '{prefix}'...")
-        
-        # S3 List Objects
         response = s3.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
         if "Contents" not in response:
             logger.error(f"No files found in S3 bucket '{bucket_name}' for user '{user_id}'")
             return None
-            
-        # Parse timestamps from keys: userId/timestamp/filename
+        
+        # Parse timestamps
         timestamps = set()
         file_keys = []
         
@@ -313,38 +321,70 @@ def download_from_s3(bucket_name: str, user_id: str):
                 if ts.isdigit():
                     timestamps.add(ts)
             file_keys.append(key)
-            
-        if not timestamps:
-            logger.warning("No timestamped folders found in S3. Falling back to root user folder.")
-            pass 
-        else:
-             latest_ts = sorted(list(timestamps), key=lambda x: int(x))[-1]
-             logger.info(f"Found latest upload batch: {latest_ts}")
-             prefix = f"{user_id}/{latest_ts}/"
         
+        final_prefix = prefix
+        latest_ts = None
+        
+        if timestamps:
+            latest_ts = sorted(list(timestamps), key=lambda x: int(x))[-1]
+            logger.info(f"Found latest upload batch: {latest_ts}")
+            final_prefix = f"{user_id}/{latest_ts}/"
+        else:
+             logger.warning("No timestamped folders found in S3. Falling back to root user folder.")
+
         # Filter keys for the target prefix
-        target_keys = [k for k in file_keys if k.startswith(prefix) and k.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))]
+        target_keys = [k for k in file_keys if k.startswith(final_prefix) and k.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))]
         
         if not target_keys:
-            logger.error(f"No image files found in latest batch '{prefix}'")
+            logger.error(f"No image files found in latest batch '{final_prefix}'")
             return None
             
-        temp_dir = tempfile.mkdtemp(prefix=f"lila_analysis_{user_id}_")
-        logger.info(f"Created temp dir: {temp_dir}")
-        
-        downloaded_paths = []
-        for key in target_keys:
-            filename = key.split('/')[-1]
-            local_path = os.path.join(temp_dir, filename)
-            logger.debug(f"Downloading {key} to {local_path}...")
-            s3.download_file(bucket_name, key, local_path)
-            downloaded_paths.append(local_path)
-            
-        return downloaded_paths, temp_dir, target_keys
+        return latest_ts, target_keys, s3
 
     except Exception as e:
-        logger.error(f"S3 Download Error: {e}")
+        logger.error(f"S3 Listing Error: {e}")
         return None
+
+def download_files_from_s3(bucket_name: str, keys: List[str], dest_dir: str, s3_client=None):
+    """Downloads a list of S3 keys to a destination directory."""
+    if not s3_client:
+        s3_client = get_s3_client()
+        if not s3_client: return None
+
+    downloaded_paths = []
+    try:
+        for key in keys:
+            filename = key.split('/')[-1]
+            local_path = os.path.join(dest_dir, filename)
+            logger.debug(f"Downloading {key} to {local_path}...")
+            s3_client.download_file(bucket_name, key, local_path)
+            downloaded_paths.append(local_path)
+        return downloaded_paths
+    except Exception as e:
+         logger.error(f"S3 Download Error: {e}")
+         return None
+
+def download_from_s3(bucket_name: str, user_id: str):
+    """
+    Downloads the latest batch of images for a user from S3.
+    (Wrapper around new granular functions for backward compatibility)
+    """
+    result = list_latest_s3_batch(bucket_name, user_id)
+    if not result:
+        return None
+        
+    latest_ts, target_keys, s3 = result
+    
+    # Create temp dir
+    temp_dir = tempfile.mkdtemp(prefix=f"lila_analysis_{user_id}_")
+    logger.info(f"Created temp dir: {temp_dir}")
+    
+    downloaded_paths = download_files_from_s3(bucket_name, target_keys, temp_dir, s3)
+    
+    if not downloaded_paths:
+        return None
+        
+    return downloaded_paths, temp_dir, target_keys
 
 def distill_analysis_for_prompt(analysis_data: dict) -> str:
     """
