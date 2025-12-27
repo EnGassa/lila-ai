@@ -11,6 +11,12 @@
     - Implemented "View Photos" feature in the dashboard to display the specific images used for any given analysis.
     - **Visual Polish:** Refined the Photo Gallery UI with a premium aesthetic (rounded cards, hover effects, subtle badges) to match the "Lila Skin" brand.
 
+## Recent Work: Landing Page
+- **Home Page Redesign:**
+    - Replaced hardcoded redirect with a premium, brand-aligned landing page at the root (`/`).
+    - **Features:** "Join Waitlist" CTA, login for existing users, value proposition display.
+    - **Visuals:** Aligns with the "Beige/Earthy" theme.
+
 ## Recent Work: PWA Implementation
 - **Progressive Web App (PWA):**
     - Converted "Lila Skin" to a PWA using `@serwist/next` (modern replacement for `next-pwa`).

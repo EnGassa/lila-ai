@@ -54,5 +54,6 @@
     - [x] **Offline Capabilities:** Service Worker caching enabled.
     - [x] **Mobile Optimization:** Native-like viewport settings.
 
-*   **Dual Upload Page System:**
-...
+*   **Landing Page:**
+    - [x] **Root Route (`/`)**: Implemented high-converting landing page replacing the legacy redirect.
+    - [x] **Waitlist**: Integrated "Join Waitlist" functionality.

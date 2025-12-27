@@ -37,14 +37,14 @@ logger = setup_logger()
 
 AVATAR_PROMPT = """
 Positive Prompt:
-A cheerful and radiant flat vector avatar of a person, styling them with a fresh and healthy glow suitable for a skincare app.
+A cheerful and radiant flat vector avatar of a person, styling them with a fresh and healthy glow.
 Composition: Close-up headshot, face filling most of the frame, centered.
 Vibe & Emotion: Warm, upbeat, friendly, and confident. The expression should be relaxed and inviting with a soft smile.
 Art Style: Modern flat illustration, lineless vector art, clean organic shapes, minimal details.
-Complexion & Skin: Focus on smooth, clear skin tones with soft, rosy blush on the cheeks to indicate health and vitality.
+Complexion & Skin: Focus on smooth, clear skin tones with soft, indicate health and vitality.
 Colors: A bright and airy pastel palette (mint, peach, lavender, soft cream).
 Texture: Soft grainy noise overlay, stippled shading, and a matte paper texture to give it a high-quality, organic editorial feel.
-Background: A solid, soft pastel circle or solid color that contrasts gently with the subject.
+Background: A solid, soft pastel solid color that contrasts gently with the subject.
 
 Negative Prompt:
 Photorealistic, harsh outlines, black lines, messy details, dark shadows, grungy, dirty, angry, sad, textureless, plastic skin, shiny 3D render, neon colors, clutter, text, watermark, asymmetry, blurry.
@@ -142,7 +142,7 @@ def main():
         logger.error("Failed to download images.")
         sys.exit(1)
         
-    image_paths, temp_dir = result
+    image_paths, temp_dir, _ = result
     
     # 3. Find 'front_smiling'
     smiling_path = None
