@@ -11,11 +11,7 @@ export default function LandingPage() {
           Lila Skin
         </div>
         <nav className="flex gap-4">
-          <Link href="/login">
-            <Button variant="ghost" className="hover:bg-primary/5">
-              Admin Login
-            </Button>
-          </Link>
+          {/* Admin Login hidden for now */}
         </nav>
       </header>
 
@@ -42,12 +38,6 @@ export default function LandingPage() {
             Join Waitlist
             <ArrowRight className="ml-2 w-4 h-4" />
           </Button>
-          
-          <Link href="/login">
-            <Button size="lg" variant="outline" className="h-12 px-8 text-base border-primary/20 hover:bg-primary/5">
-              Member Sign In
-            </Button>
-          </Link>
         </div>
       </main>
 
