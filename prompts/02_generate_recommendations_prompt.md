@@ -73,6 +73,10 @@ Available Active Ingredients:
         *   You may include a maximum of TWO retinoid products in the entire routine ONLY IF one is explicitly an 'Eye Cream' and the other is a treatment for the face (e.g., Serum, Moisturizer). Recommending two general-purpose facial retinoids is strictly forbidden.
         *   NEVER include more than ONE primary exfoliant (AHA/BHA) in the same routine.
     *   **Product Selection Logic:**
+        *   **Primary Products:** Select the best possible product(s) for the step. You may select multiple Primary products ONLY if they are part of a Skin Cycling rotation (e.g. separate Night 1 / Night 2 products).
+        *   **Alternative Products (CRITICAL):** You MUST provide **2 to 3 "Alternative" products** for **EVERY** Primary product you recommend. This is essential for user choice.
+            *   If you recommend a Retinoid as Primary, you must find 2-3 other Retinoids as Alternatives.
+            *   Mark these as `selection_type="alternative"` and provide a `reason_for_alternative` (e.g., "Lower Price Point", "Alternative Texture", "Gentle Option").
         *   When the user has both facial concerns (e.g., aging, acne) and eye-area concerns, prioritize finding a suitable retinoid for each. If only facial concerns are present, you must select a facial retinoid, not an eye cream.
 
 5.  **Implement Clinical Scheduling ("Skin Cycling"):**

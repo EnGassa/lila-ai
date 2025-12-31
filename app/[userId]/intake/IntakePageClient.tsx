@@ -211,7 +211,7 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                     <SectionHeader title="Lifestyle & Health" subtitle="Context for your skin health" />
 
                     <div className="space-y-10">
-                         <FormField
+                        <FormField
                             control={form.control}
                             name="skin_conditions"
                             render={({ field }) => (
@@ -223,6 +223,38 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                                         {...field}
                                         value={field.value?.join(', ') ?? ''}
                                         onChange={e => field.onChange(e.target.value ? e.target.value.split(',').map(s => s.trim()) : [])}
+                                    />
+                                </div>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="medication"
+                            render={({ field }) => (
+                                <div className="space-y-4">
+                                    <label className="text-xl font-medium">Current Medication</label>
+                                    <Input 
+                                        placeholder="e.g. Oral Contraceptives, Accutane (Optional)"
+                                        className="h-16 text-lg px-6 rounded-xl border-[#D6CDBF] bg-[#E6E2D6] focus:border-[#C8A28E] focus:ring-[#C8A28E]"
+                                        {...field}
+                                        value={field.value ?? ''}
+                                    />
+                                </div>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="allergies"
+                            render={({ field }) => (
+                                <div className="space-y-4">
+                                    <label className="text-xl font-medium">Known Allergies</label>
+                                    <Input 
+                                        placeholder="e.g. Aspirin, Sulfa drugs (Optional)"
+                                        className="h-16 text-lg px-6 rounded-xl border-[#D6CDBF] bg-[#E6E2D6] focus:border-[#C8A28E] focus:ring-[#C8A28E]"
+                                        {...field}
+                                        value={field.value ?? ''}
                                     />
                                 </div>
                             )}

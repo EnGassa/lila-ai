@@ -156,73 +156,93 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
                   <AccordionContent className="pt-4 pb-4">
                     <div className="space-y-4">
                       {/* Instructions are now rendered inside each product card */}
-                      {step.products &&
-                        step.products.map(
-                          (product: Product, pIndex: number) => (
-                            <div
-                              key={pIndex}
-                              className="bg-secondary rounded-2xl border border-brand-border overflow-hidden"
-                            >
-                              <div className="p-6">
-                                <div className="flex gap-6">
-                                  {/* Product Image */}
-                                  <div className="w-[117px] h-[117px] bg-background rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center">
+                      {/* Instructions are now rendered once for the step */}
+                      {step.instructions && (
+                        <div className="bg-brand-light/30 p-5 rounded-xl mb-6 border border-brand-border/50 prose prose-sm max-w-none">
+                          <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                            <span className="w-6 h-6 rounded-full bg-brand text-white flex items-center justify-center text-xs">i</span>
+                            How to use
+                          </h4>
+                          <ReactMarkdown
+                            components={{
+                              p: ({node, ...props}) => <p className="text-sm text-foreground leading-relaxed" {...props} />,
+                              ul: ({node, ...props}) => <ul className="list-disc list-inside" {...props} />,
+                              li: ({node, ...props}) => <li className="text-sm text-foreground leading-relaxed" {...props} />,
+                            }}
+                          >
+                            {step.instructions.replace(/\\n/g, '\n')}
+                          </ReactMarkdown>
+                        </div>
+                      )}
+
+                      {/* Unified Product Carousel */}
+                      {(() => {
+                        const allProducts = [...(step.products || [])].sort((a, b) => {
+                          const aType = a.selection_type || 'primary';
+                          const bType = b.selection_type || 'primary';
+                          if (aType === 'primary' && bType !== 'primary') return -1;
+                          if (aType !== 'primary' && bType === 'primary') return 1;
+                          return 0;
+                        });
+
+                        return (
+                          <div className="flex overflow-x-auto space-x-4 pb-4 -mx-4 px-4 scrollbar-hide snap-x items-stretch">
+                            {allProducts.map((product: Product, pIndex: number) => {
+                              const isPrimary = !product.selection_type || product.selection_type === 'primary';
+                              
+                              return (
+                                <div
+                                  key={`prod-${pIndex}`}
+                                  className={`min-w-[300px] w-[300px] bg-card rounded-2xl border shadow-sm snap-center flex flex-col overflow-hidden transition-all duration-300 ${isPrimary ? 'border-brand-border ring-1 ring-brand-border/50 shadow-md' : 'border-border'}`}
+                                >
+                                  {/* Image Area */}
+                                  <div className="h-48 bg-secondary/30 flex items-center justify-center p-6 relative">
                                     <img
                                       src={
                                         product.image_url ||
                                         "/ingredients/product-placeholder.png"
                                       }
                                       alt={product.name || product.product_slug}
-                                      className="w-full h-full object-contain"
+                                      className="h-full object-contain mix-blend-multiply"
                                     />
+                                    {isPrimary && (
+                                       <Badge className="absolute top-4 right-4 bg-brand text-white hover:bg-brand shadow-sm">Top Pick</Badge>
+                                    )}
                                   </div>
 
-                                  {/* Product Title & Brand */}
-                                  <div className="flex-grow">
-                                    <h3 className="font-bold text-lg text-foreground leading-tight">
-                                      {product.brand} - {product.name}
-                                    </h3>
+                                  <div className="p-5 flex flex-col flex-grow">
+                                    <div className="mb-3">
+                                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">{product.brand}</p>
+                                      <h3 className="font-bold text-lg text-foreground leading-tight line-clamp-2 min-h-[50px]">
+                                        {product.name}
+                                      </h3>
+                                    </div>
+
+                                    {!isPrimary && product.reason_for_alternative && (
+                                       <Badge variant="outline" className="self-start mb-4 bg-secondary/50 text-xs py-1 px-2 border-brand-border/30">
+                                          {product.reason_for_alternative}
+                                       </Badge>
+                                    )}
+
+                                    <div className="prose prose-sm max-w-none flex-grow">
+                                      <p className="text-xs font-semibold text-foreground mb-1 mt-0">Why it matches:</p>
+                                      <div className="text-sm text-muted-foreground leading-relaxed line-clamp-4">
+                                        <ReactMarkdown>
+                                            {product.rationale}
+                                        </ReactMarkdown>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-
-                                <div className="mt-4">
-                                  <div className="prose prose-sm max-w-none">
-                                    <p className="text-sm text-foreground leading-relaxed mb-0">
-                                      <span className="font-semibold">Why:</span>{" "}
-                                    </p>
-                                    <ReactMarkdown
-                                      components={{
-                                        p: ({node, ...props}) => <p className="text-sm text-foreground leading-relaxed mt-1" {...props} />,
-                                        strong: ({node, ...props}) => <strong className="font-semibold" {...props} />,
-                                      }}
-                                    >
-                                      {product.rationale.replace(/\\n/g, '\n')}
-                                    </ReactMarkdown>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* How to Use Section */}
-                              {step.instructions && (
-                                <div className="bg-brand-light p-6 rounded-t-lg prose prose-sm max-w-none">
-                                  <h4 className="font-semibold mb-2 text-foreground">How to use:</h4>
-                                  <ReactMarkdown
-                                    components={{
-                                      p: ({node, ...props}) => <p className="text-sm text-foreground leading-relaxed" {...props} />,
-                                      ul: ({node, ...props}) => <ul className="list-disc list-inside" {...props} />,
-                                      li: ({node, ...props}) => <li className="text-sm text-foreground leading-relaxed" {...props} />,
-                                    }}
-                                  >
-                                    {step.instructions.replace(/\\n/g, '\n')}
-                                  </ReactMarkdown>
-                                </div>
-                              )}
-                            </div>
-                          )
-                        )}
+                              );
+                            })}
+                          </div>
+                        );
+                      })()}
+                      
                       {(!step.products || step.products.length === 0) && (
-                        <p className="text-sm text-muted-foreground">
-                          No specific product recommendations for this step.
+                        <p className="text-sm text-muted-foreground text-center py-8 bg-secondary/30 rounded-xl">
+                          No specific products needed for this step.
                         </p>
                       )}
                     </div>

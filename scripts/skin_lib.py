@@ -197,6 +197,8 @@ class KeyIngredient(BaseModel):
 class ProductRecommendation(BaseModel):
     product_slug: str = Field(..., description="The unique slug for the product.")
     rationale: str = Field(..., description="Explanation for why this product is recommended.")
+    selection_type: Literal["primary", "alternative"] = Field("primary", description="Whether this is the top pick or an alternative option.")
+    reason_for_alternative: Optional[str] = Field(None, description="Short reason why this is an alternative (e.g. 'Budget Option', 'Splurge', 'Texture preference'). Required if selection_type is 'alternative'.")
 
 class RoutineStep(BaseModel):
     step: str

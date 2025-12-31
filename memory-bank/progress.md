@@ -54,6 +54,12 @@
     - [x] **Offline Capabilities:** Service Worker caching enabled.
     - [x] **Mobile Optimization:** Native-like viewport settings.
 
+*   **Recommendations Engine (V2):**
+    - [x] **Multiple Product Options:** System now recommends a "Top Pick" and multiple "Alternatives" per routine step.
+    - [x] **Unified Carousel UI:** Frontend displays all options in a single horizontal scroll container for seamless browsing.
+    - [x] **Intake Completeness:** Added missing `medication` and `allergies` fields to the skin profile intake form.
+    - [x] **Schema Sync:** Synchronized `schema.sql` with Supabase state (added `intake_submissions`, `feedback_submissions`).
+
 *   **Landing Page:**
     - [x] **Root Route (`/`)**: Implemented high-converting landing page replacing the legacy redirect.
     - [x] **Waitlist**: Integrated "Join Waitlist" functionality.

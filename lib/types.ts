@@ -7,6 +7,8 @@ export interface Product {
   brand?: string;
   rationale: string;
   image_url?: string;
+  selection_type?: 'primary' | 'alternative';
+  reason_for_alternative?: string;
 }
 
 export interface Step {

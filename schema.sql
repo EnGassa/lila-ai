@@ -105,6 +105,57 @@ create table if not exists public.ingredients_1 (
   created_at timestamptz default now()
 );
 
+-- 8. Intake Submissions Table
+-- Stores user answers from the onboarding questionnaire
+create table if not exists public.intake_submissions (
+  id uuid not null primary key default gen_random_uuid(),
+  user_id text unique references public.users(id) on delete cascade,
+  age integer,
+  gender text,
+  city text,
+  skin_conditions text[],
+  sleep_hours text,
+  stress_level integer,
+  hormonal_status jsonb,
+  medication text,
+  allergies text,
+  pregnancy_status text,
+  makeup_frequency text,
+  smoking text,
+  daily_routine_frequency text,
+  current_routine jsonb,
+  budget text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- 9. Feedback Submissions Table
+-- Stores user feedback on recommendations
+create table if not exists public.feedback_submissions (
+  id uuid not null primary key default gen_random_uuid(),
+  user_id text references public.users(id) on delete cascade,
+  recommendation_id uuid references public.recommendations(id) on delete cascade,
+  helpfulness_score integer,
+  accuracy_score integer,
+  qualitative_feedback text,
+  clarity_score integer,
+  explanation_quality text,
+  trust_score integer,
+  personalization_suggestions text,
+  ux_score integer,
+  frustration_points text,
+  improvement_suggestions text,
+  procurement_preference text,
+  subscription_interest text,
+  subscription_features text[],
+  willingness_to_pay_sub text,
+  willingness_to_pay_one_time text,
+  derm_consult_interest text,
+  interview_willingness boolean,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
 -- RPC Functions for Vector Search
 
 create or replace function match_ingredients(

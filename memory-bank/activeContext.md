@@ -52,7 +52,16 @@
     - Implemented "Smart Fallback": Script prioritizes `--context-file` (legacy/manual), falls back to DB, and defaults to generic recommendations if neither exists.
     - **Context Injection:** Cleaned DB data is injected directly into the prompt for both the Strategist (Philosophy) and Generator (Routine) agents, ensuring personalized constraints are respected.
 
-## Previous Work: Admin Dashboard Enhancements
+## Recent Work: Multiple Product Recommendations
+- **Feature Implementation:**
+    - **Goal:** Move from single-product prescriptions to "Top Pick" + "Alternative Options" to appear brand-agnostic and science-driven.
+    - **Backend (`skin_lib.py`):** Updated `ProductRecommendation` model to include `selection_type` (primary/alternative) and `reason_for_alternative`.
+    - **AI Prompt (`02_generate_recommendations_prompt.md`):** Updated instructions to require 2-3 alternatives for *every* primary product recommendation.
+    - **Frontend (`recommendations-tab.tsx`):** Refactored UI to use a unified horizontal carousel. Primary products ("Top Pick") appear first, followed by scrollable alternatives.
+    - **Intake Alignment:** Added missing `medication` and `allergies` fields to the `IntakePageClient` form to match the `intake_submissions` schema.
+    - **Database Sync:** Updated `schema.sql` to include missing `intake_submissions` and `feedback_submissions` table definitions.
+
+## Recent Work: Admin Dashboard Enhancements
 - **Admin Management:**
     -  Added "Grant Admin Access" toggle to `CreateUserDialog` and `EditUserDialog`.
     -  Implemented robust Safety Confirmation logic (Alert Dialog) when creating new Admin users to prevent accidental privilege grants.
