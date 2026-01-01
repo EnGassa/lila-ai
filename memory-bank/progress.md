@@ -29,9 +29,10 @@
     *   **Refined Logic:** Conditional form fields based on gender (Skin Profile).
     *   **Notifications:** Real-time Discord alerts for Intake and Feedback submissions (Enriched with User Details).
     *   **URL Consistency:** Standardized `/[userId]/[feature]` routing pattern.
+    *   **Face Capture:** UI updated to match global theme, data flow and camera cleanup bugs fixed.
+    *   **Tab Titles:** Clean metadata titles reflecting name/page without UUIDs.
 
-32: 
-33: *   **Clinical Accuracy Updates:**
+*   **Clinical Accuracy Updates:**
     *   **Clinical Pores Rubric:** Updated the AI prompt to classify pores by morphology (O-shaped for sebum, U-shaped for aging, Y-shaped for scarring) rather than just size, enabling targeted treatment paths.
     *   **Scoring Reliability:** Implemented strict Pydantic schema validation (`ge=1.0`, `le=5.0`) in `skin_lib.py` to prevent the AI from drifting into 0-1 normalized scoring, ensuring perfect synchronization between the UI cards and radar charts.
 
