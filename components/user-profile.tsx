@@ -1,6 +1,16 @@
 "use client";
 import { UserAvatar } from "@/components/user-avatar";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { LogOut, User } from "lucide-react"
+
 interface UserProfileProps {
   userData: any;
   userId: string;
@@ -24,18 +34,39 @@ export function UserProfile({ userData, userId, userName, avatarUrl }: UserProfi
       .join(" ")
     : capitalize(userId));
 
+  const handleLogout = async () => {
+    await fetch('/auth/signout', { method: 'POST' })
+    window.location.href = '/login'
+  };
+
   return (
-    <div className="flex items-center gap-4">
-      <UserAvatar userId={userId} displayName={displayName} avatarUrl={avatarUrl} />
-      <div>
-        <p className="text-2xl font-light">{displayName}</p>
-        <p className="text-sm font-light text-muted-foreground">
-          Skincare Analysis
-        </p>
-        <p className="text-sm font-light text-muted-foreground">
-          Estimated Age: {ageRange.low} - {ageRange.high}
-        </p>
-      </div>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger className="outline-none">
+        <div className="flex items-center gap-4 hover:opacity-80 transition-opacity cursor-pointer">
+          <UserAvatar userId={userId} displayName={displayName} avatarUrl={avatarUrl} />
+          <div className="text-left">
+            <p className="text-2xl font-light">{displayName}</p>
+            <p className="text-sm font-light text-muted-foreground">
+              Skincare Analysis
+            </p>
+            <p className="text-sm font-light text-muted-foreground">
+              Estimated Age: {ageRange.low} - {ageRange.high}
+            </p>
+          </div>
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-56">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem disabled>
+            <User className="mr-2 h-4 w-4" />
+            <span>Profile Settings</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600">
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Log out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

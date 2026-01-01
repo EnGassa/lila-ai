@@ -23,20 +23,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 const formSchema = z.object({
     email: z.string().email(),
-    password: z.string().min(1, "Password is required"),
 })
 
 export function LoginForm() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const [isLoading, setIsLoading] = useState(false)
-    const next = searchParams.get("next") || "/admin"
+    const [isEmailSent, setIsEmailSent] = useState(false)
+    const next = searchParams.get("next") || "/dashboard"
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: "",
-            password: "",
         },
     })
 
@@ -49,9 +48,11 @@ export function LoginForm() {
                 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
             )
 
-            const { error } = await supabase.auth.signInWithPassword({
+            const { error } = await supabase.auth.signInWithOtp({
                 email: values.email,
-                password: values.password,
+                options: {
+                    emailRedirectTo: `${window.location.origin}/auth/callback?next=${next}`,
+                },
             })
 
             if (error) {
@@ -59,9 +60,8 @@ export function LoginForm() {
                 return
             }
 
-            toast.success("Logged in successfully")
-            router.push(next)
-            router.refresh()
+            setIsEmailSent(true)
+            toast.success("Magic link sent!")
         } catch (error) {
             toast.error("An unexpected error occurred")
         } finally {
@@ -69,12 +69,36 @@ export function LoginForm() {
         }
     }
 
+    if (isEmailSent) {
+        return (
+            <Card className="w-full max-w-sm">
+                <CardHeader>
+                    <CardTitle className="text-2xl">Check your email</CardTitle>
+                    <CardDescription className="text-center">
+                        We sent a login link to <span className="font-semibold">{form.getValues("email")}</span>.
+                        <br />
+                        Click the link to sign in.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-4">
+                    <Button 
+                        variant="outline" 
+                        className="w-full" 
+                        onClick={() => setIsEmailSent(false)}
+                    >
+                        Try different email
+                    </Button>
+                </CardContent>
+            </Card>
+        )
+    }
+
     return (
         <Card className="w-full max-w-sm">
             <CardHeader>
-                <CardTitle className="text-2xl">Login</CardTitle>
+                <CardTitle className="text-2xl">Sign In</CardTitle>
                 <CardDescription className="text-center">
-                    Enter your credentials to access the admin panel
+                    Enter your email to receive a secure login link
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -87,20 +111,7 @@ export function LoginForm() {
                                 <FormItem>
                                     <FormLabel>Email</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="admin@example.com" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="password"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Password</FormLabel>
-                                    <FormControl>
-                                        <Input type="password" {...field} />
+                                        <Input placeholder="you@example.com" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -108,7 +119,7 @@ export function LoginForm() {
                         />
                         <Button type="submit" className="w-full" disabled={isLoading}>
                             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Sign In
+                            Send Magic Link
                         </Button>
                     </form>
                 </Form>

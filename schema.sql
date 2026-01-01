@@ -9,8 +9,15 @@ create table if not exists public.users (
   email text unique,
   phone text,
   is_admin boolean default false,
+  onboarding_status public.onboarding_status default 'pending',
   created_at timestamptz default now()
 );
+
+-- RLS: Enable security
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+
+-- RLS: Policies
+-- See bottom of file for full policy definitions or migration 001
 
 -- 2. Products Table
 -- Stores skincare product information, including embeddings for search.
@@ -240,3 +247,64 @@ as $$
   order by similarity desc
   limit match_count;
 $$;
+
+-- Phase 1 Updates (Self-Service Foundation)
+
+-- 10. Enums
+CREATE TYPE public.onboarding_status AS ENUM ('pending', 'intake_completed', 'photos_uploaded', 'analyzing', 'complete');
+
+-- 11. Security Helper Functions
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.users (id, email, full_name, onboarding_status)
+  VALUES (
+    new.id::text, 
+    new.email, 
+    new.raw_user_meta_data->>'full_name',
+    'pending'
+  )
+  ON CONFLICT (id) DO NOTHING;
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1
+    FROM public.users
+    WHERE id = auth.uid()::text
+    AND is_admin = true
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 12. Triggers
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+
+-- 13. RLS Policies
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.skin_analyses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.intake_submissions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.recommendations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.feedback_submissions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own profile" ON public.users FOR SELECT USING (auth.uid()::text = id OR public.is_admin());
+CREATE POLICY "Users can update own profile" ON public.users FOR UPDATE USING (auth.uid()::text = id);
+
+CREATE POLICY "Users can view own analyses" ON public.skin_analyses FOR SELECT USING (auth.uid()::text = user_id OR public.is_admin());
+CREATE POLICY "Users can insert own analyses" ON public.skin_analyses FOR INSERT WITH CHECK (auth.uid()::text = user_id);
+
+CREATE POLICY "Users can view own intake" ON public.intake_submissions FOR SELECT USING (auth.uid()::text = user_id OR public.is_admin());
+CREATE POLICY "Users can insert own intake" ON public.intake_submissions FOR INSERT WITH CHECK (auth.uid()::text = user_id);
+CREATE POLICY "Users can update own intake" ON public.intake_submissions FOR UPDATE USING (auth.uid()::text = user_id);
+
+CREATE POLICY "Users can view own recommendations" ON public.recommendations FOR SELECT USING (auth.uid()::text = user_id OR public.is_admin());
+
+CREATE POLICY "Users can view own feedback" ON public.feedback_submissions FOR SELECT USING (auth.uid()::text = user_id OR public.is_admin());
+CREATE POLICY "Users can insert own feedback" ON public.feedback_submissions FOR INSERT WITH CHECK (auth.uid()::text = user_id);

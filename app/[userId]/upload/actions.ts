@@ -155,7 +155,17 @@ export async function notifyOnUploadComplete(userId: string, filePaths: string[]
     embeds,
   }
 
-  // 1. Send Discord Notification (Fire and Forget or Await, depending on criticality)
+  // 1a. Update User Status to 'analyzing'
+  const { error: statusError } = await supabaseAdmin
+    .from('users')
+    .update({ onboarding_status: 'analyzing' })
+    .eq('id', userId)
+  
+  if (statusError) {
+      console.error('[notifyOnUploadComplete] Failed to update onboarding info:', statusError)
+  }
+
+  // 1b. Send Discord Notification (Fire and Forget or Await, depending on criticality)
   try {
     console.log('[notifyOnUploadComplete] Sending notification to Discord...')
     const discordResponse = await fetch(webhookUrl, {

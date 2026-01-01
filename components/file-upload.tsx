@@ -12,9 +12,13 @@ import { getSignedUploadUrl, notifyOnUploadComplete } from '@/app/[userId]/uploa
 import { toast } from 'sonner'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 
+import { useRouter } from 'next/navigation'
+
 interface FileUploadProps {
   userId: string
   initialFiles?: File[]
+  redirectPath?: string
+  onUploadComplete?: () => void
 }
 
 interface UploadedFile {
@@ -23,7 +27,8 @@ interface UploadedFile {
   error?: string
 }
 
-export function FileUpload({ userId, initialFiles = [] }: FileUploadProps) {
+export function FileUpload({ userId, initialFiles = [], redirectPath, onUploadComplete }: FileUploadProps) {
+  const router = useRouter()
   const [files, setFiles] = useState<UploadedFile[]>([])
   const [uploadProgress, setUploadProgress] = useState<number | null>(null)
   const [isUploading, setIsUploading] = useState(false)
@@ -149,6 +154,13 @@ export function FileUpload({ userId, initialFiles = [] }: FileUploadProps) {
 
       setFiles([])
       setUploadProgress(null)
+
+      if (onUploadComplete) {
+         onUploadComplete();
+      } else if (redirectPath) {
+         router.push(redirectPath);
+         router.refresh();
+      }
 
     } catch (error) {
       console.error("Upload failed:", error)

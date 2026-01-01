@@ -2,7 +2,14 @@
 
 ## What Works
 
-*   **Admin Dashboard (Phase 3 Complete):**
+*   **Self-Service Flow (Phases 1-3 Complete):**
+    - [x] **Authentication**: Magic Link implementation for passwordless entry.
+    - [x] **Wizard UX**: Guided onboarding flow (`/onboarding`) managing Intake -> Upload -> Analysis states.
+    - [x] **Smart Redirects**: Prevents users from accessing dashboard before completion; redirects analyzing/pending users to correct step.
+    - [x] **Data Integrity**: Intake form now captures `name` (for user profile) and clinical data (for analysis).
+    - [x] **Generic Routes**: `app/dashboard` and `app/onboarding` replace user-specific routes for logged-in users.
+
+*   **Admin Dashboard (Phase 4 Complete):**
     *   **Route:** `/admin` (Protected).
     *   **Access Control:** Role-based access control (RBAC) via `public.users.is_admin` flag.
     *   **Admin Dashboard**:
@@ -11,17 +18,17 @@
         - [x] Users Table (View All Users)
         - [x] User Management (Create, Edit, Delete)
         - [x] Deployment Configuration (Env Vars)
-        - [x] **Dashboard Access**: Direct link to user dashboard from admin table.
+        - [x] **Dashboard Access**: Dedicated Admin Route (`/admin/users/[userId]/dashboard`) to view any user's results.
         - [ ] Reporting Dashboard (Future)
         - [x] **User Creation**: Admin can create users (Auth + DB) via Modal (Includes Admin Role toggle).
         - [x] **Real-time Search**: Client-side search for users.
         - [x] **Copy Upload Link**: Action to copy user-specific upload URL.
         - [x] **User Editing**: Admins can update Name, Email, Phone, and Admin Role.
         - [x] **Safety**: Added confirmation dialog for granting Admin privileges.
-        - [x] **User Deletion**: Admins can securely delete users.
-    *   **Infrastructure:** Dedicated `middleware.ts` for robust Supabase session handling.
+        - [x] **User Deletion**: Admins can securely delete users (Database cascade enabled; Storage cleanup tracked in L-114).
+    *   **Infrastructure:** Dedicated `proxy.ts` (middleware) creates a robust auth layer.
 
-*   **User Interface & Experience (Phase 4):**
+*   **User Interface & Experience:**
     *   **Global Theme:** Unified "Beige/Earthy" theme across all flows.
     *   **Skin Profile:** Single-page pre-filled form with `upsert` logic.
     *   **Upload Flow:** Promoted to `/upload` with fixed mobile layout.

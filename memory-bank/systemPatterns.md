@@ -16,11 +16,23 @@ flowchart TD
 
 ## Core Design Patterns
 
+### Self-Service Wizard Pattern
+To guide users through the complex onboarding process without friction:
+1.  **State-Driven Routing:** The `onboarding_status` enum in `public.users` (`pending`, `intake_completed`, `photos_uploaded`, `analyzing`, `complete`) acts as the single source of truth.
+2.  **Controller Page:** `app/onboarding/page.tsx` reads this status and conditionally renders the appropriate sub-component (Intake Form or Upload Interface) or redirects.
+3.  **Strict Gating:** All protected routes (`/dashboard`) check this status. If a user is incomplete, they are forcefully redirected back to the `/onboarding` wizard, preventing invalid states.
+
 ### Role-Based Access Control (Admin)
 The admin panel implements a dual-layer security model:
-1.  **Authentication:** `middleware.ts` ensures a valid Supabase Ops session exists via cookies.
+1.  **Authentication:** `proxy.ts` (middleware) ensures a valid Supabase Ops session exists via cookies.
 2.  **Authorization:** The `/admin/layout.tsx` Server Component queries the `public.users` table for the `is_admin` boolean flag. Access is granted *only* if `is_admin === true`.
 3.  **Redirection:** Unauthorized attempts are redirected to root (`/`) or login (`/login`), ensuring no admin routes are exposed to regular users.
+
+### Admin Impersonation Pattern (Dashboard View)
+To allow admins to debug and view user results without polluting the user's session:
+1.  **Dedicated Route:** A specific route `/admin/users/[userId]/dashboard` exists solely for admin consumption.
+2.  **Bypass Logic:** Unlike the standard `/dashboard` (which uses `session.user.id`), this route uses the `userId` path parameter to fetch data.
+3.  **Protection:** This route is wrapped in the same Admin Authorization checks, ensuring no data leakage to public users.
 
 ### Admin Action Pattern (Privileged Operations)
 For administrative tasks that require permissions beyond the logged-in user's scope (e.g., creating a *new* user in specific Auth tables):

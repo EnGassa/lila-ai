@@ -18,7 +18,17 @@ const FaceCapture = dynamic(() => import('@/components/analysis/FaceCapture'), {
   loading: () => <div className="p-12 text-center">Loading Camera...</div>
 })
 
-export function UploadPageClient({ userId, displayName, avatarUrl }: { userId: string, displayName: string, avatarUrl?: string | null }) {
+export function UploadPageClient({ 
+  userId, 
+  displayName, 
+  avatarUrl, 
+  redirectPath 
+}: { 
+  userId: string, 
+  displayName: string, 
+  avatarUrl?: string | null,
+  redirectPath?: string
+}) {
   const router = useRouter();
   const [viewMode, setViewMode] = useState<'upload' | 'camera'>('upload')
   const [capturedFiles, setCapturedFiles] = useState<File[]>([])
@@ -44,7 +54,7 @@ export function UploadPageClient({ userId, displayName, avatarUrl }: { userId: s
         setIsLoading(false);
       } else {
         // Redirect to new intake page
-        router.push(`/${userId}/intake`);
+        router.push(redirectPath ? redirectPath : `/${userId}/intake`);
       }
     };
     
@@ -117,9 +127,11 @@ export function UploadPageClient({ userId, displayName, avatarUrl }: { userId: s
                 </DialogContent>
               </Dialog>
             </div>
+
+
           </div>
 
-          <DynamicFileUpload userId={userId} initialFiles={capturedFiles} />
+          <DynamicFileUpload userId={userId} initialFiles={capturedFiles} redirectPath={redirectPath} />
         </>
       )}
     </div>

@@ -9,6 +9,16 @@ const FileUpload = dynamic(() => import('@/components/file-upload').then(mod => 
 })
 
 // Create a wrapper component that can be safely imported into a Server Component
-export function DynamicFileUpload({ userId, initialFiles }: { userId: string, initialFiles?: File[] }) {
-  return <FileUpload userId={userId} initialFiles={initialFiles} />
+export function DynamicFileUpload({ 
+  userId, 
+  initialFiles, 
+  redirectPath, 
+  onUploadComplete 
+}: { 
+  userId: string, 
+  initialFiles?: File[], 
+  redirectPath?: string,
+  onUploadComplete?: () => void
+}) {
+  return <FileUpload userId={userId} initialFiles={initialFiles} redirectPath={redirectPath} onUploadComplete={onUploadComplete} />
 }

@@ -36,6 +36,7 @@ const THEME = {
 
 // --- Validation Schema ---
 const intakeSchema = z.object({
+  name: z.string().min(2, 'Name is required'),
   age: z.coerce.number().min(10).max(100),
   gender: z.string().min(1, 'Required'),
   city: z.string().min(1, 'Required'),
@@ -61,7 +62,15 @@ const intakeSchema = z.object({
 
 type IntakeFormValues = z.infer<typeof intakeSchema>;
 
-export default function IntakePageClient({ userId, initialData }: { userId: string, initialData?: any }) {
+export default function IntakePageClient({ 
+  userId, 
+  initialData, 
+  redirectPath 
+}: { 
+  userId: string, 
+  initialData?: any,
+  redirectPath?: string 
+}) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const supabase = createClient();
@@ -69,6 +78,7 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
   const form = useForm<IntakeFormValues>({
     resolver: zodResolver(intakeSchema),
     defaultValues: {
+      name: initialData?.name || '',
       age: initialData?.age,
       gender: initialData?.gender,
       city: initialData?.city,
@@ -90,19 +100,34 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
   const onSubmit = async (data: IntakeFormValues) => {
     setIsSubmitting(true);
     try {
+      const { name, ...restData } = data;
       const payload = {
         user_id: userId,
-        ...data,
+        ...restData,
         hormonal_status: data.hormonal_status ? { selected: data.hormonal_status } : null,
         current_routine: data.current_routine,
         updated_at: new Date().toISOString(), // Ensure updated_at is set
       };
 
-      // Use upsert to update if exists (based on user_id uniqueness) or insert if new
-      const { error } = await supabase.from('intake_submissions').upsert(payload, { onConflict: 'user_id' });
-      if (error) throw error;
+      // 1. Save Intake Data
+      const { error: intakeError } = await supabase.from('intake_submissions').upsert(payload, { onConflict: 'user_id' });
+      if (intakeError) throw intakeError;
 
-      // Fire-and-forget Discord Notification
+      // 2. Update Onboarding Status AND Name
+      const { error: userError } = await supabase
+        .from('users')
+        .update({ 
+            onboarding_status: 'intake_completed',
+            full_name: data.name
+        })
+        .eq('id', userId);
+
+      if (userError) {
+          console.error("Failed to update onboarding status", userError);
+          // Non-blocking error, but good to log
+      }
+
+      // 3. Fire-and-forget Discord Notification
       fetch('/api/webhooks/discord', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -114,7 +139,11 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
       }).catch(err => console.error('Failed to send Discord notification:', err));
 
       toast.success('Skin profile updated!');
-      router.push(`/${userId}/upload`);
+      
+      const target = redirectPath || `/${userId}/upload`;
+      router.push(target);
+      router.refresh(); 
+
     } catch (error) {
       console.error('Submission error:', error);
       toast.error('Failed to save profile.');
@@ -146,6 +175,23 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                     <SectionHeader title="About You" subtitle="Understanding your background" />
                     
                     <div className="space-y-10">
+                        <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                                <div className="space-y-4">
+                                    <label className="text-xl font-medium">What should we call you?</label>
+                                    <Input 
+                                        placeholder="e.g. Ayesha"
+                                        className="h-16 text-xl px-6 rounded-xl border-[#D6CDBF] bg-[#E6E2D6] focus:border-[#C8A28E] focus:ring-[#C8A28E]"
+                                        {...field}
+                                        value={field.value ?? ''}
+                                    />
+                                    <FormMessage />
+                                </div>
+                            )}
+                        />
+
                         <FormField
                             control={form.control}
                             name="gender"

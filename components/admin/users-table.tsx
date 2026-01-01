@@ -139,7 +139,7 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
                                                             size="icon-sm"
                                                             asChild
                                                         >
-                                                            <Link href={`/${user.id}/dashboard`} target="_blank">
+                                                            <Link href={`/admin/users/${user.id}/dashboard`} target="_blank">
                                                                 <LayoutDashboard className="h-4 w-4" />
                                                             </Link>
                                                         </Button>

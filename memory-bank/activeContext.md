@@ -1,6 +1,17 @@
 # Active Context
 
-## Current Work: Analysis History and Robustness
+## Current Work: Self-Service Flow & Admin Oversight
+- **Self-Service Wizard (Phase 3):**
+    - Implemented `/onboarding` as a multi-step wizard (Intake -> Upload -> Analysis).
+    - **Smart Redirects:** Enforced strict navigation rules. Users cannot access `/dashboard` until onboarding is complete. "Analyzer" state users are shown a waiting screen.
+    - **Intake Refinement:** Added `name` field to Intake form ("What should we call you?") to personalize the experience and fix "Hi there" default.
+    - **Upload Refinement:** Removed confusing "Edit Personal Details" button from the Upload step.
+- **Admin Oversight (Phase 4):**
+    - **Dedicated Admin Route:** Created `/admin/users/[userId]/dashboard` to allow admins to view any user's data (bypassing session ownership checks).
+    - **UI Updates:** Connected `UsersTable` actions to the new admin dashboard route.
+    - **Storage Cleanup:** Filed Linear ticket [L-114] to address orphaned files in `user-uploads` bucket upon user deletion.
+
+## Recent Work: Analysis History and Robustness
 - **Analysis History V1:**
     - Modified backend (`run_analysis.py`) to a 1:N data model (Insert vs Upsert) to preserve historical analyses.
     - Updated Dashboard to fetch and display analysis history via a new Sheet UI.
@@ -110,10 +121,10 @@
     *   **Bug Fix (Critical):**
         *   Fixed an issue where `FaceCapture` results were not being passed to the `FileUpload` component (missing state update in `handleCameraComplete`).
         *   Fixed camera stream not stopping on unmount by introducing `streamRef` to track and stop media tracks independently of the video element.
-113:     *   **Metadata Refinement:**
-114:         *   Cleaned up browser tab titles across all user routes.
-115:         *   Removed UUID/User ID fallbacks to avoid messy tab names.
-116:         *   Implemented consistent `[Name] - [Page Name]` pattern with a clean "Lila Skin" fallback.
+        *   **Metadata Refinement:**
+        *   Cleaned up browser tab titles across all user routes.
+        *   Removed UUID/User ID fallbacks to avoid messy tab names.
+        *   Implemented consistent `[Name] - [Page Name]` pattern with a clean "Lila Skin" fallback.
 
 ---
 
