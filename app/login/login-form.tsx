@@ -51,7 +51,33 @@ export function LoginForm() {
             const { error } = await supabase.auth.signInWithOtp({
                 email: values.email,
                 options: {
-                    emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/auth/callback?next=${next}`,
+                    emailRedirectTo: (() => {
+                        const appUrl = process.env.NEXT_PUBLIC_APP_URL
+                        const origin = window.location.origin
+                        
+                        // Smart Redirect Logic:
+                        // 1. If APP_URL is set and we are NOT on localhost, but APP_URL contains 'localhost', ignore it.
+                        //    This protects against stale env vars or misconfiguration in Vercel.
+                        // 2. Otherwise use APP_URL if available.
+                        // 3. Fallback to window.location.origin (always correct for the current browser session).
+                        
+                        let redirectBase = origin
+                        
+                        if (appUrl) {
+                            const isAppUrlLocalhost = appUrl.includes('localhost')
+                            const isOriginLocalhost = origin.includes('localhost')
+                            
+                            if (isAppUrlLocalhost && !isOriginLocalhost) {
+                                // Potentially dangerous config, ignore appUrl
+                                console.warn("Lila Skin: Ignoring NEXT_PUBLIC_APP_URL (localhost) in production environment.")
+                                redirectBase = origin
+                            } else {
+                                redirectBase = appUrl
+                            }
+                        }
+
+                        return `${redirectBase}/auth/callback?next=${next}`
+                    })(),
                 },
             })
 

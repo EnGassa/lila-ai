@@ -59,7 +59,8 @@
 ## Recent Work: Magic Link Fix & Middleware
 - **Magic Link Redirect Fixed:**
     - Updated `login-form.tsx` to prioritize `NEXT_PUBLIC_APP_URL` over `window.location.origin` for the `redirectTo` param.
-    - This ensures production redirects go to the correct domain (`app.lila.skin`) instead of `localhost`.
+    - **Robust Environment Check:** Added smart logic to ignore `NEXT_PUBLIC_APP_URL` if it contains `localhost` but the browser origin is production (non-localhost). This prevents misconfigured production environments from breaking the auth flow.
+    - Verified Supabase Site URL configuration (User Action required to update from `localhost:3000` to `app.lila.skin`).
     - Added `NEXT_PUBLIC_APP_URL` to `.env.example`.
 - **Middleware Convention Established:**
     - Explicitly confirmed that this project uses `proxy.ts` instead of `middleware.ts` due to Next.js 16 deprecation warnings.
