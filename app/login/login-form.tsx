@@ -94,36 +94,40 @@ export function LoginForm() {
     }
 
     return (
-        <Card className="w-full max-w-sm">
-            <CardHeader>
-                <CardTitle className="text-2xl">Sign In</CardTitle>
-                <CardDescription className="text-center">
+        <div className="grid gap-6">
+            <div className="flex flex-col space-y-2 text-center">
+                <h1 className="text-2xl font-serif font-medium tracking-tight text-primary">
+                    Welcome back
+                </h1>
+                <p className="text-sm text-muted-foreground">
                     Enter your email to receive a secure login link
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="you@example.com" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <Button type="submit" className="w-full" disabled={isLoading}>
-                            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Send Magic Link
-                        </Button>
-                    </form>
-                </Form>
-            </CardContent>
-        </Card>
+                </p>
+            </div>
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="sr-only">Email</FormLabel>
+                                <FormControl>
+                                    <Input 
+                                        placeholder="name@example.com" 
+                                        {...field} 
+                                        className="h-11 bg-white/50 border-input/50 focus:border-accent focus:ring-accent/20"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <Button type="submit" className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/10 transition-all font-medium" disabled={isLoading}>
+                        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Send Magic Link
+                    </Button>
+                </form>
+            </Form>
+        </div>
     )
 }

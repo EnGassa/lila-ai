@@ -11,6 +11,13 @@
     - **UI Updates:** Connected `UsersTable` actions to the new admin dashboard route.
     - **Storage Cleanup:** Filed Linear ticket [L-114] to address orphaned files in `user-uploads` bucket upon user deletion.
 
+## Recent Work: Login Page Redesign
+- **Premium Aesthetic Overhaul:**
+    -  Replaced the generic centered card layout with a split-screen design (Desktop) and stacked header (Mobile).
+    -  **Design Language:** Aligned with the "Lila Skin" beige/earthy theme.
+    -  **Branding:** Incorporated the logo (`placeholder.png`) into a glass-morphic icon container.
+    -  **Typography:** Switched to Serif fonts for high-impact headers.
+
 ## Recent Work: Analysis History and Robustness
 - **Analysis History V1:**
     - Modified backend (`run_analysis.py`) to a 1:N data model (Insert vs Upsert) to preserve historical analyses.

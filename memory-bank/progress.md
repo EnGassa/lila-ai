@@ -38,6 +38,7 @@
     *   **URL Consistency:** Standardized `/[userId]/[feature]` routing pattern.
     *   **Face Capture:** UI updated to match global theme, data flow and camera cleanup bugs fixed.
     *   **Tab Titles:** Clean metadata titles reflecting name/page without UUIDs.
+    *   **Login Page:** Redesigned with premium split-screen aesthetic and logo integration.
 
 *   **Clinical Accuracy Updates:**
     *   **Clinical Pores Rubric:** Updated the AI prompt to classify pores by morphology (O-shaped for sebum, U-shaped for aging, Y-shaped for scarring) rather than just size, enabling targeted treatment paths.
