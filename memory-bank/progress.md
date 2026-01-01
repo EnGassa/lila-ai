@@ -44,6 +44,7 @@
     *   **Global Theme:** Unified "Beige/Earthy" theme across all flows.
     *   **Skin Profile:** Single-page pre-filled form with `upsert` logic.
     *   **Upload Flow:** Promoted to `/upload` with fixed mobile layout.
+    *   **Camera-Only Constraint:** Enforced "Smart Scanner" only (disabled file upload) to ensure clinical data quality.
     *   **Components:** Standardized `SelectionButton` and `SectionHeader`.
     *   **Refined Logic:** Conditional form fields based on gender (Skin Profile).
     *   **Notifications:** Real-time Discord alerts for Intake and Feedback submissions (Enriched with User Details).

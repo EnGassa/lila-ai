@@ -13,12 +13,14 @@ export function DynamicFileUpload({
   userId, 
   initialFiles, 
   redirectPath, 
-  onUploadComplete 
+  onUploadComplete,
+  allowManualUpload
 }: { 
   userId: string, 
   initialFiles?: File[], 
   redirectPath?: string,
-  onUploadComplete?: () => void
+  onUploadComplete?: () => void,
+  allowManualUpload?: boolean
 }) {
-  return <FileUpload userId={userId} initialFiles={initialFiles} redirectPath={redirectPath} onUploadComplete={onUploadComplete} />
+  return <FileUpload userId={userId} initialFiles={initialFiles} redirectPath={redirectPath} onUploadComplete={onUploadComplete} allowManualUpload={allowManualUpload} />
 }

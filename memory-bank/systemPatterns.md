@@ -47,6 +47,7 @@ To ensure the Admin UI (Client Components) immediately reflects changes made by 
 3.  **Data Consistency:** For deletions, explicitly delete from `public.users` *before* `auth.users` to avoid race conditions where the database query still returns a "zombie" user record while the Auth user is being deleted asynchronously.
 
 ### Secure Broker Pattern (File Uploads)
+*Note: As of Jan 2026, the UI restricts users to Camera triggers only ("Smart Scan") to ensure data quality, though the underlying upload mechanism remains the same.*
 To handle sensitive file uploads securely without exposing storage credentials or routing large files through the Next.js server:
 1.  **Request Access:** The client requests a signed upload URL from a Server Action (`getSignedUploadUrl`), providing only file metadata.
 2.  **Verify & Sign:** The server verifies the user's identity and generates a pre-signed URL with a short expiration time using the `@aws-sdk/s3-request-presigner`.

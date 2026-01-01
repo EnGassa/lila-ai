@@ -103,9 +103,9 @@ export function UploadPageClient({
       ) : (
         <>
           <div className="p-6 rounded-lg bg-card shadow-sm">
-            <h1 className="text-xl font-semibold mb-2">Upload Your Photos</h1>
+            <h1 className="text-xl font-semibold mb-2">Scan Your Face</h1>
             <p className="text-muted-foreground mb-6">
-              We need 6 specific angles for a complete analysis. You can use our Smart Scanner to guide you, or upload them manually (refer to guidelines)
+              We need 6 specific angles for a complete analysis. Use our Smart Scanner to guide you through the process.
             </p>
 
             <div className="bg-muted/50 p-4 rounded-lg mb-6 text-sm">
@@ -114,7 +114,7 @@ export function UploadPageClient({
                 <li>Wash your face with a cleanser, remove any makeup and moisturizer.</li>
                 <li>Tie your hair back, keep face clean and dry</li>
                 <li>Remove any obstructions such as glasses, hats, etc.</li>
-                <li>Click it indoors during the day using natural light. Stand facing a window in daylight</li>
+                <li>Ensure you are in a well-lit area. Natural light is best.</li>
                 <li>Avoid direct sunlight, glares or dark shadows</li>
               </ul>
             </div>
@@ -154,7 +154,8 @@ export function UploadPageClient({
             userId={userId} 
             initialFiles={capturedFiles} 
             redirectPath={redirectPath}
-            onUploadComplete={() => setViewMode('processing')} 
+            onUploadComplete={() => setViewMode('processing')}
+            allowManualUpload={false}
           />
         </>
       )}

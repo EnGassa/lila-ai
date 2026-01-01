@@ -134,6 +134,13 @@
     -   **Visual Feedback:** Added a brand-consistent selection indicator (accent checkmark) and used standard theme tokens (`brand`, `accent`, `secondary`) for button states, matching the `SelectionButton` design system.
     -   **Illustrative Flow:** Created a session-based selection experience that defaults to "Top Picks" and updates visually upon user interaction.
 
+## Recent Work: Camera-Only Upload Constraint
+- **Goal:** Reduce cognitive load and ensure high-quality, real-time data for analysis.
+- **Implementation:**
+    - Hidden the drag-and-drop file picker in `FileUpload.tsx`.
+    - Updated `UploadPageClient` to enforce "Smart Scanner" as the only path.
+    - Simplified copy to remove decision fatigue ("Scan Your Face" vs "Upload").
+
 ## Recent Work: Form Refinements
 - **UX Improvements:**
     - **Conversational Tone:** Rewrote Intake and Feedback form labels to be question-based and friendlier (e.g., "Age" -> "How old are you?").
