@@ -17,7 +17,6 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { CreateUserDialog } from "@/components/admin/create-user-dialog"
 import { EditUserDialog } from "@/components/admin/edit-user-dialog"
 import { DeleteUserAlert } from "@/components/admin/delete-user-alert"
 import {
@@ -60,10 +59,6 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold tracking-tight">Users</h2>
-                <CreateUserDialog />
-            </div>
             <div className="flex items-center py-4">
                 <div className="relative w-full max-w-sm">
                     <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -78,7 +73,7 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
             <div className="rounded-md">
                 <Table>
                     <TableHeader>
-                        <TableRow className="border-b-2 border-gray-500">
+                        <TableRow className="border-b border-border hover:bg-transparent">
                             <TableHead>Name</TableHead>
                             <TableHead>Email</TableHead>
                             <TableHead>Phone</TableHead>
@@ -96,7 +91,7 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
                             </TableRow>
                         ) : (
                             filteredUsers.map((user) => (
-                                <TableRow key={user.id} className="border-b-gray-300">
+                                <TableRow key={user.id} className="border-b border-border/40">
                                     <TableCell className="font-medium">
                                         {user.full_name || "N/A"}
                                     </TableCell>

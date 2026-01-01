@@ -53,6 +53,18 @@ To handle sensitive file uploads securely without exposing storage credentials o
 3.  **Direct Upload:** The client receives the URL and uploads the file directly to Supabase Storage (S3 compatible) using a standard `PUT` request.
 This pattern bypasses server body size limits and reduces server load.
 
+### Public Asset Storage Pattern (Product Images)
+For static assets that require high availability and performance but low security overhead:
+1.  **Public Bucket:** Use a separate Supabase Storage bucket (`product-images`) with "Public" access enabled.
+2.  **Naming Convention:** Enforce `[slug].[ext]` naming to ensure predictable URLs.
+3.  **Migration:** Legacy assets are migrated from the local filesystem to this bucket, updating the database `image_url` to the new public CDN link.
+
+### Async Search Component Pattern (Ingredients)
+To handle selecting items from large datasets (e.g., thousands of ingredients) without blooming the client bundle:
+1.  **Server Action:** Create a dedicated search action (`searchIngredients`) that returns lightweight results (`slug`, `name`) via `ilike`.
+2.  **Debounced Input:** Use a client-side hook to debounce user input (300ms) before invoking the server action.
+3.  **Command/Popover UI:** Use Shadcn `Command` within a `Popover` to present results, handling loading states and multi-selection (Badges) gracefully.
+
 ### Component Standardization
 To maintain design consistency and reduce duplication:
 *   **Reusable UI Elements:** Common patterns like selection buttons grids and section headers are extracted into atomic components (`components/ui/selection-button.tsx`, `components/ui/section-header.tsx`).

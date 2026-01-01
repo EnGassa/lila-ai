@@ -11,6 +11,19 @@
     - **UI Updates:** Connected `UsersTable` actions to the new admin dashboard route.
     - **Storage Cleanup:** Filed Linear ticket [L-114] to address orphaned files in `user-uploads` bucket upon user deletion.
 
+## Current Work: Product Management & Admin Refinement
+- **Product Inventory Control:**
+    - **Manage Products:** Implemented full CRUD for the `products_1` table via `/admin/products`.
+    - **Inline Actions:** Replaced dropdowns with efficient inline Edit/Delete buttons for faster workflows.
+    - **Data Completeness:** Expanded `ProductDialog` to support all schema fields: Rating, Reviews, Attributes, Benefits, Concerns.
+    - **Smart Ingredient Selection:** Created `MultiSelectIngredients` component that asynchronously searches the `ingredients_1` table, allowing admins to link active ingredients directly from the database.
+- **Image Management:**
+    - **Storage Migration:** Migrated 225 local product images to a public Supabase Storage bucket (`product-images`).
+    - **Upload Pipeline:** Integrated S3 signed URL upload for new product images, auto-renamed to `[slug].[ext]`.
+- **Admin UI Polish:**
+    - **Aesthetics:** Aligned Admin Dashboard with the consumer "Lila Skin" brand (Serif fonts, soft borders, consistent headers).
+    - **Consistency:** Standardized layout and styling across Users and Products pages.
+
 ## Recent Work: Login Page Redesign
 - **Premium Aesthetic Overhaul:**
     -  Replaced the generic centered card layout with a split-screen design (Desktop) and stacked header (Mobile).

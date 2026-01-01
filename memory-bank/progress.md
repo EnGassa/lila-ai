@@ -6,7 +6,12 @@
     - [x] **Authentication**: Magic Link implementation for passwordless entry.
     - [x] **Wizard UX**: Guided onboarding flow (`/onboarding`) managing Intake -> Upload -> Analysis states.
     - [x] **Smart Redirects**: Prevents users from accessing dashboard before completion; redirects analyzing/pending users to correct step.
-    - [x] **Data Integrity**: Intake form now captures `name` (for user profile) and clinical data (for analysis).
+    - [x] **Data Integrity**: Intake form
+    *   Cleaned up `UsersTable` by removing the outer Card container and lightening borders for a cleaner look.
+    *   **Admin Polish:**
+        *   Reskinned Admin Header with Serif typography.
+        *   Standardized page layouts (Title/Subtitle/Action) across Users and Products.
+        *   Replaced Dropdown menus with inline actions for better usability in Data Tables.
     - [x] **Generic Routes**: `app/dashboard` and `app/onboarding` replace user-specific routes for logged-in users.
 
 *   **Admin Dashboard (Phase 4 Complete):**
@@ -26,6 +31,12 @@
         - [x] **User Editing**: Admins can update Name, Email, Phone, and Admin Role.
         - [x] **Safety**: Added confirmation dialog for granting Admin privileges.
         - [x] **User Deletion**: Admins can securely delete users (Database cascade enabled; Storage cleanup tracked in L-114).
+        - [x] **Product Management**:
+            - [x] **Inventory Table**: View, Search, and Filter products.
+            - [x] **CRUD Actions**: Create, Edit, Delete, Disable products.
+            - [x] **Data Integrity**: Full support for Ratings, Reviews, and Lists (Attributes/Benefits).
+            - [x] **Ingredient Linking**: Smart search & multi-select from `ingredients` DB.
+            - [x] **Image Handling**: S3 Uploads and public bucket migration.
     *   **Infrastructure:** Dedicated `proxy.ts` (middleware) creates a robust auth layer.
 
 *   **User Interface & Experience:**
