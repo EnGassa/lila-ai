@@ -66,11 +66,12 @@
     - Explicitly confirmed that this project uses `proxy.ts` instead of `middleware.ts` due to Next.js 16 deprecation warnings.
     - Updated `systemPatterns.md` and `techContext.md` to document this critical convention.
 
-## Recent Work: Landing Page
-- **Home Page Redesign:**
-    - Replaced hardcoded redirect with a premium, brand-aligned landing page at the root (`/`).
-    - **Features:** "Join Waitlist" CTA, login for existing users, value proposition display.
-    - **Visuals:** Aligns with the "Beige/Earthy" theme.
+## Recent Work: Landing Page & Self-Service Entry
+- **Home Page Update:**
+    - Transitioned from "Waitlist" placeholder to full Self-Service entry.
+    - **Actions:** Added "Get Started" (Hero) and "Sign In" (Header) buttons, both linking directly to `/login`.
+    - **Flow:** Users now strictly enter via the Magic Link flow, which routes them to Onboarding (new) or Dashboard (returning).
+    - **Visuals:** Maintained the "Beige/Earthy" consistency.
 
 ## Recent Work: PWA Implementation
 - **Progressive Web App (PWA):**

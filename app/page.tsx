@@ -12,6 +12,9 @@ export default function LandingPage() {
         </div>
         <nav className="flex gap-4">
           {/* Admin Login hidden for now */}
+          <Button variant="ghost" className="text-muted-foreground hover:text-primary font-medium" asChild>
+            <Link href="/login">Sign In</Link>
+          </Button>
         </nav>
       </header>
 
@@ -33,10 +36,12 @@ export default function LandingPage() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 w-full max-w-xs sm:max-w-none justify-center animate-in fade-in slide-in-from-bottom-5 duration-1000 delay-200">
-          {/* Waitlist Button (Placeholder) */}
-          <Button size="lg" className="h-12 px-8 text-base bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20">
-            Join Waitlist
-            <ArrowRight className="ml-2 w-4 h-4" />
+          {/* Main CTA */}
+          <Button size="lg" className="h-12 px-8 text-base bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20" asChild>
+            <Link href="/login">
+              Get Started
+              <ArrowRight className="ml-2 w-4 h-4" />
+            </Link>
           </Button>
         </div>
       </main>

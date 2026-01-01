@@ -88,5 +88,5 @@
     - [x] **Form Refinements:** Improved clarity and tone of Skin Profile and Feedback forms (Conversational questions, removed jargon).
 
 *   **Landing Page:**
-    - [x] **Root Route (`/`)**: Implemented high-converting landing page replacing the legacy redirect.
-    - [x] **Waitlist**: Integrated "Join Waitlist" functionality.
+    - [x] **Root Route (`/`)**: Implemented high-converting landing page with "Get Started" flow.
+    - [x] **Self-Service Entry**: Replaced Waitlist with direct Login/Signup access (`/login`).
