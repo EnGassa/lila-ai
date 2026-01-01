@@ -29,6 +29,12 @@
     - Implemented "View Photos" feature in the dashboard to display the specific images used for any given analysis.
     - **Visual Polish:** Refined the Photo Gallery UI with a premium aesthetic (rounded cards, hover effects, subtle badges) to match the "Lila Skin" brand.
 
+## Recent Work: Clinical Accuracy Improvements
+- **Skin Age Bias Correction:**
+    - Identified and fixed a logic flaw where the AI was anchoring skin age estimates too closely to the self-reported age.
+    - Updated `prompts/01_analyse_images_6_photos_prompt.md` to explicitly prioritize visual cues (wrinkles, texture, elasticity) over demographic data.
+    - Validated that the AI now outputs age ranges based on physical evidence, allowing for more honest and useful assessments (e.g., detecting premature aging or preserved youthfulness).
+
 ## Recent Work: Landing Page
 - **Home Page Redesign:**
     - Replaced hardcoded redirect with a premium, brand-aligned landing page at the root (`/`).

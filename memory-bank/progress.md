@@ -43,6 +43,7 @@
 *   **Clinical Accuracy Updates:**
     *   **Clinical Pores Rubric:** Updated the AI prompt to classify pores by morphology (O-shaped for sebum, U-shaped for aging, Y-shaped for scarring) rather than just size, enabling targeted treatment paths.
     *   **Scoring Reliability:** Implemented strict Pydantic schema validation (`ge=1.0`, `le=5.0`) in `skin_lib.py` to prevent the AI from drifting into 0-1 normalized scoring, ensuring perfect synchronization between the UI cards and radar charts.
+    *   **Skin Age Bias Correction:** Updated the analysis prompt to prioritize visual evidence over self-reported age, ensuring skin age estimates are unbiased and clinically relevant.
 
 *   **Intake Data Integration:**
     - [x] Migrate `generate_recommendations.py` to fetch user context (Budget, Habits) directly from Supabase `intake_submissions`.
