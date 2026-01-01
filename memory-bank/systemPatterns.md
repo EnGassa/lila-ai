@@ -107,3 +107,15 @@ To automate creative asset generation (Image-to-Image) within the analysis flow:
     *   **Input:** Downloads the specific `front_smiling` photo from Supabase Storage (S3 Layer).
     *   **Process:** Sends the image + style prompt to Google Gemini 2.5 Flash Image.
     *   **Output:** Uploads the generated asset to a distinct `avatars` bucket and updates the Postgres record with the public URL.
+
+### Hybrid Parallax & Fluid Background Pattern
+To create a high-performance, immersive "alive" background that responds to all inputs without jank:
+1.  **Layer Separation:**
+    *   **Container (Interactive):** Responsible *only* for user input (Mouse X/Y, Gyroscope Tilt, Touch Drag). It uses `framer-motion` Springs (`useSpring`) for instant, physics-based response.
+    *   **Children (Ambient):** Responsible *only* for the automatic "breathing" or "drift" animation. These use standard Keyframe animations.
+    *   **Why:** This decoupling prevents the "fighting" typically seen when you try to apply both an infinite loop and an interactive offset to the same DOM element.
+2.  **Input Normalization:**
+    *   All inputs (Mouse, Touch, Gamma/Beta) are normalized to a consistent internal coordinate space (-1 to 1) and then mapped to pixel offsets.
+    *   **Mobile Boost:** Gyroscope values are heavily amplified (5x) to compensate for subtle movements, ensuring the effect is visible on small screens.
+3.  **Sensor Permission Fallback:**
+    *   On iOS/Android where `DeviceMotion` is restricted, the UI degrades gracefully. The touch interaction remains fully functional as the primary mobile interaction mode.

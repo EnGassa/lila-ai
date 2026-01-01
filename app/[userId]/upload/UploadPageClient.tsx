@@ -18,6 +18,8 @@ const FaceCapture = dynamic(() => import('@/components/analysis/FaceCapture'), {
   loading: () => <div className="p-12 text-center">Loading Camera...</div>
 })
 
+import { AnalysisProcessingView } from '@/components/analysis/AnalysisProcessingView'
+
 export function UploadPageClient({ 
   userId, 
   displayName, 
@@ -30,7 +32,7 @@ export function UploadPageClient({
   redirectPath?: string
 }) {
   const router = useRouter();
-  const [viewMode, setViewMode] = useState<'upload' | 'camera'>('upload')
+  const [viewMode, setViewMode] = useState<'upload' | 'camera' | 'processing'>('upload')
   const [capturedFiles, setCapturedFiles] = useState<File[]>([])
   const [isIntakeComplete, setIsIntakeComplete] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,23 +45,37 @@ export function UploadPageClient({
   useEffect(() => {
     const checkIntake = async () => {
       const supabase = createClient();
-      const { data, error } = await supabase
+      
+      // 1. Check if intake exists
+      const { data: intakeData } = await supabase
         .from('intake_submissions')
         .select('id')
         .eq('user_id', userId)
         .maybeSingle();
       
-      if (data) {
-        setIsIntakeComplete(true);
-        setIsLoading(false);
-      } else {
-        // Redirect to new intake page
+      if (!intakeData) {
         router.push(redirectPath ? redirectPath : `/${userId}/intake`);
+        return;
       }
+
+      setIsIntakeComplete(true);
+
+      // 2. Check current status to see if we should show processing view
+      const { data: userData } = await supabase
+        .from('users')
+        .select('onboarding_status')
+        .eq('id', userId)
+        .single();
+
+      if (userData?.onboarding_status === 'photos_uploaded' || userData?.onboarding_status === 'analyzing') {
+        setViewMode('processing');
+      }
+      
+      setIsLoading(false);
     };
     
     checkIntake();
-  }, [userId, router]);
+  }, [userId, router, redirectPath]);
 
   if (isLoading) {
       return <div className="p-4 flex justify-center items-center min-h-screen">Loading...</div>;
@@ -82,6 +98,8 @@ export function UploadPageClient({
           </Button>
           <FaceCapture onComplete={handleCameraComplete} />
         </div>
+      ) : viewMode === 'processing' ? (
+        <AnalysisProcessingView userId={userId} />
       ) : (
         <>
           <div className="p-6 rounded-lg bg-card shadow-sm">
@@ -129,9 +147,15 @@ export function UploadPageClient({
             </div>
 
 
+
           </div>
 
-          <DynamicFileUpload userId={userId} initialFiles={capturedFiles} redirectPath={redirectPath} />
+          <DynamicFileUpload 
+            userId={userId} 
+            initialFiles={capturedFiles} 
+            redirectPath={redirectPath}
+            onUploadComplete={() => setViewMode('processing')} 
+          />
         </>
       )}
     </div>

@@ -11,7 +11,18 @@
     - **UI Updates:** Connected `UsersTable` actions to the new admin dashboard route.
     - **Storage Cleanup:** Filed Linear ticket [L-114] to address orphaned files in `user-uploads` bucket upon user deletion.
 
-## Current Work: Product Management & Admin Refinement
+## Current Work: Analysis Experience (Refinement)
+- **Ultra-Immersive Waiting Screen (AnalysisProcessingView):**
+    - **Concept:** Replaced the static waiting state with a "Fluid Educational" experience to reduce perceived latency during the ~45s analysis window.
+    - **Visuals:** Full-screen animated "Aurora Borealis" gradients (Framer Motion) that shift colors based on content type (Warm for Facts, Cool for Myths). Added film grain overlay for a premium texture.
+    - **Hybrid Parallax:**
+        - **Desktop:** Background blobs react to mouse movement.
+        - **Mobile:** Background blobs react to device tilt (Gyroscope) and direct touch interaction (Drag).
+        - **Tech:** Implementation separates interaction (spring-based container) from ambient drift (keyframe-based children) to prevent animation conflicts.
+    - **Educational Content:** Cycles through "Myth vs Fact", "Did You Know?", and "Pro Tips" to educate users while they wait, turning downtime into value time.
+    - **Mobile Optimization:** Uses `dvh` units and safe-area padding to ensure perfect layout on iOS/Android browsers.
+
+## Implementation of Product Management & Admin Refinement
 - **Product Inventory Control:**
     - **Manage Products:** Implemented full CRUD for the `products_1` table via `/admin/products`.
     - **Inline Actions:** Replaced dropdowns with efficient inline Edit/Delete buttons for faster workflows.
@@ -233,4 +244,6 @@ Implementation of the core secure Admin Dashboard structure.
     - [x] Migrate latency metrics to PostHog.
 
 ## Previous Work: Reverted Upload Page and Moved New Upload Page
-...
+    -   Restored the original upload page flow and moved the new upload page implementation to the main `/upload` route.
+    -   Verified that the file capture and upload process works seamlessly with the new route structure.
+

@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@layer base {
+  html, body {
+    overscroll-behavior: none;
+  }
+}
+
 @theme {
   --font-family-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui;
   --font-family-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace;
