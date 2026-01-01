@@ -41,6 +41,10 @@ export function UploadPageClient({
     setCapturedFiles(files)
     setViewMode('upload')
   }
+
+  // Track when analysis starts to poll for NEW results
+  const [analysisStartTime, setAnalysisStartTime] = useState<string | null>(null)
+  
   
   useEffect(() => {
     const checkIntake = async () => {
@@ -69,6 +73,8 @@ export function UploadPageClient({
 
       if (userData?.onboarding_status === 'photos_uploaded' || userData?.onboarding_status === 'analyzing') {
         setViewMode('processing');
+        // If we recover state from reload, we don't have a start time, 
+        // so we'll rely on the latest analysis or status check.
       }
       
       setIsLoading(false);
@@ -99,7 +105,7 @@ export function UploadPageClient({
           <FaceCapture onComplete={handleCameraComplete} />
         </div>
       ) : viewMode === 'processing' ? (
-        <AnalysisProcessingView userId={userId} />
+        <AnalysisProcessingView userId={userId} analysisStartTime={analysisStartTime} />
       ) : (
         <>
           <div className="p-6 rounded-lg bg-card shadow-sm">
@@ -154,7 +160,10 @@ export function UploadPageClient({
             userId={userId} 
             initialFiles={capturedFiles} 
             redirectPath={redirectPath}
-            onUploadComplete={() => setViewMode('processing')}
+            onUploadComplete={() => {
+              setAnalysisStartTime(new Date().toISOString())
+              setViewMode('processing')
+            }}
             allowManualUpload={false}
           />
         </>

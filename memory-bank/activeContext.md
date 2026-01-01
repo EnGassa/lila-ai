@@ -146,6 +146,8 @@
 - **Changes:**
     - **Faster Pacing:** Reduced carousel interval from 12s to 7s.
     - **Content:** Added 12+ new skincare facts, myths, and tips to prevent repetition.
+    - **Visual Feedback:** Added a 7s progress bar for each slide to indicate rotation and reduce "frozen" feeling.
+    - **Robust Redirects:** Implemented timestamp-based polling to detect new analysis records immediately, bypassing potentially laggy `onboarding_status` checks.
 
 ## Recent Work: Form Refinements
 - **UX Improvements:**

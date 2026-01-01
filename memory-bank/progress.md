@@ -58,6 +58,7 @@
     *   **Scoring Reliability:** Implemented strict Pydantic schema validation (`ge=1.0`, `le=5.0`) in `skin_lib.py` to prevent the AI from drifting into 0-1 normalized scoring, ensuring perfect synchronization between the UI cards and radar charts.
     *   **Skin Age Bias Correction:** Updated the analysis prompt to prioritize visual evidence over self-reported age, ensuring skin age estimates are unbiased and clinically relevant.
     *   **Waiting Experience:** Shortened carousel interval to 7s and expanded content library (Myths/Facts) to reduce perceived specific latency.
+    *   **Reliability:** Implemented fallback polling for `skin_analyses` table to ensure users are redirected to dashboard immediately upon analysis completion, even if status flags lag.
 *   **Deployment & Configuration:**
     - [x] **Magic Link Fix**: Explicitly prioritized `NEXT_PUBLIC_APP_URL` for auth redirects.
     - [x] **Middleware**: Standardized on `proxy.ts` convention for Next.js 16.

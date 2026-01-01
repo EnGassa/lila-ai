@@ -9,12 +9,13 @@ import { cn } from '@/lib/utils'
 
 interface AnalysisProcessingViewProps {
   userId: string
+  analysisStartTime: string | null
 }
 
 // Low-opacity noise texture (Base64 SVG)
 const NOISE_SVG = `data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E`
 
-export function AnalysisProcessingView({ userId }: AnalysisProcessingViewProps) {
+export function AnalysisProcessingView({ userId, analysisStartTime }: AnalysisProcessingViewProps) {
   const router = useRouter()
   const [currentEducationIndex, setCurrentEducationIndex] = useState(0)
   
@@ -36,12 +37,31 @@ export function AnalysisProcessingView({ userId }: AnalysisProcessingViewProps) 
       if (data?.onboarding_status === 'complete' || data?.onboarding_status === 'analysis_complete') {
         router.push('/dashboard') 
         router.refresh()
+        return
+      }
+
+      // Fallback: Check if a new analysis record exists (in case status update failed)
+      // If we have a start time, check for analyses created AFTER it.
+      if (analysisStartTime) {
+          const { data: analysisData } = await supabase
+            .from('skin_analyses')
+            .select('id')
+            .eq('user_id', userId)
+            .gt('created_at', analysisStartTime)
+            .limit(1)
+            .maybeSingle()
+          
+          if (analysisData) {
+            router.push('/dashboard')
+            router.refresh()
+            return
+          }
       }
     }
     checkStatus()
     const interval = setInterval(checkStatus, 5000)
     return () => clearInterval(interval)
-  }, [userId, router])
+  }, [userId, router, analysisStartTime])
 
   // Educational Content Cycle
   useEffect(() => {
@@ -202,8 +222,22 @@ export function AnalysisProcessingView({ userId }: AnalysisProcessingViewProps) 
                     <p className="text-base md:text-xl text-muted-foreground/80 font-light leading-relaxed max-w-lg mx-auto font-sans">
                         {currentItem.content.explanation}
                     </p>
+
                 </motion.div>
             </AnimatePresence>
+            
+            {/* Timer Indicator - Outside of AnimatePresence to stay visible during transitions */}
+            <div className="flex justify-center pt-8">
+                <div className="h-1 w-24 bg-black/5 rounded-full overflow-hidden">
+                    <motion.div 
+                        key={currentEducationIndex} // Reset animation on change
+                        initial={{ width: "0%" }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: 7, ease: "linear" }}
+                        className="h-full bg-foreground/20"
+                    />
+                </div>
+            </div>
         </div>
 
         {/* Bottom: Progress Line */}
