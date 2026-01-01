@@ -141,6 +141,12 @@
     - Updated `UploadPageClient` to enforce "Smart Scanner" as the only path.
     - Simplified copy to remove decision fatigue ("Scan Your Face" vs "Upload").
 
+## Recent Work: Analysis View Refinement
+- **Goal:** Less perceived waiting time ("Analysis in progress").
+- **Changes:**
+    - **Faster Pacing:** Reduced carousel interval from 12s to 7s.
+    - **Content:** Added 12+ new skincare facts, myths, and tips to prevent repetition.
+
 ## Recent Work: Form Refinements
 - **UX Improvements:**
     - **Conversational Tone:** Rewrote Intake and Feedback form labels to be question-based and friendlier (e.g., "Age" -> "How old are you?").

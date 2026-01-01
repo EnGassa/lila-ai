@@ -47,7 +47,7 @@ export function AnalysisProcessingView({ userId }: AnalysisProcessingViewProps) 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentEducationIndex((prev) => (prev + 1) % EDUCATION_ITEMS.length)
-    }, 12000) // Slower cycle for reading time
+    }, 7000) // Faster cycle for engagement (7s)
     return () => clearInterval(interval)
   }, [])
 
