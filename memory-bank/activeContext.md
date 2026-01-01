@@ -35,6 +35,16 @@
     - Updated `prompts/01_analyse_images_6_photos_prompt.md` to explicitly prioritize visual cues (wrinkles, texture, elasticity) over demographic data.
     - Validated that the AI now outputs age ranges based on physical evidence, allowing for more honest and useful assessments (e.g., detecting premature aging or preserved youthfulness).
 
+
+## Recent Work: Magic Link Fix & Middleware
+- **Magic Link Redirect Fixed:**
+    - Updated `login-form.tsx` to prioritize `NEXT_PUBLIC_APP_URL` over `window.location.origin` for the `redirectTo` param.
+    - This ensures production redirects go to the correct domain (`app.lila.skin`) instead of `localhost`.
+    - Added `NEXT_PUBLIC_APP_URL` to `.env.example`.
+- **Middleware Convention Established:**
+    - Explicitly confirmed that this project uses `proxy.ts` instead of `middleware.ts` due to Next.js 16 deprecation warnings.
+    - Updated `systemPatterns.md` and `techContext.md` to document this critical convention.
+
 ## Recent Work: Landing Page
 - **Home Page Redesign:**
     - Replaced hardcoded redirect with a premium, brand-aligned landing page at the root (`/`).

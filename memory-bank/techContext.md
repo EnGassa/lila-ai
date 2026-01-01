@@ -3,7 +3,7 @@
 ## Technologies
 
 *   **Language:** TypeScript
-*   **Framework:** Next.js v16
+*   **Framework:** Next.js v16 (Note: Uses `proxy.ts` instead of `middleware.ts` due to Next.js 16 deprecation warning)
 *   **Database:** Supabase (PostgreSQL)
 *   **UI Library:** React, with a component library built on Radix UI (likely via `shadcn/ui`).
 *   **Styling:** Tailwind CSS

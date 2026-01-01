@@ -24,7 +24,7 @@ To guide users through the complex onboarding process without friction:
 
 ### Role-Based Access Control (Admin)
 The admin panel implements a dual-layer security model:
-1.  **Authentication:** `proxy.ts` (middleware) ensures a valid Supabase Ops session exists via cookies.
+1.  **Authentication:** `proxy.ts` (Next.js Middleware) ensures a valid Supabase Ops session exists via cookies. Note: This project uses `proxy.ts` instead of `middleware.ts` as the latter is deprecated in this Next.js version.
 2.  **Authorization:** The `/admin/layout.tsx` Server Component queries the `public.users` table for the `is_admin` boolean flag. Access is granted *only* if `is_admin === true`.
 3.  **Redirection:** Unauthorized attempts are redirected to root (`/`) or login (`/login`), ensuring no admin routes are exposed to regular users.
 
