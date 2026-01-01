@@ -30,6 +30,7 @@ interface RecommendationsTabProps {
 
 export function RecommendationsTab({ recommendations }: RecommendationsTabProps) {
   const [activeTab, setActiveTab] = useState<'AM' | 'PM' | 'Weekly'>('AM');
+  const [selectedProducts, setSelectedProducts] = useState<Record<string, string>>({}); // stepName -> productSlug
 
   const routine = recommendations?.routine || {};
   const currentSteps = activeTab === 'AM' ? routine.am : activeTab === 'PM' ? routine.pm : routine.weekly || [];
@@ -50,6 +51,42 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
       return acc;
     }, {})
   );
+
+  // Initialize defaults once recommendations are loaded
+  React.useEffect(() => {
+    if (recommendations && Object.keys(selectedProducts).length === 0) {
+      const defaults: Record<string, string> = {};
+      
+      const processStepList = (steps: Step[] | undefined) => {
+        if (!steps) return;
+        steps.forEach(step => {
+           // If we've already set a default for this step name, skip (unless we want to be more specific)
+           if (defaults[step.step]) return;
+
+           const primary = step.products.find(p => !p.selection_type || p.selection_type === 'primary');
+           if (primary) {
+             defaults[step.step] = primary.product_slug;
+           } else if (step.products.length > 0) {
+             // Fallback to first product if no primary is explicit
+             defaults[step.step] = step.products[0].product_slug;
+           }
+        });
+      };
+
+      processStepList(recommendations.routine.am);
+      processStepList(recommendations.routine.pm);
+      processStepList(recommendations.routine.weekly);
+
+      setSelectedProducts(defaults);
+    }
+  }, [recommendations]);
+
+  const handleSelectProduct = (stepName: string, productSlug: string) => {
+    setSelectedProducts(prev => ({
+      ...prev,
+      [stepName]: productSlug
+    }));
+  };
 
   if (!recommendations) {
     return <div className="p-4 text-center text-muted-foreground">No recommendations available yet.</div>;
@@ -189,14 +226,18 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
                           <div className="flex overflow-x-auto space-x-4 pb-4 -mx-4 px-4 scrollbar-hide snap-x items-stretch">
                             {allProducts.map((product: Product, pIndex: number) => {
                               const isPrimary = !product.selection_type || product.selection_type === 'primary';
+                              const isSelected = selectedProducts[step.step] === product.product_slug;
                               
                               return (
                                 <div
                                   key={`prod-${pIndex}`}
-                                  className={`min-w-[300px] w-[300px] bg-card rounded-2xl border shadow-sm snap-center flex flex-col overflow-hidden transition-all duration-300 ${isPrimary ? 'border-brand-border ring-1 ring-brand-border/50 shadow-md' : 'border-border'}`}
+                                  onClick={() => handleSelectProduct(step.step, product.product_slug)}
+                                  className={`min-w-[300px] w-[300px] bg-card rounded-2xl border shadow-sm snap-center flex flex-col overflow-hidden transition-all duration-300 cursor-pointer group ${isSelected 
+                                    ? 'border-brand ring-2 ring-brand shadow-md' 
+                                    : 'border-border hover:border-brand-border hover:shadow-md'}`}
                                 >
                                   {/* Image Area */}
-                                  <div className="h-48 bg-secondary/30 flex items-center justify-center p-6 relative">
+                                  <div className={`h-48 bg-secondary/30 flex items-center justify-center p-6 relative transition-colors ${isSelected ? 'bg-secondary/50' : ''}`}>
                                     <img
                                       src={
                                         product.image_url ||
@@ -207,6 +248,13 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
                                     />
                                     {isPrimary && (
                                        <Badge className="absolute top-4 right-4 bg-brand text-white hover:bg-brand shadow-sm">Top Pick</Badge>
+                                    )}
+                                    {isSelected && (
+                                       <div className="absolute top-4 left-4 bg-accent text-accent-foreground rounded-full p-1.5 shadow-md ring-2 ring-white/20">
+                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                         </svg>
+                                       </div>
                                     )}
                                   </div>
 
@@ -231,6 +279,14 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
                                             {product.rationale}
                                         </ReactMarkdown>
                                       </div>
+                                    </div>
+
+                                    <div className="mt-4 pt-4 border-t border-dashed border-border/50">
+                                        <div className={`w-full py-2.5 px-4 rounded-xl text-center font-semibold text-sm transition-all duration-200 ${isSelected 
+                                          ? 'bg-brand text-white shadow-sm' 
+                                          : 'bg-secondary text-secondary-foreground hover:bg-brand-light hover:text-brand'}`}>
+                                          {isSelected ? 'Selected' : 'Select Option'}
+                                        </div>
                                     </div>
                                   </div>
                                 </div>

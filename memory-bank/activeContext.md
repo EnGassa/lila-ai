@@ -61,6 +61,12 @@
     - **Intake Alignment:** Added missing `medication` and `allergies` fields to the `IntakePageClient` form to match the `intake_submissions` schema.
     - **Database Sync:** Updated `schema.sql` to include missing `intake_submissions` and `feedback_submissions` table definitions.
 
+## Recent Work: Product Option Selection
+- **Interactive Selection UI:**
+    -   Implemented local state management in `recommendations-tab.tsx` to allow users to select between "Top Pick" and "Alternative" products for each routine step.
+    -   **Visual Feedback:** Added a brand-consistent selection indicator (accent checkmark) and used standard theme tokens (`brand`, `accent`, `secondary`) for button states, matching the `SelectionButton` design system.
+    -   **Illustrative Flow:** Created a session-based selection experience that defaults to "Top Picks" and updates visually upon user interaction.
+
 ## Recent Work: Form Refinements
 - **UX Improvements:**
     - **Conversational Tone:** Rewrote Intake and Feedback form labels to be question-based and friendlier (e.g., "Age" -> "How old are you?").

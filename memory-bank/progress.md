@@ -57,6 +57,7 @@
 *   **Recommendations Engine (V2):**
     - [x] **Multiple Product Options:** System now recommends a "Top Pick" and multiple "Alternatives" per routine step.
     - [x] **Unified Carousel UI:** Frontend displays all options in a single horizontal scroll container for seamless browsing.
+    - [x] **Option Selection UI:** Interactive frontend selection logic for choosing alternates (local state, illustrative).
     - [x] **Intake Completeness:** Added missing `medication` and `allergies` fields to the skin profile intake form.
     - [x] **Schema Sync:** Synchronized `schema.sql` with Supabase state (added `intake_submissions`, `feedback_submissions`).
     - [x] **Form Refinements:** Improved clarity and tone of Skin Profile and Feedback forms (Conversational questions, removed jargon).
