@@ -59,6 +59,19 @@ For static assets that require high availability and performance but low securit
 2.  **Naming Convention:** Enforce `[slug].[ext]` naming to ensure predictable URLs.
 3.  **Migration:** Legacy assets are migrated from the local filesystem to this bucket, updating the database `image_url` to the new public CDN link.
 
+### Server-Safe Utilities Pattern
+To prevent module resolution errors in Next.js Server Components (SSR):
+1.  **Isolation:** Heavy, browser-only libraries (like `@mediapipe`) are isolated in dedicated files (e.g., `lib/face-cropper.ts`).
+2.  **Lightweight Core:** `lib/utils.ts` contains *only* universal helpers (like `cn` for Tailwind) that are safe to import anywhere (Client or Server).
+3.  **No Pollution:** We explicitly avoid importing heavy classes into commonly used utility files to prevent accidental bundling of massive dependencies on the server.
+
+### Multi-Select String Pattern
+To efficiently store and query multiple selections (e.g., skin concerns, ingredients) without creating many-to-many join tables for simple cases:
+1.  **Database Column:** Use a `text[]` (Postgres array of text) column in the `public.users` table (e.g., `skin_concerns`).
+2.  **Supabase Integration:** Supabase client automatically handles array serialization/deserialization.
+3.  **Querying:** Use Postgres array operators (e.g., `@>`, `<@`, `&&`) for efficient filtering and searching.
+4.  **UI Representation:** Client-side components (e.g., multi-select dropdowns, tag inputs) map directly to this array structure.
+
 ### Async Search Component Pattern (Ingredients)
 To handle selecting items from large datasets (e.g., thousands of ingredients) without blooming the client bundle:
 1.  **Server Action:** Create a dedicated search action (`searchIngredients`) that returns lightweight results (`slug`, `name`) via `ilike`.

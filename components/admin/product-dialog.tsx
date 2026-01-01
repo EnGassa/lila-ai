@@ -29,6 +29,25 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { createProduct, updateProduct, getSignedUploadUrl } from "@/app/admin/products/actions"
 import { MultiSelectIngredients } from "@/components/admin/multi-select-ingredients"
+import { MultiSelectString } from "@/components/admin/multi-select-string"
+
+// Known Values (extracted from DB analysis)
+const KNOWN_BENEFITS = [
+    "Hydrating", "Barrier Repair", "Scar Healing", "Anti-Aging", 
+    "Brightening", "Redness Reducing", "Dark Spots", "Reduces Large Pores", 
+    "Good For Oily Skin", "Acne Fighting", "Skin Texture", "Reduces Irritation"
+]
+
+const KNOWN_CONCERNS = [
+    "May Worsen Rosacea", "May Trigger Acne", "May Worsen Eczema", 
+    "May Worsen Oily Skin", "May Worsen Dryness", "May Worsen Irritation"
+]
+
+const KNOWN_ATTRIBUTES = [
+    "Alcohol-free", "EU-allergen-free", "Fungal-acne-safe", "Sulfate-free", 
+    "Cruelty-free", "Reef-safe", "Silicone-free", "Fragrance-free", 
+    "Paraben-free", "Vegan", "Oil-free"
+]
 
 // Schema
 const formSchema = z.object({
@@ -38,10 +57,10 @@ const formSchema = z.object({
     description: z.string().optional(),
     rating: z.coerce.number().min(0).max(5).optional(),
     review_count: z.coerce.number().int().min(0).optional(),
-    attributes: z.string().optional(),
-    benefits: z.string().optional(),
-    active_ingredients: z.string().optional(),
-    concerns: z.string().optional(),
+    attributes: z.array(z.string()).optional(),
+    benefits: z.array(z.string()).optional(),
+    active_ingredients: z.array(z.string()).optional(),
+    concerns: z.array(z.string()).optional(),
 })
 
 interface Product {
@@ -82,10 +101,10 @@ export function ProductDialog({ product, children, onOpenChange }: ProductDialog
             description: product?.description || "",
             rating: product?.rating || 4.5,
             review_count: product?.review_count || 0,
-            attributes: product?.attributes?.join(", ") || "",
-            benefits: product?.benefits?.join(", ") || "",
-            active_ingredients: product?.active_ingredients?.join(", ") || "",
-            concerns: product?.concerns?.join(", ") || "",
+            attributes: product?.attributes || [],
+            benefits: product?.benefits || [],
+            active_ingredients: product?.active_ingredients || [],
+            concerns: product?.concerns || [],
         },
     })
 
@@ -152,10 +171,12 @@ export function ProductDialog({ product, children, onOpenChange }: ProductDialog
             // New fields
             if (values.rating !== undefined) formData.append("rating", String(values.rating))
             if (values.review_count !== undefined) formData.append("review_count", String(values.review_count))
-            if (values.attributes) formData.append("attributes", values.attributes)
-            if (values.benefits) formData.append("benefits", values.benefits)
-            if (values.active_ingredients) formData.append("active_ingredients", values.active_ingredients)
-            if (values.concerns) formData.append("concerns", values.concerns)
+            
+            // Join string arrays into comma-separated strings for FormData
+            if (values.attributes?.length) formData.append("attributes", values.attributes.join(", "))
+            if (values.benefits?.length) formData.append("benefits", values.benefits.join(", "))
+            if (values.active_ingredients?.length) formData.append("active_ingredients", values.active_ingredients.join(", "))
+            if (values.concerns?.length) formData.append("concerns", values.concerns.join(", "))
 
             let result
             if (isEdit && product?.product_slug) {
@@ -327,15 +348,20 @@ export function ProductDialog({ product, children, onOpenChange }: ProductDialog
                         />
                         
                         <div className="space-y-4 rounded-md border p-4 bg-muted/20">
-                            <h3 className="font-semibold text-sm">Additional Details (Comma Separated)</h3>
+                            <h3 className="font-semibold text-sm">Additional Details</h3>
                             <FormField
                                 control={form.control}
                                 name="attributes"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Attributes</FormLabel>
+                                        <FormLabel>Attributes ({KNOWN_ATTRIBUTES.length})</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Cruelty-free, Vegan, Alcohol-free..." {...field} />
+                                            <MultiSelectString
+                                                value={field.value || []}
+                                                onChange={field.onChange}
+                                                options={KNOWN_ATTRIBUTES}
+                                                placeholder="Select attributes..."
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -346,8 +372,8 @@ export function ProductDialog({ product, children, onOpenChange }: ProductDialog
                                      <FormLabel>Active Ingredients</FormLabel>
                                      <FormControl>
                                         <MultiSelectIngredients 
-                                            value={form.watch("active_ingredients") ? form.watch("active_ingredients")!.split(",").map(s => s.trim()).filter(Boolean) : []}
-                                            onChange={(val) => form.setValue("active_ingredients", val.join(", "))}
+                                            value={form.watch("active_ingredients") || []}
+                                            onChange={(val) => form.setValue("active_ingredients", val)}
                                         />
                                      </FormControl>
                                      <FormMessage />
@@ -359,7 +385,12 @@ export function ProductDialog({ product, children, onOpenChange }: ProductDialog
                                         <FormItem>
                                             <FormLabel>Benefits</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Brightening, Anti-aging..." {...field} />
+                                                <MultiSelectString
+                                                    value={field.value || []}
+                                                    onChange={field.onChange}
+                                                    options={KNOWN_BENEFITS}
+                                                    placeholder="Select benefits..."
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -373,7 +404,12 @@ export function ProductDialog({ product, children, onOpenChange }: ProductDialog
                                     <FormItem>
                                         <FormLabel>Concerns</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Acne, Fine Lines..." {...field} />
+                                            <MultiSelectString
+                                                value={field.value || []}
+                                                onChange={field.onChange}
+                                                options={KNOWN_CONCERNS}
+                                                placeholder="Select concerns..."
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

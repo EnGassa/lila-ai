@@ -48,7 +48,7 @@ export default async function AdminLayout({
             <header className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
                 <div className="flex items-center gap-8">
                     <h1 className="text-2xl font-serif font-medium tracking-tight text-primary">Lila Admin</h1>
-                    <AdminNav />
+                    <AdminNav /> {/* Navigation */}
                 </div>
                 <SignOutButton />
             </header>

@@ -36,6 +36,7 @@
             - [x] **CRUD Actions**: Create, Edit, Delete, Disable products.
             - [x] **Data Integrity**: Full support for Ratings, Reviews, and Lists (Attributes/Benefits).
             - [x] **Ingredient Linking**: Smart search & multi-select from `ingredients` DB.
+            - [x] **Field Enhancements**: Implemented Multi-Select UI for Benefits, Concerns, and Attributes using `MultiSelectString`.
             - [x] **Image Handling**: S3 Uploads and public bucket migration.
     *   **Infrastructure:** Dedicated `proxy.ts` (middleware) creates a robust auth layer.
 

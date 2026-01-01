@@ -23,6 +23,13 @@
 - **Admin UI Polish:**
     - **Aesthetics:** Aligned Admin Dashboard with the consumer "Lila Skin" brand (Serif fonts, soft borders, consistent headers).
     - **Consistency:** Standardized layout and styling across Users and Products pages.
+    - **Form UX:** Implemented `MultiSelectString` for Benefits, Concerns, and Attributes in `ProductDialog`, replacing error-prone free-text inputs with strict, chip-based selection.
+
+## Recent Work: Maintenance & Bug Fixes
+- **Admin Layout Fix:**
+    - Resolved a critical `Runtime TypeError` in `AdminLayout` caused by a circular dependency in `lib/utils.ts`.
+    - **Refactor:** Extracted `FaceCropper` (which depends on the heavy, browser-only `@mediapipe` library) into a dedicated `lib/face-cropper.ts` file.
+    - **Result:** `lib/utils.ts` is now lightweight and safe for SSR usage in server components.
 
 ## Recent Work: Login Page Redesign
 - **Premium Aesthetic Overhaul:**

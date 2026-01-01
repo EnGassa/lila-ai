@@ -1,6 +1,6 @@
 import { useState, RefObject, useCallback } from "react";
 import posthog from "posthog-js";
-import { FaceCropper } from "@/lib/utils";
+import { FaceCropper } from "@/lib/face-cropper";
 
 export interface UseImageCaptureOptions {
   disableCropping?: boolean;
