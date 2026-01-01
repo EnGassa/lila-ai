@@ -151,9 +151,14 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                             name="gender"
                             render={({ field }) => (
                                 <div className="space-y-4">
-                                    <label className="text-xl font-medium">Gender</label>
+                                    <div>
+                                        <label className="text-xl font-medium block">What is your biological sex?</label>
+                                        <p className="text-sm opacity-60 mt-1">
+                                            We ask this to analyze hormonal patterns and skin thickness for better recommendation accuracy.
+                                        </p>
+                                    </div>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        {["Female", "Male", "Non-binary", "Prefer not to say"].map(opt => (
+                                        {["Female", "Male"].map(opt => (
                                             <SelectionButton 
                                                 key={opt}
                                                 label={opt}
@@ -172,7 +177,7 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                             name="age"
                             render={({ field }) => (
                                 <div className="space-y-4">
-                                    <label className="text-xl font-medium">Age</label>
+                                    <label className="text-xl font-medium">How old are you?</label>
                                     <Input 
                                         type="number" 
                                         placeholder="e.g. 28"
@@ -191,7 +196,7 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                             name="city"
                             render={({ field }) => (
                                 <div className="space-y-4">
-                                    <label className="text-xl font-medium">City</label>
+                                    <label className="text-xl font-medium">Where do you live?</label>
                                     <Input 
                                         placeholder="e.g. New Delhi"
                                         className="h-16 text-lg px-6 rounded-xl border-[#D6CDBF] bg-[#E6E2D6] focus:border-[#C8A28E] focus:ring-[#C8A28E]"
@@ -216,7 +221,7 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                             name="skin_conditions"
                             render={({ field }) => (
                                 <div className="space-y-4">
-                                    <label className="text-xl font-medium">Diagnosed Skin Conditions</label>
+                                    <label className="text-xl font-medium">Do you have any diagnosed skin conditions?</label>
                                     <Input 
                                         placeholder="e.g. Eczema, Rosacea (Optional)"
                                         className="h-16 text-lg px-6 rounded-xl border-[#D6CDBF] bg-[#E6E2D6] focus:border-[#C8A28E] focus:ring-[#C8A28E]"
@@ -233,7 +238,7 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                             name="medication"
                             render={({ field }) => (
                                 <div className="space-y-4">
-                                    <label className="text-xl font-medium">Current Medication</label>
+                                    <label className="text-xl font-medium">Are you taking any medication?</label>
                                     <Input 
                                         placeholder="e.g. Oral Contraceptives, Accutane (Optional)"
                                         className="h-16 text-lg px-6 rounded-xl border-[#D6CDBF] bg-[#E6E2D6] focus:border-[#C8A28E] focus:ring-[#C8A28E]"
@@ -249,7 +254,7 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                             name="allergies"
                             render={({ field }) => (
                                 <div className="space-y-4">
-                                    <label className="text-xl font-medium">Known Allergies</label>
+                                    <label className="text-xl font-medium">Do you have any allergies?</label>
                                     <Input 
                                         placeholder="e.g. Aspirin, Sulfa drugs (Optional)"
                                         className="h-16 text-lg px-6 rounded-xl border-[#D6CDBF] bg-[#E6E2D6] focus:border-[#C8A28E] focus:ring-[#C8A28E]"
@@ -265,7 +270,7 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                             name="sleep_hours"
                             render={({ field }) => (
                                 <div className="space-y-4">
-                                    <label className="text-xl font-medium">Average Sleep</label>
+                                    <label className="text-xl font-medium">How much sleep do you get?</label>
                                     <div className="grid grid-cols-1 gap-3">
                                         {["Less than 6 hours", "6-7 hours", "7-8 hours", "8+ hours"].map(opt => (
                                             <SelectionButton 
@@ -285,7 +290,7 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                             name="stress_level"
                             render={({ field }) => (
                                 <div className="space-y-4">
-                                    <label className="text-xl font-medium">Stress Level (0-10)</label>
+                                    <label className="text-xl font-medium">What is your typical stress level? (0-10)</label>
                                     <div className="bg-[#E6E2D6] p-6 rounded-xl border border-[#D6CDBF]">
                                         <div className="flex justify-between mb-4 text-xl font-medium">
                                             <span>Low</span>
@@ -369,7 +374,7 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                                 name="smoking"
                                 render={({ field }) => (
                                     <div className="space-y-4">
-                                        <label className="text-xl font-medium">Smoking</label>
+                                        <label className="text-xl font-medium">Do you smoke?</label>
                                         <div className="flex flex-col gap-2">
                                             {["No", "Occasionally", "Regularly"].map(opt => (
                                                 <SelectionButton 
@@ -389,7 +394,7 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                                     name="makeup_frequency"
                                     render={({ field }) => (
                                         <div className="space-y-4">
-                                            <label className="text-xl font-medium">Makeup</label>
+                                            <label className="text-xl font-medium">How often do you wear makeup?</label>
                                             <div className="flex flex-col gap-2">
                                                 {["Daily", "Often", "Occasionally", "Never"].map(opt => (
                                                     <SelectionButton 
@@ -418,7 +423,7 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                             name="daily_routine_frequency"
                             render={({ field }) => (
                                 <div className="space-y-4">
-                                    <label className="text-xl font-medium">Consistency</label>
+                                    <label className="text-xl font-medium">How consistent is your routine?</label>
                                     <div className="grid grid-cols-1 gap-3">
                                         {["Twice daily", "Once daily", "Ad Hoc / Sometimes", "Rarely / Never"].map(opt => (
                                             <SelectionButton 
@@ -434,11 +439,11 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                         />
 
                         <div className="space-y-4">
-                            <label className="text-xl font-medium">Current Products (Optional)</label>
+                            <label className="text-xl font-medium">What are you currently using? (Optional)</label>
                             <div className="space-y-3">
                                 {[
                                     { id: 'cleanser', label: 'Cleanser' },
-                                    { id: 'actives', label: 'Serums / Actives' },
+                                    { id: 'actives', label: 'Serums / Treatments (e.g. Retinol, Vit C)' },
                                     { id: 'moisturizer', label: 'Moisturizer' },
                                     { id: 'sunscreen', label: 'Sunscreen' },
                                 ].map(item => (
@@ -465,7 +470,7 @@ export default function IntakePageClient({ userId, initialData }: { userId: stri
                             name="budget"
                             render={({ field }) => (
                                 <div className="space-y-4">
-                                    <label className="text-xl font-medium">Monthly Budget</label>
+                                    <label className="text-xl font-medium">What is your monthly skincare budget?</label>
                                     <div className="grid grid-cols-2 gap-3">
                                         {["Under ₹1000", "₹1000 - ₹2500", "₹2500 - ₹5000", "₹5000+"].map(opt => (
                                             <SelectionButton 

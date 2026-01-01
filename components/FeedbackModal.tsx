@@ -344,7 +344,7 @@ export function FeedbackModal({ userId, recommendationId }: FeedbackModalProps) 
                                 name="willingness_to_pay_sub"
                                 render={({ field }) => (
                                     <FormItem>
-                                    <FormLabel className="text-lg font-medium">Monthly WTP</FormLabel>
+                                    <FormLabel className="text-lg font-medium">Preferred Monthly Price</FormLabel>
                                     <div className="flex flex-col gap-2 pt-2">
                                         {["< ₹400", "₹400 - ₹699", "₹700 - ₹999", "₹1000+"].map(opt => (
                                             <SelectionButton 
@@ -364,7 +364,7 @@ export function FeedbackModal({ userId, recommendationId }: FeedbackModalProps) 
                                 name="willingness_to_pay_one_time"
                                 render={({ field }) => (
                                     <FormItem>
-                                    <FormLabel className="text-lg font-medium">One-time WTP</FormLabel>
+                                    <FormLabel className="text-lg font-medium">Preferred One-time Price</FormLabel>
                                     <div className="flex flex-col gap-2 pt-2">
                                         {["< ₹400", "₹400 - ₹699", "₹700 - ₹999", "₹1000+"].map(opt => (
                                             <SelectionButton 

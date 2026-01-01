@@ -61,6 +61,12 @@
     - **Intake Alignment:** Added missing `medication` and `allergies` fields to the `IntakePageClient` form to match the `intake_submissions` schema.
     - **Database Sync:** Updated `schema.sql` to include missing `intake_submissions` and `feedback_submissions` table definitions.
 
+## Recent Work: Form Refinements
+- **UX Improvements:**
+    - **Conversational Tone:** Rewrote Intake and Feedback form labels to be question-based and friendlier (e.g., "Age" -> "How old are you?").
+    - **Jargon Removal:** Renamed "WTP" to "Preferred Price" and "Actives" to "Serums / Treatments" to reduce user confusion.
+    - **Clinical Precision:** Changed "Gender" to "Biological Sex" and added explicit clinical context ("We ask this to analyze hormonal patterns...") to explain the necessity of physiological data.
+
 ## Recent Work: Admin Dashboard Enhancements
 - **Admin Management:**
     -  Added "Grant Admin Access" toggle to `CreateUserDialog` and `EditUserDialog`.
