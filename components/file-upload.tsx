@@ -18,7 +18,7 @@ interface FileUploadProps {
   userId: string
   initialFiles?: File[]
   redirectPath?: string
-  onUploadComplete?: () => void
+  onUploadComplete?: (analysisId?: string) => void
   allowManualUpload?: boolean
 }
 
@@ -143,21 +143,26 @@ export function FileUpload({ userId, initialFiles = [], redirectPath, onUploadCo
 
       toast.success("Files uploaded successfully!")
 
-      // Fire and forget the notification
+      // Notify server and get analysis ID
+      let analysisId: string | undefined
+
       try {
         noStore();
         if (uploadedPaths.length > 0) {
-            await notifyOnUploadComplete(userId, uploadedPaths)
+            const result = await notifyOnUploadComplete(userId, uploadedPaths)
+            if (result && 'analysisId' in result) {
+                analysisId = result.analysisId
+            }
         }
       } catch (e) {
-        console.warn("Failed to send upload notification:", e)
+        console.warn("Failed to notify server of upload:", e)
       }
 
       setFiles([])
       setUploadProgress(null)
 
       if (onUploadComplete) {
-         onUploadComplete();
+         onUploadComplete(analysisId);
       } else if (redirectPath) {
          router.push(redirectPath);
          router.refresh();

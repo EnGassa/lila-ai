@@ -36,6 +36,15 @@
     - **Consistency:** Standardized layout and styling across Users and Products pages.
     - **Form UX:** Implemented `MultiSelectString` for Benefits, Concerns, and Attributes in `ProductDialog`, replacing error-prone free-text inputs with strict, chip-based selection.
 
+## Recent Work: Analysis-Centric Architecture (Major Refactor)
+- **Goal:** Moved from User-Centric to Analysis-Centric model for reliability and history.
+- **Architecture:**
+    -   **Source of Truth:** `skin_analyses` table (StatusEnum: `pending` -> `processing` -> `completed`).
+    -   **Flow:** Upload -> Create Record -> Redirect `/analysis/[id]` -> Poll -> Dashboard.
+    -   **Fixes:** Resolved `analysisId` loss in upload and Next.js 15 `params` awaiting issues.
+    -   **Automation Fix:** Patched `trigger_analysis.yml` to pass `analysis_id` to python script, preventing duplicate analysis records and ensuring auto-redirects work.
+- **UI:** Verified Admin compatibility; Updated User Avatar to `rounded-full`.
+
 ## Recent Work: Maintenance & Bug Fixes
 - **Admin Layout Fix:**
     - Resolved a critical `Runtime TypeError` in `AdminLayout` caused by a circular dependency in `lib/utils.ts`.

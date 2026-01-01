@@ -59,6 +59,7 @@
     *   **Skin Age Bias Correction:** Updated the analysis prompt to prioritize visual evidence over self-reported age, ensuring skin age estimates are unbiased and clinically relevant.
     *   **Waiting Experience:** Shortened carousel interval to 7s and expanded content library (Myths/Facts) to reduce perceived specific latency.
     *   **Reliability:** Implemented fallback polling for `skin_analyses` table to ensure users are redirected to dashboard immediately upon analysis completion, even if status flags lag.
+    *   **Analysis-Centric Architecture**: Refactored system to track individual analysis sessions via `skin_analyses.status` ('pending', 'processing', 'completed', 'failed'). New uploads create a pending record immediately and redirect to a dedicated `/analysis/[id]` processing route, enabling robust 1:N analysis tracking per user. Verified Admin compatibility and updated User Avatar.
 *   **Deployment & Configuration:**
     - [x] **Magic Link Fix**: Explicitly prioritized `NEXT_PUBLIC_APP_URL` for auth redirects.
     - [x] **Middleware**: Standardized on `proxy.ts` convention for Next.js 16.
@@ -68,6 +69,7 @@
 
 *   **Automation:**
     - [x] Automated Skin Analysis & Recommendations via GitHub Actions (Triggered by Upload).
+    - [x] **Reliability:** Fixed data flow bug where GitHub Actions failed to pass `analysis_id`, causing stuck UI states.
     - [x] Automated AI Avatar Generation (Triggered after Analysis).
     - [x] **Discord Notifications for Automation**: Alerts for Start/Success/Fail states with deep links to Dashboard.
 

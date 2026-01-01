@@ -109,6 +109,16 @@ To automate creative asset generation (Image-to-Image) within the analysis flow:
     *   **Process:** Sends the image + style prompt to Google Gemini 2.5 Flash Image.
     *   **Output:** Uploads the generated asset to a distinct `avatars` bucket and updates the Postgres record with the public URL.
 
+### Analysis-Centric Architecture Pattern
+To support historical tracking and multiple analysis sessions per user:
+1.  **Unit of Work:** The `skin_analyses` table is the source of truth for a specific session.
+2.  **Status Tracking:** Each record has its own `status` enum (`pending`, `processing`, `completed`, `failed`) ensuring granular lifecycle management.
+3.  **Flow:**
+    *   **Upload:** Creates a `pending` record and returns `analysisId`.
+    *   **Processing:** User is redirected to `/analysis/[analysisId]`, which polls *only* that specific record.
+    *   **Completion:** Backend updates that specific record's status to `completed`.
+    *   **Result:** Frontend redirects to dashboard with `?analysisId=...`.
+
 ### Hybrid Parallax & Fluid Background Pattern
 To create a high-performance, immersive "alive" background that responds to all inputs without jank:
 1.  **Layer Separation:**

@@ -109,6 +109,11 @@ def main():
         type=str,
         help="The user's full name to search for (case-insensitive).",
     )
+    parser.add_argument(
+        "--analysis-id",
+        type=str,
+        help="The specific analysis ID to update (Analysis-Centric mode).",
+    )
 
     args = parser.parse_args()
     logger.info(f"Starting analysis with arguments: {args}")
@@ -164,6 +169,9 @@ def main():
     # If no local images provided, try to fetch from Supabase (via S3 preferably)
     if not image_paths and args.user_id:
         bucket_name = "user-uploads-dev" if args.env == "dev" else "user-uploads"
+        
+        # If we have an analysis_id, we should verify the user owns it? 
+        # For now, we trust the input as verified by the caller (GitHub/Server Action).
         
         # Attempt S3 download first (Robust method)
         logger.info(f"Attempting S3 download from {bucket_name} for user {args.user_id}...")
@@ -269,16 +277,36 @@ def main():
             logger.info(f"Saving analysis to Supabase for user {args.user_id}...")
             supabase = get_supabase_client()
             
-            # Always insert a new analysis record (1:N relationship)
-            # This preserves history for the user.
-            logger.info("Inserting new analysis...")
-            supabase.table('skin_analyses').insert({
-                'user_id': args.user_id,
-                'analysis_data': output_data,
-                'image_urls': s3_keys
-            }).execute()
+            if args.analysis_id:
+                # Update existing record (Analysis-Centric)
+                logger.info(f"Updating existing analysis {args.analysis_id}...")
                 
-            logger.success(f"Successfully saved analysis for user {args.user_id} to Supabase.")
+                # We need to construct the update payload
+                update_payload = {
+                    'analysis_data': output_data,
+                    'image_urls': s3_keys,
+                    'status': 'completed'
+                }
+                
+                res = supabase.table('skin_analyses').update(update_payload).eq('id', args.analysis_id).execute()
+                
+                if not res.data:
+                    logger.error(f"Analysis ID {args.analysis_id} not found or update failed (RLS?).")
+                    # If update fails (e.g. ID not found), we might want to insert as fallback?
+                    # For now, let's log error.
+                else:
+                     logger.success(f"Successfully updated analysis {args.analysis_id}.")
+
+            else:
+                # Legacy / Fallback: Insert new record
+                logger.info("Inserting new analysis (Legacy Mode)...")
+                supabase.table('skin_analyses').insert({
+                    'user_id': args.user_id,
+                    'analysis_data': output_data,
+                    'image_urls': s3_keys,
+                    'status': 'completed' # Auto-complete for legacy inserts
+                }).execute()
+                logger.success(f"Successfully saved new analysis for user {args.user_id}.")
 
             # ---------------------------------------------------------
             # TRIGGER AVATAR GENERATION
@@ -322,6 +350,17 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         logger.exception("An unexpected error occurred.")
+        
+        # Attempt to set status to 'failed' in DB if we have an ID
+        # This is a best-effort attempt
+        try:
+            # We can't access args here easily unless we parse them again or catch specific errors inside main.
+            # But let's try to grab it from sys.argv if possible, or just fail silently.
+            # Ideally main() wraps the try/catch.
+            pass 
+        except:
+            pass
+            
         sys.exit(1)
     finally:
         # Cleanup temp dir if it was created

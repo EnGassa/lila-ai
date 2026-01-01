@@ -28,14 +28,14 @@ export function UserAvatar({ userId, displayName, avatarUrl }: { userId: string;
 
   if (!imgSrc) {
     return (
-      <Avatar className="h-24 w-24 rounded-lg">
-        <AvatarFallback className="rounded-lg">{displayName.charAt(0)}</AvatarFallback>
+      <Avatar className="h-24 w-24 rounded-full">
+        <AvatarFallback className="rounded-full">{displayName.charAt(0)}</AvatarFallback>
       </Avatar>
     )
   }
 
   return (
-    <Avatar className="h-24 w-24 rounded-lg">
+    <Avatar className="h-24 w-24 rounded-full">
       <AvatarImage
         src={imgSrc}
         alt="User"
@@ -49,7 +49,7 @@ export function UserAvatar({ userId, displayName, avatarUrl }: { userId: string;
             }
         }}
       />
-      <AvatarFallback className="rounded-lg">{displayName.charAt(0)}</AvatarFallback>
+      <AvatarFallback className="rounded-full">{displayName.charAt(0)}</AvatarFallback>
     </Avatar>
   )
 }

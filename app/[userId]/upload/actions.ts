@@ -155,14 +155,33 @@ export async function notifyOnUploadComplete(userId: string, filePaths: string[]
     embeds,
   }
 
-  // 1a. Update User Status to 'analyzing'
+  // 1a. Create Tracking Record in skin_analyses (Pending)
+  // This is the new Analysis-Centric root.
+  const { data: analysisData, error: analysisError } = await supabaseAdmin
+    .from('skin_analyses')
+    .insert({
+      user_id: userId,
+      image_urls: filePaths, // Store S3 keys
+      status: 'pending'
+    })
+    .select('id')
+    .single()
+
+  if (analysisError || !analysisData) {
+      console.error('[notifyOnUploadComplete] Failed to create analysis record:', analysisError)
+      return { error: 'Failed to initialize analysis session.' }
+  }
+
+  const analysisId = analysisData.id
+
+  // 1b. Update User Status to 'analyzing' (Legacy / High-level status)
   const { error: statusError } = await supabaseAdmin
     .from('users')
     .update({ onboarding_status: 'analyzing' })
     .eq('id', userId)
   
   if (statusError) {
-      console.error('[notifyOnUploadComplete] Failed to update onboarding info:', statusError)
+      console.error('[notifyOnUploadComplete] Failed to update user onboarding info:', statusError)
   }
 
   // 1b. Send Discord Notification (Fire and Forget or Await, depending on criticality)
@@ -189,7 +208,7 @@ export async function notifyOnUploadComplete(userId: string, filePaths: string[]
 
   // 2. Trigger GitHub Action for Analysis (Automation)
   // We do this independently so a Discord failure doesn't block analysis, and vice versa.
-  const analysisResult = await triggerAnalysisWorkflow(userId, userName);
+  const analysisResult = await triggerAnalysisWorkflow(userId, userName, analysisId);
   if (analysisResult.error) {
      console.error('[notifyOnUploadComplete] Failed to trigger analysis workflow:', analysisResult.error);
      // We return a specialized warning but success true because the upload itself was successful
@@ -197,10 +216,10 @@ export async function notifyOnUploadComplete(userId: string, filePaths: string[]
      return { success: true, warning: 'Upload successful, but analysis failed to start automatically.' };
   }
 
-  return { success: true }
+  return { success: true, analysisId }
 }
 
-async function triggerAnalysisWorkflow(userId: string, userName: string) {
+async function triggerAnalysisWorkflow(userId: string, userName: string, analysisId: string) {
     const isDev = process.env.NODE_ENV === 'development';
     const env = isDev ? 'dev' : 'prod';
     
@@ -231,7 +250,8 @@ async function triggerAnalysisWorkflow(userId: string, userName: string) {
                 client_payload: {
                     user_id: userId,
                     user_name: userName,
-                    env: env
+                    env: env,
+                    analysis_id: analysisId
                 }
             })
         });

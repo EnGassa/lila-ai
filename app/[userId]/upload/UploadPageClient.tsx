@@ -160,9 +160,14 @@ export function UploadPageClient({
             userId={userId} 
             initialFiles={capturedFiles} 
             redirectPath={redirectPath}
-            onUploadComplete={() => {
-              setAnalysisStartTime(new Date().toISOString())
-              setViewMode('processing')
+            onUploadComplete={(analysisId) => {
+               if (analysisId) {
+                 router.push(`/analysis/${analysisId}`)
+               } else {
+                 // Fallback for types or legacy - though notifyOnUploadComplete now returns ID.
+                 console.error("No analysis ID returned")
+                 // setViewMode('processing') // Deprecated
+               }
             }}
             allowManualUpload={false}
           />

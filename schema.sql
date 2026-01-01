@@ -37,11 +37,15 @@ create table if not exists public.products (
 
 -- 3. Skin Analyses Table
 -- Stores the JSON output from the AI skin analysis.
+create type public.analysis_status as enum ('pending', 'processing', 'completed', 'failed');
+
 create table if not exists public.skin_analyses (
   id uuid not null primary key default gen_random_uuid(),
   user_id text references public.users(id) on delete cascade,
   analysis_data jsonb,
   image_urls text[],
+  status public.analysis_status default 'pending',
+  error_message text,
   created_at timestamptz default now()
 );
 

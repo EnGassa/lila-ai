@@ -67,7 +67,8 @@ jobs:
             --user-id "${{ github.event.client_payload.user_id }}" \
             --env "${{ github.event.client_payload.env }}" \
             --model "google-gla:gemini-2.5-pro" \
-            --api-key "${{ secrets.GOOGLE_API_KEY }}"
+            --api-key "${{ secrets.GOOGLE_API_KEY }}" \
+            --analysis-id "${{ github.event.client_payload.analysis_id }}"
 
       - name: Notify Analysis Success
         if: success()
