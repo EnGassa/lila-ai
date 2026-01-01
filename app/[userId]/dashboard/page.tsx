@@ -12,13 +12,8 @@ export async function generateMetadata({ params }: { params: Promise<{ userId: s
     .eq('id', userId)
     .single();
 
-  const userName = user?.full_name || userId;
-
   return {
-    title: userName,
-    openGraph: {
-      title: userName,
-    },
+    title: user?.full_name || undefined,
   };
 }
 

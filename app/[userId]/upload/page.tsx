@@ -16,10 +16,10 @@ export async function generateMetadata({ params }: { params: Promise<{ userId: s
     .eq('id', userId)
     .single()
 
-  const displayName = user?.full_name || 'User'
+  const title = user?.full_name ? `${user.full_name} - Upload` : 'Upload'
 
   return {
-    title: `${displayName} - Upload Photos`,
+    title,
     description: 'Upload your photos for skin analysis',
   }
 }
