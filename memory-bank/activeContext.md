@@ -110,6 +110,10 @@
     *   **Bug Fix (Critical):**
         *   Fixed an issue where `FaceCapture` results were not being passed to the `FileUpload` component (missing state update in `handleCameraComplete`).
         *   Fixed camera stream not stopping on unmount by introducing `streamRef` to track and stop media tracks independently of the video element.
+113:     *   **Metadata Refinement:**
+114:         *   Cleaned up browser tab titles across all user routes.
+115:         *   Removed UUID/User ID fallbacks to avoid messy tab names.
+116:         *   Implemented consistent `[Name] - [Page Name]` pattern with a clean "Lila Skin" fallback.
 
 ---
 
