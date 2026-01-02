@@ -4,7 +4,17 @@ import { useState, useEffect } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
 
-export function UserAvatar({ userId, displayName, avatarUrl }: { userId: string; displayName: string, avatarUrl?: string | null }) {
+export function UserAvatar({ 
+  userId, 
+  displayName, 
+  avatarUrl,
+  className 
+}: { 
+  userId: string; 
+  displayName: string; 
+  avatarUrl?: string | null;
+  className?: string;
+}) {
   const [imgSrc, setImgSrc] = useState<string | null>(avatarUrl || null)
 
   useEffect(() => {
@@ -28,18 +38,18 @@ export function UserAvatar({ userId, displayName, avatarUrl }: { userId: string;
 
   if (!imgSrc) {
     return (
-      <Avatar className="h-24 w-24 rounded-full">
-        <AvatarFallback className="rounded-full">{displayName.charAt(0)}</AvatarFallback>
+      <Avatar className={cn("h-24 w-24 rounded-full ring-1 ring-white/10 shadow-md", className)}>
+        <AvatarFallback className="rounded-full bg-muted/50 text-muted-foreground">{displayName.charAt(0)}</AvatarFallback>
       </Avatar>
     )
   }
 
   return (
-    <Avatar className="h-24 w-24 rounded-full">
+    <Avatar className={cn("h-24 w-24 rounded-full ring-1 ring-white/10 shadow-md hover:ring-accent/20 transition-all", className)}>
       <AvatarImage
         src={imgSrc}
         alt="User"
-        className="object-cover transition-transform"
+        className="object-cover transition-transform hover:scale-105 duration-500"
         onError={() => {
             // If the set src fails (e.g. broken URL), fallback to placeholder if not already there, else initials
             if (imgSrc !== '/placeholder.png') {
@@ -49,7 +59,7 @@ export function UserAvatar({ userId, displayName, avatarUrl }: { userId: string;
             }
         }}
       />
-      <AvatarFallback className="rounded-full">{displayName.charAt(0)}</AvatarFallback>
+      <AvatarFallback className="rounded-full bg-muted/50 text-muted-foreground">{displayName.charAt(0)}</AvatarFallback>
     </Avatar>
   )
 }

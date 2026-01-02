@@ -43,9 +43,13 @@
     -   **Flow:** Upload -> Create Record -> Redirect `/analysis/[id]` -> Poll -> Dashboard.
     -   **Fixes:** Resolved `analysisId` loss in upload and Next.js 15 `params` awaiting issues.
     -   **Automation Fix:** Patched `trigger_analysis.yml` to pass `analysis_id` to python script, preventing duplicate analysis records and ensuring auto-redirects work.
-- **UI:** Verified Admin compatibility; Updated User Avatar to `rounded-full`. Removed obsolete "Waitlist" messaging from Login page.
-
-## Recent Work: Maintenance & Bug Fixes
+- **UI:** Verified Admin compatibility; Updated User Avatar to- **UI Polish:**
+  - Redesigned profile photos with premium aesthetics (round, rings, shadows).
+  - Optimized mobile layout for `UserProfile` and `SkincareDashboard` tabs.
+  - Enhanced Admin `UsersTable` with correct user avatars.
+- **Admin Access:**
+  - Verified Admin access controls and resolved `AdminNav` import issues.
+  - Fixed data flow for user avatars in Admin dashboard.
 - **Admin Layout Fix:**
     - Resolved a critical `Runtime TypeError` in `AdminLayout` caused by a circular dependency in `lib/utils.ts`.
     - **Refactor:** Extracted `FaceCropper` (which depends on the heavy, browser-only `@mediapipe` library) into a dedicated `lib/face-cropper.ts` file.

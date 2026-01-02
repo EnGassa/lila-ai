@@ -210,7 +210,7 @@ export function SkincareDashboard({
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList>
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="overview">Analysis</TabsTrigger>
           <TabsTrigger value="recommendations">Recommendation</TabsTrigger>
         </TabsList>

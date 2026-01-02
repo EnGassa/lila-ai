@@ -25,6 +25,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { UserAvatar } from "@/components/user-avatar"
 
 type User = {
     id: string
@@ -33,6 +34,7 @@ type User = {
     phone: string | null
     created_at: string
     is_admin: boolean | null
+    avatar_url: string | null
 }
 
 interface UsersTableProps {
@@ -93,7 +95,15 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
                             filteredUsers.map((user) => (
                                 <TableRow key={user.id} className="border-b border-border/40">
                                     <TableCell className="font-medium">
-                                        {user.full_name || "N/A"}
+                                        <div className="flex items-center gap-3">
+                                            <UserAvatar 
+                                                userId={user.id} 
+                                                displayName={user.full_name || "U"} 
+                                                avatarUrl={user.avatar_url}
+                                                className="h-9 w-9"
+                                            />
+                                            {user.full_name || "N/A"}
+                                        </div>
                                     </TableCell>
                                     <TableCell>{user.email || "N/A"}</TableCell>
                                     <TableCell>{user.phone || "-"}</TableCell>

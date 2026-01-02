@@ -42,14 +42,19 @@ export function UserProfile({ userData, userId, userName, avatarUrl }: UserProfi
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none">
-        <div className="flex items-center gap-4 hover:opacity-80 transition-opacity cursor-pointer">
-          <UserAvatar userId={userId} displayName={displayName} avatarUrl={avatarUrl} />
+        <div className="flex items-center gap-3 md:gap-4 hover:opacity-80 transition-opacity cursor-pointer">
+          <UserAvatar 
+            userId={userId} 
+            displayName={displayName} 
+            avatarUrl={avatarUrl} 
+            className="h-16 w-16 md:h-24 md:w-24"
+          />
           <div className="text-left">
-            <p className="text-2xl font-light">{displayName}</p>
-            <p className="text-sm font-light text-muted-foreground">
+            <p className="text-lg md:text-2xl font-light leading-tight">{displayName}</p>
+            <p className="text-xs md:text-sm font-light text-muted-foreground">
               Skincare Analysis
             </p>
-            <p className="text-sm font-light text-muted-foreground">
+            <p className="text-xs md:text-sm font-light text-muted-foreground">
               Estimated Age: {ageRange.low} - {ageRange.high}
             </p>
           </div>

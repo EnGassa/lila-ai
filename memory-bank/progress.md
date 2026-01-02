@@ -69,7 +69,13 @@
 
 *   **Automation:**
     - [x] Automated Skin Analysis & Recommendations via GitHub Actions (Triggered by Upload).
-    - [x] **Reliability:** Fixed data flow bug where GitHub Actions failed to pass `analysis_id`, causing stuck UI states.
+    - [x] **Analysis-Centric Architecture:** Refactor database and frontend to use `skin_analyses` table as source of truth.
+    - [x] **GitHub Workflow Reliability:** Fix data flow between GitHub Actions and Python scripts (`--analysis-id`).
+    - [x] **UI Polish:**
+      - [x] Login page copy refinement (removed "Waitlist").
+      - [x] Premium Profile Avatars (Round, Styled).
+      - [x] Mobile Responsive Headers & Tabs.
+      - [x] Admin Users Table Avatars.
     - [x] Automated AI Avatar Generation (Triggered after Analysis).
     - [x] **Discord Notifications for Automation**: Alerts for Start/Success/Fail states with deep links to Dashboard.
 
