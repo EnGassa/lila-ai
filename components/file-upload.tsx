@@ -20,6 +20,7 @@ interface FileUploadProps {
   redirectPath?: string
   onUploadComplete?: (analysisId?: string) => void
   allowManualUpload?: boolean
+  autoUpload?: boolean
 }
 
 interface UploadedFile {
@@ -28,7 +29,7 @@ interface UploadedFile {
   error?: string
 }
 
-export function FileUpload({ userId, initialFiles = [], redirectPath, onUploadComplete, allowManualUpload = true }: FileUploadProps) {
+export function FileUpload({ userId, initialFiles = [], redirectPath, onUploadComplete, allowManualUpload = true, autoUpload = false }: FileUploadProps) {
   const router = useRouter()
   const [files, setFiles] = useState<UploadedFile[]>([])
   const [uploadProgress, setUploadProgress] = useState<number | null>(null)
@@ -55,6 +56,17 @@ export function FileUpload({ userId, initialFiles = [], redirectPath, onUploadCo
       })
     }
   }, [initialFiles])
+
+  // Auto-upload trigger
+  useEffect(() => {
+    if (autoUpload && files.length > 0 && !isUploading && uploadProgress === null && !isConverting) {
+       // Check if files are ready (no errors)
+       const hasErrors = files.some(f => f.error);
+       if (!hasErrors) {
+           handleUpload();
+       }
+    }
+  }, [files, autoUpload, isUploading, uploadProgress, isConverting])
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return

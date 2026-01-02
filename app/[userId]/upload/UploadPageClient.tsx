@@ -36,9 +36,11 @@ export function UploadPageClient({
   const [capturedFiles, setCapturedFiles] = useState<File[]>([])
   const [isIntakeComplete, setIsIntakeComplete] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [autoUpload, setAutoUpload] = useState(false);
 
   const handleCameraComplete = (files: File[]) => {
     setCapturedFiles(files)
+    setAutoUpload(true)
     setViewMode('upload')
   }
 
@@ -105,7 +107,7 @@ export function UploadPageClient({
           <FaceCapture onComplete={handleCameraComplete} />
         </div>
       ) : viewMode === 'processing' ? (
-        <AnalysisProcessingView userId={userId} analysisStartTime={analysisStartTime} />
+        <AnalysisProcessingView userId={userId} analysisId="" />
       ) : (
         <>
           <div className="p-6 rounded-lg bg-card shadow-sm">
@@ -170,6 +172,7 @@ export function UploadPageClient({
                }
             }}
             allowManualUpload={false}
+            autoUpload={autoUpload}
           />
         </>
       )}
