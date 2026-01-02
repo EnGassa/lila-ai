@@ -11,6 +11,19 @@
     - **UI Updates:** Connected `UsersTable` actions to the new admin dashboard route.
     - **Storage Cleanup:** Filed Linear ticket [L-114] to address orphaned files in `user-uploads` bucket upon user deletion.
 
+## Current Work: Refinements & optimizations
+- **Avatar Generation Refinement:**
+    - Updated `scripts/generate_avatar.py` to explicitly include the neck in the composition prompt.
+    - Removed "floating head" constraints to achieve a more natural, portrait-style look as requested.
+- **Upload Flow Optimization:**
+    - **Goal:** Remove redundant "Upload" click after photo selection.
+    - **Implementation:** Added `autoUpload` prop to `FileUpload.tsx`.
+    - **Flow:** `UploadPageClient` now triggers the upload immediately when the user confirms their photos ("Use These Photos"), streamlining the path to analysis.
+- **Analysis-Reco Synchronization:**
+    - **Problem:** User was redirected to dashboard before recommendations were ready (~3min gap).
+    - **Fix:** Updated `AnalysisProcessingView` to check for *both* `skin_analyses` completion AND existence of a `recommendations` record.
+    - **UX:** Added dynamic status text ("Curating Product Recommendations", "Building Routine") to keep user informed during the extra wait time.
+
 ## Current Work: Analysis Experience (Refinement)
 - **Ultra-Immersive Waiting Screen (AnalysisProcessingView):**
     - **Concept:** Replaced the static waiting state with a "Fluid Educational" experience to reduce perceived latency during the ~45s analysis window.

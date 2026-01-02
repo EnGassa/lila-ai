@@ -118,6 +118,13 @@ To support historical tracking and multiple analysis sessions per user:
     *   **Processing:** User is redirected to `/analysis/[analysisId]`, which polls *only* that specific record.
     *   **Completion:** Backend updates that specific record's status to `completed`.
     *   **Result:** Frontend redirects to dashboard with `?analysisId=...`.
+    *   **Recommendation Sync (New):** The frontend (`AnalysisProcessingView`) now explicitly polls for the existence of a record in the `recommendations` table before redirecting. This ensures the user doesn't land on a dashboard with missing data while the "Generator" agent is still working (an additional ~2-3 mins).
+
+### Auto-Upload Pattern
+To reduce friction in the "Smart Scan" flow:
+1.  **Confirmation:** When the user clicks "Use These Photos" in `FaceCapture`, the `UploadPageClient` receives the files.
+2.  **State Flag:** It immediately sets an `autoUpload` state flag to `true`.
+3.  **Trigger:** The `FileUpload` component (which wraps the S3 upload logic) watches this flag. If `true` and files are valid, it bypasses the manual "Upload" button click and starts the `PUT` sequence immediately.
 
 ### Hybrid Parallax & Fluid Background Pattern
 To create a high-performance, immersive "alive" background that responds to all inputs without jank:
