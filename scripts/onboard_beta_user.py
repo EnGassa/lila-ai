@@ -128,6 +128,7 @@ def main():
     parser.add_argument("--analysis-prompt", default="prompts/01_analyse_images_6_photos_prompt.md", help="Path to the analysis prompt file.")
     parser.add_argument("--setup-only", action="store_true", help="Only create the user and print the upload link.")
     parser.add_argument("--overwrite", action="store_true", help="Overwrite existing user without prompting.")
+    parser.add_argument("--analysis-id", help="The specific analysis ID to update (Optional).")
     parser.add_argument("--env", choices=["dev", "prod"], default="prod", help="Environment to use for storage (dev=user-uploads-dev, prod=user-uploads).")
 
     args = parser.parse_args()
@@ -182,6 +183,10 @@ def main():
         analysis_args.extend(["--api-key", args.api_key])
     if args.context_file:
         analysis_args.extend(["--context-file", args.context_file])
+    
+    # Pass analysis_id if provided (Fix for Analysis-Centric Architecture)
+    if args.analysis_id:
+        analysis_args.extend(["--analysis-id", args.analysis_id])
         
     run_script("run_analysis.py", analysis_args)
     
