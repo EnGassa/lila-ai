@@ -26,6 +26,9 @@ def main():
         # We must add it before committing, as 'commit -a' doesn't pick up new untracked files
         subprocess.run(["git", "add", file_rel_path], cwd=repo_root, check=True)
         subprocess.run(["git", "commit", "-am", "touch something"], cwd=repo_root, check=True)
+    finally:
+        subprocess.run(["git", "push"], cwd=repo_root, check=True)
+        print("Done.")
 
 if __name__ == "__main__":
     main()
