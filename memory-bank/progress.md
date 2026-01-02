@@ -94,4 +94,4 @@
 
 *   **Landing Page:**
     - [x] **Root Route (`/`)**: Implemented high-converting landing page with "Get Started" flow.
-    - [x] **Self-Service Entry**: Replaced Waitlist with direct Login/Signup access (`/login`).
+    - [x] **Self-Service Entry**: Replaced Waitlist with direct Login/Signup access (`/login`). Updated copy to be inclusive of new users ("Welcome" vs "Welcome back").

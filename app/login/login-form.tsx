@@ -123,10 +123,10 @@ export function LoginForm() {
         <div className="grid gap-6">
             <div className="flex flex-col space-y-2 text-center">
                 <h1 className="text-2xl font-serif font-medium tracking-tight text-primary">
-                    Welcome back
+                    Welcome
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                    Enter your email to receive a secure login link
+                    Enter your email to sign in or create an account
                 </p>
             </div>
             <Form {...form}>

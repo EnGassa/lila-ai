@@ -43,7 +43,7 @@
     -   **Flow:** Upload -> Create Record -> Redirect `/analysis/[id]` -> Poll -> Dashboard.
     -   **Fixes:** Resolved `analysisId` loss in upload and Next.js 15 `params` awaiting issues.
     -   **Automation Fix:** Patched `trigger_analysis.yml` to pass `analysis_id` to python script, preventing duplicate analysis records and ensuring auto-redirects work.
-- **UI:** Verified Admin compatibility; Updated User Avatar to `rounded-full`.
+- **UI:** Verified Admin compatibility; Updated User Avatar to `rounded-full`. Removed obsolete "Waitlist" messaging from Login page.
 
 ## Recent Work: Maintenance & Bug Fixes
 - **Admin Layout Fix:**

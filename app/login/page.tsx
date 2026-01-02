@@ -68,10 +68,10 @@ export default function LoginPage() {
 
                     <div className="text-center text-sm text-muted-foreground">
                         <p>
-                            Don&apos;t have an account?{" "}
-                            <a href="/" className="underline underline-offset-4 hover:text-primary transition-colors">
-                                Join the waitlist
-                            </a>
+                            New to Lila Skin?{" "}
+                            <span className="text-primary font-medium">
+                                Just enter your email above to get started.
+                            </span>
                         </p>
                     </div>
                 </div>
