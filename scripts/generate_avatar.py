@@ -38,16 +38,16 @@ logger = setup_logger()
 AVATAR_PROMPT = """
 Positive Prompt:
 A cheerful and radiant flat vector avatar of a person.
-Composition: Extreme close-up floating head icon. The face and hair MUST fill 100% of the canvas. Zoom in significantly so the head touches the edges of the frame. Cut off at the neck. NO shoulders, NO chest, NO clothes.
+Composition: Close-up portrait avatar. The composition MUST include the full head and the neck. The face should be centered and fill about 70% of the canvas, allowing space for the hair and the entire neck to be visible. Avoid the "floating head" look by grounding the subject with the neck. The neck should be clearly defined and elegant.
 Vibe & Emotion: Warm, upbeat, friendly, and confident. The expression should be relaxed and inviting with a soft smile.
-Art Style: Modern flat illustration, lineless vector art, clean organic shapes, minimal details.
+Art Style: Modern flat illustration, lineless vector art, clean organic shapes, minimal details. 
 Complexion & Skin: Natural skin tones and natural hair color (no green or unnatural hair colors). Smooth, healthy look.
 Colors: Use natural colors for the face and hair. Use a bright and airy pastel palette (mint, peach, lavender) ONLY for the background.
 Texture: Soft grainy noise overlay, stippled shading, and a matte paper texture to give it a high-quality, organic editorial feel.
 Background: Minimal background visible. A solid, soft pastel solid color that contrasts gently with the subject.
 
 Negative Prompt:
-Small face, distant, zoomed out, full body, half body. Green hair, green beard, unnatural skin color. Shoulders, chest, torso, upper body, clothes, shirt, collar, necktie. Photorealistic, harsh outlines, black lines, messy details, dark shadows, grungy, dirty, angry, sad, textureless, plastic skin, shiny 3D render, neon colors, clutter, text, watermark, asymmetry, blurry.
+Floating head, severed head, no neck, cut off chin, zoomed in too close. Small face, distant, zoomed out, full body, half body. Green hair, green beard, unnatural skin color. Complex clothing, suit, necktie, detailed shirt. Photorealistic, harsh outlines, black lines, messy details, dark shadows, grungy, dirty, angry, sad, textureless, plastic skin, shiny 3D render, neon colors, clutter, text, watermark, asymmetry, blurry.
 """
 
 def generate_avatar(client, image_path, output_path):
