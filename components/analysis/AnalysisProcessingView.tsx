@@ -24,24 +24,41 @@ export function AnalysisProcessingView({ userId, analysisId }: AnalysisProcessin
   const mouseX = useSpring(0, { stiffness: 100, damping: 30 })
   const mouseY = useSpring(0, { stiffness: 100, damping: 30 })
 
-  // Polling Logic - Analysis Centric
-  useEffect(() => {
+    // State to track if we are waiting specifically for recommendations
+    const [waitingForRecos, setWaitingForRecos] = useState(false)
+
+    // Polling Logic - Analysis Centric
+    useEffect(() => {
     const supabase = createClient()
     
     // Initial check
     const checkStatus = async () => {
-      const { data } = await supabase
+      // 1. Check Analysis Status
+      const { data: analysisData } = await supabase
         .from('skin_analyses')
         .select('status, id')
         .eq('id', analysisId)
         .single()
       
-      if (data) {
-        if (data.status === 'completed') {
-          // Success! Redirect to Dashboard with the specific analysis ID to show results
-          router.push(`/${userId || 'me'}/dashboard?analysisId=${analysisId}`) 
-          router.refresh()
-        } else if (data.status === 'failed') {
+      if (analysisData) {
+        if (analysisData.status === 'completed') {
+          // Analysis is done, now check for Recommendations
+          const { data: recosData } = await supabase
+            .from('recommendations')
+            .select('id')
+            .eq('skin_analysis_id', analysisId)
+            .maybeSingle()
+
+          if (recosData) {
+            // Success! Both Analysis and Recos are ready.
+            router.push(`/${userId || 'me'}/dashboard?analysisId=${analysisId}`) 
+            router.refresh()
+          } else {
+             // Analysis done, but Recos not ready.
+             setWaitingForRecos(true)
+          }
+
+        } else if (analysisData.status === 'failed') {
            // Handle failure
            console.error("Analysis failed")
            // TODO: Show UI error state
@@ -180,7 +197,7 @@ export function AnalysisProcessingView({ userId, analysisId }: AnalysisProcessin
               <span className="relative inline-flex rounded-full h-2 w-2 bg-brand"></span>
             </span>
             <span className="text-xs font-mono font-medium tracking-widest uppercase text-foreground/80">
-              Analysis in Progress
+              {waitingForRecos ? 'Building Routine' : 'Analysis in Progress'}
             </span>
         </motion.div>
 
@@ -235,7 +252,7 @@ export function AnalysisProcessingView({ userId, analysisId }: AnalysisProcessin
         {/* Bottom: Progress Line */}
         <div className="w-full max-w-xs relative flex flex-col items-center gap-3 pb-safe">
             <p className="text-xs font-mono uppercase tracking-widest text-foreground/60 text-center font-medium">
-                Synthesizing Results
+                {waitingForRecos ? 'Curating Product Recommendations' : 'Synthesizing Results'}
             </p>
              {/* Simple Line Loader */}
             <div className="h-[2px] w-full bg-black/10 rounded-full overflow-hidden">
