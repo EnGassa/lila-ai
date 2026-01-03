@@ -83,6 +83,7 @@
     - [x] **Analysis-Reco Sync:** Dashboard redirect now waits for full recommendation generation. Fixed race condition by enforcing explicit `analysis_id` linkage in backend scripts.
     - [x] **Unified Waiting Experience:** Updated `onboarding` page to redirect "Analyzing" users to the immersive `/analysis/[id]` view, removing redundant legacy UI.
     - [x] **Recommendation Visibility:** Fixed RLS bug where recommendations were invisible to users because the `user_id` column was not being populated by the generation script.
+    - [x] **Script Stability:** Fixed `argparse` error in `generate_recommendations.py` which was causing GitHub Actions to fail when `--api-key` was passed.
 
 *   **Analysis History & Context:**
     - [x] **1:N Data Model**: Users can now have multiple analyses over time (Historical tracking).

@@ -165,6 +165,7 @@ def main():
     parser.add_argument("--model", type=str, required=True, help="The model for the generator (e.g., 'google:gemini-1.5-pro').")
     parser.add_argument("--reviewer-model", type=str, help="Optional model for the reviewer. Defaults to the main model.")
     parser.add_argument("--user-id", type=str, required=True, help="The user ID for analysis and recommendations.")
+    parser.add_argument("--api-key", type=str, help="API Key for the model provider.")
     parser.add_argument("--philosophy-prompt", type=str, default="prompts/01a_generate_philosophy_prompt.md")
     parser.add_argument("--recommendation-prompt", type=str, default="prompts/02_generate_recommendations_prompt.md")
     parser.add_argument("--reviewer-prompt", type=str, default="prompts/03_review_recommendations_prompt.md")
