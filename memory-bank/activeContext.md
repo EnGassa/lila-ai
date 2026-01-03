@@ -13,8 +13,8 @@
 
 ## Current Work: Refinements & optimizations
 - **Avatar Generation Refinement:**
-    - Updated `scripts/generate_avatar.py` to explicitly include the neck in the composition prompt.
-    - Removed "floating head" constraints to achieve a more natural, portrait-style look as requested.
+    - Updated `scripts/generate_avatar.py` to strictly enforce a "Head and Neck Only" composition.
+    - Explicitly constrained the prompt to exclude shoulders, chest, and clothing to achieve a clean, floating head/neck style as requested.
 - **Upload Flow Optimization:**
     - **Goal:** Remove redundant "Upload" click after photo selection.
     - **Implementation:** Added `autoUpload` prop to `FileUpload.tsx`.

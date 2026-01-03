@@ -77,7 +77,7 @@
       - [x] Mobile Responsive Headers & Tabs.
       - [x] Admin Users Table Avatars.
     - [x] Automated AI Avatar Generation (Triggered after Analysis).
-    - [x] **Avatar Refinement:** Updated prompt to include neck/shoulders for better portrait composition.
+    - [x] **Avatar Refinement:** Updated prompt to strictly enforce "Head and Neck Only" composition (No shoulders/clothing).
     - [x] **Discord Notifications for Automation**: Alerts for Start/Success/Fail states with deep links to Dashboard.
     - [x] **Upload Flow Optimization:** Implemented auto-upload upon photo confirmation to remove redundant steps.
     - [x] **Analysis-Reco Sync:** Dashboard redirect now waits for full recommendation generation, with improved waiting screen UI.
