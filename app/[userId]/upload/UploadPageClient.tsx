@@ -9,16 +9,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button'
 import { PhotoGuidelines } from '@/components/guidelines'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Info, Camera, ArrowLeft } from 'lucide-react'
+import { Info, Camera, ArrowLeft, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { AnalysisProcessingView } from '@/components/analysis/AnalysisProcessingView'
+import { cancelAnalysis } from '@/app/[userId]/dashboard/actions'
 
 // Dynamically import FaceCapture to avoid SSR issues with MediaPipe
 const FaceCapture = dynamic(() => import('@/components/analysis/FaceCapture'), {
   ssr: false,
   loading: () => <div className="p-12 text-center">Loading Camera...</div>
 })
-
-import { AnalysisProcessingView } from '@/components/analysis/AnalysisProcessingView'
 
 export function UploadPageClient({ 
   userId, 
@@ -91,19 +91,29 @@ export function UploadPageClient({
 
   return (
     <div className="p-4 pb-32 space-y-6 bg-background min-h-screen">
-      <div className="flex items-center gap-4">
-        <UserAvatar userId={userId} displayName={displayName} avatarUrl={avatarUrl} />
-        <div>
-          <p className="text-2xl font-light">{displayName}</p>
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+            <UserAvatar userId={userId} displayName={displayName} avatarUrl={avatarUrl} />
+            <div>
+            <p className="text-2xl font-light">{displayName}</p>
+            </div>
         </div>
+        <form action={cancelAnalysis}>
+            <Button variant="ghost" size="icon" type="submit" className="rounded-full h-10 w-10 text-muted-foreground hover:bg-secondary/50">
+                <X className="w-5 h-5" />
+                <span className="sr-only">Cancel</span>
+            </Button>
+        </form>
       </div>
 
       {viewMode === 'camera' ? (
         <div className="space-y-4 max-w-4xl mx-auto">
-          <Button variant="ghost" onClick={() => setViewMode('upload')} className="mb-2">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Upload
-          </Button>
+          <div className="flex justify-between items-center mb-2">
+            <Button variant="ghost" onClick={() => setViewMode('upload')}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Upload
+            </Button>
+          </div>
           <FaceCapture onComplete={handleCameraComplete} />
         </div>
       ) : viewMode === 'processing' ? (

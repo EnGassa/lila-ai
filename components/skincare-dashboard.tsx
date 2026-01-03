@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { UserProfile } from "@/components/user-profile";
 import { SummaryOverview } from "@/components/summary-overview";
 import { SeverityRadar } from "@/components/severity-radar";
@@ -21,7 +22,7 @@ import {
 } from "@/components/ui/sheet";
 import { FeedbackModal } from "@/components/FeedbackModal";
 import { Button } from "@/components/ui/button";
-import { History, Calendar, Camera } from "lucide-react";
+import { History, Calendar, Camera, ArrowLeft } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -60,6 +61,7 @@ export function SkincareDashboard({
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentAnalysisId = searchParams.get('analysisId');
+  const defaultTab = searchParams.get('tab') || 'overview';
 
   // Extract nested analysis and charts from the database structure
   const analysisData = analysis.analysis || analysis;
@@ -89,6 +91,21 @@ export function SkincareDashboard({
   return (
     <div className="p-4 space-y-6 bg-background">
       <div className="flex flex-col gap-4">
+        {/* Back Button for Navigation */}
+        <div>
+            <a 
+                href="/dashboard"
+                className={cn(
+                    "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+                    "hover:bg-accent hover:text-accent-foreground",
+                    "h-9 px-0 py-2 -ml-2 text-muted-foreground hover:text-foreground"
+                )}
+            >
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                Back to Dashboard
+            </a>
+        </div>
+
         {/* Top Bar with History Toggle */}
         <div className="flex justify-between items-start">
            <UserProfile userData={analysis} userId={userId} userName={userName} avatarUrl={avatarUrl} />
@@ -209,7 +226,7 @@ export function SkincareDashboard({
         )}
       </div>
 
-      <Tabs defaultValue="overview" className="w-full">
+      <Tabs defaultValue={defaultTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="overview">Analysis</TabsTrigger>
           <TabsTrigger value="recommendations">Recommendation</TabsTrigger>

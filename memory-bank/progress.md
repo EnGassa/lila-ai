@@ -13,6 +13,14 @@
         *   Standardized page layouts (Title/Subtitle/Action) across Users and Products.
         *   Replaced Dropdown menus with inline actions for better usability in Data Tables.
     - [x] **Generic Routes**: `app/dashboard` and `app/onboarding` replace user-specific routes for logged-in users.
+    - [x] **Routine-First Dashboard**:
+        - [x] **DashboardHome**: New landing page prioritizing daily routine.
+        - [x] **New Scan Trigger**: One-click re-analysis from the dashboard headers.
+        - [x] **Interactive Routine**: AM/PM Tabs + Accordion expansion for instructions.
+        - [x] **Skin Priorities**: "Top 3 Concerns" card replaces generic radar charts (Data access & formatting fixed).
+        - [x] **Navigation Fixes**: "Back to Dashboard" and "Cancel Scan" logic implemented.
+        - [x] **History Interaction**: Fixed broken button by implementing a seamless Side Sheet UI.
+        - [x] **Detail View**: Full analysis deep-dive preserved as a secondary view.
 
 *   **Admin Dashboard (Phase 4 Complete):**
     *   **Route:** `/admin` (Protected).

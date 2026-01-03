@@ -12,6 +12,17 @@
     - **Root Cause:** `generate_recommendations.py` was not populating `user_id`, causing RLS policies to block access for non-admins.
     - **Solution:** Enforced strict `user_id` and `analysis_id` propagation throughout the backend pipeline (`onboard_beta_user.py` -> `generate_recommendations.py`).
 
+## Recent Work: Routine-First Dashboard (Completed)
+- **Concept:** Shifted from "Latest Analysis" landing to "Daily Routine" landing.
+- **Components:**
+    - **DashboardHome:** New root view `[userId]/dashboard` prioritizing the daily routine checklist.
+    - **Interactive Routine:** Accordion-style product steps with tabbed AM/PM views for "How to Use" guidance.
+    - **Skin Priorities:** Replaced complex radar charts with actionable "Top 3 Concerns" list (with human-readable formatting).
+    - **Quick Actions:** Added "New Scan" button (resets onboarding) and "Cancel Scan" (from Upload) to resolve trapped states.
+    - **History Interaction:** Replaced broken redirect with a side-sheet UI for seamless history navigation.
+    - **Data View:** Existing `SkincareDashboard` moved to a detail view, accessible via query param `?analysisId=...`.
+- **Routing:** Updated `dashboard/page.tsx` to conditionally render Home vs Detail view based on URL params.
+
 ## Current Work: Self-Service Flow & Admin Oversight
 - **Self-Service Wizard (Phase 3):**
     - Implemented `/onboarding` as a multi-step wizard (Intake -> Upload -> Analysis).
