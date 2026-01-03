@@ -1,5 +1,17 @@
 # Active Context
 
+## Current Work: Analysis Polish & Fixes
+- **Unified Waiting Experience:**
+    - **Smart Redirection:** Replaced redundant "Analyzing" screen in `onboarding/page.tsx` with intelligent redirection to the immersive `/analysis/[id]` view.
+    - **Session Recovery:** Users who drop off during analysis are automatically routed back to their active session upon return.
+- **Root Path Optimization:**
+    - **Logic:** Implemented server-side session check in `app/page.tsx`.
+    - **Flow:** Logged-in users visiting `/` are now auto-redirected to `/onboarding` (the Smart Controller), eliminating the need to click "Sign In".
+- **Data Integrity & Visibility:**
+    - **Fix:** Resolved critical RLS bug where recommendations were invisible to users.
+    - **Root Cause:** `generate_recommendations.py` was not populating `user_id`, causing RLS policies to block access for non-admins.
+    - **Solution:** Enforced strict `user_id` and `analysis_id` propagation throughout the backend pipeline (`onboard_beta_user.py` -> `generate_recommendations.py`).
+
 ## Current Work: Self-Service Flow & Admin Oversight
 - **Self-Service Wizard (Phase 3):**
     - Implemented `/onboarding` as a multi-step wizard (Intake -> Upload -> Analysis).

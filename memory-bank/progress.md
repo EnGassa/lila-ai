@@ -80,7 +80,9 @@
     - [x] **Avatar Refinement:** Updated prompt to strictly enforce "Head and Neck Only" composition (No shoulders/clothing).
     - [x] **Discord Notifications for Automation**: Alerts for Start/Success/Fail states with deep links to Dashboard.
     - [x] **Upload Flow Optimization:** Implemented auto-upload upon photo confirmation to remove redundant steps.
-    - [x] **Analysis-Reco Sync:** Dashboard redirect now waits for full recommendation generation, with improved waiting screen UI.
+    - [x] **Analysis-Reco Sync:** Dashboard redirect now waits for full recommendation generation. Fixed race condition by enforcing explicit `analysis_id` linkage in backend scripts.
+    - [x] **Unified Waiting Experience:** Updated `onboarding` page to redirect "Analyzing" users to the immersive `/analysis/[id]` view, removing redundant legacy UI.
+    - [x] **Recommendation Visibility:** Fixed RLS bug where recommendations were invisible to users because the `user_id` column was not being populated by the generation script.
 
 *   **Analysis History & Context:**
     - [x] **1:N Data Model**: Users can now have multiple analyses over time (Historical tracking).
@@ -103,4 +105,5 @@
 
 *   **Landing Page:**
     - [x] **Root Route (`/`)**: Implemented high-converting landing page with "Get Started" flow.
+    - [x] **Smart Redirects**: Logged-in users visiting `/` are now automatically redirected to `/onboarding` (which routes to Dashboard or Intake), preventing redundant "Sign In" steps.
     - [x] **Self-Service Entry**: Replaced Waitlist with direct Login/Signup access (`/login`). Updated copy to be inclusive of new users ("Welcome" vs "Welcome back").

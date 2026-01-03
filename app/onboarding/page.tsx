@@ -68,24 +68,24 @@ export default async function OnboardingPage({
     redirect('/dashboard')
   }
 
-  // If analyzing, show waiting screen (unless they specifically want to go back? maybe not allowed during analysis)
+  // If analyzing, find the active analysis and redirect to the immersive waiting room
   if (onboarding_status === 'analyzing') {
-      return (
-          <div className="min-h-screen flex flex-col items-center justify-center bg-[#F2F0E9] p-4 text-center space-y-6">
-              <div className="animate-pulse">
-                  <div className="h-24 w-24 bg-[#C8A28E] rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-light opacity-80">
-                      ✨
-                  </div>
-              </div>
-              <h1 className="text-3xl font-medium text-[#4A4238]">Analyzing Your Skin</h1>
-              <p className="text-[#4A4238]/80 max-w-md mx-auto">
-                  Our AI is currently analyzing your photos to build your personalized skin profile. This usually takes a minute or two.
-              </p>
-              <Button asChild className="bg-[#4A4238] text-white hover:bg-[#3A3228]">
-                  <Link href="/dashboard">Go to Dashboard</Link>
-              </Button>
-          </div>
-      )
+      const { data: activeAnalysis } = await supabase
+        .from('skin_analyses')
+        .select('id')
+        .eq('user_id', user.id)
+        .in('status', ['pending', 'processing'])
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      if (activeAnalysis) {
+          redirect(`/analysis/${activeAnalysis.id}`)
+      } else {
+          // Fallback: If status is analyzing but no record found, go to dashboard
+          // The dashboard presumably handles "empty" states or shows history
+          redirect('/dashboard')
+      }
   }
 
   // If forceStep is intake, or status is pending, show Intake

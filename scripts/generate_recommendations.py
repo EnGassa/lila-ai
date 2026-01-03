@@ -171,7 +171,7 @@ def main():
     parser.add_argument("--output", type=str, help="Optional path to save the final validated output JSON.")
     parser.add_argument("--reasoning-effort", type=str, choices=["low", "medium", "high", "auto"])
     parser.add_argument("--context-file", type=str, help="Optional path to a JSON file containing user context.")
-    parser.add_argument("--api-key", type=str, help="API key for the LLM provider.")
+    parser.add_argument("--analysis-id", type=str, help="The specific analysis ID to generate recommendations for.")
     args = parser.parse_args()
 
     reviewer_model_str = args.reviewer_model or args.model
@@ -184,10 +184,19 @@ def main():
     # --- Load User Analysis ---
     supabase = get_supabase_client()
     logger.info(f"Fetching analysis for user {args.user_id}...")
-    analysis_response = supabase.table('skin_analyses').select('*').eq('user_id', args.user_id).order('created_at', desc=True).limit(1).execute()
+    
+    analysis_query = supabase.table('skin_analyses').select('*')
+    if args.analysis_id:
+        logger.info(f"Targeting specific analysis ID: {args.analysis_id}")
+        analysis_query = analysis_query.eq('id', args.analysis_id)
+    else:
+        logger.warning("No analysis ID provided. Defaulting to latest analysis for user.")
+        analysis_query = analysis_query.eq('user_id', args.user_id).order('created_at', desc=True)
+        
+    analysis_response = analysis_query.limit(1).execute()
     
     if not analysis_response.data:
-        logger.error(f"No skin analysis found for user {args.user_id}.")
+        logger.error(f"No skin analysis found for user {args.user_id} (ID: {args.analysis_id if args.analysis_id else 'latest'}).")
         sys.exit(1)
         
     full_analysis_record = analysis_response.data[0]
@@ -362,6 +371,7 @@ def main():
         logger.info(f"Saving final recommendations to Supabase for analysis {analysis_id}...")
         supabase.table('recommendations').upsert({
             'skin_analysis_id': analysis_id,
+            'user_id': args.user_id,
             'recommendations_data': output_data
         }, on_conflict='skin_analysis_id').execute()
         logger.success(f"Successfully saved recommendations to Supabase.")

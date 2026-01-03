@@ -20,7 +20,8 @@ flowchart TD
 To guide users through the complex onboarding process without friction:
 1.  **State-Driven Routing:** The `onboarding_status` enum in `public.users` (`pending`, `intake_completed`, `photos_uploaded`, `analyzing`, `complete`) acts as the single source of truth.
 2.  **Controller Page:** `app/onboarding/page.tsx` reads this status and conditionally renders the appropriate sub-component (Intake Form or Upload Interface) or redirects.
-3.  **Strict Gating:** All protected routes (`/dashboard`) check this status. If a user is incomplete, they are forcefully redirected back to the `/onboarding` wizard, preventing invalid states.
+3.  **Strict Gating:** All protected routes (`/dashboard`) check this status. If a user is incomplete, they are forcefully redirected back to the `/onboarding` wizard.
+4.  **Root Redirect:** The root route (`/`) implements a "Smart Entry" check. If a valid session exists, it redirects to `/onboarding`, effectively using the wizard logic as the central dispatcher for the entire user session (routing to Dashboard, Intake, or Upload based on state).
 
 ### Role-Based Access Control (Admin)
 The admin panel implements a dual-layer security model:
