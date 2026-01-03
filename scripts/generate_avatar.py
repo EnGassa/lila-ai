@@ -22,11 +22,11 @@ from google.genai import types
 
 # Import shared lib
 try:
-    from skin_lib import get_supabase_client, download_from_s3, setup_logger
+    from skin_lib import get_supabase_client, setup_logger
 except ImportError:
     # Handle running from root or scripts dir
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-    from skin_lib import get_supabase_client, download_from_s3, setup_logger
+    from skin_lib import get_supabase_client, setup_logger
 
 # Load environment variables
 load_dotenv('.env.local')

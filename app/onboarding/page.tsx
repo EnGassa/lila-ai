@@ -3,8 +3,6 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import IntakePageClient from '@/app/[userId]/intake/IntakePageClient'
 import { UploadPageClient } from '@/app/[userId]/upload/UploadPageClient'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 
 export const metadata = {
   title: 'Onboarding - Lila Skin',

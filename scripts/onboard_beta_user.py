@@ -209,7 +209,7 @@ def main():
     
     print("\n" + "="*50)
     print(f"✅ Onboarding Complete for {args.name}!")
-    print(f"🔗 Dashboard Link: http://localhost:3000/dashboard/{user_id}")
+    print(f"🔗 Dashboard Link: http://localhost:3000/{user_id}/dashboard")
     print("="*50 + "\n")
 
 if __name__ == "__main__":
