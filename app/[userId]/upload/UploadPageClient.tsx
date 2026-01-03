@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
+import { LoadingScreen } from '@/components/ui/loading-screen'
 import { DynamicFileUpload } from '@/components/dynamic-file-upload'
 import { UserAvatar } from '@/components/user-avatar'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
@@ -17,25 +18,27 @@ import { cancelAnalysis } from '@/app/[userId]/dashboard/actions'
 // Dynamically import FaceCapture to avoid SSR issues with MediaPipe
 const FaceCapture = dynamic(() => import('@/components/analysis/FaceCapture'), {
   ssr: false,
-  loading: () => <div className="p-12 text-center">Loading Camera...</div>
+  loading: () => <LoadingScreen fullScreen={false} message="Initializing Camera..." className="h-[500px] rounded-xl border border-dashed" />
 })
 
 export function UploadPageClient({ 
   userId, 
   displayName, 
   avatarUrl, 
-  redirectPath 
+  redirectPath,
+  skipChecks = false
 }: { 
   userId: string, 
   displayName: string, 
   avatarUrl?: string | null,
-  redirectPath?: string
+  redirectPath?: string,
+  skipChecks?: boolean
 }) {
   const router = useRouter();
   const [viewMode, setViewMode] = useState<'upload' | 'camera' | 'processing'>('upload')
   const [capturedFiles, setCapturedFiles] = useState<File[]>([])
-  const [isIntakeComplete, setIsIntakeComplete] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isIntakeComplete, setIsIntakeComplete] = useState(skipChecks);
+  const [isLoading, setIsLoading] = useState(!skipChecks);
   const [autoUpload, setAutoUpload] = useState(false);
 
   const handleCameraComplete = (files: File[]) => {
@@ -49,6 +52,8 @@ export function UploadPageClient({
   
   
   useEffect(() => {
+    if (skipChecks) return;
+
     const checkIntake = async () => {
       const supabase = createClient();
       
@@ -83,10 +88,10 @@ export function UploadPageClient({
     };
     
     checkIntake();
-  }, [userId, router, redirectPath]);
+  }, [userId, router, redirectPath, skipChecks]);
 
   if (isLoading) {
-      return <div className="p-4 flex justify-center items-center min-h-screen">Loading...</div>;
+      return <LoadingScreen message="Checking Profile..." />;
   }
 
   return (

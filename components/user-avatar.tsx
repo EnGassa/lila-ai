@@ -15,51 +15,48 @@ export function UserAvatar({
   avatarUrl?: string | null;
   className?: string;
 }) {
+// UserAvatar simplification:
+// 1. Prioritize `avatarUrl` prop.
+// 2. If no `avatarUrl`, try legacy path (optional, maybe incorrect for new users but harmless).
+// 3. Let Radix Avatar handle fallback visibility automatically.
   const [imgSrc, setImgSrc] = useState<string | null>(avatarUrl || null)
 
   useEffect(() => {
+    // If we have a valid avatarUrl prop, just use it.
     if (avatarUrl) {
       setImgSrc(avatarUrl)
       return
     }
 
-    // Legacy fallback: Try to fetch from /profile_pic folder
-    const userImg = `/profile_pic/${userId}.jpg`
-    const img = new Image()
-    img.src = userImg
-    img.onload = () => {
-      setImgSrc(userImg)
-    }
-    img.onerror = () => {
-      // If legacy file not found, fallback to placeholder
-      setImgSrc('/placeholder.png') 
+    // Only if check fails, try legacy or placeholder.
+    if (!avatarUrl) {
+        // Try legacy path
+        const userImg = `/profile_pic/${userId}.jpg`
+        const img = new Image()
+        img.src = userImg
+        img.onload = () => setImgSrc(userImg)
+        img.onerror = () => {
+             // If legacy fails and no avatarUrl, show placeholder or let it fall to initials.
+             // We can just leave imgSrc null to show initials (AvatarFallback).
+             setImgSrc(null)
+        }
     }
   }, [userId, avatarUrl])
 
-  if (!imgSrc) {
-    return (
-      <Avatar className={cn("h-24 w-24 rounded-full ring-1 ring-white/10 shadow-md", className)}>
-        <AvatarFallback className="rounded-full bg-muted/50 text-muted-foreground">{displayName.charAt(0)}</AvatarFallback>
-      </Avatar>
-    )
-  }
-
   return (
     <Avatar className={cn("h-24 w-24 rounded-full ring-1 ring-white/10 shadow-md hover:ring-accent/20 transition-all", className)}>
-      <AvatarImage
-        src={imgSrc}
-        alt="User"
-        className="object-cover transition-transform hover:scale-105 duration-500"
-        onError={() => {
-            // If the set src fails (e.g. broken URL), fallback to placeholder if not already there, else initials
-            if (imgSrc !== '/placeholder.png') {
-                setImgSrc('/placeholder.png')
-            } else {
-                setImgSrc(null) // Prevent infinite loop if placeholder missing
-            }
-        }}
-      />
-      <AvatarFallback className="rounded-full bg-muted/50 text-muted-foreground">{displayName.charAt(0)}</AvatarFallback>
+      {imgSrc && (
+        <AvatarImage
+          src={imgSrc}
+          alt={displayName}
+          className="object-cover transition-transform hover:scale-105 duration-500"
+          referrerPolicy="no-referrer"
+          crossOrigin="anonymous"
+        />
+      )}
+      <AvatarFallback className="rounded-full bg-muted/50 text-muted-foreground">
+          {displayName.charAt(0).toUpperCase()}
+      </AvatarFallback>
     </Avatar>
   )
 }

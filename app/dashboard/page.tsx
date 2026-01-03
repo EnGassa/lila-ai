@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { Dashboard } from '@/app/[userId]/dashboard/components/dashboard'
 import { DashboardHome } from '@/app/[userId]/dashboard/components/DashboardHome'
 import { Suspense } from 'react'
+import { LoadingScreen } from '@/components/ui/loading-screen'
 
 export const metadata = {
   title: 'Dashboard - Lila Skin',
@@ -62,7 +63,7 @@ export default async function DashboardPage({
 
   if (showDetailView) {
      return (
-        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading Analysis...</div>}>
+        <Suspense fallback={<LoadingScreen message="Loading Analysis..." />}>
           <Dashboard 
             userId={user.id} 
             searchParams={resolvedSearchParams} 
@@ -101,7 +102,7 @@ export default async function DashboardPage({
   // Need to enrich products for the Home View too (similar to Dashboard component)
   // TODO: Refactor enrichment logic into a reusable lib function. 
   // For now, we will do a lightweight fetch of just the routine product names/images if available in the JSON, 
-  // but usually we need to join with products table. 
+  // but usually we need to join withproducts table. 
   // Let's duplicated the enrichment logic briefly or better yet, move it to a shared function.
   // Actually, for speed/reliability in this turn, I will copy the enrichment block.
   
@@ -149,7 +150,7 @@ export default async function DashboardPage({
         .order("created_at", { ascending: false });
 
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading Home...</div>}>
+    <Suspense fallback={<LoadingScreen message="Loading Home..." />}>
       <DashboardHome 
          userId={user.id}
          userName={fullName}

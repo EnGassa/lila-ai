@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import { LoadingScreen } from '@/components/ui/loading-screen'
 import { Dashboard } from './components/dashboard'
 import { createClient } from '@/lib/supabase/server'
 import { Metadata } from 'next'
@@ -38,7 +39,7 @@ export default async function DashboardPage({
   const avatarUrl = user?.avatar_url;
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<LoadingScreen message="Loading Dashboard..." fullScreen={false} className="h-screen" />}>
       <Dashboard userId={userId} searchParams={resolvedSearchParams} fullName={fullName} avatarUrl={avatarUrl} />
     </Suspense>
   )

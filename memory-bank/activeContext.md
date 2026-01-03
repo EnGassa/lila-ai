@@ -1,12 +1,24 @@
 # Active Context
 
-## Current Work: Analysis Polish & Fixes
+## Current Work: Loading UX & Avatar Fixes
+- **Loading Experience Overhaul:**
+    - **New Component:** `LoadingScreen.tsx` with premium beige branding, pulsing logo, and customizable messages.
+    - **Integration:** Replaced generic "Loading..." text in `dashboard/page.tsx`, `[userId]/dashboard`, and `onboarding/page.tsx`.
+    - **Streaming:** Implemented `loading.tsx` for instant feedback on Dashboard and Onboarding routes.
+    - **Fixes:** Stabilized animations (no bouncing) and moved to a subtle pulse.
+- **Avatar Display Debugging:**
+    - **Issue:** Avatar image was "stuck in pending" or not displaying ("S" fallback).
+    - **Fix 1:** Simplified `UserAvatar` logic to remove aggressive `onError` state clearing.
+    - **Fix 2 (Critical):** Updated Service Worker (`app/sw.ts`) to **bypass caching** (`NetworkOnly`) for Supabase Storage URLs. This resolved the "pending" request issue caused by opaque response caching attempts.
+    - **Type Safety:** Fixed TS errors in `sw.ts` by using `matcher` instead of `urlPattern`.
+
+## Recent Work: Analysis Polish & Fixes
 - **Unified Waiting Experience:**
     - **Smart Redirection:** Replaced redundant "Analyzing" screen in `onboarding/page.tsx` with intelligent redirection to the immersive `/analysis/[id]` view.
     - **Session Recovery:** Users who drop off during analysis are automatically routed back to their active session upon return.
 - **Root Path Optimization:**
-    - **Logic:** Implemented server-side session check in `app/page.tsx`.
-    - **Flow:** Logged-in users visiting `/` are now auto-redirected to `/onboarding` (the Smart Controller), eliminating the need to click "Sign In".
+    - **Logic:** Implemented server-side session check in `app/page.tsx` with **Smart Redirect**.
+    - **Flow:** Logged-in users are checked for `onboarding_status`. If `complete`, they go straight to `/dashboard`, bypassing `/onboarding` to prevent double-loading screens. Only incomplete users go to `/onboarding`.
 - **Data Integrity & Visibility:**
     - **Fix:** Resolved critical RLS bug where recommendations were invisible to users.
     - **Root Cause:** `generate_recommendations.py` was not populating `user_id`, causing RLS policies to block access for non-admins.
@@ -58,6 +70,9 @@
         - **Tech:** Implementation separates interaction (spring-based container) from ambient drift (keyframe-based children) to prevent animation conflicts.
     - **Educational Content:** Cycles through "Myth vs Fact", "Did You Know?", and "Pro Tips" to educate users while they wait, turning downtime into value time.
     - **Mobile Optimization:** Uses `dvh` units and safe-area padding to ensure perfect layout on iOS/Android browsers.
+    - **Global Loading State:**
+    -   Created `LoadingScreen` component (Beige theme, Pulsing Logo) to replace "ugly loading..." types.
+    -   Implemented `loading.tsx` for Dashboard and Onboarding routes.
 
 ## Implementation of Product Management & Admin Refinement
 - **Product Inventory Control:**

@@ -2,6 +2,13 @@
 
 ## What Works
 
+*   **Premium Loading Experience:**
+    - [x] **Universal Loading Screen:** Created a reusable `LoadingScreen` component (Beige/Earthy theme, pulsing logo).
+    - [x] **Next.js Streaming:** Added `loading.tsx` to key routes (Dashboard, Onboarding) for instant visual feedback.
+    - [x] **Smart Redirection:** Optimized `app/page.tsx` to check `onboarding_status` server-side, preventing double loading screens for logged-in users.
+    - [x] **Refined Logic:** Fixed "double loading" on Upload flow by bypassing redundant client-side checks.
+    - [x] **Avatar Reliability:** Fixed Service Worker configuration (`NetworkOnly` for Supabase) to prevent image requests from hanging in "pending" state.
+
 *   **Self-Service Flow (Phases 1-3 Complete):**
     - [x] **Authentication**: Magic Link implementation for passwordless entry.
     - [x] **Wizard UX**: Guided onboarding flow (`/onboarding`) managing Intake -> Upload -> Analysis states.

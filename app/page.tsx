@@ -9,7 +9,19 @@ export default async function LandingPage() {
   const { data: { session } } = await supabase.auth.getSession();
 
   if (session) {
-    redirect("/onboarding");
+    // Smart Redirect Pattern: 
+    // Check status directly here to avoid double-redirect (Landing -> Onboarding -> Dashboard)
+    const { data: user } = await supabase
+      .from('users')
+      .select('onboarding_status')
+      .eq('id', session.user.id)
+      .single();
+
+    if (user?.onboarding_status === 'complete') {
+        redirect("/dashboard");
+    } else {
+        redirect("/onboarding");
+    }
   }
 
   return (

@@ -102,6 +102,7 @@ export default async function OnboardingPage({
                 displayName={displayName} 
                 avatarUrl={avatar_url} 
                 redirectPath="/onboarding" 
+                skipChecks={true}
              />
   }
 
