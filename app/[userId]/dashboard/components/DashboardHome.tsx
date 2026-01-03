@@ -16,6 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { UserProfile } from "@/components/user-profile";
 
 interface DashboardHomeProps {
   userId: string;
@@ -123,31 +124,45 @@ export function DashboardHome({
     <div className="p-4 space-y-8 bg-background max-w-5xl mx-auto pb-24">
       
       {/* 1. Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      {/* 1. Header Section */}
+      <div className="flex flex-col gap-6">
+        
+        {/* Top Bar: Profile & Actions */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+             <UserProfile 
+                userData={latestAnalysis.analysis_data} 
+                userId={userId} 
+                userName={userName} 
+                avatarUrl={avatarUrl} 
+             />
+             
+             <Button 
+                onClick={handleStartScan} 
+                disabled={isStartingScan}
+                size="lg"
+                className="bg-foreground text-background hover:bg-foreground/90 rounded-full px-6 shadow-lg hover:shadow-xl transition-all"
+            >
+                {isStartingScan ? (
+                    <span className="flex items-center gap-2">Started...</span>
+                ) : (
+                    <span className="flex items-center gap-2">
+                        <Camera className="w-4 h-4" />
+                        New Scan
+                    </span>
+                )}
+            </Button>
+        </div>
+
+        {/* Greeting & Routine Context */}
         <div>
-           <h1 className="text-3xl font-serif font-medium text-foreground">
+           <h2 className="text-2xl font-serif font-medium text-foreground">
               Good {new Date().getHours() < 12 ? "morning" : "evening"}, {userName.split(' ')[0]}
-           </h1>
+           </h2>
            <p className="text-muted-foreground mt-1 text-lg font-light">
               Here is your {activeTab} routine.
            </p>
         </div>
-        
-        <Button 
-            onClick={handleStartScan} 
-            disabled={isStartingScan}
-            size="lg"
-            className="bg-foreground text-background hover:bg-foreground/90 rounded-full px-6 shadow-lg hover:shadow-xl transition-all"
-        >
-            {isStartingScan ? (
-                <span className="flex items-center gap-2">Started...</span>
-            ) : (
-                <span className="flex items-center gap-2">
-                    <Camera className="w-4 h-4" />
-                    New Scan
-                </span>
-            )}
-        </Button>
+
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

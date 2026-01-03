@@ -20,6 +20,7 @@
         - [x] **Skin Priorities**: "Top 3 Concerns" card replaces generic radar charts (Data access & formatting fixed).
         - [x] **Navigation Fixes**: "Back to Dashboard" and "Cancel Scan" logic implemented.
         - [x] **History Interaction**: Fixed broken button by implementing a seamless Side Sheet UI.
+        - [x] **Header**: Added User Profile component (with Logout) to the main dashboard header.
         - [x] **Detail View**: Full analysis deep-dive preserved as a secondary view.
 
 *   **Admin Dashboard (Phase 4 Complete):**

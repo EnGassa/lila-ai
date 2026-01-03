@@ -16,6 +16,7 @@
 - **Concept:** Shifted from "Latest Analysis" landing to "Daily Routine" landing.
 - **Components:**
     - **DashboardHome:** New root view `[userId]/dashboard` prioritizing the daily routine checklist.
+    - **Header:** Added `UserProfile` (Avatar + Logout) to the top bar for consistent identity verification.
     - **Interactive Routine:** Accordion-style product steps with tabbed AM/PM views for "How to Use" guidance.
     - **Skin Priorities:** Replaced complex radar charts with actionable "Top 3 Concerns" list (with human-readable formatting).
     - **Quick Actions:** Added "New Scan" button (resets onboarding) and "Cancel Scan" (from Upload) to resolve trapped states.
