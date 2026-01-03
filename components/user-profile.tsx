@@ -16,11 +16,12 @@ interface UserProfileProps {
   userId: string;
   userName?: string;
   avatarUrl?: string | null;
+  minimal?: boolean;
 }
 
-export function UserProfile({ userData, userId, userName, avatarUrl }: UserProfileProps) {
+export function UserProfile({ userData, userId, userName, avatarUrl, minimal = false }: UserProfileProps) {
   const { analysis, name } = userData;
-  const ageRange = analysis.skin_age_range;
+  const ageRange = analysis?.skin_age_range || { low: 0, high: 0 }; // Handle missing analysis for safety
 
   const capitalize = (s: string) => {
     if (typeof s !== "string") return "";
@@ -49,15 +50,17 @@ export function UserProfile({ userData, userId, userName, avatarUrl }: UserProfi
             avatarUrl={avatarUrl} 
             className="h-16 w-16 md:h-24 md:w-24"
           />
-          <div className="text-left">
-            <p className="text-lg md:text-2xl font-light leading-tight">{displayName}</p>
-            <p className="text-xs md:text-sm font-light text-muted-foreground">
-              Skincare Analysis
-            </p>
-            <p className="text-xs md:text-sm font-light text-muted-foreground">
-              Estimated Age: {ageRange.low} - {ageRange.high}
-            </p>
-          </div>
+          {!minimal && (
+            <div className="text-left">
+              <p className="text-lg md:text-2xl font-light leading-tight">{displayName}</p>
+              <p className="text-xs md:text-sm font-light text-muted-foreground">
+                Skincare Analysis
+              </p>
+              <p className="text-xs md:text-sm font-light text-muted-foreground">
+                Estimated Age: {ageRange.low} - {ageRange.high}
+              </p>
+            </div>
+          )}
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-56">

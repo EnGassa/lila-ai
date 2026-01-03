@@ -125,44 +125,45 @@ export function DashboardHome({
       
       {/* 1. Header Section */}
       {/* 1. Header Section */}
-      <div className="flex flex-col gap-6">
-        
-        {/* Top Bar: Profile & Actions */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-             <UserProfile 
-                userData={latestAnalysis.analysis_data} 
-                userId={userId} 
-                userName={userName} 
-                avatarUrl={avatarUrl} 
-             />
-             
-             <Button 
-                onClick={handleStartScan} 
-                disabled={isStartingScan}
-                size="lg"
-                className="bg-foreground text-background hover:bg-foreground/90 rounded-full px-6 shadow-lg hover:shadow-xl transition-all"
-            >
-                {isStartingScan ? (
-                    <span className="flex items-center gap-2">Started...</span>
-                ) : (
-                    <span className="flex items-center gap-2">
-                        <Camera className="w-4 h-4" />
-                        New Scan
-                    </span>
-                )}
-            </Button>
-        </div>
+      {/* 1. Header Section */}
+      {/* 1. Header Section */}
+      <div className="flex items-start gap-5">
+         <UserProfile 
+            userData={latestAnalysis.analysis_data} 
+            userId={userId} 
+            userName={userName} 
+            avatarUrl={avatarUrl} 
+            minimal={true}
+         />
 
-        {/* Greeting & Routine Context */}
-        <div>
-           <h2 className="text-2xl font-serif font-medium text-foreground">
-              Good {new Date().getHours() < 12 ? "morning" : "evening"}, {userName.split(' ')[0]}
-           </h2>
-           <p className="text-muted-foreground mt-1 text-lg font-light">
-              Here is your {activeTab} routine.
-           </p>
+        <div className="flex-1 flex flex-col gap-4">
+            <div>
+               <h2 className="text-3xl font-serif font-medium text-foreground">
+                  Good {new Date().getHours() < 12 ? "morning" : "evening"}, {userName.split(' ')[0]}
+               </h2>
+               <p className="text-muted-foreground mt-1 text-lg font-light">
+                  Here is your {activeTab} routine.
+               </p>
+            </div>
+            
+            <div className="flex justify-end border-t border-border/40 pt-4 mt-2">
+                 <Button 
+                    onClick={handleStartScan} 
+                    disabled={isStartingScan}
+                    size="default"
+                    className="bg-foreground text-background hover:bg-foreground/90 rounded-full px-6 shadow-md transition-all"
+                >
+                    {isStartingScan ? (
+                        <span className="flex items-center gap-2">Started...</span>
+                    ) : (
+                        <span className="flex items-center gap-2">
+                            <Camera className="w-4 h-4" />
+                            New Scan
+                        </span>
+                    )}
+                </Button>
+            </div>
         </div>
-
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
