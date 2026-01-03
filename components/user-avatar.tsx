@@ -50,8 +50,6 @@ export function UserAvatar({
           src={imgSrc}
           alt={displayName}
           className="object-cover transition-transform hover:scale-105 duration-500"
-          referrerPolicy="no-referrer"
-          crossOrigin="anonymous"
         />
       )}
       <AvatarFallback className="rounded-full bg-muted/50 text-muted-foreground">
