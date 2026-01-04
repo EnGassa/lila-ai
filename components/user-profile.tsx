@@ -20,7 +20,7 @@ interface UserProfileProps {
 }
 
 export function UserProfile({ userData, userId, userName, avatarUrl, minimal = false }: UserProfileProps) {
-  const { analysis, name } = userData;
+  const { analysis, name } = userData || {};
   const ageRange = analysis?.skin_age_range || { low: 0, high: 0 }; // Handle missing analysis for safety
 
   const capitalize = (s: string) => {

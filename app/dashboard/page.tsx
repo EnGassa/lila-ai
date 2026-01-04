@@ -86,9 +86,8 @@ export default async function DashboardPage({
     
   if (!latestAnalysis) {
       // Edge case: User has 'complete' status but no analysis? 
-      // Should redirect to onboarding or show empty state.
-      // For now, redirect to onboarding to stay safe.
-      redirect('/onboarding');
+      // We render DashboardHome with null analysis (Empty State).
+      // redirect('/onboarding'); // LOOP RISK: Removed.
   }
 
   const { data: latestRecommendationsRecord } = await supabase

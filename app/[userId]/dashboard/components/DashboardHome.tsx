@@ -120,6 +120,61 @@ export function DashboardHome({
   const routine = latestRecommendations?.routine || {};
   const currentRoutine: Step[] = (activeTab === 'AM' ? routine.am : routine.pm) || [];
 
+  if (!latestAnalysis) {
+      return (
+        <div className="p-4 space-y-8 bg-background max-w-5xl mx-auto pb-24">
+             {/* Header Section (Simplified) */}
+             <div className="flex items-start gap-5">
+                <UserProfile 
+                    userData={null} 
+                    userId={userId} 
+                    userName={userName} 
+                    avatarUrl={avatarUrl} 
+                    minimal={true}
+                />
+                <div className="flex-1 flex flex-col gap-4">
+                     <div>
+                        <h2 className="text-3xl font-serif font-medium text-foreground">
+                            Welcome, {userName.split(' ')[0]}
+                        </h2>
+                        <p className="text-muted-foreground mt-1 text-lg font-light">
+                            Ready to discover your perfect routine?
+                        </p>
+                    </div>
+                </div>
+             </div>
+
+             {/* Empty State Hero */}
+             <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-dashed border-border bg-card/50 space-y-6">
+                <div className="w-16 h-16 rounded-full bg-brand/10 flex items-center justify-center">
+                    <Sparkles className="w-8 h-8 text-brand" />
+                </div>
+                <div className="max-w-md space-y-2">
+                    <h3 className="text-xl font-medium">Start Your Skin Analysis</h3>
+                    <p className="text-muted-foreground">
+                        Take a quick scan to get your personalized skincare routine and skin health report.
+                    </p>
+                </div>
+                <Button 
+                    onClick={handleStartScan} 
+                    disabled={isStartingScan}
+                    size="lg"
+                    className="bg-brand hover:bg-brand-hover text-white rounded-full px-8 h-12 text-lg shadow-lg"
+                >
+                    {isStartingScan ? (
+                        <span className="flex items-center gap-2">Starting...</span>
+                    ) : (
+                        <span className="flex items-center gap-2">
+                            <Camera className="w-5 h-5" />
+                            Start Smart Scan
+                        </span>
+                    )}
+                </Button>
+             </div>
+        </div>
+      )
+  }
+
   return (
     <div className="p-4 space-y-8 bg-background max-w-5xl mx-auto pb-24">
       

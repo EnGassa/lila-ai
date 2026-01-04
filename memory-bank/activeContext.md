@@ -152,6 +152,15 @@
     - **Flow:** Users now strictly enter via the Magic Link flow, which routes them to Onboarding (new) or Dashboard (returning).
     - **Visuals:** Maintained the "Beige/Earthy" consistency.
 
+## Recent Work: Redirect Loop Fixes
+- **Client-Side Verification:**
+    - **Issue:** Users with missing intake data were entering an infinite loop on `/onboarding` because `UploadPageClient` was redirecting to `redirectPath` (which was also `/onboarding`).
+    - **Fix:** `UploadPageClient` now forces a redirect to `/${userId}/intake` if intake data is missing, breaking the cycle.
+- **Server-Side Robustness:**
+    - **Issue:** Users with `status='complete'` but no analysis record were entering a server-side loop: `/dashboard` -> `/onboarding` -> `/dashboard`.
+    - **Fix:** Removed the redirect safeguard in `DashboardPage`.
+    - **UI Enhancement:** Updated `DashboardHome` to gracefully handle a `null` analysis state by rendering a "Start Smart Scan" empty state instead of crashing (or looping). Added null-safe checks to `UserProfile`.
+
 ## Recent Work: PWA Implementation
 - **Progressive Web App (PWA):**
     - Converted "Lila Skin" to a PWA using `@serwist/next` (modern replacement for `next-pwa`).

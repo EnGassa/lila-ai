@@ -65,7 +65,9 @@ export function UploadPageClient({
         .maybeSingle();
       
       if (!intakeData) {
-        router.push(redirectPath ? redirectPath : `/${userId}/intake`);
+        // If intake is missing, we MUST go to the intake form.
+        // Using redirectPath (which might be /onboarding) causes an infinite loop if we are already there.
+        router.push(`/${userId}/intake`);
         return;
       }
 

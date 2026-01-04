@@ -128,3 +128,5 @@
 *   **Bug Fixes & Refinements:**
     - [x] **Missing Photos Button:** Added `SUPABASE_S3_BUCKET` check and fallback logic to `Dashboard` component to ensure analysis photos are visible across Dev/Prod environments.
     - [x] **UI Cleanup:** Removed redundant "History" button from Analysis Detail view as it is now accessible from the main Dashboard.
+    - [x] **Infinite Redirect Loop (Client):** Fixed loop in `UploadPageClient` when intake data is missing (forced redirect to `/intake`).
+    - [x] **Infinite Redirect Loop (Server):** Fixed loop between Dashboard and Onboarding for users with `complete` status but no analysis (Implemented "Empty State" Dashboard).
