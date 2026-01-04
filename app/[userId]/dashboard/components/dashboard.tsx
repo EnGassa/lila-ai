@@ -178,7 +178,11 @@ export async function Dashboard({
     // We should probably check which bucket to use.
     // Simpler: Try to sign from the configured bucket env var. 
     // Fallback logic: If we are in a dev environment (local), we might be using user-uploads-dev.
-    const bucketName = process.env.NEXT_PUBLIC_STORAGE_BUCKET || 'user-uploads';
+    // Priority:
+    // 1. SUPABASE_S3_BUCKET (Server-side env var, often set in .env.local)
+    // 2. NEXT_PUBLIC_STORAGE_BUCKET (Client/Server shared env var)
+    // 3. 'user-uploads' (Default fallback)
+    const bucketName = process.env.SUPABASE_S3_BUCKET || process.env.NEXT_PUBLIC_STORAGE_BUCKET || 'user-uploads';
     
     try {
       // Use Service Role to bypass RLS for creating signed URLs
@@ -190,18 +194,29 @@ export async function Dashboard({
           storageClient = createAdminClient(supabaseUrl, serviceRoleKey);
       }
 
-      const { data: signedData, error: signError } = await storageClient
-        .storage
-        .from(bucketName)
-        .createSignedUrls(storedImageKeys, 60 * 60); // 1 hour
+      const getSignedUrls = async (bucket: string) => {
+        const { data, error } = await storageClient
+          .storage
+          .from(bucket)
+          .createSignedUrls(storedImageKeys, 60 * 60);
+        
+        if (error) return null;
+        const urls = data?.filter(item => item.signedUrl).map(item => item.signedUrl) || [];
+        return urls.length > 0 ? urls : null;
+      };
 
-      if (signedData) {
-        signedImageUrls = signedData
-          .filter(item => item.signedUrl)
-          .map(item => item.signedUrl);
+      // Try primary bucket first
+      let urls = await getSignedUrls(bucketName);
+
+      // If failed, try the alternative bucket (handle Dev/Prod cross-env data)
+      if (!urls) {
+        const altBucket = bucketName === 'user-uploads' ? 'user-uploads-dev' : 'user-uploads';
+        // console.log(`Primary bucket ${bucketName} empty/failed, trying ${altBucket}`);
+        urls = await getSignedUrls(altBucket);
       }
-      if (signError) {
-          console.error("Error signing URLs:", signError);
+
+      if (urls) {
+        signedImageUrls = urls;
       }
     } catch (e) {
         console.error("Exception signing URLs:", e);

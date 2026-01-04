@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/sheet";
 import { FeedbackModal } from "@/components/FeedbackModal";
 import { Button } from "@/components/ui/button";
-import { History, Calendar, Camera, ArrowLeft } from "lucide-react";
+import { Calendar, Camera, ArrowLeft } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -169,52 +169,7 @@ export function SkincareDashboard({
                </Sheet>
              )}
 
-             <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <History className="h-4 w-4" />
-                  History
-                </Button>
-              </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>Analysis History</SheetTitle>
-                </SheetHeader>
-                <div className="mt-6 flex flex-col gap-2">
-                  {analysisHistory.map((item) => (
-                    <Button
-                      key={item.id}
-                      variant={item.id === (currentAnalysisId || analysisHistory[0]?.id) ? "default" : "ghost"}
-                      className={cn(
-                        "w-full justify-start gap-2",
-                        item.id === (currentAnalysisId || analysisHistory[0]?.id) && "bg-secondary text-secondary-foreground"
-                      )}
-                      onClick={() => {
-                        // Navigate to the selected analysis
-                        router.push(`/${userId}/dashboard?analysisId=${item.id}`);
-                      }}
-                    >
-                      <Calendar className="h-4 w-4 opacity-50" />
-                      <div className="flex flex-col items-start gap-0.5">
-                        <span className="text-sm font-medium">
-                          {formatDate(item.created_at)}
-                        </span>
-                        {item.id === analysisHistory[0]?.id && (
-                          <span className="text-[10px] uppercase font-bold tracking-wider opacity-70">
-                            Latest
-                          </span>
-                        )}
-                      </div>
-                    </Button>
-                  ))}
-                  {analysisHistory.length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-4">
-                      No history available.
-                    </p>
-                  )}
-                </div>
-              </SheetContent>
-             </Sheet>
+
            </div>
 
         

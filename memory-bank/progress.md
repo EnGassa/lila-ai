@@ -124,3 +124,7 @@
     - [x] **Root Route (`/`)**: Implemented high-converting landing page with "Get Started" flow.
     - [x] **Smart Redirects**: Logged-in users visiting `/` are now automatically redirected to `/onboarding` (which routes to Dashboard or Intake), preventing redundant "Sign In" steps.
     - [x] **Self-Service Entry**: Replaced Waitlist with direct Login/Signup access (`/login`). Updated copy to be inclusive of new users ("Welcome" vs "Welcome back").
+
+*   **Bug Fixes & Refinements:**
+    - [x] **Missing Photos Button:** Added `SUPABASE_S3_BUCKET` check and fallback logic to `Dashboard` component to ensure analysis photos are visible across Dev/Prod environments.
+    - [x] **UI Cleanup:** Removed redundant "History" button from Analysis Detail view as it is now accessible from the main Dashboard.

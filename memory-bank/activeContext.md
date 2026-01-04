@@ -141,6 +141,9 @@
 - **Middleware Convention Established:**
     - Explicitly confirmed that this project uses `proxy.ts` instead of `middleware.ts` due to Next.js 16 deprecation warnings.
     - Updated `systemPatterns.md` and `techContext.md` to document this critical convention.
+    - [x] **Values:** Added `SUPABASE_S3_BUCKET` to bucket resolution logic.
+    - [x] **Fallback Strategy:** Implemented a failover mechanism in `Dashboard` component to check both `user-uploads` and `user-uploads-dev` buckets. This resolves missing photo buttons when viewing analysis data across different environments (Dev vs Prod).
+    - [x] **Cleanup:** Removed redundant "History" button from `SkincareDashboard` (Analysis Detail View) as it duplicates the functionality now present in the main Dashboard Home.
 
 ## Recent Work: Landing Page & Self-Service Entry
 - **Home Page Update:**
