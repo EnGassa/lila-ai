@@ -12,7 +12,16 @@
     - **Fix 2 (Critical):** Updated Service Worker (`app/sw.ts`) to **bypass caching** (`NetworkOnly`) for Supabase Storage URLs. This resolved the "pending" request issue caused by opaque response caching attempts.
     - **Type Safety:** Fixed TS errors in `sw.ts` by using `matcher` instead of `urlPattern`.
 
-## Recent Work: Analysis Polish & Fixes
+## Recent Work: iOS Camera & Face Mesh Fixes
+- **Crash Resolution:**
+    - **Issue:** `ImageCapture` API and `MediaStreamTrack.getCapabilities()` usage caused immediate crashes on iOS Safari as they are unsupported.
+    - **Fix:** Removed dead code (`ImageCapture`) and added feature detection checks for `getCapabilities`.
+- **Face Mesh Stability:**
+    - **Issue:** MediaPipe `GPU` delegate is unstable on iOS Safari, causing "blank results" (video works, but no mesh/detection).
+    - **Fix:** Implemented specific detection for iOS devices to force `delegate: "CPU"`, ensuring reliable tracking.
+- **Camera UX:**
+    - **Fix:** Added `facingMode: { ideal: "user" }` to strictly prefer the front camera.
+    - **Fix:** Added explicit `video.play()` to satisfy iOS autoplay policies.
 - **Unified Waiting Experience:**
     - **Smart Redirection:** Replaced redundant "Analyzing" screen in `onboarding/page.tsx` with intelligent redirection to the immersive `/analysis/[id]` view.
     - **Session Recovery:** Users who drop off during analysis are automatically routed back to their active session upon return.

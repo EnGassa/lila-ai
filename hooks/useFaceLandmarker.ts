@@ -36,7 +36,6 @@ export function useFaceLandmarker(
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | undefined>(undefined);
 
   const faceLandmarkerRef = useRef<FaceLandmarker | null>(null);
-  const imageCaptureRef = useRef<ImageCapture | null>(null);
   const animationFrameId = useRef<number | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -45,12 +44,14 @@ export function useFaceLandmarker(
       const filesetResolver = await FilesetResolver.forVisionTasks(
         "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
       );
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+      
       const landmarker = await FaceLandmarker.createFromOptions(
         filesetResolver,
         {
           baseOptions: {
             modelAssetPath: `/models/face_landmarker.task`,
-            delegate: "GPU",
+            delegate: isIOS ? "CPU" : "GPU", // Force CPU on iOS for stability
           },
           outputFaceBlendshapes: true,
           outputFacialTransformationMatrixes: true,
@@ -73,29 +74,43 @@ export function useFaceLandmarker(
     async function setupWebcam() {
       if (webcamRunning && faceLandmarkerRef.current) {
         const constraints = {
-          video: { 
-            width: { ideal: 1920 }, 
+          video: {
+            facingMode: { ideal: "user" }, // Prefer front camera
+            width: { ideal: 1920 },
             height: { ideal: 1080 },
             deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
           },
         };
 
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        streamRef.current = stream; // Store stream in ref
-        
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.addEventListener("loadeddata", predictWebcam);
-          const track = stream.getVideoTracks()[0];
-          const capabilities = track.getCapabilities();
-          const {width, height} = capabilities;
-          if (width && height) {
-            const maxWidth = width.max ?? 1920;
-            const maxHeight = height.max ?? 1080;
-            setMaxResolution({width: maxWidth, height: maxHeight});
-            track.applyConstraints({width: {ideal: maxWidth}, height: {ideal: maxHeight}});
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
+          streamRef.current = stream; // Store stream in ref
+
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            videoRef.current.addEventListener("loadeddata", predictWebcam);
+            
+            // Explicitly play to ensure iOS starts the stream
+            videoRef.current.play().catch(e => console.error("Error playing video:", e));
+
+            const track = stream.getVideoTracks()[0];
+            
+            // SAFARI SUPPORT: Check if getCapabilities exists before calling
+            if (track.getCapabilities) {
+              const capabilities = track.getCapabilities();
+              const { width, height } = capabilities;
+              if (width && height) {
+                const maxWidth = width.max ?? 1920;
+                const maxHeight = height.max ?? 1080;
+                setMaxResolution({ width: maxWidth, height: maxHeight });
+                track.applyConstraints({ width: { ideal: maxWidth }, height: { ideal: maxHeight } })
+                  .catch(e => console.warn("Failed to apply constraints:", e));
+              }
+            }
           }
-          imageCaptureRef.current = new ImageCapture(track);
+        } catch (error) {
+          console.error("Error accessing webcam:", error);
+          setWebcamRunning(false);
         }
       } else {
         // Cleanup when toggling off
@@ -104,7 +119,7 @@ export function useFaceLandmarker(
           streamRef.current = null;
         }
         if (videoRef.current) {
-            videoRef.current.srcObject = null;
+          videoRef.current.srcObject = null;
         }
         if (animationFrameId.current) {
           window.cancelAnimationFrame(animationFrameId.current);
@@ -320,7 +335,6 @@ export function useFaceLandmarker(
     detectedEyeDistance,
     landmarks,
     faceBoundingBox,
-    imageCaptureRef,
     isPortrait,
     maxResolution,
     videoDevices,
