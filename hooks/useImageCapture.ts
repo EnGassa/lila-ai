@@ -1,5 +1,5 @@
 import { useState, RefObject, useCallback } from "react";
-import posthog from "posthog-js";
+import { analytics } from "@/lib/analytics";
 import { FaceCropper } from "@/lib/face-cropper";
 
 export interface UseImageCaptureOptions {
@@ -135,7 +135,7 @@ export function useImageCapture(
             );
 
             // Log capture metrics to PostHog
-            posthog.capture("capture_timing", {
+            analytics.track('capture_timing', {
               format: formatName,
               canvas_draw_ms: canvasDrawTime,
               encoding_ms: encodingTime,

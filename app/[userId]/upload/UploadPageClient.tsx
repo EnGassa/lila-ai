@@ -12,6 +12,7 @@ import { PhotoGuidelines } from '@/components/guidelines'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Info, Camera, ArrowLeft, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { analytics } from '@/lib/analytics'
 import { AnalysisProcessingView } from '@/components/analysis/AnalysisProcessingView'
 import { cancelAnalysis } from '@/app/[userId]/dashboard/actions'
 
@@ -51,6 +52,10 @@ export function UploadPageClient({
   const [analysisStartTime, setAnalysisStartTime] = useState<string | null>(null)
   
   
+  useEffect(() => {
+    analytics.track('onboarding_step_view', { step: 'upload' });
+  }, []);
+
   useEffect(() => {
     if (skipChecks) return;
 

@@ -9,6 +9,12 @@
     - [x] **Refined Logic:** Fixed "double loading" on Upload flow by bypassing redundant client-side checks.
     - [x] **Avatar Reliability:** Fixed Service Worker configuration (`NetworkOnly` for Supabase) to prevent image requests from hanging in "pending" state.
 
+*   **Telemetry & Analytics:**
+    - [x] **Infrastructure:** Centralized `lib/analytics.ts` type-safe helper for PostHog.
+    - [x] **Full Funnel Tracking:** Instrumented Auth -> Onboarding -> Scan -> Upload -> Analysis -> Dashboard.
+    - [x] **Performance:** Optimized high-frequency events (Face Mesh) to fire once per session.
+    - [x] **Dashboard Metrics:** Tracked daily engagement (AM/PM toggles, routine expansion).
+
 *   **Self-Service Flow (Phases 1-3 Complete):**
     - [x] **Authentication**: Magic Link implementation for passwordless entry.
     - [x] **Wizard UX**: Guided onboarding flow (`/onboarding`) managing Intake -> Upload -> Analysis states.

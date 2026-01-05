@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { analytics } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -94,9 +95,14 @@ export function DashboardHome({
   const [isStartingScan, setIsStartingScan] = useState(false);
   const [expandedStep, setExpandedStep] = useState<string | null>(null); // Track opened accordion
   const [activeTab, setActiveTab] = useState<'AM' | 'PM'>(new Date().getHours() < 12 ? 'AM' : 'PM');
+  
+  useEffect(() => {
+    analytics.track('dashboard_view');
+  }, []);
 
   const handleStartScan = async () => {
     setIsStartingScan(true);
+    analytics.track('camera_permission_request'); // Intent to start
     try {
       await startNewAnalysis();
     } catch (e) {
@@ -114,7 +120,16 @@ export function DashboardHome({
   };
 
   const toggleStep = (stepId: string) => {
-      setExpandedStep(current => current === stepId ? null : stepId);
+      const isExpanding = expandedStep !== stepId;
+      setExpandedStep(current => isExpanding ? stepId : null);
+      if (isExpanding) {
+        analytics.track('recommendation_click', { type: 'routine_step', step_id: stepId });
+      }
+  };
+
+  const handleRoutineToggle = (tab: 'AM' | 'PM') => {
+      setActiveTab(tab);
+      analytics.track('routine_toggle', { mode: tab });
   };
 
   const routine = latestRecommendations?.routine || {};
@@ -233,7 +248,7 @@ export function DashboardHome({
 
                 <div className="flex bg-secondary/50 p-1 rounded-full">
                     <button 
-                        onClick={() => setActiveTab('AM')}
+                        onClick={() => handleRoutineToggle('AM')}
                         className={cn(
                           "px-4 py-1.5 text-sm font-medium rounded-full transition-all flex items-center gap-2",
                           activeTab === 'AM' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
@@ -243,7 +258,7 @@ export function DashboardHome({
                         AM
                     </button>
                     <button 
-                        onClick={() => setActiveTab('PM')}
+                        onClick={() => handleRoutineToggle('PM')}
                         className={cn(
                           "px-4 py-1.5 text-sm font-medium rounded-full transition-all flex items-center gap-2",
                           activeTab === 'PM' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
@@ -363,6 +378,7 @@ export function DashboardHome({
                          <Button
                            variant="ghost"
                            className="p-4 bg-brand-light/20 rounded-xl border border-brand-border/20 flex flex-col items-center text-center gap-2 cursor-pointer hover:bg-brand-light/30 transition-colors h-auto py-4"
+                           onClick={() => analytics.track('history_view')}
                          >
                             <History className="w-5 h-5 text-brand" />
                             <span className="text-xs font-medium text-brand-dark">History</span>

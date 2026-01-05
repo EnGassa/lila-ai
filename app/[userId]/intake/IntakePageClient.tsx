@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { analytics } from '@/lib/analytics';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -97,8 +98,17 @@ export default function IntakePageClient({
     },
   });
 
+  /* ------------------------------------------------------------------------- */
+  /* ANALYTICS: Track Page View */
+  /* ------------------------------------------------------------------------- */
+  useEffect(() => {
+     analytics.track('onboarding_step_view', { step: 'intake' });
+     analytics.track('intake_start');
+  }, []);
+
   const onSubmit = async (data: IntakeFormValues) => {
     setIsSubmitting(true);
+    analytics.track('intake_attempt');
     try {
       const { name, ...restData } = data;
       const payload = {
@@ -140,6 +150,8 @@ export default function IntakePageClient({
 
       toast.success('Skin profile updated!');
       
+      analytics.track('intake_complete');
+      analytics.track('onboarding_step_complete', { step: 'intake' });
       const target = redirectPath || `/${userId}/upload`;
       router.push(target);
       router.refresh(); 

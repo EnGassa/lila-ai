@@ -11,6 +11,7 @@ import { Terminal, UploadCloud, X } from 'lucide-react'
 import { getSignedUploadUrl, notifyOnUploadComplete } from '@/app/[userId]/upload/actions'
 import { toast } from 'sonner'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
+import { analytics } from '@/lib/analytics'
 
 import { useRouter } from 'next/navigation'
 
@@ -119,6 +120,8 @@ export function FileUpload({ userId, initialFiles = [], redirectPath, onUploadCo
     const validFiles = files.filter(f => !f.error).map(f => f.file)
     const fileData = validFiles.map(f => ({ name: f.name, type: f.type }))
 
+    analytics.track('upload_attempt', { file_count: validFiles.length });
+
     try {
       // Step 1: Get signed URLs
       const { signedUrls, error } = await getSignedUploadUrl(userId, fileData)
@@ -154,6 +157,7 @@ export function FileUpload({ userId, initialFiles = [], redirectPath, onUploadCo
       }))
 
       toast.success("Files uploaded successfully!")
+      analytics.track('upload_success', { file_count: completedFiles });
 
       // Notify server and get analysis ID
       let analysisId: string | undefined
@@ -174,15 +178,24 @@ export function FileUpload({ userId, initialFiles = [], redirectPath, onUploadCo
       setUploadProgress(null)
 
       if (onUploadComplete) {
+         // Analysis is effectively starting now
+         if (analysisId) {
+             analytics.track('analysis_start', { analysis_id: analysisId });
+         }
          onUploadComplete(analysisId);
       } else if (redirectPath) {
+         if (analysisId) {
+             analytics.track('analysis_start', { analysis_id: analysisId });
+         }
          router.push(redirectPath);
          router.refresh();
       }
 
     } catch (error) {
       console.error("Upload failed:", error)
-      toast.error(error instanceof Error ? error.message : "An unexpected error occurred")
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+      toast.error(errorMessage)
+      analytics.track('upload_error', { error: errorMessage });
       setUploadProgress(null)
     } finally {
       setIsUploading(false)

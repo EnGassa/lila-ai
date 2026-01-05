@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { GUIDELINES } from "@/components/guidelines";
 import type { CapturePose } from "./usePoseValidation";
+import { analytics } from "@/lib/analytics";
 
 interface UseCaptureSequenceOptions {
   onComplete?: (files: File[]) => void;
@@ -52,7 +53,7 @@ export function useCaptureSequence(
    * @param imageUrl The URL of the captured image.
    */
   const storeImage = useCallback((pose: CapturePose, imageUrl: string) => {
-    setCapturedImages((prev) => ({
+      setCapturedImages((prev) => ({
       ...prev,
       [pose]: imageUrl,
     }));
@@ -65,6 +66,11 @@ export function useCaptureSequence(
   const advanceStep = useCallback(
     (currentIndex: number) => {
       const nextStep = currentIndex + 1;
+      
+      analytics.track('scan_step_complete', { 
+          step_index: currentIndex, 
+          step_name: GUIDELINES[currentIndex]?.id 
+      });
 
       setIsTransitioning(true);
       setTimeout(() => {
@@ -84,6 +90,7 @@ export function useCaptureSequence(
    * Reset the entire sequence - clear all images and restart from step 0.
    */
   const resetSequence = useCallback(() => {
+    analytics.track('scan_reset');
     setCapturedImages({
       front: null,
       left_45: null,
@@ -102,6 +109,8 @@ export function useCaptureSequence(
    */
   const finishSequence = useCallback(async () => {
     if (!onComplete) return;
+
+    analytics.track('scan_complete');
 
     // Convert blob URLs to Files
     const files: File[] = [];

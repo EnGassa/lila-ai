@@ -1,5 +1,18 @@
 # Active Context
 
+## Current Work: Telemetry Implementation
+- **Comprehensive Analytics:**
+    - **Goal:** Instrument full user journey to understand drop-off points and feature usage.
+    - **Implementation:** Integrated PostHog via `posthog-js` and a centralized `lib/analytics.ts` helper.
+    - **Coverage:**
+        - **Auth:** Login/Signup attempts and results.
+        - **Onboarding:** Step views (`intake`, `upload`) and completion.
+        - **Camera:** Model loading, permission requests, and first-time face detection (throttled).
+        - **Scan:** Step completion (`left_45`, `front_smiling`, etc.) and full sequence completion.
+        - **Upload:** File count and success/failure rates.
+        - **Dashboard:** Daily view, routine toggles (AM/PM), and recommendation expansion.
+    - **Technical:** Used `useEffect` for page views and `useRef` to throttle high-frequency events (like face tracking) to ensure data quality without noise.
+
 ## Current Work: Loading UX & Avatar Fixes
 - **Loading Experience Overhaul:**
     - **New Component:** `LoadingScreen.tsx` with premium beige branding, pulsing logo, and customizable messages.
@@ -10,6 +23,8 @@
     - **Issue:** Avatar image was "stuck in pending" or not displaying ("S" fallback).
     - **Fix 1:** Simplified `UserAvatar` logic to remove aggressive `onError` state clearing.
     - **Fix 2 (Critical):** Updated Service Worker (`app/sw.ts`) to **bypass caching** (`NetworkOnly`) for Supabase Storage URLs. This resolved the "pending" request issue caused by opaque response caching attempts.
+    - **Type Safety:** Fixed TS errors in `sw.ts` by using `matcher` instead of `urlPattern`.
+
     - **Type Safety:** Fixed TS errors in `sw.ts` by using `matcher` instead of `urlPattern`.
 
 ## Recent Work: iOS Camera & Face Mesh Fixes

@@ -9,6 +9,7 @@ import { useImageCapture } from "@/hooks/useImageCapture";
 import { useCaptureSequence } from "@/hooks/useCaptureSequence";
 import CalibrationSuite from "./CalibrationSuite";
 import { useFaceLandmarker } from "@/hooks/useFaceLandmarker";
+import { analytics } from "@/lib/analytics";
 import { StartScreen } from "./FaceCapture/StartScreen";
 import { TransitionOverlay } from "./FaceCapture/TransitionOverlay";
 import { ReviewGrid } from "./FaceCapture/ReviewGrid";
@@ -184,7 +185,13 @@ export default function FaceCapture({
       console.log("Wait! faceLandmarker not loaded yet.");
       return;
     }
-    setWebcamRunning((prev) => !prev);
+    setWebcamRunning((prev) => {
+        const nextState = !prev;
+        if (nextState) {
+            analytics.track('scan_start');
+        }
+        return nextState;
+    });
   };
 
   // Helper for calibration suite to change current pose

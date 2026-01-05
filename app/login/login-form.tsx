@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import { analytics } from "@/lib/analytics"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -41,6 +42,7 @@ export function LoginForm() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsLoading(true)
+        analytics.track('login_attempt', { email: values.email })
 
         try {
             const supabase = createBrowserClient(
@@ -82,13 +84,19 @@ export function LoginForm() {
             })
 
             if (error) {
+                analytics.track('login_error', { error: error.message })
                 toast.error(error.message)
                 return
             }
 
+            analytics.track('login_success', { 
+                method: 'magic_link',
+                email_domain: values.email.split('@')[1] 
+            })
             setIsEmailSent(true)
             toast.success("Magic link sent!")
         } catch (error) {
+            analytics.track('login_error', { error: 'Unexpected error' })
             toast.error("An unexpected error occurred")
         } finally {
             setIsLoading(false)

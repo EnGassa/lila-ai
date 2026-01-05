@@ -9,6 +9,7 @@ import {
   NormalizedLandmark,
 } from "@mediapipe/tasks-vision";
 import { getEulerAngles } from "@/lib/utils";
+import { analytics } from "@/lib/analytics";
 
 interface BoundingBox {
   minX: number;
@@ -38,34 +39,43 @@ export function useFaceLandmarker(
   const faceLandmarkerRef = useRef<FaceLandmarker | null>(null);
   const animationFrameId = useRef<number | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const hasTrackedFace = useRef(false);
 
   useEffect(() => {
     async function setup() {
-      const filesetResolver = await FilesetResolver.forVisionTasks(
-        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
-      );
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-      
-      const landmarker = await FaceLandmarker.createFromOptions(
-        filesetResolver,
-        {
-          baseOptions: {
-            modelAssetPath: `/models/face_landmarker.task`,
-            delegate: isIOS ? "CPU" : "GPU", // Force CPU on iOS for stability
-          },
-          outputFaceBlendshapes: true,
-          outputFacialTransformationMatrixes: true,
-          runningMode: "VIDEO",
-          numFaces: 1,
-        }
-      );
-      faceLandmarkerRef.current = landmarker;
-      setStatus("Ready to start webcam");
+      analytics.track('model_load_start');
+      try {
+        const filesetResolver = await FilesetResolver.forVisionTasks(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
+        );
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+        
+        const landmarker = await FaceLandmarker.createFromOptions(
+          filesetResolver,
+          {
+            baseOptions: {
+              modelAssetPath: `/models/face_landmarker.task`,
+              delegate: isIOS ? "CPU" : "GPU", // Force CPU on iOS for stability
+            },
+            outputFaceBlendshapes: true,
+            outputFacialTransformationMatrixes: true,
+            runningMode: "VIDEO",
+            numFaces: 1,
+          }
+        );
+        faceLandmarkerRef.current = landmarker;
+        setStatus("Ready to start webcam");
+        analytics.track('model_load_success', { device_pixel_ratio: window.devicePixelRatio, is_ios: isIOS });
 
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const videoDevices = devices.filter((device) => device.kind === "videoinput");
-      setVideoDevices(videoDevices);
-      console.log("Available video devices:", videoDevices);
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter((device) => device.kind === "videoinput");
+        setVideoDevices(videoDevices);
+        console.log("Available video devices:", videoDevices);
+      } catch (e: any) {
+        console.error("Failed to load model", e);
+        setStatus(`Model load error: ${e.message}`);
+        analytics.track('model_load_error', { error: e.message });
+      }
     }
     setup();
   }, []);
@@ -83,8 +93,12 @@ export function useFaceLandmarker(
         };
 
         try {
+          analytics.track('camera_permission_request');
           const stream = await navigator.mediaDevices.getUserMedia(constraints);
           streamRef.current = stream; // Store stream in ref
+          analytics.track('camera_start_success', { 
+             label: stream.getVideoTracks()[0].label
+          });
 
           if (videoRef.current) {
             videoRef.current.srcObject = stream;
@@ -108,8 +122,9 @@ export function useFaceLandmarker(
               }
             }
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error("Error accessing webcam:", error);
+          analytics.track('camera_start_error', { error: error.name || error.message });
           setWebcamRunning(false);
         }
       } else {
@@ -186,6 +201,12 @@ export function useFaceLandmarker(
         if (results.faceLandmarks && results.faceLandmarks.length > 0) {
           const landmarksData = results.faceLandmarks[0];
           setLandmarks(landmarksData);
+
+          // Track first face detection (Critical for debugging "No Mesh" on iOS)
+          if (!hasTrackedFace.current) {
+              analytics.track('face_detected');
+              hasTrackedFace.current = true;
+          }
 
           let minX = 1.0, minY = 1.0, maxX = 0.0, maxY = 0.0;
           for (const landmark of landmarksData) {

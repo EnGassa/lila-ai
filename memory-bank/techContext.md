@@ -12,7 +12,10 @@
     *   `recharts` for data visualization.
     *   `react-hook-form` + `zod` for strictly typed form management.
     *   `sonner` for toast notifications.
-*   **Analytics:** PostHog for web analytics and session recordings.
+*   **Analytics:**
+    *   **Tool:** PostHog (Client-side via `posthog-js`).
+    *   **Helper:** `lib/analytics.ts` provides a type-safe wrapper preventing event name typos and ensuring consistent property schemas.
+    *   **Strategy:** Event-based tracking for critical user flows (Onboarding, Scan, Analysis) + Auto-capture disabled to reduce noise.
 *   **Logging:** Loguru
 *   **Package Manager:** pnpm (Frontend), uv (Python Scripts)
 *   **Python Dependencies:**
