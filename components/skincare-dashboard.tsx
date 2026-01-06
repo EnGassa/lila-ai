@@ -287,7 +287,7 @@ export function SkincareDashboard({
           </SheetContent>
         </Sheet>
 
-        <Flex justify="center" py="8">
+        <Flex justify="center" py="8" width="100%">
           <FeedbackModal userId={userId} recommendationId={recommendations?.id} />
         </Flex>
       </Flex>
