@@ -393,3 +393,14 @@
   --color-brand-light: rgba(212, 165, 153, 0.15);
   --color-brand-border: rgba(212, 165, 153, 0.3);
 }
+
+/* Custom Radar Grid Styling */
+.severity-radar-grid path:nth-child(odd) {
+  stroke-width: 0.5px;
+  stroke-opacity: 0.3;
+}
+
+.severity-radar-grid path:nth-child(even) {
+  stroke-width: 1px;
+  stroke-opacity: 0.6;
+}

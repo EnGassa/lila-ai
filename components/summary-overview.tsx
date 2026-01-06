@@ -60,7 +60,7 @@ function SkinAgeCard({ ageRange, rationale }: { ageRange?: { low: number; high: 
           {ageRange?.low} - {ageRange?.high}
         </Text>
       }
-      description={rationale}
+    /* description={rationale} */
     />
   );
 }
@@ -135,12 +135,12 @@ function SensitivityCard({ analysis }: { analysis: any }) {
     redness: {
       value: rednessScore,
       maxValue: 5,
-      color: "bg-indigo-300",
+      color: "bg-[var(--blue-8)]",
     },
     acne: {
       value: acneScore,
       maxValue: 5,
-      color: "bg-indigo-300",
+      color: "bg-[var(--blue-8)]",
     },
   };
 

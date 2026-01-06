@@ -200,12 +200,12 @@ export function SkincareDashboard({
 
                 <Box>
                   <Box p="4">
-                    <Heading size="3" color="gray" weight="medium" mb="2" style={{ letterSpacing: '0.05em' }}>
-                      SEVERITY RADAR
-                    </Heading>
-                    <Text size="2" color="gray">
-                      Severity is on a 1–5 scale. Radar shows overall severity: Larger filled area = more severe concerns across dimensions.
+                    <Text as="div" size="6" weight="medium" mb="2">
+                      Severity Radar
                     </Text>
+                    <p className="text-sm text-muted-foreground leading-snug mt-2">
+                      Severity is on a 1–5 scale. Radar shows overall severity: Larger filled area = more severe concerns across dimensions.
+                    </p>
                     <Box height="350px" width="100%" mt="4">
                       <SeverityRadar radarData={charts.overview_radar} />
                     </Box>
@@ -214,12 +214,12 @@ export function SkincareDashboard({
 
                 <Box>
                   <Box p="4">
-                    <Heading size="3" color="gray" weight="medium" mb="2" style={{ letterSpacing: '0.05em' }}>
-                      SKIN CONCERNS
-                    </Heading>
-                    <Text size="2" color="gray">
-                      Below are all your skin attributes rated in order of severity. Click on each attribute to see a deeper analysis of each area.
+                    <Text as="div" size="6" weight="medium" mb="2">
+                      Skin Concerns
                     </Text>
+                    <p className="text-sm text-muted-foreground leading-snug mt-2">
+                      Below are all your skin attributes rated in order of severity. Click on each attribute to see a deeper analysis of each area.
+                    </p>
                     <Flex direction="column" gap="4" mt="4">
                       {concerns
                         .sort((a, b) => b.score - a.score)
