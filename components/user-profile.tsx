@@ -60,7 +60,7 @@ export function UserProfile({ userData, userId, userName, avatarUrl, minimal = f
             userId={userId}
             displayName={displayName}
             avatarUrl={avatarUrl}
-            className="h-16 w-16 md:h-24 md:w-24"
+            className="h-20 w-20 md:h-28 md:w-28"
           />
           {!minimal && (
             <Flex direction="column" justify="center" align="start">

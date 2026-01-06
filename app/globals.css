@@ -395,12 +395,47 @@
 }
 
 /* Custom Radar Grid Styling */
-.severity-radar-grid path:nth-child(odd) {
-  stroke-width: 0.5px;
-  stroke-opacity: 0.3;
+/* Custom Radar Grid Styling */
+.severity-radar-grid .recharts-polar-grid-concentric path {
+  stroke-width: 0.5px !important;
+  stroke: #9ca3af !important;
+  /* gray-400 */
+  stroke-opacity: 0.5 !important;
 }
 
-.severity-radar-grid path:nth-child(even) {
-  stroke-width: 1px;
-  stroke-opacity: 0.6;
+/* Gold Segmented Control */
+.gold-segmented-control {
+  background-color: var(--gold-3) !important;
+  padding: 4px !important;
+  border-radius: var(--radius-3) !important;
+}
+
+/* Target the indicator if it exists, or the active item background */
+.gold-segmented-control .rt-SegmentedControlIndicator {
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Ensure active item text is dark and distinct */
+.gold-segmented-control .rt-SegmentedControlItem[data-state='active'] {
+  background-color: #ffffff !important;
+  color: #1b1816 !important;
+  font-weight: 500 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Inactive item text */
+.gold-segmented-control .rt-SegmentedControlItem[data-state='unchecked'] {
+  background-color: transparent !important;
+  color: var(--sand-11) !important;
+  font-weight: 400 !important;
+}
+
+.gold-segmented-control .rt-SegmentedControlItem[data-state='unchecked']:hover {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  color: var(--sand-12) !important;
+}
+
+.gold-segmented-control .rt-SegmentedControlItem[data-state='active']:hover {
+  background-color: #ffffff !important;
 }

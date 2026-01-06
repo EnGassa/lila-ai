@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { UserProfile } from "@/components/user-profile";
 import { SummaryOverview } from "@/components/summary-overview";
@@ -9,6 +9,7 @@ import { ConcernDetailPage } from "@/components/concern-detail-page";
 import { RecommendationsTab } from "@/components/recommendations-tab";
 import {
   Tabs,
+  SegmentedControl,
   Button,
   Flex,
   Grid,
@@ -68,6 +69,14 @@ export function SkincareDashboard({
   const currentAnalysisId = searchParams.get('analysisId');
   const defaultTab = searchParams.get('tab') || 'overview';
 
+  // Optimize tab switching with local state (optimistic UI)
+  const [activeTab, setActiveTab] = useState(defaultTab);
+
+  // Sync local state if URL changes externally (e.g. back button)
+  useEffect(() => {
+    setActiveTab(defaultTab);
+  }, [defaultTab]);
+
   // Extract nested analysis and charts from the database structure
   const analysisData = analysis.analysis || analysis;
   const charts = analysis.charts || {};
@@ -125,7 +134,7 @@ export function SkincareDashboard({
             {images.length > 0 && (
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="outline" size="2" color="blue" className="gap-2 cursor-pointer">
+                  <Button variant="soft" size="2" color="blue" className="gap-2 cursor-pointer">
                     <Camera className="h-4 w-4" />
                     Photos
                   </Button>
@@ -186,15 +195,27 @@ export function SkincareDashboard({
           </Flex>
         </Flex>
 
-        {/* Main Tabs Content */}
-        <Tabs.Root defaultValue={defaultTab}>
-          <Tabs.List>
-            <Tabs.Trigger value="overview">Analysis</Tabs.Trigger>
-            <Tabs.Trigger value="recommendations">Recommendation</Tabs.Trigger>
-          </Tabs.List>
+        {/* Main Navigation and Content */}
+        <Flex direction="column" gap="5">
+          <SegmentedControl.Root
+            value={activeTab}
+            className="gold-segmented-control"
+            onValueChange={(val) => {
+              // Optimistic update
+              setActiveTab(val);
 
-          <Box pt="5">
-            <Tabs.Content value="overview">
+              // Update URL in background
+              const params = new URLSearchParams(searchParams.toString());
+              params.set('tab', val);
+              router.replace(`?${params.toString()}`, { scroll: false });
+            }}
+          >
+            <SegmentedControl.Item value="overview">Analysis</SegmentedControl.Item>
+            <SegmentedControl.Item value="recommendations">Recommendation</SegmentedControl.Item>
+          </SegmentedControl.Root>
+
+          <Box>
+            {activeTab === 'overview' && (
               <Flex direction="column" gap="6">
                 <SummaryOverview analysis={analysisData} charts={charts} />
 
@@ -234,13 +255,13 @@ export function SkincareDashboard({
                   </Box>
                 </Box>
               </Flex>
-            </Tabs.Content>
+            )}
 
-            <Tabs.Content value="recommendations">
+            {activeTab === 'recommendations' && (
               <RecommendationsTab recommendations={recommendations} />
-            </Tabs.Content>
+            )}
           </Box>
-        </Tabs.Root>
+        </Flex>
 
         {/* Details Sheet */}
         <Sheet
