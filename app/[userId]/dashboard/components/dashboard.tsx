@@ -4,16 +4,16 @@ import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { notFound } from 'next/navigation';
 import { KeyIngredient, Product, Recommendations, Step } from '@/lib/types';
 
-export async function Dashboard({ 
-  userId, 
-  searchParams, 
-  fullName, 
-  avatarUrl 
-}: { 
+export async function Dashboard({
+  userId,
+  searchParams,
+  fullName,
+  avatarUrl
+}: {
   userId: string;
   searchParams?: { [key: string]: string | string[] | undefined };
-  fullName: string; 
-  avatarUrl?: string | null; 
+  fullName: string;
+  avatarUrl?: string | null;
 }) {
   const supabase = await createClient();
 
@@ -28,12 +28,12 @@ export async function Dashboard({
     // If no analysis at all, handle gracefully or show empty state
     // For now, we keep notFound() if truly nothing exists, 
     // but you might want a "No analysis yet" screen.
-    notFound(); 
+    notFound();
   }
 
   // 2. Determine which analysis ID to fetch full data for
-  const selectedAnalysisId = typeof searchParams?.analysisId === 'string' 
-    ? searchParams.analysisId 
+  const selectedAnalysisId = typeof searchParams?.analysisId === 'string'
+    ? searchParams.analysisId
     : historyList[0].id; // Default to latest
 
   // 3. Fetch the full analysis record for the selected ID
@@ -44,8 +44,8 @@ export async function Dashboard({
     .single();
 
   if (analysisError || !analysisRecord) {
-     // If the selected specific analysis is missing (e.g. bad URL), fall back to latest or 404
-     // For safety, let's 404 to avoid confusion, or redirect.
+    // If the selected specific analysis is missing (e.g. bad URL), fall back to latest or 404
+    // For safety, let's 404 to avoid confusion, or redirect.
     notFound();
   }
 
@@ -93,7 +93,7 @@ export async function Dashboard({
     // 2. NEXT_PUBLIC_STORAGE_BUCKET (Client/Server shared env var)
     // 3. 'user-uploads' (Default fallback)
     const bucketName = process.env.SUPABASE_S3_BUCKET || process.env.NEXT_PUBLIC_STORAGE_BUCKET || 'user-uploads';
-    
+
     try {
       // Use Service Role to bypass RLS for creating signed URLs
       const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -101,7 +101,7 @@ export async function Dashboard({
 
       let storageClient = supabase;
       if (serviceRoleKey && supabaseUrl) {
-          storageClient = createAdminClient(supabaseUrl, serviceRoleKey);
+        storageClient = createAdminClient(supabaseUrl, serviceRoleKey);
       }
 
       const getSignedUrls = async (bucket: string) => {
@@ -109,7 +109,7 @@ export async function Dashboard({
           .storage
           .from(bucket)
           .createSignedUrls(storedImageKeys, 60 * 60);
-        
+
         if (error) return null;
         const urls = data?.filter(item => item.signedUrl).map(item => item.signedUrl) || [];
         return urls.length > 0 ? urls : null;
@@ -129,7 +129,7 @@ export async function Dashboard({
         signedImageUrls = urls;
       }
     } catch (e) {
-        console.error("Exception signing URLs:", e);
+      console.error("Exception signing URLs:", e);
     }
   }
 

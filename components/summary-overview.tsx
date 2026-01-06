@@ -44,7 +44,7 @@ function SkinTypeCard({ skinType, description }: { skinType?: string, descriptio
   return (
     <InfoCard
       label="SKIN TYPE"
-      value={<Text size="5" weight="medium" style={{ fontFamily: 'var(--font-playfair)' }}>{capitalize(skinType)}</Text>}
+      value={<Text size="5" weight="medium">{capitalize(skinType)}</Text>}
       description={description}
       className="col-span-1 sm:col-span-2"
     />

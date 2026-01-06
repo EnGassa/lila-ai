@@ -54,31 +54,11 @@ export function LoginForm() {
                 email: values.email,
                 options: {
                     emailRedirectTo: (() => {
-                        const appUrl = process.env.NEXT_PUBLIC_APP_URL
                         const origin = window.location.origin
-                        
-                        // Smart Redirect Logic:
-                        // 1. If APP_URL is set and we are NOT on localhost, but APP_URL contains 'localhost', ignore it.
-                        //    This protects against stale env vars or misconfiguration in Vercel.
-                        // 2. Otherwise use APP_URL if available.
-                        // 3. Fallback to window.location.origin (always correct for the current browser session).
-                        
-                        let redirectBase = origin
-                        
-                        if (appUrl) {
-                            const isAppUrlLocalhost = appUrl.includes('localhost')
-                            const isOriginLocalhost = origin.includes('localhost')
-                            
-                            if (isAppUrlLocalhost && !isOriginLocalhost) {
-                                // Potentially dangerous config, ignore appUrl
-                                console.warn("Lila Skin: Ignoring NEXT_PUBLIC_APP_URL (localhost) in production environment.")
-                                redirectBase = origin
-                            } else {
-                                redirectBase = appUrl
-                            }
-                        }
+                        const redirectUrl = `${origin}/auth/callback?next=${next}`
 
-                        return `${redirectBase}/auth/callback?next=${next}`
+                        console.log("Lila Skin Auth: Redirecting to:", redirectUrl);
+                        return redirectUrl
                     })(),
                 },
             })
@@ -89,9 +69,9 @@ export function LoginForm() {
                 return
             }
 
-            analytics.track('login_success', { 
+            analytics.track('login_success', {
                 method: 'magic_link',
-                email_domain: values.email.split('@')[1] 
+                email_domain: values.email.split('@')[1]
             })
             setIsEmailSent(true)
             toast.success("Magic link sent!")
@@ -115,9 +95,9 @@ export function LoginForm() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
-                    <Button 
-                        variant="outline" 
-                        className="w-full" 
+                    <Button
+                        variant="outline"
+                        className="w-full"
                         onClick={() => setIsEmailSent(false)}
                     >
                         Try different email
@@ -146,9 +126,9 @@ export function LoginForm() {
                             <FormItem>
                                 <FormLabel className="sr-only">Email</FormLabel>
                                 <FormControl>
-                                    <Input 
-                                        placeholder="name@example.com" 
-                                        {...field} 
+                                    <Input
+                                        placeholder="name@example.com"
+                                        {...field}
                                         className="h-11 bg-white/50 border-input/50 focus:border-accent focus:ring-accent/20"
                                     />
                                 </FormControl>

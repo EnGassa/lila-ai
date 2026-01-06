@@ -101,7 +101,7 @@ export function SkincareDashboard({
         <Flex direction="column" gap="4">
           {/* Back Button */}
           <Box>
-            <Button variant="ghost" color="gray" asChild>
+            <Button variant="ghost" color="blue" asChild>
               <Link href="/dashboard" className="gap-2 px-0 hover:bg-transparent text-muted-foreground hover:text-foreground">
                 <ArrowLeft className="w-4 h-4" />
                 Back to Dashboard
@@ -111,7 +111,13 @@ export function SkincareDashboard({
 
           {/* User Profile & Actions */}
           <Flex justify="between" align="start">
-            <UserProfile userData={analysis} userId={userId} userName={userName} avatarUrl={avatarUrl} />
+            <UserProfile
+              userData={analysis}
+              userId={userId}
+              userName={userName}
+              avatarUrl={avatarUrl}
+              createdAt={currentAnalysisDate || analysis.created_at}
+            />
           </Flex>
 
           {/* Photos & Metadata */}
@@ -126,7 +132,7 @@ export function SkincareDashboard({
                 </SheetTrigger>
                 <SheetContent>
                   <SheetHeader>
-                    <SheetTitle style={{ fontFamily: 'var(--font-playfair)' }}>Analysis Photos</SheetTitle>
+                    <SheetTitle>Analysis Photos</SheetTitle>
                   </SheetHeader>
                   <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-6 px-2">
                     {images.map((url, idx) => {
@@ -245,7 +251,7 @@ export function SkincareDashboard({
             {selectedConcern && (
               <>
                 <SheetHeader>
-                  <SheetTitle style={{ fontFamily: 'var(--font-playfair)' }}>
+                  <SheetTitle>
                     {selectedConcern.name.replace(/_/g, " ")}
                   </SheetTitle>
                 </SheetHeader>

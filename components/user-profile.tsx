@@ -19,9 +19,10 @@ interface UserProfileProps {
   userName?: string;
   avatarUrl?: string | null;
   minimal?: boolean;
+  createdAt?: string;
 }
 
-export function UserProfile({ userData, userId, userName, avatarUrl, minimal = false }: UserProfileProps) {
+export function UserProfile({ userData, userId, userName, avatarUrl, minimal = false, createdAt }: UserProfileProps) {
   const { analysis, name } = userData || {};
   const ageRange = analysis?.skin_age_range || { low: 0, high: 0 }; // Handle missing analysis for safety
 
@@ -36,6 +37,15 @@ export function UserProfile({ userData, userId, userName, avatarUrl, minimal = f
       .map((n: string) => capitalize(n))
       .join(" ")
     : capitalize(userId));
+
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return "";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
 
   const handleLogout = async () => {
     await fetch('/auth/signout', { method: 'POST' })
@@ -57,13 +67,12 @@ export function UserProfile({ userData, userId, userName, avatarUrl, minimal = f
               <Heading
                 size="6"
                 weight="medium"
-                style={{ fontFamily: 'var(--font-playfair)' }}
                 className="leading-tight"
               >
                 {displayName}
               </Heading>
               <Text size="2" color="gray" weight="light">
-                Skincare Analysis
+                {createdAt ? `Analysis from ${formatDate(createdAt)}` : "Skincare Analysis"}
               </Text>
               <Text size="2" color="gray" weight="light">
                 Estimated Age: {ageRange.low} - {ageRange.high}
