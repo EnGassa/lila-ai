@@ -51,7 +51,7 @@ export function ConcernCard({ concern, onClick }: ConcernCardProps) {
       className={`cursor-pointer transition-shadow hover:shadow-md rounded-2xl`}
       style={{
         borderLeft: `4px solid ${severityColor.includes('red') ? 'var(--red-7)' : severityColor.includes('yellow') ? 'var(--amber-7)' : 'var(--green-7)'}`,
-        backgroundColor: 'var(--gray-2)'
+        backgroundColor: 'var(--gold-1)'
       }}
       onClick={onClick}
     >

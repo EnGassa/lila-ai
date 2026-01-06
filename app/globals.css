@@ -335,10 +335,10 @@
 
   --color-background: var(--sand-1);
   --color-foreground: var(--sand-12);
-  --color-card: var(--sand-1);
-  --color-card-foreground: var(--sand-12);
+  --color-card: var(--gold-1);
+  --color-card-foreground: #1b1816;
   --color-popover: var(--sand-1);
-  --color-popover-foreground: var(--sand-12);
+  --color-popover-foreground: #1b1816;
   --color-primary: var(--brown-9);
   --color-primary-foreground: #ffffff;
   --color-secondary: var(--sand-3);

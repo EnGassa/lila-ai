@@ -94,7 +94,7 @@ export function SkincareDashboard({
   const currentAnalysisDate = analysisHistory.find(h => h.id === analysis.id || h.id === currentAnalysisId)?.created_at;
 
   return (
-    <Container size="3" p="4" className="bg-background min-h-[calc(100vh-4rem)]">
+    <Container size="3" p="4" className="min-h-[calc(100vh-4rem)]" style={{ backgroundColor: 'var(--gold-2)' }}>
       <Flex direction="column" gap="6">
 
         {/* Header Section */}

@@ -26,7 +26,7 @@ interface InfoCardProps {
 
 function InfoCard({ label, value, description, className }: InfoCardProps) {
   return (
-    <Card className={className} size="2">
+    <Card className={className} size="2" style={{ backgroundColor: 'var(--gold-1)' }}>
       <Flex direction="column" gap="2">
         <Text size="1" weight="medium" color="gray" style={{ letterSpacing: '0.05em' }}>{label}</Text>
         {value && <Box>{value}</Box>}
@@ -70,7 +70,7 @@ function SkinToneCard({ fitzpatrickTone }: { fitzpatrickTone: keyof typeof FITZP
   const fitzpatrickInfo = FITZPATRICK_TONES[fitzpatrickTone] || FITZPATRICK_TONES.IV;
 
   return (
-    <Card size="2">
+    <Card size="2" style={{ backgroundColor: 'var(--gold-1)' }}>
       <Text size="1" weight="medium" color="gray" style={{ letterSpacing: '0.05em', textTransform: 'uppercase' }}>Skin Tone</Text>
       <Text as="p" mt="3" weight="medium" size="5">Fitzpatrick: {fitzpatrickTone}</Text>
 
