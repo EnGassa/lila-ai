@@ -131,6 +131,12 @@
     - [x] **Offline Capabilities:** Service Worker caching enabled.
     - [x] **Mobile Optimization:** Native-like viewport settings.
 
+*   **Dashboard Styling & Responsiveness:**
+    - [x] **Radix Migration:** Fully migrated dashboard components from Tailwind utility overload to clean `@radix-ui/themes`.
+    - [x] **Hybrid Layout:** Implemented balanced interface with borderless radar sections and bordered summary cards.
+    - [x] **Typography Polish:** Standardized font sizes (Size 2) and line-heights (1.6) across all information cards.
+    - [x] **Mobile Debugging:** Identified RLS/IP issues preventing mobile access; implemented temporary Public Access (Admin) mode for testing.
+
 *   **Recommendations Engine (V2):**
     - [x] **Multiple Product Options:** System now recommends a "Top Pick" and multiple "Alternatives" per routine step.
     - [x] **Unified Carousel UI:** Frontend displays all options in a single horizontal scroll container for seamless browsing.

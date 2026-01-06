@@ -29,9 +29,9 @@ function InfoCard({ label, value, description, className }: InfoCardProps) {
     <Card className={className} size="2">
       <Flex direction="column" gap="2">
         <Text size="1" weight="medium" color="gray" style={{ letterSpacing: '0.05em' }}>{label}</Text>
-        <Box>{value}</Box>
+        {value && <Box>{value}</Box>}
         {description && (
-          <Text size="2" color="gray" weight="light">
+          <Text size="2" color="gray" weight="light" style={{ lineHeight: '1.6' }}>
             {description}
           </Text>
         )}
@@ -175,11 +175,8 @@ export function SummaryOverview({ analysis, charts }: any) {
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <InfoCard
         label="SUMMARY"
-        value={
-          <Text size="3" weight="light" color="gray">
-            {analysis?.overview_explanation}
-          </Text>
-        }
+        value={null}
+        description={analysis?.overview_explanation}
         className="col-span-1 sm:col-span-2"
       />
       <div className="col-span-1 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">

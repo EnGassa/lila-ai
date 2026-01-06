@@ -47,9 +47,12 @@ export function ConcernCard({ concern, onClick }: ConcernCardProps) {
   const severityColor = getSeverityColor(concern.score);
 
   return (
-    <Card
-      className={`cursor-pointer transition-shadow hover:shadow-md`}
-      style={{ borderColor: severityColor.includes('red') ? 'var(--red-7)' : severityColor.includes('yellow') ? 'var(--amber-7)' : 'var(--green-7)' }}
+    <Box
+      className={`cursor-pointer transition-shadow hover:shadow-md rounded-2xl`}
+      style={{
+        borderLeft: `4px solid ${severityColor.includes('red') ? 'var(--red-7)' : severityColor.includes('yellow') ? 'var(--amber-7)' : 'var(--green-7)'}`,
+        backgroundColor: 'var(--gray-2)'
+      }}
       onClick={onClick}
     >
       <Flex direction="column" gap="4" p="4">
@@ -89,6 +92,6 @@ export function ConcernCard({ concern, onClick }: ConcernCardProps) {
           <ChevronRight className="h-3 w-3" />
         </Flex>
       </Flex>
-    </Card>
+    </Box>
   );
 }

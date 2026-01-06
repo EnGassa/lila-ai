@@ -198,7 +198,7 @@ export function SkincareDashboard({
               <Flex direction="column" gap="6">
                 <SummaryOverview analysis={analysisData} charts={charts} />
 
-                <Card>
+                <Box>
                   <Box p="4">
                     <Heading size="3" color="gray" weight="medium" mb="2" style={{ letterSpacing: '0.05em' }}>
                       SEVERITY RADAR
@@ -210,9 +210,9 @@ export function SkincareDashboard({
                       <SeverityRadar radarData={charts.overview_radar} />
                     </Box>
                   </Box>
-                </Card>
+                </Box>
 
-                <Card>
+                <Box>
                   <Box p="4">
                     <Heading size="3" color="gray" weight="medium" mb="2" style={{ letterSpacing: '0.05em' }}>
                       SKIN CONCERNS
@@ -232,7 +232,7 @@ export function SkincareDashboard({
                         ))}
                     </Flex>
                   </Box>
-                </Card>
+                </Box>
               </Flex>
             </Tabs.Content>
 

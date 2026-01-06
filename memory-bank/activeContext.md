@@ -1,5 +1,20 @@
 # Active Context
 
+
+## Current Work: Dashboard Styling & Mobile Access
+- **Design System Overhaul (Radix Themes):**
+    - **Migration:** Replaced Tailwind-based components with `@radix-ui/themes` for a robust, accessible foundation.
+    - **Hybrid Layout:** Implemented a "Hybrid" dashboard aesthetic:
+        - **Borderless/Integrated:** Visual-heavy sections (Severity Radar, Skin Concerns list) blend seamlessly into the background for a modern editorial feel.
+        - **Bordered Cards:** Data-dense Info Modules (Summary, Skin Age, Skin Type) use traditional bordered Cards to separate content clearly.
+    - **Typography:** Unified dashboard text to "SF Pro Display" for a clean, app-like feel. "Playfair Display" reserved for high-impact editorial moments.
+    - **Styling Consistency:** Standardized `InfoCard` metrics (Size 2 text, 1.6 line-height) across all summary blocks.
+- **Mobile Access Debugging (Ongoing):**
+    - **Issue:** "Site cannot be reached" / Magic Link failure on mobile devices.
+    - **Diagnosis:** Likely IP-based redirect issues (`localhost` vs local IP) and RLS blocking unauthenticated access on mobile browsers.
+    - **Temporary Debug Mode:** Updated `DashboardPage` and `DashboardOps` to use `SUPABASE_SERVICE_ROLE_KEY` (Admin Client) temporarily. This bypasses RLS and allows public access via UUID link for testing mobile rendering and layout without auth barriers.
+    - **Action Item:** User must add local IP (`http://192.168.x.x:3000/**`) to Supabase Redirect URLs.
+
 ## Current Work: Telemetry Implementation
 - **Comprehensive Analytics:**
     - **Goal:** Instrument full user journey to understand drop-off points and feature usage.

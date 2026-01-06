@@ -86,6 +86,17 @@ To maintain design consistency and reduce duplication:
 *   **Centralized Theming:** Theme colors (`--color-background`, `--color-accent`) are defined in `globals.css` and accessed via Tailwind utility classes, ensuring a unified "Beige/Earthy" aesthetic across all pages.
 *   **Standardized Routing:** All user-centric routes follow the `/[userId]/[feature]` pattern (e.g., `/[userId]/dashboard`, `/[userId]/intake`) to maintain a clean, user-scoped URL structure.
 
+### Design System (Radix Themes)
+To ensure accessibility, consistency, and rapid development of premium UI:
+1.  **Component Foundation:** `@radix-ui/themes` provides the base primitive set (Box, Flex, Grid, Card, Text, Heading).
+2.  **Hybrid Layout Pattern:**
+    *   **Data Density = Bordered:** High-density informational modules (Summary, Skin Age, Concerns Specifics) use standard `Card` components with borders for containment.
+    *   **Visual Density = Integrated:** Large graphical elements (Rubrics, Radars) and structural containers use `Box` without borders, blending into the page background for an editorial, non-boxy feel.
+3.  **Typography Mapping:**
+    *   **UI/Body:** Mapped to "SF Pro Display" (clean, technical, readable).
+    *   **Editorial/Display:** Mapped to "Playfair Display" (emotional, brand-aligned).
+4.  **Theme Configuration:** Custom colors (Lila Earth, Lila Blue) are injected via Radix Theme Token overrides rather than just Tailwind utility classes.
+
 ### Notification Proxy Pattern
 To securely send third-party notifications (Discord) without exposing webhook URLs to the client:
 1.  **Server-Side Proxy:** A Next.js API route (`app/api/webhooks/discord/route.ts`) acts as the intermediary.
