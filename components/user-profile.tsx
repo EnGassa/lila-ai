@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { LogOut, User } from "lucide-react"
 
+import { Heading, Text, Flex, Box } from "@radix-ui/themes";
+
 interface UserProfileProps {
   userData: any;
   userId: string;
@@ -44,22 +46,29 @@ export function UserProfile({ userData, userId, userName, avatarUrl, minimal = f
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none">
         <div className="flex items-center gap-3 md:gap-4 hover:opacity-80 transition-opacity cursor-pointer">
-          <UserAvatar 
-            userId={userId} 
-            displayName={displayName} 
-            avatarUrl={avatarUrl} 
+          <UserAvatar
+            userId={userId}
+            displayName={displayName}
+            avatarUrl={avatarUrl}
             className="h-16 w-16 md:h-24 md:w-24"
           />
           {!minimal && (
-            <div className="text-left">
-              <p className="text-lg md:text-2xl font-light leading-tight">{displayName}</p>
-              <p className="text-xs md:text-sm font-light text-muted-foreground">
+            <Flex direction="column" justify="center" align="start">
+              <Heading
+                size="6"
+                weight="medium"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="leading-tight"
+              >
+                {displayName}
+              </Heading>
+              <Text size="2" color="gray" weight="light">
                 Skincare Analysis
-              </p>
-              <p className="text-xs md:text-sm font-light text-muted-foreground">
+              </Text>
+              <Text size="2" color="gray" weight="light">
                 Estimated Age: {ageRange.low} - {ageRange.high}
-              </p>
-            </div>
+              </Text>
+            </Flex>
           )}
         </div>
       </DropdownMenuTrigger>
@@ -67,8 +76,8 @@ export function UserProfile({ userData, userId, userName, avatarUrl, minimal = f
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem disabled>
-            <User className="mr-2 h-4 w-4" />
-            <span>Profile Settings</span>
+          <User className="mr-2 h-4 w-4" />
+          <span>Profile Settings</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600">
           <LogOut className="mr-2 h-4 w-4" />

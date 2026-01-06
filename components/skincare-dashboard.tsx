@@ -9,10 +9,15 @@ import { ConcernDetailPage } from "@/components/concern-detail-page";
 import { RecommendationsTab } from "@/components/recommendations-tab";
 import {
   Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+  Button,
+  Flex,
+  Grid,
+  Box,
+  Heading,
+  Text,
+  Card,
+  Container
+} from "@radix-ui/themes";
 import {
   Sheet,
   SheetContent,
@@ -21,7 +26,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { FeedbackModal } from "@/components/FeedbackModal";
-import { Button } from "@/components/ui/button";
 import { Calendar, Camera, ArrowLeft } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -48,16 +52,17 @@ interface Concern {
   areas: any[];
 }
 
-export function SkincareDashboard({ 
-  analysis, 
-  recommendations, 
-  userId, 
-  userName, 
+export function SkincareDashboard({
+  analysis,
+  recommendations,
+  userId,
+  userName,
   avatarUrl,
   analysisHistory = [],
   images = []
 }: SkincareDashboardProps) {
   const [selectedConcern, setSelectedConcern] = useState<Concern | null>(null);
+  // Router hooks retained for future use if needed, though mostly using Radix logic now
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentAnalysisId = searchParams.get('analysisId');
@@ -75,7 +80,7 @@ export function SkincareDashboard({
       areas: value.regional_breakdown,
     }),
   );
-  
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
@@ -89,168 +94,176 @@ export function SkincareDashboard({
   const currentAnalysisDate = analysisHistory.find(h => h.id === analysis.id || h.id === currentAnalysisId)?.created_at;
 
   return (
-    <div className="p-4 space-y-6 bg-background">
-      <div className="flex flex-col gap-4">
-        {/* Back Button for Navigation */}
-        <div>
-            <a 
-                href="/dashboard"
-                className={cn(
-                    "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
-                    "hover:bg-accent hover:text-accent-foreground",
-                    "h-9 px-0 py-2 -ml-2 text-muted-foreground hover:text-foreground"
-                )}
-            >
-                <ArrowLeft className="w-4 h-4 mr-1" />
+    <Container size="3" p="4" className="bg-background min-h-[calc(100vh-4rem)]">
+      <Flex direction="column" gap="6">
+
+        {/* Header Section */}
+        <Flex direction="column" gap="4">
+          {/* Back Button */}
+          <Box>
+            <Button variant="ghost" color="gray" asChild>
+              <Link href="/dashboard" className="gap-2 px-0 hover:bg-transparent text-muted-foreground hover:text-foreground">
+                <ArrowLeft className="w-4 h-4" />
                 Back to Dashboard
-            </a>
-        </div>
+              </Link>
+            </Button>
+          </Box>
 
-        {/* Top Bar with History Toggle */}
-        <div className="flex justify-between items-start">
-           <UserProfile userData={analysis} userId={userId} userName={userName} avatarUrl={avatarUrl} />
-           
-        </div>
-           
-           <div className="flex gap-2">
-             {images.length > 0 && (
-               <Sheet>
-                 <SheetTrigger asChild>
-                   <Button variant="outline" size="sm" className="gap-2">
-                     <Camera className="h-4 w-4" />
-                     Photos
-                   </Button>
-                 </SheetTrigger>
-                 <SheetContent>
-                   <SheetHeader>
-                     <SheetTitle>Analysis Photos</SheetTitle>
-                   </SheetHeader>
-                   <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-6 px-2">
-                     {images.map((url, idx) => {
-                       let label = `Photo ${idx + 1}`;
-                       try {
-                         const path = url.split('?')[0];
-                         const filename = path.split('/').pop() || "";
-                         const nameWithoutExt = filename.split('.')[0];
-                         label = nameWithoutExt
-                           .split('_')
-                           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                           .join(' ');
-                       } catch (e) {
-                         // Fallback
-                       }
+          {/* User Profile & Actions */}
+          <Flex justify="between" align="start">
+            <UserProfile userData={analysis} userId={userId} userName={userName} avatarUrl={avatarUrl} />
+          </Flex>
 
-                       return (
-                         <div 
-                            key={idx} 
-                            className="group relative flex flex-col items-center gap-3"
-                         >
-                           {/* Image Card */}
-                           <div className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden shadow-sm border border-border/50 group-hover:shadow-md group-hover:border-accent/30 transition-all duration-500 ease-out bg-secondary/20">
-                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                             <img 
-                               src={url} 
-                               alt={label} 
-                               className="object-cover w-full h-full transition-transform duration-700 ease-out will-change-transform group-hover:scale-105"
-                             />
-                             {/* Inner shadow/vignette for depth */}
-                             <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-2xl pointer-events-none" />
-                           </div>
+          {/* Photos & Metadata */}
+          <Flex align="center" gap="2">
+            {images.length > 0 && (
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="2" color="blue" className="gap-2 cursor-pointer">
+                    <Camera className="h-4 w-4" />
+                    Photos
+                  </Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle style={{ fontFamily: 'var(--font-playfair)' }}>Analysis Photos</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-6 px-2">
+                    {images.map((url, idx) => {
+                      let label = `Photo ${idx + 1}`;
+                      try {
+                        const path = url.split('?')[0];
+                        const filename = path.split('/').pop() || "";
+                        const nameWithoutExt = filename.split('.')[0];
+                        label = nameWithoutExt
+                          .split('_')
+                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                          .join(' ');
+                      } catch (e) {
+                        // Fallback
+                      }
 
-                           {/* Clean Label */}
-                           <span className="text-xs font-medium tracking-wide text-muted-foreground/80 group-hover:text-foreground transition-colors duration-300">
-                             {label}
-                           </span>
-                         </div>
-                       );
-                     })}
-                   </div>
-                 </SheetContent>
-               </Sheet>
-             )}
+                      return (
+                        <div
+                          key={idx}
+                          className="group relative flex flex-col items-center gap-3"
+                        >
+                          <div className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden shadow-sm border border-border/50 group-hover:shadow-md group-hover:border-accent/30 transition-all duration-500 ease-out bg-secondary/20">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={url}
+                              alt={label}
+                              className="object-cover w-full h-full transition-transform duration-700 ease-out will-change-transform group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-2xl pointer-events-none" />
+                          </div>
 
+                          <span className="text-xs font-medium tracking-wide text-muted-foreground/80 group-hover:text-foreground transition-colors duration-300">
+                            {label}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </SheetContent>
+              </Sheet>
+            )}
 
-           </div>
+            {currentAnalysisDate && (
+              <Flex align="center" gap="2" px="1">
+                <Calendar className="h-3 w-3 text-muted-foreground" />
+                <Text size="1" color="gray">
+                  Showing analysis from {formatDate(currentAnalysisDate)}
+                </Text>
+              </Flex>
+            )}
+          </Flex>
+        </Flex>
 
-        
-        {currentAnalysisDate && (
-             <div className="flex items-center gap-2 text-xs text-muted-foreground px-1">
-                <Calendar className="h-3 w-3" />
-                Showing analysis from {formatDate(currentAnalysisDate)}
-             </div>
-        )}
-      </div>
+        {/* Main Tabs Content */}
+        <Tabs.Root defaultValue={defaultTab}>
+          <Tabs.List>
+            <Tabs.Trigger value="overview">Analysis</Tabs.Trigger>
+            <Tabs.Trigger value="recommendations">Recommendation</Tabs.Trigger>
+          </Tabs.List>
 
-      <Tabs defaultValue={defaultTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="overview">Analysis</TabsTrigger>
-          <TabsTrigger value="recommendations">Recommendation</TabsTrigger>
-        </TabsList>
-        <TabsContent value="overview" className="space-y-6">
-          <SummaryOverview analysis={analysisData} charts={charts} />
-          <div className="p-4 rounded-lg bg-card border border-border">
-            <h2 className="text-base font-light text-muted-foreground">
-              SEVERITY RADAR
-            </h2>
-            <p className="text-xs text-muted-foreground mt-1">
-              Severity is on a 1–5 scale. Radar shows overall severity: Larger
-              filled area = more severe concerns across dimensions.
-            </p>
-            <div className="h-[350px] w-full">
-              <SeverityRadar radarData={charts.overview_radar} />
-            </div>
-          </div>
-          <div className="p-4 rounded-lg bg-card border border-border">
-            <h2 className="text-base font-light text-muted-foreground">
-              SKIN CONCERNS
-            </h2>
-            <p className="text-xs text-muted-foreground mt-1">
-              Below are all your skin attributes rated in order of severity.
-              Click on each attribute to see a deeper analysis of each area.
-            </p>
-            <div className="space-y-4 mt-4">
-              {concerns
-                .sort((a, b) => b.score - a.score)
-                .map((concern) => (
-                  <ConcernCard
-                    key={concern.name}
-                    concern={concern}
-                    onClick={() => setSelectedConcern(concern)}
-                  />
-                ))}
-            </div>
-          </div>
-        </TabsContent>
-        <TabsContent value="recommendations">
-          <RecommendationsTab recommendations={recommendations} />
-        </TabsContent>
-      </Tabs>
-      <Sheet
-        open={!!selectedConcern}
-        onOpenChange={(isOpen) => !isOpen && setSelectedConcern(null)}
-      >
-        <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
-          {selectedConcern && (
-            <>
-              <SheetHeader>
-                <SheetTitle>
-                  {selectedConcern.name.replace(/_/g, " ")}
-                </SheetTitle>
-              </SheetHeader>
-              <ConcernDetailPage
-                userId={userId}
-                concernName={selectedConcern.name}
-                onClose={() => setSelectedConcern(null)}
-                userData={analysis}
-              />
-            </>
-          )}
-        </SheetContent>
-      </Sheet>
-      
-      <div className="flex justify-center py-8">
-        <FeedbackModal userId={userId} recommendationId={recommendations?.id} />
-      </div>
-    </div>
+          <Box pt="5">
+            <Tabs.Content value="overview">
+              <Flex direction="column" gap="6">
+                <SummaryOverview analysis={analysisData} charts={charts} />
+
+                <Card>
+                  <Box p="4">
+                    <Heading size="3" color="gray" weight="medium" mb="2" style={{ letterSpacing: '0.05em' }}>
+                      SEVERITY RADAR
+                    </Heading>
+                    <Text size="2" color="gray">
+                      Severity is on a 1–5 scale. Radar shows overall severity: Larger filled area = more severe concerns across dimensions.
+                    </Text>
+                    <Box height="350px" width="100%" mt="4">
+                      <SeverityRadar radarData={charts.overview_radar} />
+                    </Box>
+                  </Box>
+                </Card>
+
+                <Card>
+                  <Box p="4">
+                    <Heading size="3" color="gray" weight="medium" mb="2" style={{ letterSpacing: '0.05em' }}>
+                      SKIN CONCERNS
+                    </Heading>
+                    <Text size="2" color="gray">
+                      Below are all your skin attributes rated in order of severity. Click on each attribute to see a deeper analysis of each area.
+                    </Text>
+                    <Flex direction="column" gap="4" mt="4">
+                      {concerns
+                        .sort((a, b) => b.score - a.score)
+                        .map((concern) => (
+                          <ConcernCard
+                            key={concern.name}
+                            concern={concern}
+                            onClick={() => setSelectedConcern(concern)}
+                          />
+                        ))}
+                    </Flex>
+                  </Box>
+                </Card>
+              </Flex>
+            </Tabs.Content>
+
+            <Tabs.Content value="recommendations">
+              <RecommendationsTab recommendations={recommendations} />
+            </Tabs.Content>
+          </Box>
+        </Tabs.Root>
+
+        {/* Details Sheet */}
+        <Sheet
+          open={!!selectedConcern}
+          onOpenChange={(isOpen) => !isOpen && setSelectedConcern(null)}
+        >
+          <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+            {selectedConcern && (
+              <>
+                <SheetHeader>
+                  <SheetTitle style={{ fontFamily: 'var(--font-playfair)' }}>
+                    {selectedConcern.name.replace(/_/g, " ")}
+                  </SheetTitle>
+                </SheetHeader>
+                <ConcernDetailPage
+                  userId={userId}
+                  concernName={selectedConcern.name}
+                  onClose={() => setSelectedConcern(null)}
+                  userData={analysis}
+                />
+              </>
+            )}
+          </SheetContent>
+        </Sheet>
+
+        <Flex justify="center" py="8">
+          <FeedbackModal userId={userId} recommendationId={recommendations?.id} />
+        </Flex>
+      </Flex>
+    </Container>
   );
 }

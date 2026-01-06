@@ -4,16 +4,21 @@ const APP_NAME = "Lila Skin";
 const APP_DEFAULT_TITLE = "Lila Skin";
 const APP_TITLE_TEMPLATE = "%s - Lila Skin";
 const APP_DESCRIPTION = "Your personalized skin analysis";
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { ClientPostHogProvider } from '@/components/ClientPostHogProvider'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { Toaster } from '@/components/ui/sonner'
+import { Theme } from '@radix-ui/themes'
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
+const _playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: '--font-playfair'
+});
 
 export const metadata: Metadata = {
   applicationName: APP_NAME,
@@ -63,19 +68,27 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className={`font-sans antialiased bg-background text-foreground`}>
+      <body className={`font-sans antialiased bg-background text-foreground ${_playfair.variable}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <ClientPostHogProvider>
-            {children}
-          </ClientPostHogProvider>
-          <div className="fixed bottom-4 right-4">
-            <ThemeToggle />
-          </div>
+          <Theme
+            accentColor="red"
+            grayColor="sand"
+            panelBackground="translucent"
+            radius="large"
+            scaling="110%"
+          >
+            <ClientPostHogProvider>
+              {children}
+            </ClientPostHogProvider>
+            <div className="fixed bottom-4 right-4">
+              <ThemeToggle />
+            </div>
+          </Theme>
         </ThemeProvider>
         <Toaster />
         <Analytics />

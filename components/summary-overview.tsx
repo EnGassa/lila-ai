@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/card";
+import { Card, Text, Badge, Grid, Flex, Box, Heading } from "@radix-ui/themes";
 import { DotChart } from "./dot-chart";
 import { RegionWiseBreakdown } from "./region-wise-breakdown";
 
@@ -26,14 +26,16 @@ interface InfoCardProps {
 
 function InfoCard({ label, value, description, className }: InfoCardProps) {
   return (
-    <Card className={`p-4 rounded-lg bg-card ${className}`}>
-      <p className="text-sm font-light text-muted-foreground">{label}</p>
-      <div>{value}</div>
-      {description && (
-        <p className="text-sm font-light text-muted-foreground">
-          {description}
-        </p>
-      )}
+    <Card className={className} size="2">
+      <Flex direction="column" gap="2">
+        <Text size="1" weight="medium" color="gray" style={{ letterSpacing: '0.05em' }}>{label}</Text>
+        <Box>{value}</Box>
+        {description && (
+          <Text size="2" color="gray" weight="light">
+            {description}
+          </Text>
+        )}
+      </Flex>
     </Card>
   );
 }
@@ -42,7 +44,7 @@ function SkinTypeCard({ skinType, description }: { skinType?: string, descriptio
   return (
     <InfoCard
       label="SKIN TYPE"
-      value={<p className="text-lg font-medium">{capitalize(skinType)}</p>}
+      value={<Text size="5" weight="medium" style={{ fontFamily: 'var(--font-playfair)' }}>{capitalize(skinType)}</Text>}
       description={description}
       className="col-span-1 sm:col-span-2"
     />
@@ -54,9 +56,9 @@ function SkinAgeCard({ ageRange, rationale }: { ageRange?: { low: number; high: 
     <InfoCard
       label="SKIN AGE"
       value={
-        <p className="text-lg font-medium">
+        <Text size="5" weight="medium">
           {ageRange?.low} - {ageRange?.high}
-        </p>
+        </Text>
       }
       description={rationale}
     />
@@ -68,9 +70,9 @@ function SkinToneCard({ fitzpatrickTone }: { fitzpatrickTone: keyof typeof FITZP
   const fitzpatrickInfo = FITZPATRICK_TONES[fitzpatrickTone] || FITZPATRICK_TONES.IV;
 
   return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Skin Tone</p>
-      <p className="mt-3 text-foreground font-semibold text-lg">Fitzpatrick: {fitzpatrickTone}</p>
+    <Card size="2">
+      <Text size="1" weight="medium" color="gray" style={{ letterSpacing: '0.05em', textTransform: 'uppercase' }}>Skin Tone</Text>
+      <Text as="p" mt="3" weight="medium" size="5">Fitzpatrick: {fitzpatrickTone}</Text>
 
       <div className="mt-3 space-y-2">
         <div className="relative">
@@ -79,18 +81,16 @@ function SkinToneCard({ fitzpatrickTone }: { fitzpatrickTone: keyof typeof FITZP
             {Object.entries(FITZPATRICK_TONES).map(([key, tone], index) => (
               <div key={key} className="flex flex-col items-center gap-2 text-center">
                 <div
-                  className={`h-6 w-6 rounded-full transition-all border-primary-foreground border-2 border-solid ${
-                    index + 1 === fitzpatrickLevel
-                      ? `${tone.color} border-foreground ring-1 ring-foreground`
-                      : `${tone.color} border-transparent`
-                  }`}
+                  className={`h-6 w-6 rounded-full transition-all border-primary-foreground border-2 border-solid ${index + 1 === fitzpatrickLevel
+                    ? `${tone.color} border-foreground ring-1 ring-foreground`
+                    : `${tone.color} border-transparent`
+                    }`}
                 />
                 <div
-                  className={`text-xs ${
-                    index + 1 === fitzpatrickLevel
-                      ? "font-semibold text-foreground"
-                      : "text-muted-foreground"
-                  }`}
+                  className={`text-xs ${index + 1 === fitzpatrickLevel
+                    ? "font-semibold text-foreground"
+                    : "text-muted-foreground"
+                    }`}
                 >
                   <p>{key}</p>
                   <p>{tone.name}</p>
@@ -100,24 +100,23 @@ function SkinToneCard({ fitzpatrickTone }: { fitzpatrickTone: keyof typeof FITZP
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
 
-import { Badge } from "@/components/ui/badge";
 
 function TopConcernsCard({ topConcerns }: { topConcerns?: string[] }) {
   return (
     <InfoCard
       label="TOP CONCERNS"
       value={
-        <div className="flex flex-wrap gap-2">
+        <Flex wrap="wrap" gap="2">
           {topConcerns?.map((concern) => (
-            <Badge key={concern} variant="outline" className="text-lg font-medium">
+            <Badge key={concern} variant="soft" color="red" size="2">
               {capitalize(concern.replace(/_/g, ' '))}
             </Badge>
           ))}
-        </div>
+        </Flex>
       }
       className="col-span-1 sm:col-span-2"
     />
@@ -149,22 +148,22 @@ function SensitivityCard({ analysis }: { analysis: any }) {
     <InfoCard
       label="SENSITIVITY"
       value={
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <p className="text-lg font-medium">
+        <Flex direction="column" gap="3">
+          <Flex align="center" justify="between">
+            <Text size="3" weight="medium">
               Redness: {sensitivityData.redness.value}/
               {sensitivityData.redness.maxValue}
-            </p>
+            </Text>
             <DotChart data={[sensitivityData.redness]} />
-          </div>
-          <div className="flex items-center justify-between">
-            <p className="text-lg font-medium">
+          </Flex>
+          <Flex align="center" justify="between">
+            <Text size="3" weight="medium">
               Acne: {sensitivityData.acne.value}/
               {sensitivityData.acne.maxValue}
-            </p>
+            </Text>
             <DotChart data={[sensitivityData.acne]} />
-          </div>
-        </div>
+          </Flex>
+        </Flex>
       }
       className="col-span-1 sm:col-span-2"
     />
@@ -177,9 +176,9 @@ export function SummaryOverview({ analysis, charts }: any) {
       <InfoCard
         label="SUMMARY"
         value={
-          <p className="text-sm font-light text-muted-foreground">
+          <Text size="3" weight="light" color="gray">
             {analysis?.overview_explanation}
-          </p>
+          </Text>
         }
         className="col-span-1 sm:col-span-2"
       />

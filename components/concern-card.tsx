@@ -1,9 +1,10 @@
 import {
   Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Heading,
+  Text,
+  Flex,
+  Box
+} from "@radix-ui/themes";
 import {
   ChevronRight,
   Eye,
@@ -47,38 +48,47 @@ export function ConcernCard({ concern, onClick }: ConcernCardProps) {
 
   return (
     <Card
-      className={`border ${severityColor.split(' ')[0]} cursor-pointer`}
+      className={`cursor-pointer transition-shadow hover:shadow-md`}
+      style={{ borderColor: severityColor.includes('red') ? 'var(--red-7)' : severityColor.includes('yellow') ? 'var(--amber-7)' : 'var(--green-7)' }}
       onClick={onClick}
     >
-      <CardHeader className="flex flex-row items-start justify-between">
-        <div className="flex items-center gap-2">
-          <div
-            className={`flex h-8 w-8 items-center justify-center rounded-full bg-muted`}
-          >
-            <Icon className="h-5 w-5 text-muted-foreground" />
-          </div>
-          <CardTitle className="text-lg font-regular">
-            {concern.name.replace(/_/g, ' ')}
-          </CardTitle>
-        </div>
-        <div className="text-right">
-          <p
-            className={`text-2xl font-bold ${severityColor.split(' ')[1]}`}
-          >
-            {concern.score.toFixed(1)}
-          </p>
-          <p className="text-xs text-muted-foreground">Severity: 1-5</p>
-        </div>
-      </CardHeader>
-      <CardContent className="flex flex-col items-start gap-4">
-        <p className="text-sm text-muted-foreground">
+      <Flex direction="column" gap="4" p="4">
+        <Flex justify="between" align="start">
+          <Flex align="center" gap="3">
+            <Flex
+              width="32px"
+              height="32px"
+              align="center"
+              justify="center"
+              className="rounded-full bg-[var(--gray-3)]"
+            >
+              <Icon className="h-4 w-4 text-[var(--gray-11)]" />
+            </Flex>
+            <Heading size="4" weight="medium">
+              {concern.name.replace(/_/g, ' ')}
+            </Heading>
+          </Flex>
+          <Flex direction="column" align="end">
+            <Text
+              size="6"
+              weight="bold"
+              style={{ color: severityColor.includes('red') ? 'var(--red-9)' : severityColor.includes('yellow') ? 'var(--amber-9)' : 'var(--green-9)' }}
+            >
+              {concern.score.toFixed(1)}
+            </Text>
+            <Text size="1" color="gray">Severity: 1-5</Text>
+          </Flex>
+        </Flex>
+
+        <Text size="2" color="gray" weight="light" className="line-clamp-2">
           {concern.description}
-        </p>
-        <div className="flex items-center gap-1 text-sm font-bold text-foreground">
-          <span>View Details</span>
-          <ChevronRight className="h-4 w-4" />
-        </div>
-      </CardContent>
+        </Text>
+
+        <Flex align="center" gap="1">
+          <Text size="2" weight="bold">View Details</Text>
+          <ChevronRight className="h-3 w-3" />
+        </Flex>
+      </Flex>
     </Card>
   );
 }
