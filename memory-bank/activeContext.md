@@ -309,6 +309,7 @@
     - **E2E Testing:** Integrated **Playwright** for Landing Page, Onboarding, and Dashboard Security (redirects).
     - **Unit Testing:** Face Scan Logic (caught inverted pitch bug), Product Schema validation, Data Enrichment, Analytics, Utils, and UI Components.
     - **CI/CD:** Created GitHub Actions workflow (`.github/workflows/test.yml`) and pinned `packageManager` version to fix `pnpm` setup errors.
+    - **Performance:** Enabled Caching for Playwright browsers (`test.yml`) and `uv` dependencies (`trigger_analysis.yml`) to reduce CI build times.
     - **Tooling:** Updated `package.json` with standard `test`, `test:ci`, and `test:e2e` scripts.
 
 ## Previous Work: Latency Instrumentation (L-82)
