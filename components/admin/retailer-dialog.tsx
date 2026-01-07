@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -50,6 +52,7 @@ export function RetailerDialog({
   children,
   onOpenChange,
 }: RetailerDialogProps) {
+  const router = useRouter(); // Initialize router
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -101,6 +104,7 @@ export function RetailerDialog({
 
       if (result.success) {
         toast.success(result.message);
+        router.refresh(); // Refresh data on success
         handleOpenChange(false);
       } else {
         toast.error(result.message);

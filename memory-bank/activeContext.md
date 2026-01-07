@@ -160,6 +160,7 @@
   - Fixed data flow for user avatars in Admin dashboard.
   - Added "Retailers" link to Admin Navigation for better discoverability.
   - **Retailer Region Standardization:** Replaced open-ended text input with a standardized Country Selector (ISO codes) in `RetailerDialog`.
+  - **Bug Fix:** Added `router.refresh()` to `RetailerDialog` to ensure immediate UI updates after creating/editing a retailer.
 - **Admin Layout Fix:**
     - Resolved a critical `Runtime TypeError` in `AdminLayout` caused by a circular dependency in `lib/utils.ts`.
     - **Refactor:** Extracted `FaceCropper` (which depends on the heavy, browser-only `@mediapipe` library) into a dedicated `lib/face-cropper.ts` file.
