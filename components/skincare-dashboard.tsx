@@ -216,32 +216,32 @@ export function SkincareDashboard({
 
           <Box>
             {activeTab === 'overview' && (
-              <Flex direction="column" gap="6">
+              <Flex direction="column" gap="4">
                 <SummaryOverview analysis={analysisData} charts={charts} />
 
                 <Box>
-                  <Box p="4">
+                  <Box py="2">
                     <Text as="div" size="6" weight="medium" mb="2">
                       Severity Radar
                     </Text>
                     <p className="text-sm text-muted-foreground leading-snug mt-2">
                       Severity is on a 1–5 scale. Radar shows overall severity: Larger filled area = more severe concerns across dimensions.
                     </p>
-                    <Box height="350px" width="100%" mt="4">
+                    <Box height="350px" width="100%" mt="2">
                       <SeverityRadar radarData={charts.overview_radar} />
                     </Box>
                   </Box>
                 </Box>
 
                 <Box>
-                  <Box p="4">
+                  <Box py="2">
                     <Text as="div" size="6" weight="medium" mb="2">
                       Skin Concerns
                     </Text>
                     <p className="text-sm text-muted-foreground leading-snug mt-2">
                       Below are all your skin attributes rated in order of severity. Click on each attribute to see a deeper analysis of each area.
                     </p>
-                    <Flex direction="column" gap="4" mt="4">
+                    <Flex direction="column" gap="4" mt="5">
                       {concerns
                         .sort((a, b) => b.score - a.score)
                         .map((concern) => (
