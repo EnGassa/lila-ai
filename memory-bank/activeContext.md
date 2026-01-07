@@ -6,6 +6,7 @@
     - Enforces `eslint`/`prettier` for JS/TS.
     - Enforces `ruff` for Python (via `uvx`).
     - Standardized all 20+ Python scripts in the repo.
+- **Pre-commit Fix:** Resolved `lint-staged` failure by fixing `any` types in highly-used UI components and ensuring `prettier` dependency is present.
 - **Build Fix:** Resolved `pnpm build` failure in `app/admin/products/actions.ts`.
 
 ## Current Work: Dashboard Styling & Mobile Access
@@ -157,6 +158,8 @@
 - **Admin Access:**
   - Verified Admin access controls and resolved `AdminNav` import issues.
   - Fixed data flow for user avatars in Admin dashboard.
+  - Added "Retailers" link to Admin Navigation for better discoverability.
+  - **Retailer Region Standardization:** Replaced open-ended text input with a standardized Country Selector (ISO codes) in `RetailerDialog`.
 - **Admin Layout Fix:**
     - Resolved a critical `Runtime TypeError` in `AdminLayout` caused by a circular dependency in `lib/utils.ts`.
     - **Refactor:** Extracted `FaceCropper` (which depends on the heavy, browser-only `@mediapipe` library) into a dedicated `lib/face-cropper.ts` file.

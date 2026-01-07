@@ -1,41 +1,46 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 // Navigation component for Admin Dashboard
 export function AdminNav() {
-    const pathname = usePathname()
+  const pathname = usePathname();
 
-    const navItems = [
-        {
-            href: "/admin",
-            label: "Users",
-            active: pathname === "/admin" || pathname.startsWith("/admin/users"),
-        },
-        {
-            href: "/admin/products",
-            label: "Products",
-            active: pathname.startsWith("/admin/products"),
-        },
-    ]
+  const navItems = [
+    {
+      href: "/admin",
+      label: "Users",
+      active: pathname === "/admin" || pathname.startsWith("/admin/users"),
+    },
+    {
+      href: "/admin/products",
+      label: "Products",
+      active: pathname.startsWith("/admin/products"),
+    },
+    {
+      href: "/admin/retailers",
+      label: "Retailers",
+      active: pathname.startsWith("/admin/retailers"),
+    },
+  ];
 
-    return (
-        <nav className="flex items-center space-x-6">
-            {navItems.map((item) => (
-                <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                        "text-sm font-medium transition-colors hover:text-primary",
-                        item.active ? "text-primary" : "text-muted-foreground"
-                    )}
-                >
-                    {item.label}
-                </Link>
-            ))}
-        </nav>
-    )
+  return (
+    <nav className="flex items-center space-x-6">
+      {navItems.map((item) => (
+        <Link
+          key={item.href}
+          href={item.href}
+          className={cn(
+            "text-sm font-medium transition-colors hover:text-primary",
+            item.active ? "text-primary" : "text-muted-foreground",
+          )}
+        >
+          {item.label}
+        </Link>
+      ))}
+    </nav>
+  );
 }

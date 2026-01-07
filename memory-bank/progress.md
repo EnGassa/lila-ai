@@ -152,6 +152,8 @@
     - [x] **Relational Schema:** Implemented `retailers` and `product_purchase_options` tables for scalable link management.
     - [x] **Admin - Retailers:** Dedicated CRUD page for managing global retailer entities (Logos, Base URLs).
     - [x] **Admin - Products:** Upgraded Product Dialog to manage multiple purchase options (Price, Currency, URL, Priority).
+    - [x] **Admin - Navigation:** Added "Retailers" link to the main admin navigation bar.
+    - [x] **Data Quality:** Standardized Retailer Region Codes using a strict country selection dropdown (ISO 3166-1).
     - [x] **Frontend - "Shop" Logic:**
         - [x] **Smart Button:** Renders direct link (1 option) or specific Dropdown (n options).
         - [x] **Enrichment:** Auto-sorts by Priority (High to Low) and filters inactive links.
@@ -171,5 +173,6 @@
     - [x] **Infinite Redirect Loop (Server):** Fixed loop between Dashboard and Onboarding for users with `complete` status but no analysis (Implemented "Empty State" Dashboard).
     - [x] **Build Fix:** Resolved `pnpm build` failure caused by syntax error and invalid export in `app/admin/products/actions.ts`.
     - [x] **Type Safety:** Resolved all TypeScript errors in `ProductDialog` and UI components (`Chart`, `ToggleGroup`) for a clean build.
+    - [x] **Pre-commit Hook:** Resolved `lint-staged` failure by fixing strict type errors and missing `prettier` config.
     - [x] **Cleanup:** Removed dead code (`app/internal-test`) and unused imports.
 
