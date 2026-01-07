@@ -21,6 +21,8 @@
     - [x] **Code Coverage:** Configured reporting and achieved >80% on critical utilities.
     - [x] **CI/CD:** GitHub Actions workflow for automated regression testing.
     - [x] **Sanity Checks:** Verified setups with sample tests for Utilities and Landing Page.
+    - [x] **E2E Expansion:** Onboarding & Login flows.
+    - [x] **Product Validation:** Unit tests for ProductSchema.
 
 *   **Self-Service Flow (Phases 1-3 Complete):**
     - [x] **Authentication**: Magic Link implementation for passwordless entry.
