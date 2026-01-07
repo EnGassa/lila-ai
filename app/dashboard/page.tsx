@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { Step, Product } from '@/lib/types'
 import { Dashboard } from '@/app/[userId]/dashboard/components/dashboard'
 import { DashboardHome } from '@/app/[userId]/dashboard/components/DashboardHome'
 import { Suspense } from 'react'
@@ -117,8 +118,8 @@ export default async function DashboardPage({
   if (recommendationsData && recommendationsData.routine) {
       const productSlugs = new Set<string>();
       (['am', 'pm'] as const).forEach(type => {
-          recommendationsData.routine[type]?.forEach((step: any) => {
-              step.products.forEach((p: any) => productSlugs.add(p.product_slug));
+          recommendationsData.routine[type]?.forEach((step: Step) => {
+              step.products.forEach((p: Product) => productSlugs.add(p.product_slug));
           });
       });
       
@@ -131,8 +132,8 @@ export default async function DashboardPage({
           const productMap = new Map(products.map(p => [p.product_slug, p]));
           
           (['am', 'pm'] as const).forEach(type => {
-            recommendationsData.routine[type]?.forEach((step: any) => {
-                step.products = step.products.map((p: any) => {
+            recommendationsData.routine[type]?.forEach((step: Step) => {
+                step.products = step.products.map((p: Product) => {
                     const details = productMap.get(p.product_slug);
                     return { ...p, ...details };
                 });

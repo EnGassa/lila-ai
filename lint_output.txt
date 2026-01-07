@@ -1,0 +1,385 @@
+
+> my-v0-project@0.1.0 lint /Users/sahil/Projects/lila-ai-web
+> eslint .
+
+
+/Users/sahil/Projects/lila-ai-web/app/[userId]/dashboard/components/DashboardHome.tsx
+    8:30  warning  'Clock' is defined but never used                @typescript-eslint/no-unused-vars
+    8:37  warning  'Calendar' is defined but never used             @typescript-eslint/no-unused-vars
+   26:19  error    Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+   27:26  error    Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  114:9   warning  'formatDate' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  124:23  warning  'current' is defined but never used              @typescript-eslint/no-unused-vars
+  329:38  error    Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  329:46  error    Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  340:55  error    Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+
+/Users/sahil/Projects/lila-ai-web/app/[userId]/dashboard/components/dashboard.tsx
+  5:10  warning  'KeyIngredient' is defined but never used  @typescript-eslint/no-unused-vars
+  5:25  warning  'Product' is defined but never used        @typescript-eslint/no-unused-vars
+  5:51  warning  'Step' is defined but never used           @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/app/[userId]/intake/IntakePageClient.tsx
+   12:3   warning  'FormControl' is defined but never used                                                                              @typescript-eslint/no-unused-vars
+   14:3   warning  'FormItem' is defined but never used                                                                                 @typescript-eslint/no-unused-vars
+   15:3   warning  'FormLabel' is defined but never used                                                                                @typescript-eslint/no-unused-vars
+   72:17  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  113:15  warning  'name' is assigned a value but never used                                                                            @typescript-eslint/no-unused-vars
+  511:41  error    Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+/Users/sahil/Projects/lila-ai-web/app/[userId]/upload/UploadPageClient.tsx
+  41:10  warning  'isIntakeComplete' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  52:10  warning  'analysisStartTime' is assigned a value but never used     @typescript-eslint/no-unused-vars
+  52:29  warning  'setAnalysisStartTime' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/app/admin/actions.ts
+  148:45  warning  'isAdmin' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/app/admin/products/actions.ts
+    5:10  warning  'z' is defined but never used             @typescript-eslint/no-unused-vars
+  158:60  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  209:23  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  248:60  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/sahil/Projects/lila-ai-web/app/admin/users/[userId]/dashboard/page.tsx
+   4:20  warning  'notFound' is defined but never used      @typescript-eslint/no-unused-vars
+  32:16  warning  'cookiesToSet' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/app/dashboard/page.tsx
+   29:16  warning  'cookiesToSet' is defined but never used  @typescript-eslint/no-unused-vars
+  120:61  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  121:41  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  134:63  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  135:55  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/sahil/Projects/lila-ai-web/app/design-system/page.tsx
+  14:46  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  14:53  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  14:69  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  14:74  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  74:70  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  82:72  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+
+/Users/sahil/Projects/lila-ai-web/app/layout.tsx
+  16:7  warning  '_geist' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  17:7  warning  '_geistMono' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/app/login/login-form.tsx
+  30:11  warning  'router' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  78:18  warning  'error' is defined but never used            @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/app/onboarding/page.tsx
+  28:16  warning  'cookiesToSet' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/app/providers.tsx
+  3:10  warning  'PostHogProvider' is defined but never used  @typescript-eslint/no-unused-vars
+  4:8   warning  'React' is defined but never used            @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/components/FeedbackModal.tsx
+  130:51   error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  225:111  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  225:115  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  273:108  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/sahil/Projects/lila-ai-web/components/PostHogProvider.tsx
+  4:31  warning  'useState' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/components/admin/create-user-dialog.tsx
+  61:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/sahil/Projects/lila-ai-web/components/admin/create-user-dialog.tsx:61:13
+  59 |     useEffect(() => {
+  60 |         if (!open) {
+> 61 |             setIsAdmin(false)
+     |             ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  62 |             setShowAdminConfirmation(false)
+  63 |             setErrorMessage(null)
+  64 |         }  react-hooks/set-state-in-effect
+
+/Users/sahil/Projects/lila-ai-web/components/admin/delete-user-alert.tsx
+  44:18  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/components/admin/edit-user-dialog.tsx
+  101:49  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  101:85  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/sahil/Projects/lila-ai-web/components/admin/multi-select-ingredients.tsx
+  22:10  warning  'useDebounce' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/components/admin/product-dialog.tsx
+   95:32  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  349:41  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/sahil/Projects/lila-ai-web/components/admin/products-table.tsx
+    6:10  warning  'format' is defined but never used                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+    7:25  warning  'MoreHorizontal' is defined but never used                                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+   53:32  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   74:11  warning  'handleSearch' is assigned a value but never used                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  157:45  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/sahil/Projects/lila-ai-web/components/admin/retailers-table.tsx
+   5:16  warning  'Loader2' is defined but never used                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+   5:43  warning  'Trash' is defined but never used                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  18:5   warning  'AlertDialog' is defined but never used                                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+  19:5   warning  'AlertDialogAction' is defined but never used                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+  20:5   warning  'AlertDialogCancel' is defined but never used                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+  21:5   warning  'AlertDialogContent' is defined but never used                                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+  22:5   warning  'AlertDialogDescription' is defined but never used                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+  23:5   warning  'AlertDialogFooter' is defined but never used                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+  24:5   warning  'AlertDialogHeader' is defined but never used                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+  25:5   warning  'AlertDialogTitle' is defined but never used                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+  97:45  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/sahil/Projects/lila-ai-web/components/admin/users-table.tsx
+  5:36  warning  'Copy' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/components/analysis/AnalysisProcessingView.tsx
+  120:5  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  122:9  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+/Users/sahil/Projects/lila-ai-web/components/analysis/FaceCapture.tsx
+  13:10  warning  'StartScreen' is defined but never used        @typescript-eslint/no-unused-vars
+  14:10  warning  'TransitionOverlay' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/components/analysis/FaceCapture/CameraView.tsx
+  62:11  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/sahil/Projects/lila-ai-web/components/analysis/FaceCapture/ReviewGrid.tsx
+  17:15  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/sahil/Projects/lila-ai-web/components/concern-card.tsx
+  2:3  warning  'Card' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/components/concern-detail-page.tsx
+  11:13  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  30:46  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  48:37  warning  'userId' is defined but never used        @typescript-eslint/no-unused-vars
+  86:60  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/sahil/Projects/lila-ai-web/components/concern-detail.tsx
+   5:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  48:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  77:36  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/sahil/Projects/lila-ai-web/components/file-upload.tsx
+    9:10  warning  'Alert' is defined but never used                                                                                @typescript-eslint/no-unused-vars
+    9:17  warning  'AlertDescription' is defined but never used                                                                     @typescript-eslint/no-unused-vars
+    9:35  warning  'AlertTitle' is defined but never used                                                                           @typescript-eslint/no-unused-vars
+   10:10  warning  'Terminal' is defined but never used                                                                             @typescript-eslint/no-unused-vars
+   10:33  warning  'X' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+   70:6   warning  React Hook useEffect has a missing dependency: 'handleUpload'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  110:9   warning  'handleRemoveFile' is assigned a value but never used                                                            @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/components/ingredient-card.tsx
+  19:13  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/sahil/Projects/lila-ai-web/components/recommendations-tab.tsx
+    6:16   warning  'CardContent' is defined but never used                                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+   14:10   warning  'InfoCard' is defined but never used                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+   83:6    warning  React Hook React.useEffect has a missing dependency: 'selectedProducts'. Either include it or remove the dependency array                                                                                                                                                                react-hooks/exhaustive-deps
+  103:11   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  206:36   warning  'node' is defined but never used                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+  207:37   warning  'node' is defined but never used                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+  208:37   warning  'node' is defined but never used                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+  242:37   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  328:103  warning  'idx' is defined but never used                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/components/severity-radar.tsx
+   10:3   warning  'LabelList' is defined but never used     @typescript-eslint/no-unused-vars
+   32:69  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   75:37  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  137:37  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/sahil/Projects/lila-ai-web/components/skincare-dashboard.tsx
+   11:3   warning  'Tabs' is defined but never used          @typescript-eslint/no-unused-vars
+   15:3   warning  'Grid' is defined but never used          @typescript-eslint/no-unused-vars
+   17:3   warning  'Heading' is defined but never used       @typescript-eslint/no-unused-vars
+   19:3   warning  'Card' is defined but never used          @typescript-eslint/no-unused-vars
+   32:10  warning  'cn' is defined but never used            @typescript-eslint/no-unused-vars
+   40:13  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   41:20  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   53:10  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   85:29  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  157:32  warning  'e' is defined but never used             @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/components/summary-overview.tsx
+    1:29  warning  'Grid' is defined but never used                      @typescript-eslint/no-unused-vars
+    1:46  warning  'Heading' is defined but never used                   @typescript-eslint/no-unused-vars
+    3:10  warning  'RegionWiseBreakdown' is defined but never used       @typescript-eslint/no-unused-vars
+   54:34  warning  'rationale' is defined but never used                 @typescript-eslint/no-unused-vars
+   70:9   warning  'fitzpatrickInfo' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  126:52  error    Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
+  173:45  warning  'charts' is defined but never used                    @typescript-eslint/no-unused-vars
+  173:55  error    Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
+
+/Users/sahil/Projects/lila-ai-web/components/ui/sidebar.tsx
+  611:26  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/Users/sahil/Projects/lila-ai-web/components/ui/sidebar.tsx:611:26
+  609 |   // Random width between 50 to 90%.
+  610 |   const width = React.useMemo(() => {
+> 611 |     return `${Math.floor(Math.random() * 40) + 50}%`
+      |                          ^^^^^^^^^^^^^ Cannot call impure function
+  612 |   }, [])
+  613 |
+  614 |   return (  react-hooks/purity
+
+/Users/sahil/Projects/lila-ai-web/components/ui/use-toast.ts
+  18:7  warning  'actionTypes' is assigned a value but only used as a type  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/components/user-avatar.tsx
+  27:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/sahil/Projects/lila-ai-web/components/user-avatar.tsx:27:7
+  25 |     // If we have a valid avatarUrl prop, just use it.
+  26 |     if (avatarUrl) {
+> 27 |       setImgSrc(avatarUrl)
+     |       ^^^^^^^^^ Avoid calling setState() directly within an effect
+  28 |       return
+  29 |     }
+  30 |  react-hooks/set-state-in-effect
+
+/Users/sahil/Projects/lila-ai-web/components/user-profile.tsx
+  14:31  warning  'Box' is defined but never used           @typescript-eslint/no-unused-vars
+  17:13  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/sahil/Projects/lila-ai-web/hooks/use-toast.ts
+  18:7  warning  'actionTypes' is assigned a value but only used as a type  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/hooks/useFaceLandmarker.ts
+    6:3   warning  'FaceLandmarkerResult' is defined but never used                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+   51:83  error    Unexpected any. Specify a different type                                                                                                                                                                                                                         @typescript-eslint/no-explicit-any
+   74:19  error    Unexpected any. Specify a different type                                                                                                                                                                                                                         @typescript-eslint/no-explicit-any
+  125:25  error    Unexpected any. Specify a different type                                                                                                                                                                                                                         @typescript-eslint/no-explicit-any
+  328:18  warning  The ref value 'videoRef.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'videoRef.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+  334:6   warning  React Hook useEffect has missing dependencies: 'canvasRef', 'isPortrait', and 'videoRef'. Either include them or remove the dependency array                                                                                                                     react-hooks/exhaustive-deps
+
+/Users/sahil/Projects/lila-ai-web/hooks/useImageCapture.ts
+  20:11  warning  'disableCropping' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/lib/analytics.ts
+  29:18  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/sahil/Projects/lila-ai-web/lib/supabase/server.ts
+  18:20  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  27:20  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/lib/utils.ts
+  11:14  warning  'm01' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  11:19  warning  'm02' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  11:24  warning  'm03' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  12:24  warning  'm13' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  13:24  warning  'm23' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  14:9   warning  'm30' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  14:14  warning  'm31' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  14:19  warning  'm32' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  14:24  warning  'm33' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/playwright.config.ts
+  2:8  warning  'path' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/sahil/Projects/lila-ai-web/public/sw.js
+  1:344    warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:866    warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:1625   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:1701   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:1728   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:1744   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:2223   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:2333   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:2349   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:2410   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:2962   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:3937   error    Unexpected aliasing of 'this' to local variable                        @typescript-eslint/no-this-alias
+  1:4063   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:4645   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:4886   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:5778   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:5971   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:6028   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:6166   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:7049   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:7107   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:7839   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:8392   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:8798   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:9461   warning  'e' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:9485   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:9734   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:13465  warning  'e' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:13773  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:13953  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:14760  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:14864  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:15058  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:15332  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:15599  warning  't' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:15793  warning  'a' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:15858  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:16008  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:16336  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:16538  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:16900  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:17365  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:17929  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:18049  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:18245  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:19500  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:19704  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:19769  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:20112  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:20243  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:20340  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:20610  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:20913  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:21299  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:21760  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:22106  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:22236  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:22820  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:23369  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:23493  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:24162  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:24897  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:26201  warning  'e' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:26508  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:26634  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:26852  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:27208  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:27288  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:27418  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:27473  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:29680  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:29814  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:30078  warning  'e' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:30472  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:30643  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:30784  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:31034  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:31609  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:31672  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  2:152    warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  2:686    warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  2:948    warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  2:1103   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  2:1345   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  2:1941   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  2:3558   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+
+✖ 240 problems (54 errors, 186 warnings)
+
+ ELIFECYCLE  Command failed with exit code 1.

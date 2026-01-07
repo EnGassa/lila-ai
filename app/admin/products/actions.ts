@@ -70,7 +70,7 @@ export type ProductActionState = {
 export async function getProducts(page = 1, limit = 20, search = "") {
     let query = supabaseAdmin
         .from("products_1")
-        .select("*", { count: "exact" })
+        .select("*, product_purchase_options(*)", { count: "exact" })
         .order("created_at", { ascending: false })
         .range((page - 1) * limit, page * limit - 1)
 
@@ -149,6 +149,38 @@ export async function createProduct(prevState: ProductActionState, formData: For
         return { success: false, message: `Database Error: ${error.message}` }
     }
 
+    // Handle Purchase Options
+    const purchaseOptionsJson = formData.get("purchaseOptions") as string
+    if (purchaseOptionsJson) {
+        try {
+            const options = JSON.parse(purchaseOptionsJson)
+            if (Array.isArray(options) && options.length > 0) {
+                 interface PurchaseOptionInput {
+                    retailerId: string
+                    url: string
+                    price?: string | number
+                    currency?: string
+                    priority?: string | number
+                    isActive: boolean
+                 }
+                 const optionsToInsert = options.map((opt: PurchaseOptionInput) => ({
+                    product_slug: slug,
+                    retailer_id: opt.retailerId,
+                    url: opt.url,
+                    price: opt.price ? Number(opt.price) : null,
+                    currency: opt.currency || "USD",
+                    priority: opt.priority ? Number(opt.priority) : 0,
+                    is_active: opt.isActive
+                 }))
+                 
+                 const { error: optError } = await supabaseAdmin.from("product_purchase_options").insert(optionsToInsert)
+                 if (optError) console.error("Failed to insert options", optError)
+            }
+        } catch (e) {
+            console.error("Failed to parse options", e)
+        }
+    }
+
     revalidatePath("/admin/products")
     return { success: true, message: "Product created successfully!" }
 }
@@ -181,7 +213,8 @@ export async function updateProduct(prevState: ProductActionState, formData: For
     } = validatedFields.data
 
     const toArray = (str?: string) => str ? str.split(",").map(s => s.trim()).filter(Boolean) : []
-
+    
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateData: any = {
         name,
         brand,
@@ -210,6 +243,59 @@ export async function updateProduct(prevState: ProductActionState, formData: For
     if (error) {
         console.error("Update Product Error:", error)
         return { success: false, message: `Update failed: ${error.message}` }
+    }
+
+    // Handle Purchase Options (Replace Strategy)
+    const purchaseOptionsJson = formData.get("purchaseOptions") as string
+    
+    if (purchaseOptionsJson) {
+        try {
+            const options = JSON.parse(purchaseOptionsJson)
+            
+            // Validate structure before making DB changes
+            if (Array.isArray(options)) {
+                 interface PurchaseOptionInput {
+                    retailerId: string
+                    url: string
+                    price?: string | number
+                    currency?: string
+                    priority?: string | number
+                    isActive: boolean
+                 }
+                 const optionsToInsert = options.map((opt: PurchaseOptionInput) => ({
+                    product_slug: productSlug,
+                    retailer_id: opt.retailerId,
+                    url: opt.url,
+                    price: opt.price ? Number(opt.price) : null,
+                    currency: opt.currency || "USD",
+                    priority: opt.priority ? Number(opt.priority) : 0,
+                    is_active: opt.isActive
+                 }))
+
+                 // Safe to proceed with replacement
+                 // 1. Delete existing
+                 await supabaseAdmin.from("product_purchase_options").delete().eq("product_slug", productSlug)
+
+                 // 2. Insert new
+                 if (optionsToInsert.length > 0) {
+                     const { error: optError } = await supabaseAdmin.from("product_purchase_options").insert(optionsToInsert)
+                     if (optError) {
+                         console.error("Failed to insert options", optError)
+                         return { success: true, message: "Product updated, but failed to save purchase options." }
+                     }
+                 }
+            }
+        } catch (e) {
+            console.error("Failed to parse options", e)
+            return { success: true, message: "Product updated, but invalid purchase options format." }
+        }
+    } else {
+        // If explicitly empty or missing (and we assume this means clear them), we might want to delete.
+        // But usually form data might be missing if fields aren't present. 
+        // For safety in this specific form implementation, we receive an empty array as JSON "[]" if user deleted all.
+        // So we only delete if we successfully parsed the array above. 
+        // If purchaseOptionsJson is null (not sent), we do nothing (preserve existing).
+        // BUT, `useFieldArray` sends the array. If it's empty, it sends "[]".
     }
 
     revalidatePath("/admin/products")

@@ -57,7 +57,27 @@ export async function enrichRecommendations(
 
     const { data: productDetails, error } = await supabase
       .from("products_1")
-      .select("product_slug, name, brand, image_url")
+      .select(`
+        product_slug, 
+        name, 
+        brand, 
+        image_url,
+        product_purchase_options (
+          id,
+          url,
+          price,
+          currency,
+          priority,
+          is_active,
+          retailers (
+            id,
+            name,
+            logo_url,
+            country_code,
+            is_active
+          )
+        )
+      `)
       .in("product_slug", uniqueProductSlugs);
 
     if (error) {
@@ -65,15 +85,57 @@ export async function enrichRecommendations(
     }
 
     if (productDetails) {
+      interface DatabaseProduct {
+        product_slug: string
+        name: string
+        brand: string
+        image_url: string | null
+        product_purchase_options: {
+          id: string
+          url: string
+          price: number | null
+          currency: string
+          priority: number
+          is_active: boolean
+          retailers: {
+            id: string
+            name: string
+            logo_url: string | null
+            country_code: string
+            is_active: boolean
+          }
+        }[]
+      }
+
       const productDetailsMap = new Map(
-        productDetails.map((p) => [
-          p.product_slug,
-          {
-            name: p.name,
-            brand: p.brand,
-            image_url: p.image_url || null,
-          },
-        ])
+        (productDetails as unknown as DatabaseProduct[]).map((p) => {
+          // Process purchase options
+          const options = p.product_purchase_options || [];
+          const validOptions = options
+            .filter((opt) => opt.is_active && opt.retailers?.is_active)
+            .map((opt) => ({
+              id: opt.id,
+              retailer_id: opt.retailers.id,
+              retailer_name: opt.retailers.name,
+              retailer_logo_url: opt.retailers.logo_url || undefined,
+              url: opt.url,
+              price: opt.price,
+              currency: opt.currency || "USD",
+              priority: opt.priority,
+              country_code: opt.retailers.country_code
+            }))
+            .sort((a, b) => b.priority - a.priority);
+
+          return [
+            p.product_slug,
+            {
+              name: p.name,
+              brand: p.brand,
+              image_url: p.image_url || undefined,
+              purchase_options: validOptions || []
+            },
+          ];
+        })
       );
 
       (["am", "pm", "weekly"] as const).forEach((routineType) => {
@@ -86,7 +148,8 @@ export async function enrichRecommendations(
                 ...product,
                 name: details?.name || product.product_slug, // Fallback to id
                 brand: details?.brand || "Unknown Brand",
-                image_url: details?.image_url || null,
+                image_url: details?.image_url || undefined,
+                purchase_options: details?.purchase_options || []
               };
             });
           });

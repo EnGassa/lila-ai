@@ -2,6 +2,7 @@ import { Suspense } from "react"
 import { Metadata } from "next"
 
 import { getProducts } from "@/app/admin/products/actions"
+import { getRetailers } from "@/app/admin/retailers/actions"
 import { ProductsTable } from "@/components/admin/products-table"
 import { ProductDialog } from "@/components/admin/product-dialog"
 import { Loader2 } from "lucide-react"
@@ -20,10 +21,13 @@ export default async function AdminProductsPage({
     const search = typeof params.search === "string" ? params.search : ""
     const limit = 20
 
-    const { products, count, error } = await getProducts(page, limit, search)
+    const [{ products, count, error: prodError }, { retailers, error: retError }] = await Promise.all([
+        getProducts(page, limit, search),
+        getRetailers()
+    ])
 
-    if (error) {
-        return <div className="p-4 text-red-500">Error loading products: {error}</div>
+    if (prodError || retError) {
+        return <div className="p-4 text-red-500">Error loading data: {prodError || retError}</div>
     }
 
     return (
@@ -35,15 +39,16 @@ export default async function AdminProductsPage({
                         Manage your product inventory and details.
                     </p>
                 </div>
-                <ProductDialog />
+                <ProductDialog retailers={retailers || []} />
             </div>
 
             <Suspense fallback={<div className="flex w-full justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
                 <ProductsTable
                     products={products || []}
-                    count={count}
+                    count={count || 0}
                     page={page}
                     limit={limit}
+                    retailers={retailers || []}
                 />
             </Suspense>
         </div>

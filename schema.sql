@@ -312,3 +312,36 @@ CREATE POLICY "Users can view own recommendations" ON public.recommendations FOR
 
 CREATE POLICY "Users can view own feedback" ON public.feedback_submissions FOR SELECT USING (auth.uid()::text = user_id OR public.is_admin());
 CREATE POLICY "Users can insert own feedback" ON public.feedback_submissions FOR INSERT WITH CHECK (auth.uid()::text = user_id);
+
+-- 14. Retailers Table (Affiliate / Supply Chain)
+create table if not exists public.retailers (
+  id uuid not null primary key default gen_random_uuid(),
+  name text not null unique,
+  base_url text,
+  logo_url text,
+  country_code text default 'Global',
+  is_active boolean default true,
+  created_at timestamptz default now()
+);
+
+alter table public.retailers enable row level security;
+create policy "Admins can manage retailers" on public.retailers for all using (public.is_admin());
+create policy "Everyone can view active retailers" on public.retailers for select using (is_active = true OR public.is_admin());
+
+-- 15. Product Purchase Options (Affiliate Links)
+create table if not exists public.product_purchase_options (
+  id uuid not null primary key default gen_random_uuid(),
+  product_slug text references public.products_1(product_slug) on delete cascade,
+  retailer_id uuid references public.retailers(id) on delete cascade,
+  url text not null,
+  price numeric,
+  currency text default 'USD',
+  is_affiliate boolean default true,
+  priority integer default 0, -- Higher number = Higher priority
+  is_active boolean default true,
+  created_at timestamptz default now()
+);
+
+alter table public.product_purchase_options enable row level security;
+create policy "Admins can manage purchase options" on public.product_purchase_options for all using (public.is_admin());
+create policy "Everyone can view active purchase options" on public.product_purchase_options for select using (is_active = true OR public.is_admin());

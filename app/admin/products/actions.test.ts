@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { ProductSchema } from './schemas'
+import { ProductSchema, PurchaseOptionSchema } from './schemas'
 
 describe('ProductSchema Validation', () => {
   it('should validate a valid product', () => {
@@ -74,5 +74,35 @@ describe('ProductSchema Validation', () => {
       expect(result.data.rating).toBe(4.5)
       expect(result.data.review_count).toBe(10)
     }
+  })
+})
+
+
+
+describe('PurchaseOptionSchema Validation', () => {
+  it('should validate valid purchase option', () => {
+     const validOption = {
+        productSlug: 'slug',
+        retailerId: '123',
+        url: 'https://example.com',
+        price: 10,
+        currency: 'USD',
+        priority: 0,
+        isActive: true
+     }
+     const result = PurchaseOptionSchema.safeParse(validOption)
+     expect(result.success).toBe(true)
+  })
+
+  it('should reject invalid purchase option', () => {
+     const invalidOption = {
+        productSlug: 'slug',
+        retailerId: '', // Invalid
+        url: 'not-url', // Invalid
+        priority: 0,
+        isActive: true
+     }
+     const result = PurchaseOptionSchema.safeParse(invalidOption)
+     expect(result.success).toBe(false)
   })
 })

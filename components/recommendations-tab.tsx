@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sun, Moon, RefreshCw } from 'lucide-react';
 import { Recommendations, Step, Product } from '@/lib/types';
 import { IngredientCard } from './ingredient-card';
+import { analytics } from '@/lib/analytics';
 
 function InfoCard({ label, value, description, className }: { label: string, value: React.ReactNode, description?: string, className?: string }) {
   return (
@@ -281,13 +282,76 @@ export function RecommendationsTab({ recommendations }: RecommendationsTabProps)
                                       </div>
                                     </div>
 
-                                    <div className="mt-4 pt-4 border-t border-dashed border-border/50">
-                                        <div className={`w-full py-2.5 px-4 rounded-xl text-center font-semibold text-sm transition-all duration-200 ${isSelected 
-                                          ? 'bg-brand text-white shadow-sm' 
-                                          : 'bg-secondary text-secondary-foreground hover:bg-brand-light hover:text-brand'}`}>
-                                          {isSelected ? 'Selected' : 'Select Option'}
-                                        </div>
-                                    </div>
+                                      {/* Actions Area */}
+                                      <div className="mt-4 pt-4 border-t border-dashed border-border/50 flex flex-col gap-2">
+                                          <div className={`w-full py-2.5 px-4 rounded-xl text-center font-semibold text-sm transition-all duration-200 cursor-pointer ${isSelected 
+                                            ? 'bg-brand text-white shadow-sm' 
+                                            : 'bg-secondary text-secondary-foreground hover:bg-brand-light hover:text-brand'}`}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleSelectProduct(step.step, product.product_slug);
+                                            }}
+                                          >
+                                            {isSelected ? 'Selected' : 'Select for Routine'}
+                                          </div>
+
+                                          {/* Shop / Affiliate Button */}
+                                          {product.purchase_options && product.purchase_options.length > 0 && (
+                                              <div className="flex justify-center" onClick={(e) => e.stopPropagation()}>
+                                                  {product.purchase_options.length === 1 ? (
+                                                      <a 
+                                                        href={`${product.purchase_options[0].url}${product.purchase_options[0].url.includes('?') ? '&' : '?'}utm_source=lila-skin`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1"
+                                                        onClick={() => {
+                                                            analytics.track('recommendation_click', {
+                                                                type: 'affiliate',
+                                                                product_slug: product.product_slug,
+                                                                retailer: product.purchase_options![0].retailer_name,
+                                                                url: product.purchase_options![0].url
+                                                            });
+                                                        }}
+                                                      >
+                                                          Buy at {product.purchase_options[0].retailer_name}
+                                                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-external-link"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+                                                      </a>
+                                                  ) : (
+                                                      <div className="relative group/retailers w-full">
+                                                          <div className="text-xs font-medium text-blue-600 cursor-pointer hover:underline text-center flex items-center justify-center gap-1">
+                                                              Shop from {product.purchase_options.length} stores
+                                                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                                                          </div>
+                                                          {/* Hover Dropdown (Simple CSS) */}
+                                                          <div className="absolute bottom-full left-0 w-full mb-1 hidden group-hover/retailers:block z-10">
+                                                              <div className="bg-white rounded-lg shadow-lg border p-1 flex flex-col gap-1">
+                                                                  {product.purchase_options.map((opt, idx) => (
+                                                                      <a 
+                                                                        key={opt.id}
+                                                                        href={`${opt.url}${opt.url.includes('?') ? '&' : '?'}utm_source=lila-skin`}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className="text-xs px-2 py-1.5 hover:bg-gray-50 rounded flex items-center justify-between text-gray-700"
+                                                                        onClick={() => {
+                                                                            analytics.track('recommendation_click', {
+                                                                                type: 'affiliate',
+                                                                                product_slug: product.product_slug,
+                                                                                retailer: opt.retailer_name,
+                                                                                url: opt.url
+                                                                            });
+                                                                        }}
+                                                                      >
+                                                                          <span>{opt.retailer_name}</span>
+                                                                          {opt.price && <span className="text-muted-foreground ml-2">{opt.currency === 'USD' ? '$' : opt.currency}{opt.price}</span>}
+                                                                      </a>
+                                                                  ))}
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  )}
+                                              </div>
+                                          )}
+                                      </div>
                                   </div>
                                 </div>
                               );

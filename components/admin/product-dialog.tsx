@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, useFieldArray } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "sonner"
-import { Loader2, Plus, Upload, X } from "lucide-react"
+import { Loader2, Plus, Upload, X, Trash } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -27,11 +27,15 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+
 import { createProduct, updateProduct, getSignedUploadUrl } from "@/app/admin/products/actions"
 import { MultiSelectIngredients } from "@/components/admin/multi-select-ingredients"
 import { MultiSelectString } from "@/components/admin/multi-select-string"
+import { Retailer } from "@/lib/types"
 
-// Known Values (extracted from DB analysis)
+// Known Values
 const KNOWN_BENEFITS = [
     "Hydrating", "Barrier Repair", "Scar Healing", "Anti-Aging", 
     "Brightening", "Redness Reducing", "Dark Spots", "Reduces Large Pores", 
@@ -50,6 +54,16 @@ const KNOWN_ATTRIBUTES = [
 ]
 
 // Schema
+const purchaseOptionSchema = z.object({
+    id: z.string().optional(),
+    retailerId: z.string().min(1, "Retailer is required"),
+    url: z.string().url("Must be a valid URL"),
+    price: z.coerce.number().optional(),
+    currency: z.string().default("USD"),
+    priority: z.coerce.number().int().default(0),
+    isActive: z.boolean().default(true),
+})
+
 const formSchema = z.object({
     name: z.string().min(1, "Name is required"),
     brand: z.string().min(1, "Brand is required"),
@@ -61,6 +75,7 @@ const formSchema = z.object({
     benefits: z.array(z.string()).optional(),
     active_ingredients: z.array(z.string()).optional(),
     concerns: z.array(z.string()).optional(),
+    purchaseOptions: z.array(purchaseOptionSchema).optional(),
 })
 
 interface Product {
@@ -76,21 +91,36 @@ interface Product {
     benefits?: string[]
     active_ingredients?: string[]
     concerns?: string[]
+    // We expect this to be populated if we edit
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    product_purchase_options?: any[] 
 }
 
 interface ProductDialogProps {
     product?: Product
+    retailers: Retailer[]
     children?: React.ReactNode
     onOpenChange?: (open: boolean) => void
 }
 
-export function ProductDialog({ product, children, onOpenChange }: ProductDialogProps) {
+export function ProductDialog({ product, retailers, children, onOpenChange }: ProductDialogProps) {
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [previewUrl, setPreviewUrl] = useState<string | null>(product?.image_url || null)
 
     const isEdit = !!product
+
+    // Transform DB options to Form options
+    const defaultOptions = product?.product_purchase_options?.map(opt => ({
+        id: opt.id,
+        retailerId: opt.retailer_id,
+        url: opt.url,
+        price: opt.price,
+        currency: opt.currency || "USD",
+        priority: opt.priority || 0,
+        isActive: opt.is_active,
+    })) || []
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -105,7 +135,13 @@ export function ProductDialog({ product, children, onOpenChange }: ProductDialog
             benefits: product?.benefits || [],
             active_ingredients: product?.active_ingredients || [],
             concerns: product?.concerns || [],
+            purchaseOptions: defaultOptions,
         },
+    })
+
+    const { fields, append, remove } = useFieldArray({
+        control: form.control,
+        name: "purchaseOptions",
     })
 
     const handleOpenChange = (newOpen: boolean) => {
@@ -138,9 +174,17 @@ export function ProductDialog({ product, children, onOpenChange }: ProductDialog
                 const ext = selectedFile.name.split(".").pop()
                 const fileName = `${tempSlug}.${ext}`
 
-                const { signedUrl, publicUrl, error: signError } = await getSignedUploadUrl(fileName, selectedFile.type)
+                const signResult = await getSignedUploadUrl(fileName, selectedFile.type)
 
-                if (signError || !signedUrl) {
+                if ('error' in signResult) {
+                    toast.error("Failed to prepare upload")
+                    setLoading(false)
+                    return
+                }
+
+                const { signedUrl, publicUrl } = signResult
+
+                if (!signedUrl) {
                     toast.error("Failed to prepare upload")
                     setLoading(false)
                     return
@@ -168,15 +212,18 @@ export function ProductDialog({ product, children, onOpenChange }: ProductDialog
             if (values.description) formData.append("description", values.description)
             if (finalImageUrl) formData.append("imageUrl", finalImageUrl)
             
-            // New fields
             if (values.rating !== undefined) formData.append("rating", String(values.rating))
             if (values.review_count !== undefined) formData.append("review_count", String(values.review_count))
             
-            // Join string arrays into comma-separated strings for FormData
             if (values.attributes?.length) formData.append("attributes", values.attributes.join(", "))
             if (values.benefits?.length) formData.append("benefits", values.benefits.join(", "))
             if (values.active_ingredients?.length) formData.append("active_ingredients", values.active_ingredients.join(", "))
             if (values.concerns?.length) formData.append("concerns", values.concerns.join(", "))
+
+            // Append purchase options as JSON string
+            if (values.purchaseOptions?.length) {
+                formData.append("purchaseOptions", JSON.stringify(values.purchaseOptions))
+            }
 
             let result
             if (isEdit && product?.product_slug) {
@@ -209,7 +256,7 @@ export function ProductDialog({ product, children, onOpenChange }: ProductDialog
                     </Button>
                 )}
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+            <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>{isEdit ? "Edit Product" : "Add Product"}</DialogTitle>
                     <DialogDescription>
@@ -221,6 +268,7 @@ export function ProductDialog({ product, children, onOpenChange }: ProductDialog
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                        {/* Basic Info */}
                         <div className="grid grid-cols-2 gap-4">
                             <FormField
                                 control={form.control}
@@ -347,6 +395,7 @@ export function ProductDialog({ product, children, onOpenChange }: ProductDialog
                             )}
                         />
                         
+                        {/* Additional Details */}
                         <div className="space-y-4 rounded-md border p-4 bg-muted/20">
                             <h3 className="font-semibold text-sm">Additional Details</h3>
                             <FormField
@@ -415,6 +464,97 @@ export function ProductDialog({ product, children, onOpenChange }: ProductDialog
                                     </FormItem>
                                 )}
                             />
+                        </div>
+
+                        {/* Purchase Options / Affiliate Links */}
+                        <div className="space-y-4 rounded-md border p-4 bg-blue-50/50 border-blue-100">
+                             <div className="flex items-center justify-between">
+                                <h3 className="font-semibold text-sm text-blue-900">Purchase Options (Affiliate)</h3>
+                                <Button 
+                                    type="button" 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={() => append({ retailerId: "", url: "", price: 0, priority: 0, isActive: true, currency: "USD" })}
+                                >
+                                    <Plus className="mr-2 h-4 w-4" /> Add Link
+                                </Button>
+                             </div>
+                             
+                             <div className="space-y-3">
+                                {fields.map((field, index) => (
+                                    <div key={field.id} className="grid grid-cols-12 gap-2 items-start p-2 rounded bg-white border">
+                                        <FormField
+                                            control={form.control}
+                                            name={`purchaseOptions.${index}.retailerId`}
+                                            render={({ field }) => (
+                                                <FormItem className="col-span-3">
+                                                    <FormLabel className="text-xs">Retailer</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl>
+                                                            <SelectTrigger className="h-8">
+                                                                <SelectValue placeholder="Select..." />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {retailers.map(r => (
+                                                                <SelectItem key={r.id} value={r.id}>{r.name} ({r.country_code})</SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name={`purchaseOptions.${index}.url`}
+                                            render={({ field }) => (
+                                                <FormItem className="col-span-5">
+                                                    <FormLabel className="text-xs">URL</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="https://..." {...field} className="h-8" />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name={`purchaseOptions.${index}.priority`}
+                                            render={({ field }) => (
+                                                <FormItem className="col-span-2">
+                                                    <FormLabel className="text-xs">Priority</FormLabel>
+                                                    <FormControl>
+                                                         <Input type="number" {...field} className="h-8" />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name={`purchaseOptions.${index}.isActive`}
+                                            render={({ field }) => (
+                                                <FormItem className="col-span-1 flex flex-col items-center justify-center pt-6">
+                                                     <FormControl>
+                                                        <Switch checked={field.value} onCheckedChange={field.onChange} className="scale-75" />
+                                                     </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <div className="col-span-1 flex justify-end pt-6">
+                                            <Button variant="ghost" size="icon" className="h-6 w-6 text-red-500" onClick={() => remove(index)}>
+                                                <Trash className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
+                                {fields.length === 0 && (
+                                    <div className="text-center text-xs text-muted-foreground p-2">
+                                        No purchase options added.
+                                    </div>
+                                )}
+                             </div>
                         </div>
 
                         <DialogFooter>

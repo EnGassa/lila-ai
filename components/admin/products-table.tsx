@@ -31,9 +31,8 @@ import { Badge } from "@/components/ui/badge"
 
 import { deleteProduct, toggleProductStatus } from "@/app/admin/products/actions"
 import { ProductDialog } from "@/components/admin/product-dialog"
+import { Retailer } from "@/lib/types"
 
-// Re-defining type locally or importing from types file?
-// Ideally we share types. For now:
 interface Product {
     product_slug: string
     name: string
@@ -50,6 +49,9 @@ interface Product {
     benefits?: string[]
     active_ingredients?: string[]
     concerns?: string[]
+    // Added for dialog
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    product_purchase_options?: any[] 
 }
 
 interface ProductsTableProps {
@@ -57,9 +59,10 @@ interface ProductsTableProps {
     count: number
     page: number
     limit: number
+    retailers: Retailer[]
 }
 
-export function ProductsTable({ products, count, page, limit }: ProductsTableProps) {
+export function ProductsTable({ products, count, page, limit, retailers }: ProductsTableProps) {
     const router = useRouter()
     const searchParams = useSearchParams()
     
@@ -179,7 +182,7 @@ export function ProductsTable({ products, count, page, limit }: ProductsTablePro
                                 </TableCell>
                                 <TableCell className="text-right">
                                     <div className="flex justify-end gap-2">
-                                        <ProductDialog product={product}>
+                                        <ProductDialog product={product} retailers={retailers}>
                                             <Button variant="outline" size="sm" className="h-8 w-8 p-0">
                                                 <Edit className="h-4 w-4" />
                                                 <span className="sr-only">Edit</span>

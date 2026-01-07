@@ -162,6 +162,24 @@
     - **Refactor:** Extracted `FaceCropper` (which depends on the heavy, browser-only `@mediapipe` library) into a dedicated `lib/face-cropper.ts` file.
     - **Result:** `lib/utils.ts` is now lightweight and safe for SSR usage in server components.
 
+
+## Current Work: Affiliate Link System (Completed)
+- **Revenue Architecture:**
+    - **Relational Model:** Pivot from simple strings to a robust relational model: `Retailers` Table (Global Entity) + `ProductPurchaseOptions` Table (Join with Price/URL).
+    - **Logic:** Enables "One Product, Many Sellers" with granular control over pricing and priority per retailer.
+- **Admin Capabilities:**
+    - **Retailer Management:** Full CRUD interface at `/admin/retailers` to manage global partners (Sephora, Amazon, etc.) with logos and base URLs.
+    - **Product Linking:** Updated `ProductDialog` with a dynamic form array to add/reorder purchase links.
+    - **Safety:** Implemented "Replace Strategy" for updates with pre-validation to prevent data loss during edits.
+- **Frontend Integration:**
+    - **Smart "Shop" Button:**
+        - **Single Option:** Direct link with `utm_source=lila-skin` tracking.
+        - **Multiple Options:** Dropdown/Popover sorted by **Priority** (Business Logic) + **Price**.
+    - **Analytics:** Integrated PostHog tracking (`recommendations_click`) with detailed properties (retailer, product, price).
+- **Verification:**
+    - **Automated Tests:** Added Unit Tests for `ProductSchema` (Validation) and `enrichRecommendations` (Sorting/Filtering).
+    - **Manual Verification:** Verified entire flow from Admin Entry -> Database -> Frontend Display -> Click Tracking.
+
 ## Recent Work: Login Page Redesign
 - **Premium Aesthetic Overhaul:**
     -  Replaced the generic centered card layout with a split-screen design (Desktop) and stacked header (Mobile).

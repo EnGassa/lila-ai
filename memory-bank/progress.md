@@ -148,6 +148,17 @@
     - [x] **Schema Sync:** Synchronized `schema.sql` with Supabase state (added `intake_submissions`, `feedback_submissions`).
     - [x] **Form Refinements:** Improved clarity and tone of Skin Profile and Feedback forms (Conversational questions, removed jargon).
 
+*   **Affiliate Link System:**
+    - [x] **Relational Schema:** Implemented `retailers` and `product_purchase_options` tables for scalable link management.
+    - [x] **Admin - Retailers:** Dedicated CRUD page for managing global retailer entities (Logos, Base URLs).
+    - [x] **Admin - Products:** Upgraded Product Dialog to manage multiple purchase options (Price, Currency, URL, Priority).
+    - [x] **Frontend - "Shop" Logic:**
+        - [x] **Smart Button:** Renders direct link (1 option) or specific Dropdown (n options).
+        - [x] **Enrichment:** Auto-sorts by Priority (High to Low) and filters inactive links.
+        - [x] **UTM Injection:** Automatically appends `utm_source=lila-skin` to all outgoing links.
+    - [x] **Analytics:** PostHog event tracking for all affiliate clicks.
+    - [x] **Quality Assurance:** Unit tests for Schema Validation and Data Enrichment logic.
+
 *   **Landing Page:**
     - [x] **Root Route (`/`)**: Implemented high-converting landing page with "Get Started" flow.
     - [x] **Smart Redirects**: Logged-in users visiting `/` are now automatically redirected to `/onboarding` (which routes to Dashboard or Intake), preventing redundant "Sign In" steps.

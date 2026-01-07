@@ -9,6 +9,18 @@ export interface Product {
   image_url?: string;
   selection_type?: 'primary' | 'alternative';
   reason_for_alternative?: string;
+  // Affiliate Links
+  purchase_options?: {
+    id: string
+    retailer_id: string
+    retailer_name: string
+    retailer_logo_url?: string
+    url: string
+    price: number | null
+    currency: string
+    priority: number
+    country_code?: string
+  }[]
 }
 
 export interface Step {
@@ -33,6 +45,16 @@ export interface Recommendations {
     pm: Step[];
     weekly?: Step[];
   };
+}
+
+export interface Retailer {
+    id: string
+    name: string
+    base_url?: string | null
+    logo_url?: string | null
+    country_code: string
+    is_active: boolean
+    created_at: string
 }
 
 export interface DiscordEmbed {
