@@ -43,6 +43,10 @@ jobs:
       if: steps.playwright-cache.outputs.cache-hit != 'true'
       run: pnpm exec playwright install --with-deps
 
+    - name: Install Playwright System Dependencies
+      if: steps.playwright-cache.outputs.cache-hit == 'true'
+      run: pnpm exec playwright install-deps
+
     - name: Run Unit Tests
       run: pnpm test:ci
 

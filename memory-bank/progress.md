@@ -176,4 +176,5 @@
     - [x] **Pre-commit Hook:** Resolved `lint-staged` failure by fixing strict type errors and missing `prettier` config.
     - [x] **Mobile Login Layout:** Fixed `overflow-hidden` bug in `app/login/page.tsx` that prevented scrolling and hid buttons on Mobile Safari.
     - [x] **E2E Test Stability:** Hardened `dashboard.spec.ts` and `onboarding.spec.ts` with robust wildcard auth mocks and strict navigation guards, resolving CI timeouts.
+    - [x] **CI WebKit Config:** Fixed missing system dependencies (`libwoff2dec`) by enforcing `playwright install-deps` on cache hits.
 

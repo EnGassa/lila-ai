@@ -459,4 +459,5 @@ Implementation of the core secure Admin Dashboard structure.
     - **Responsive Layout:** Updated `app/login/page.tsx` to use `min-h-screen` (mobile) and `lg:h-screen` (desktop) to ensure accessibility on all devices.
     - **Robust Mocks:** Updated all E2E tests to use wildcard `**/auth/v1/**` mocks.
     - **Strict Assertions:** Added `await expect(page).toHaveURL` guardrails before interaction.
+    - **System Dependencies:** Updated `.github/workflows/test.yml` to explicitly run `pnpm exec playwright install-deps` on cache hits, resolving `libwoff2dec` missing library errors for WebKit.
 - **Result:** 100% Pass Rate (25/25) across all browsers (Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari).
