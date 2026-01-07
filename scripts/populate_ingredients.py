@@ -16,23 +16,26 @@ populate_ingredients.py
 
 A script to scrape ingredient details from incidecoder.com and populate the Supabase database.
 """
+
+import json
+import os
+import time
+
 import requests
 from bs4 import BeautifulSoup
-import time
-from tqdm import tqdm
-import os
-import json
 from skin_lib import get_supabase_client, setup_logger
+from tqdm import tqdm
 
 INPUT_FILE = "data/ingredient_urls.txt"
 DELAY = 1
+
 
 def parse_ingredient_page(soup):
     """
     Parses the HTML soup of an ingredient page and extracts the required data.
     """
     data = {}
-    
+
     # Extract ingredient name
     name_tag = soup.find("h1")
     data["name"] = name_tag.get_text(strip=True) if name_tag else None
@@ -71,17 +74,18 @@ def parse_ingredient_page(soup):
 
     return data
 
+
 def main():
     """
     Main function to scrape and populate ingredient data.
     """
     logger = setup_logger()
-    
+
     if not os.path.exists(INPUT_FILE):
         logger.error(f"Input file not found: {INPUT_FILE}")
         return
 
-    with open(INPUT_FILE, "r") as f:
+    with open(INPUT_FILE) as f:
         urls = [line.strip() for line in f.readlines()]
 
     supabase = get_supabase_client()
@@ -95,10 +99,10 @@ def main():
         try:
             response = requests.get(url)
             response.raise_for_status()
-            
+
             soup = BeautifulSoup(response.content, "html.parser")
             ingredient_data = parse_ingredient_page(soup)
-            
+
             if not ingredient_data.get("name"):
                 logger.warning(f"Could not parse ingredient name for URL: {url}")
                 continue
@@ -113,12 +117,12 @@ def main():
                 "description": ingredient_data["description"],
                 "cosing_info": json.dumps(ingredient_data["cosing_info"]) if ingredient_data["cosing_info"] else None,
                 "source_url": url,
-                "updated_at": "now()"
+                "updated_at": "now()",
             }
-            
+
             # Upsert into Supabase
             supabase.table("ingredients").upsert(db_record, on_conflict="name").execute()
-            
+
             time.sleep(DELAY)
 
         except requests.exceptions.RequestException as e:
@@ -127,6 +131,7 @@ def main():
             logger.error(f"An error occurred while processing {url}: {e}")
 
     logger.info("Ingredient population script finished.")
+
 
 if __name__ == "__main__":
     main()

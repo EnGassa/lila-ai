@@ -40,3 +40,4 @@ data/photos
 
 # generated service worker
 /public/sw.js
+coverage/

@@ -15,46 +15,49 @@ Automates the onboarding of a beta user:
 2. Runs the skin analysis script.
 3. Runs the recommendation generation script.
 """
+
 import argparse
+import os
 import subprocess
 import sys
-import os
-from typing import Optional
-from loguru import logger
-from supabase import create_client, Client
+
 from dotenv import load_dotenv
+from loguru import logger
+from supabase import Client, create_client
 
 # Load environment variables
-load_dotenv('.env.local')
+load_dotenv(".env.local")
+
 
 def get_supabase_client() -> Client:
     """Initialize and return a Supabase client."""
-    supabase_url = os.getenv('NEXT_PUBLIC_SUPABASE_URL')
-    supabase_key = os.getenv('SUPABASE_SERVICE_ROLE_KEY') or os.getenv('NEXT_PUBLIC_SUPABASE_ANON_KEY')
+    supabase_url = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
+    supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
 
     if not supabase_url or not supabase_key:
         raise ValueError("Missing Supabase credentials in .env.local")
 
     return create_client(supabase_url, supabase_key)
 
-def create_user(supabase: Client, name: str, email: Optional[str] = None, overwrite: bool = False) -> str:
+
+def create_user(supabase: Client, name: str, email: str | None = None, overwrite: bool = False) -> str:
     """Creates or updates a user in the public.users table, handling conflicts."""
-    
+
     # 1. Search for existing user by name (Case-insensitive)
     logger.info(f"Searching for existing user with name '{name}'...")
-    res = supabase.table('users').select('id, full_name, email').ilike('full_name', f"%{name}%").execute()
-    
+    res = supabase.table("users").select("id, full_name, email").ilike("full_name", f"%{name}%").execute()
+
     if res.data:
         # Found match(es), pick the first one
         user = res.data[0]
         logger.success(f"Found existing user: {user['full_name']} (ID: {user['id']})")
-        return user['id']
+        return user["id"]
 
     # 2. If not found, fall back to creating a slug-based ID (Old Behavior)
     base_user_id = name.lower().replace(" ", "_")
     user_id = base_user_id
 
-    existing_user_res = supabase.table('users').select('id').eq('id', user_id).limit(1).execute()
+    existing_user_res = supabase.table("users").select("id").eq("id", user_id).limit(1).execute()
 
     if existing_user_res.data:
         # User exists with slug ID, handle conflict
@@ -63,19 +66,21 @@ def create_user(supabase: Client, name: str, email: Optional[str] = None, overwr
         else:
             while True:
                 print(f"\nUser ID '{user_id}' already exists.")
-                action = input("Choose an action: [r]ename to create a new user, or [a]bort (Overwrite not recommended for slugs): ").lower() # Removed overwrite option to encourage UUIDs generally
+                action = input(
+                    "Choose an action: [r]ename to create a new user, or [a]bort (Overwrite not recommended for slugs): "
+                ).lower()  # Removed overwrite option to encourage UUIDs generally
 
-                if action == 'r':
+                if action == "r":
                     # Find next available user_id
                     suffix = 2
                     new_user_id = f"{base_user_id}_{suffix}"
-                    while supabase.table('users').select('id').eq('id', new_user_id).limit(1).execute().data:
+                    while supabase.table("users").select("id").eq("id", new_user_id).limit(1).execute().data:
                         suffix += 1
                         new_user_id = f"{base_user_id}_{suffix}"
                     user_id = new_user_id
                     logger.info(f"Will create a new user with ID '{user_id}'.")
                     break
-                elif action == 'a':
+                elif action == "a":
                     logger.info("Aborting user creation.")
                     sys.exit(0)
                 else:
@@ -88,24 +93,21 @@ def create_user(supabase: Client, name: str, email: Optional[str] = None, overwr
 
     # Upsert user
     try:
-        data = {
-            "id": user_id,
-            "full_name": name,
-            "email": email
-        }
-        supabase.table('users').upsert(data).execute()
+        data = {"id": user_id, "full_name": name, "email": email}
+        supabase.table("users").upsert(data).execute()
         logger.success(f"User {user_id} created/updated successfully.")
         return user_id
     except Exception as e:
         logger.error(f"Failed to create user: {e}")
         sys.exit(1)
 
+
 def run_script(script_name: str, args: list):
     """Runs a Python script as a subprocess."""
     cmd = ["uv", "run", f"scripts/{script_name}"] + args
     logger.info(f"Running {script_name}...")
     logger.debug(f"Command: {' '.join(cmd)}")
-    
+
     try:
         subprocess.check_call(cmd)
         logger.success(f"{script_name} completed successfully.")
@@ -113,67 +115,88 @@ def run_script(script_name: str, args: list):
         logger.error(f"{script_name} failed with exit code {e.returncode}.")
         sys.exit(e.returncode)
 
+
 def main():
     logger.remove()
     logger.add(sys.stderr, format="<level>{message}</level>", colorize=True)
-    
+
     parser = argparse.ArgumentParser(description="Onboard a beta user.")
     parser.add_argument("--name", help="Full name of the user (required if --user-id not provided).")
     parser.add_argument("--user-id", help="Explicit ID of the user (skips creation/lookup).")
     parser.add_argument("--email", help="Email of the user (optional).")
-    parser.add_argument("--image-dir", help="Directory containing user's face images. If not provided, will assume images are uploaded to Supabase.")
-    parser.add_argument("--model", default="google-gla:gemini-2.5-pro", help="Model to use for analysis and recommendations.")
+    parser.add_argument(
+        "--image-dir",
+        help="Directory containing user's face images. If not provided, will assume images are uploaded to Supabase.",
+    )
+    parser.add_argument(
+        "--model", default="google-gla:gemini-2.5-pro", help="Model to use for analysis and recommendations."
+    )
     parser.add_argument("--api-key", help="API key for the model provider.")
     parser.add_argument("--context-file", help="Path to a JSON file containing user context.")
-    parser.add_argument("--analysis-prompt", default="prompts/01_analyse_images_6_photos_prompt.md", help="Path to the analysis prompt file.")
+    parser.add_argument(
+        "--analysis-prompt",
+        default="prompts/01_analyse_images_6_photos_prompt.md",
+        help="Path to the analysis prompt file.",
+    )
     parser.add_argument("--setup-only", action="store_true", help="Only create the user and print the upload link.")
     parser.add_argument("--overwrite", action="store_true", help="Overwrite existing user without prompting.")
     parser.add_argument("--analysis-id", help="The specific analysis ID to update (Optional).")
-    parser.add_argument("--env", choices=["dev", "prod"], default="prod", help="Environment to use for storage (dev=user-uploads-dev, prod=user-uploads).")
+    parser.add_argument(
+        "--env",
+        choices=["dev", "prod"],
+        default="prod",
+        help="Environment to use for storage (dev=user-uploads-dev, prod=user-uploads).",
+    )
 
     args = parser.parse_args()
-    
+
     supabase = get_supabase_client()
-    
+
     # 1. Resolve User ID
     if args.user_id:
         user_id = args.user_id
         logger.info(f"Using provided User ID: {user_id}")
-        name_for_logs = args.name if args.name else f"User {user_id}"
+        if args.name:
+            pass
     elif args.name:
         user_id = create_user(supabase, args.name, args.email, overwrite=args.overwrite)
-        name_for_logs = args.name
+        pass
     else:
         logger.error("Error: Either --name or --user-id must be provided.")
         sys.exit(1)
 
     # Handle --setup-only flag
     if args.setup_only:
-        print("\n" + "="*50)
+        print("\n" + "=" * 50)
         print(f"✅ User Setup Complete for {args.name}!")
         print(f"🔗 Upload Link: http://localhost:3000/{user_id}/upload")
-        print("="*50 + "\n")
+        print("=" * 50 + "\n")
         sys.exit(0)
 
     # Validate image-dir for full onboarding IF we are not relying on supabase
     # Actually, we can just proceed. run_analysis.py will fail if no images and no user-id (but we have user-id)
     # or if it can't find images in Supabase.
     if not args.image_dir:
-         logger.info("No --image-dir provided. Assuming images are already uploaded to Supabase.")
+        logger.info("No --image-dir provided. Assuming images are already uploaded to Supabase.")
 
     # Create a directory for this test run's logs
     log_dir = f"logs/test_run_{user_id}"
     os.makedirs(log_dir, exist_ok=True)
     logger.info(f"Saving diagnostic logs to {log_dir}")
-    
+
     # 2. Run Analysis
     analysis_output_path = os.path.join(log_dir, "analysis_full_output.json")
     analysis_args = [
-        "--model", args.model,
-        "--user-id", user_id,
-        "--reasoning-effort", "high",
-        "--output", analysis_output_path,
-        "--env", args.env
+        "--model",
+        args.model,
+        "--user-id",
+        user_id,
+        "--reasoning-effort",
+        "high",
+        "--output",
+        analysis_output_path,
+        "--env",
+        args.env,
     ]
     if args.analysis_prompt:
         analysis_args.extend(["--analysis-prompt", args.analysis_prompt])
@@ -183,34 +206,30 @@ def main():
         analysis_args.extend(["--api-key", args.api_key])
     if args.context_file:
         analysis_args.extend(["--context-file", args.context_file])
-    
+
     # Pass analysis_id if provided (Fix for Analysis-Centric Architecture)
     if args.analysis_id:
         analysis_args.extend(["--analysis-id", args.analysis_id])
-        
+
     run_script("run_analysis.py", analysis_args)
-    
+
     # 3. Generate Recommendations
     rec_output_path = os.path.join(log_dir, "final_routine_output.json")
-    rec_args = [
-        "--model", args.model,
-        "--user-id", user_id,
-        "--reasoning-effort", "high",
-        "--output", rec_output_path
-    ]
+    rec_args = ["--model", args.model, "--user-id", user_id, "--reasoning-effort", "high", "--output", rec_output_path]
     if args.api_key:
         rec_args.extend(["--api-key", args.api_key])
     if args.context_file:
         rec_args.extend(["--context-file", args.context_file])
     if args.analysis_id:
         rec_args.extend(["--analysis-id", args.analysis_id])
-        
+
     run_script("generate_recommendations.py", rec_args)
-    
-    print("\n" + "="*50)
+
+    print("\n" + "=" * 50)
     print(f"✅ Onboarding Complete for {args.name}!")
     print(f"🔗 Dashboard Link: http://localhost:3000/{user_id}/dashboard")
-    print("="*50 + "\n")
+    print("=" * 50 + "\n")
+
 
 if __name__ == "__main__":
     main()

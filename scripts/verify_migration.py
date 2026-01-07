@@ -8,9 +8,10 @@
 # ///
 
 import os
+
 import requests
 from dotenv import load_dotenv
-from supabase import create_client, Client
+from supabase import Client, create_client
 
 load_dotenv(".env.local")
 
@@ -23,30 +24,37 @@ if not SUPABASE_URL or not SUPABASE_SERVICE_ROLE_KEY:
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
+
 def verify_migration():
     print("Verifying migration...")
-    
+
     # 1. Fetch 10 random products with image_url
-    response = supabase.table("products_1").select("product_slug, name, image_url").not_.is_("image_url", "null").limit(10).execute()
-    
+    response = (
+        supabase.table("products_1")
+        .select("product_slug, name, image_url")
+        .not_.is_("image_url", "null")
+        .limit(10)
+        .execute()
+    )
+
     products = response.data
     if not products:
         print("No products found with image_url!")
         return
 
     print(f"Checking {len(products)} products...")
-    
+
     success_count = 0
-    
+
     for p in products:
-        url = p['image_url']
-        slug = p['product_slug']
-        
+        url = p["image_url"]
+        slug = p["product_slug"]
+
         # Check if URL is from Supabase Storage
         if "supabase.co/storage" not in url:
-             print(f"[FAIL] {slug}: URL is not Supabase Storage -> {url}")
-             continue
-             
+            print(f"[FAIL] {slug}: URL is not Supabase Storage -> {url}")
+            continue
+
         # Check functionality
         try:
             r = requests.head(url)
@@ -59,6 +67,7 @@ def verify_migration():
             print(f"[FAIL] {slug}: Error {e}")
 
     print(f"\nVerification Results: {success_count}/{len(products)} readable.")
+
 
 if __name__ == "__main__":
     verify_migration()

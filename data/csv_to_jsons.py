@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 import csv
 import json
-import os
 import re
 import sys
 from pathlib import Path
 
 FULL_NAME_COL = "What is your Full Name?"
+
 
 def slugify_filename(name: str) -> str:
     name = (name or "").strip()
@@ -14,9 +14,10 @@ def slugify_filename(name: str) -> str:
         return ""
     # spaces -> underscores, remove unsafe chars, collapse repeats
     name = name.replace(" ", "_")
-    name = re.sub(r"[^A-Za-z0-9._-]+", "", name)     # keep safe filename chars
-    name = re.sub(r"_+", "_", name).strip("._-")     # cleanup
+    name = re.sub(r"[^A-Za-z0-9._-]+", "", name)  # keep safe filename chars
+    name = re.sub(r"_+", "_", name).strip("._-")  # cleanup
     return name
+
 
 def main():
     if len(sys.argv) != 3:
@@ -70,6 +71,6 @@ def main():
 
     print(f"Done. Wrote {count} JSON files to: {out_dir}")
 
+
 if __name__ == "__main__":
     main()
-

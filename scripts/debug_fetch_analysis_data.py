@@ -5,10 +5,11 @@
 #     "python-dotenv",
 # ]
 # ///
-import os
 import json
-from supabase import create_client
+import os
+
 from dotenv import load_dotenv
+from supabase import create_client
 
 load_dotenv(".env.local")
 
@@ -22,6 +23,6 @@ user_id = "b7b0872e-2641-4495-918b-52940c44fbec"
 res = supabase.table("skin_analyses").select("analysis_data").eq("user_id", user_id).limit(1).execute()
 
 if res.data:
-    print(json.dumps(res.data[0]['analysis_data'], indent=2))
+    print(json.dumps(res.data[0]["analysis_data"], indent=2))
 else:
     print("No data found")

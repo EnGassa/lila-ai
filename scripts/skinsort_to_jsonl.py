@@ -10,26 +10,26 @@
 # ]
 # ///
 
+import argparse
 import asyncio
-import httpx
-from bs4 import BeautifulSoup
-from typing import List, Dict, Set, Optional
 import logging
+import re
 import sys
 from enum import Enum
+from pathlib import Path
+from urllib.parse import unquote, urljoin, urlparse
+
+import httpx
+import orjson
+from bs4 import BeautifulSoup
+from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent
-from dotenv import load_dotenv
-from urllib.parse import urljoin, unquote, urlparse
 from tqdm.asyncio import tqdm
-import orjson
-import re
-import argparse
-import os
-from pathlib import Path
 
 # Load .env for ANTHROPIC_API_KEY
 load_dotenv()
+
 
 # --- AI Classification Setup ---
 class SkincareCategory(str, Enum):
@@ -44,19 +44,20 @@ class SkincareCategory(str, Enum):
     EYE_CARE = "Eye Care"
     OTHER = "Other"
 
+
 class Classification(BaseModel):
     category: SkincareCategory = Field(..., description="The single best-fitting category for the product.")
 
+
 # Setup Logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)]
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", handlers=[logging.StreamHandler(sys.stdout)]
 )
 # Silence the noisy httpx logs
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
+
 
 class SkinsortScraper:
     def __init__(self, concurrency: int = 5, classification_model: str = "openai:gpt-5-nano"):
@@ -66,12 +67,12 @@ class SkinsortScraper:
                 "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
             },
             timeout=30.0,
-            follow_redirects=True
+            follow_redirects=True,
         )
         self.semaphore = asyncio.Semaphore(concurrency)
-        self.seen_ingredients: Set[str] = set()
-        self.ingredients_data: List[Dict] = []
-        self.products_data: List[Dict] = []
+        self.seen_ingredients: set[str] = set()
+        self.ingredients_data: list[dict] = []
+        self.products_data: list[dict] = []
         self.classifier_agent = Agent(
             classification_model,
             output_type=Classification,
@@ -91,17 +92,17 @@ class SkinsortScraper:
             - {SkincareCategory.SUNSCREEN.value}
             - {SkincareCategory.EYE_CARE.value}
             - {SkincareCategory.OTHER.value}
-            """
+            """,
         )
 
     async def classify_product_category(
-        self, 
-        name: str, 
+        self,
+        name: str,
         description: str,
-        brand: Optional[str] = None,
-        what_it_is: Optional[str] = None,
-        active_ingredients: Optional[List[str]] = None,
-        benefits: Optional[List[str]] = None
+        brand: str | None = None,
+        what_it_is: str | None = None,
+        active_ingredients: list[str] | None = None,
+        benefits: list[str] | None = None,
     ) -> SkincareCategory:
         """Uses an LLM to classify a product into a standard category."""
         if not name or not description:
@@ -112,29 +113,29 @@ class SkinsortScraper:
             prompt_parts = [f"Product Name: {name}"]
             if brand:
                 prompt_parts.append(f"Brand: {brand}")
-            
+
             prompt_parts.append(f"Description: {description}")
-            
+
             if what_it_is:
                 prompt_parts.append(f"What it is: {what_it_is}")
-            
+
             if active_ingredients:
                 ing_list = ", ".join(active_ingredients)
                 prompt_parts.append(f"Active Ingredients: {ing_list}")
-            
+
             if benefits:
                 ben_list = ", ".join(benefits)
                 prompt_parts.append(f"Benefits: {ben_list}")
 
             prompt = "\n".join(prompt_parts)
-            
+
             result = await self.classifier_agent.run(prompt)
             return result.output.category
         except Exception as e:
             logger.error(f"Failed to classify product '{name}': {e}")
             return SkincareCategory.OTHER
 
-    async def fetch_page(self, url: str) -> Optional[str]:
+    async def fetch_page(self, url: str) -> str | None:
         """Fetch a page with retry logic and concurrency limits."""
         async with self.semaphore:
             for attempt in range(3):
@@ -149,18 +150,18 @@ class SkinsortScraper:
                     await asyncio.sleep(1 * (attempt + 1))
         return None
 
-    def clean_text(self, text: Optional[str]) -> Optional[str]:
+    def clean_text(self, text: str | None) -> str | None:
         if not text:
             return None
         return " ".join(text.split())
 
-    async def parse_ingredient(self, url: str) -> Optional[Dict]:
+    async def parse_ingredient(self, url: str) -> dict | None:
         """Scrapes details from a specific ingredient page using specific selectors."""
         html = await self.fetch_page(url)
         if not html:
             return None
 
-        soup = BeautifulSoup(html, 'html.parser')
+        soup = BeautifulSoup(html, "html.parser")
         data = {
             "url": url,
             "name": None,
@@ -170,7 +171,7 @@ class SkinsortScraper:
             "prevalence": {},
             "cosing_data": {},
             "references": [],
-            "user_sentiment": {}
+            "user_sentiment": {},
         }
 
         # 1. Name
@@ -188,7 +189,7 @@ class SkinsortScraper:
 
                 description_element = item.find("div", class_=lambda x: x and "prose" in x)
                 description = self.clean_text(description_element.text) if description_element else None
-                
+
                 if tag_name:
                     data["tags"].append({"name": tag_name, "description": description})
 
@@ -199,11 +200,13 @@ class SkinsortScraper:
             desc_text = " ".join([p.get_text() for p in paragraphs])
             data["description"] = self.clean_text(desc_text)
         elif soup.find("meta", {"name": "description"}):
-             data["description"] = soup.find("meta", {"name": "description"})["content"]
+            data["description"] = soup.find("meta", {"name": "description"})["content"]
 
         # 3. User Sentiment (Like/Avoid)
         # Look for containers with specific text
-        sentiment_container = soup.find(class_=lambda x: x and "bg-white rounded-xl flex flex-col text-warm-gray-700" in x)
+        sentiment_container = soup.find(
+            class_=lambda x: x and "bg-white rounded-xl flex flex-col text-warm-gray-700" in x
+        )
         if sentiment_container:
             for row in sentiment_container.find_all(class_=lambda x: x and "flex justify-between" in x):
                 row_text = row.get_text().lower()
@@ -237,8 +240,7 @@ class SkinsortScraper:
                         name_text = self.clean_text(item.get_text().replace(span.get_text(), ""))
                         data["what_it_does"].append({"function": name_text, "description": desc})
                     else:
-                         data["what_it_does"].append({"function": self.clean_text(item.get_text())})
-
+                        data["what_it_does"].append({"function": self.clean_text(item.get_text())})
 
         # 5. Prevalence
         prevalence_header = soup.find("h2", string=re.compile("Prevalence", re.I))
@@ -251,15 +253,15 @@ class SkinsortScraper:
                     # "Somewhat common" text is in a span or div
                     commonality_container = first_row.find("span", class_="flex flex-col")
                     if commonality_container:
-                         # It might contain a sub-span we want to ignore for the main text
-                         sub_span = commonality_container.find("span")
-                         full_text = commonality_container.get_text()
-                         if sub_span:
-                             main_text = full_text.replace(sub_span.get_text(), "")
-                             data["prevalence"]["commonality"] = self.clean_text(main_text)
-                         else:
-                             data["prevalence"]["commonality"] = self.clean_text(full_text)
-                    
+                        # It might contain a sub-span we want to ignore for the main text
+                        sub_span = commonality_container.find("span")
+                        full_text = commonality_container.get_text()
+                        if sub_span:
+                            main_text = full_text.replace(sub_span.get_text(), "")
+                            data["prevalence"]["commonality"] = self.clean_text(main_text)
+                        else:
+                            data["prevalence"]["commonality"] = self.clean_text(full_text)
+
                     percentage_div = first_row.find(class_=lambda x: x and "rounded-full" in x)
                     if percentage_div:
                         data["prevalence"]["percentage"] = self.clean_text(percentage_div.get_text())
@@ -297,35 +299,35 @@ class SkinsortScraper:
             if refs_container:
                 links = refs_container.find_all("a")
                 for link in links:
-                    data["references"].append(link.get('href'))
+                    data["references"].append(link.get("href"))
 
         return data
 
-    async def parse_product(self, url: str) -> Dict:
+    async def parse_product(self, url: str) -> dict:
         """Scrapes details from a product page based on provided HTML structure."""
         html = await self.fetch_page(url)
         if not html:
             return {"url": url, "error": "failed_fetch"}
 
-        soup = BeautifulSoup(html, 'html.parser')
-        
+        soup = BeautifulSoup(html, "html.parser")
+
         product = {
             "url": url,
             "name": None,
             "brand": None,
             "category": None,
             "description": None,
-            "attributes": [], # Alcohol-free, Vegan, etc.
-            "overview": {}, # What it is, Suited for, etc.
-            "highlights": {}, # Kept for backward compatibility/extra data
-            "benefits": [], # Extracted from highlights
-            "active_ingredients": [], # Extracted from highlights['Key Ingredients']
-            "concerns": [], # Extracted from highlights
-            "meta_data": {}, # pH, Country
+            "attributes": [],  # Alcohol-free, Vegan, etc.
+            "overview": {},  # What it is, Suited for, etc.
+            "highlights": {},  # Kept for backward compatibility/extra data
+            "benefits": [],  # Extracted from highlights
+            "active_ingredients": [],  # Extracted from highlights['Key Ingredients']
+            "concerns": [],  # Extracted from highlights
+            "meta_data": {},  # pH, Country
             "rating": None,
             "review_count": None,
             "ingredient_slugs": [],
-            "image_url": None
+            "image_url": None,
         }
 
         # Image URL is now handled via JSON-LD parsing later in the script.
@@ -339,7 +341,7 @@ class SkinsortScraper:
                 # Brand is usually the first span (or nested anchor inside it)
                 brand_text = self.clean_text(spans[0].text)
                 product["brand"] = brand_text
-                
+
                 # Name is the second span
                 name_text = self.clean_text(spans[1].text)
                 product["name"] = name_text
@@ -401,10 +403,10 @@ class SkinsortScraper:
                         title_span = btn.find("span", class_=lambda x: x and "text-[15px]" in x)
                         if title_span:
                             items.append(self.clean_text(title_span.get_text()))
-                    
+
                     if items:
                         product["highlights"][cat_name] = items
-                        
+
                         # Populate top-level columns
                         if cat_name == "Benefits":
                             product["benefits"] = items
@@ -416,7 +418,7 @@ class SkinsortScraper:
         # 6. Meta Data (Origin, pH)
         # Often found in max-w-2xl mx-auto mt-8 blocks with h2 headers
         # "Where it's from", "Product acidity level"
-        
+
         # Origin
         origin_header = soup.find("h2", string=re.compile("Where it's from", re.I))
         if origin_header:
@@ -438,7 +440,7 @@ class SkinsortScraper:
             try:
                 # Use get_text() for more robust content extraction
                 schema_data = orjson.loads(json_ld_script.get_text())
-                
+
                 # Extract image URL from schema
                 if "image" in schema_data:
                     # Ensure it's a full URL
@@ -455,21 +457,21 @@ class SkinsortScraper:
 
         # Fallback for review count if not in JSON-LD
         if product["review_count"] is None:
-            review_span = soup.find("span", string=re.compile(r'\d+\s+reviews', re.I))
+            review_span = soup.find("span", string=re.compile(r"\d+\s+reviews", re.I))
             if review_span:
                 review_text = self.clean_text(review_span.text)
                 if review_text:
-                    match = re.search(r'(\d+)', review_text)
+                    match = re.search(r"(\d+)", review_text)
                     if match:
                         product["review_count"] = int(match.group(1))
 
         # 8. Extract Ingredients
         # Target specific sections: #ingredients-explained-list or #ingredients_list
         unique_ing_slugs = set()
-        
+
         def process_links(links):
             for link in links:
-                href = link.get('href')
+                href = link.get("href")
                 if not href:
                     continue
 
@@ -478,7 +480,7 @@ class SkinsortScraper:
                 match = re.search(r"(/ingredients/([a-zA-Z0-9_-]+))", href)
                 if not match:
                     continue
-                
+
                 # path = match.group(1) # Unused now
                 slug = match.group(2)
 
@@ -492,30 +494,30 @@ class SkinsortScraper:
         explained_list = soup.find(id="ingredients-explained-list")
         if explained_list:
             process_links(explained_list.find_all("a", href=True))
-        
+
         # Method B: Simple Ingredients List (Grid) - as fallback or addition
         simple_list = soup.find(id="ingredients_list")
         if simple_list:
             process_links(simple_list.find_all("a", href=True))
 
         product["ingredient_slugs"] = list(unique_ing_slugs)
-        
+
         return product
 
-    def generate_filename_from_url(self, product_url: str) -> Optional[str]:
+    def generate_filename_from_url(self, product_url: str) -> str | None:
         """Creates a sanitized filename from the product URL slug."""
         if not product_url:
             return None
         try:
             path = urlparse(product_url).path
-            slug = path.split('/products/', 1)[1]
-            filename = slug.replace('/', '-')
+            slug = path.split("/products/", 1)[1]
+            filename = slug.replace("/", "-")
             return filename
         except (IndexError, TypeError):
             logger.warning(f"Could not generate filename from URL: {product_url}")
             return None
 
-    async def download_and_save_image(self, product: Dict) -> Optional[str]:
+    async def download_and_save_image(self, product: dict) -> str | None:
         """Downloads an image, saves it with a slug-based filename, and returns the final local path."""
         remote_image_url = product.get("image_url")
         product_url = product.get("url")
@@ -536,7 +538,7 @@ class SkinsortScraper:
             return None
 
         try:
-            path_part = unquote(remote_image_url.split('?')[0])
+            path_part = unquote(remote_image_url.split("?")[0])
             extension = Path(path_part).suffix.lower() or ".jpg"
         except Exception:
             extension = ".jpg"
@@ -545,14 +547,14 @@ class SkinsortScraper:
         save_dir = Path("public/products")
         save_dir.mkdir(parents=True, exist_ok=True)
         save_path = save_dir / final_filename
-        
+
         with open(save_path, "wb") as f:
             f.write(response.content)
 
         # Return the final, local path
         return f"/products/{final_filename}"
 
-    async def run(self, product_urls: List[str], products_output: str, ingredients_output: str):
+    async def run(self, product_urls: list[str], products_output: str, ingredients_output: str):
         logger.info(f"Starting scrape for {len(product_urls)} products...")
 
         async def process_product_url(p_url):
@@ -560,16 +562,16 @@ class SkinsortScraper:
             if product_data and "error" not in product_data:
                 # Extract extra fields for classification
                 overview = product_data.get("overview", {}) or {}
-                highlights = product_data.get("highlights", {}) or {}
-                
+                # highlights = product_data.get("highlights", {}) or {}
+
                 # Classify the product category
                 category = await self.classify_product_category(
                     name=product_data.get("name") or "",
                     description=product_data.get("description") or "",
                     brand=product_data.get("brand"),
                     what_it_is=overview.get("what_it_is"),
-                    active_ingredients=product_data.get("active_ingredients"), # already extracted in parse_product
-                    benefits=product_data.get("benefits")
+                    active_ingredients=product_data.get("active_ingredients"),  # already extracted in parse_product
+                    benefits=product_data.get("benefits"),
                 )
                 product_data["category"] = category.value
                 # logger.info(f"Classified '{product_data.get('name')}' as '{category.value}'")
@@ -579,7 +581,7 @@ class SkinsortScraper:
                 product_data["image_url"] = local_image_path
 
                 self.products_data.append(product_data)
-                
+
                 # Collect unique ingredients for scraping
                 for ing_slug in product_data.get("ingredient_slugs", []):
                     ing_url = urljoin(self.base_url, f"/ingredients/{ing_slug}")
@@ -602,28 +604,33 @@ class SkinsortScraper:
         # 4. Save Data
         self.save_jsonl(self.products_data, products_output)
         self.save_jsonl(self.ingredients_data, ingredients_output)
-        
+
         await self.client.aclose()
         logger.info("Scraping complete.")
 
-    def save_jsonl(self, data: List[Dict], filename: str):
-        with open(filename, 'wb') as f:
+    def save_jsonl(self, data: list[dict], filename: str):
+        with open(filename, "wb") as f:
             for entry in data:
-                f.write(orjson.dumps(entry) + b'\n')
+                f.write(orjson.dumps(entry) + b"\n")
         logger.info(f"Saved {len(data)} records to {filename}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Scrape product and ingredient data from skinsort.com.")
-    
+
     # Input group
     input_group = parser.add_mutually_exclusive_group(required=True)
     input_group.add_argument("--url", type=str, help="A single product URL to scrape.")
     input_group.add_argument("--file", type=str, help="Path to a text file with one product URL per line.")
 
     # Output group
-    parser.add_argument("--output-products", type=str, default="skinsort_products.jsonl", help="Output file for product data.")
-    parser.add_argument("--output-ingredients", type=str, default="skinsort_ingredients.jsonl", help="Output file for ingredient data.")
-    
+    parser.add_argument(
+        "--output-products", type=str, default="skinsort_products.jsonl", help="Output file for product data."
+    )
+    parser.add_argument(
+        "--output-ingredients", type=str, default="skinsort_ingredients.jsonl", help="Output file for ingredient data."
+    )
+
     # Configuration
     parser.add_argument("--concurrency", type=int, default=5, help="Number of concurrent requests.")
 
@@ -635,7 +642,7 @@ if __name__ == "__main__":
         target_products.append(args.url)
     elif args.file:
         try:
-            with open(args.file, 'r') as f:
+            with open(args.file) as f:
                 target_products = [line.strip() for line in f if line.strip()]
         except FileNotFoundError:
             logger.error(f"Error: Input file not found at {args.file}")

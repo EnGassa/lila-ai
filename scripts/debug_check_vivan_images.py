@@ -6,9 +6,9 @@
 # ]
 # ///
 import os
-import json
-from supabase import create_client
+
 from dotenv import load_dotenv
+from supabase import create_client
 
 load_dotenv(".env.local")
 
@@ -26,16 +26,18 @@ if not user_res.data:
     print(f"User {name} not found.")
     exit(1)
 
-user_id = user_res.data[0]['id']
+user_id = user_res.data[0]["id"]
 print(f"User ID: {user_id}")
 
 # 2. Get Latest Analysis
-analysis_res = supabase.table("skin_analyses")\
-    .select("id, created_at, image_urls")\
-    .eq("user_id", user_id)\
-    .order("created_at", desc=True)\
-    .limit(1)\
+analysis_res = (
+    supabase.table("skin_analyses")
+    .select("id, created_at, image_urls")
+    .eq("user_id", user_id)
+    .order("created_at", desc=True)
+    .limit(1)
     .execute()
+)
 
 if analysis_res.data:
     record = analysis_res.data[0]

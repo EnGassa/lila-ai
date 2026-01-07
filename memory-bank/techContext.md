@@ -18,6 +18,9 @@
     *   **Strategy:** Event-based tracking for critical user flows (Onboarding, Scan, Analysis) + Auto-capture disabled to reduce noise.
 *   **Logging:** Loguru
 *   **Package Manager:** pnpm (Frontend), uv (Python Scripts)
+*   **Pre-commit Hooks:** `husky` + `lint-staged`
+    *   JS/TS: `eslint`, `prettier`
+    *   Python: `uvx ruff`
 *   **Python Dependencies:**
     *   `pydantic-ai`
     *   `supabase`

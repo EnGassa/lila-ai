@@ -1,6 +1,13 @@
 # Active Context
 
 
+## Current Work: Dev Tooling & Build Health
+- **Pre-commit Hooks:** Implemented polyglot pre-commit hooks using `husky` and `lint-staged`.
+    - Enforces `eslint`/`prettier` for JS/TS.
+    - Enforces `ruff` for Python (via `uvx`).
+    - Standardized all 20+ Python scripts in the repo.
+- **Build Fix:** Resolved `pnpm build` failure in `app/admin/products/actions.ts`.
+
 ## Current Work: Dashboard Styling & Mobile Access
 - **Design System Overhaul (Radix Themes):**
     - **Migration:** Replaced Tailwind-based components with `@radix-ui/themes` for a robust, accessible foundation.

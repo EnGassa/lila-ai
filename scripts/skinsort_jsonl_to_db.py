@@ -9,27 +9,25 @@
 # ]
 # ///
 
+import argparse
+import logging
 import os
 import sys
-import argparse
+from urllib.parse import urlparse
+
 import orjson
 from dotenv import load_dotenv
-from supabase import create_client, Client
-from tqdm import tqdm
-import logging
-import re
 from sentence_transformers import SentenceTransformer
-from urllib.parse import urlparse, unquote
+from supabase import Client, create_client
+from tqdm import tqdm
 
 # --- Configuration ---
-BATCH_SIZE = 50 # Reduced batch size to accommodate embedding payload
-EMBEDDING_MODEL = 'all-MiniLM-L6-v2'
+BATCH_SIZE = 50  # Reduced batch size to accommodate embedding payload
+EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 
 # Setup Logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)]
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", handlers=[logging.StreamHandler(sys.stdout)]
 )
 logger = logging.getLogger(__name__)
 
@@ -46,10 +44,11 @@ except Exception as e:
     logger.error(f"Failed to load embedding model: {e}")
     sys.exit(1)
 
+
 def get_supabase_client() -> Client:
     """Initializes and returns a Supabase client, following project conventions."""
     # Load environment variables from .env.local in the project root
-    dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env.local')
+    dotenv_path = os.path.join(os.path.dirname(__file__), "..", ".env.local")
     load_dotenv(dotenv_path=dotenv_path)
 
     url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
@@ -59,13 +58,14 @@ def get_supabase_client() -> Client:
     if not url or not key:
         logger.error("NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be set in .env.local")
         sys.exit(1)
-        
+
     return create_client(url, key)
+
 
 def generate_product_embedding_text(record: dict) -> str:
     """Generates a descriptive text block for a product based on the refined strategy."""
     parts = []
-    
+
     # Safely get overview data
     overview = record.get("overview", {})
     if overview:
@@ -78,7 +78,7 @@ def generate_product_embedding_text(record: dict) -> str:
         benefits = highlights.get("Benefits", [])
         if benefits:
             parts.append("Benefits: " + ", ".join(benefits))
-        
+
         key_ingredients = highlights.get("Key Ingredients", [])
         if key_ingredients:
             parts.append("Key Ingredients: " + ", ".join(key_ingredients))
@@ -88,10 +88,11 @@ def generate_product_embedding_text(record: dict) -> str:
 
     return ". ".join(filter(None, parts))
 
+
 def generate_ingredient_embedding_text(record: dict) -> str:
     """Generates a descriptive text block for an ingredient."""
     parts = []
-    
+
     # Add the main description
     parts.append(record.get("description", ""))
 
@@ -101,28 +102,29 @@ def generate_ingredient_embedding_text(record: dict) -> str:
         descriptions = [item.get("description", "") for item in what_it_does if item.get("description")]
         if descriptions:
             parts.append("What it does: " + ", ".join(descriptions))
-            
+
     return ". ".join(filter(None, parts))
+
 
 def upload_data(client: Client, table_name: str, file_path: str, data_type: str):
     """
     Uploads data from a JSONL file to a specified Supabase table, generating embeddings first.
     """
     logger.info(f"Starting processing for {file_path} to table '{table_name}'...")
-    
+
     try:
-        with open(file_path, 'rb') as f:
+        with open(file_path, "rb") as f:
             lines = f.readlines()
     except FileNotFoundError:
         logger.error(f"Error: File not found at {file_path}")
         return
 
     all_records = [orjson.loads(line) for line in lines if line.strip()]
-    
+
     # De-duplicate records based on the 'url' primary key
     unique_records = {}
     for record in all_records:
-        unique_records[record['url']] = record
+        unique_records[record["url"]] = record
     records = list(unique_records.values())
 
     # Generate slug for records before further processing
@@ -137,9 +139,9 @@ def upload_data(client: Client, table_name: str, file_path: str, data_type: str)
 
     if slug_key and url_prefix:
         for record in records:
-            if 'url' in record and record['url']:
+            if "url" in record and record["url"]:
                 try:
-                    path = urlparse(record['url']).path
+                    path = urlparse(record["url"]).path
                     if url_prefix in path:
                         slug = path.split(url_prefix, 1)[1]
                         record[slug_key] = slug
@@ -150,7 +152,7 @@ def upload_data(client: Client, table_name: str, file_path: str, data_type: str)
                     record[slug_key] = None
             else:
                 record[slug_key] = None
-        
+
         # Filter out records where slug generation failed, as it's the primary key
         original_count = len(records)
         records = [r for r in records if r.get(slug_key)]
@@ -160,7 +162,7 @@ def upload_data(client: Client, table_name: str, file_path: str, data_type: str)
 
     total_records = len(records)
     deduplicated_count = len(all_records) - total_records
-    
+
     if deduplicated_count > 0:
         logger.warning(f"Removed {deduplicated_count} duplicate records based on URL.")
 
@@ -168,22 +170,21 @@ def upload_data(client: Client, table_name: str, file_path: str, data_type: str)
     if data_type == "products":
         logger.info("Constructing image URLs from product slugs...")
         for record in records:
-            if record.get('product_slug') and record.get('image_url'):
+            if record.get("product_slug") and record.get("image_url"):
                 # Sanitize the slug for use in a filename by replacing '/'
-                filename_slug = record['product_slug'].replace('/', '-')
-                
+                filename_slug = record["product_slug"].replace("/", "-")
+
                 # Preserve the original file extension
-                _, extension = os.path.splitext(record['image_url'])
-                
+                _, extension = os.path.splitext(record["image_url"])
+
                 if extension:
                     # Construct the new URL in the format /products/slug.ext
-                    record['image_url'] = f"/products/{filename_slug}{extension.lower()}"
+                    record["image_url"] = f"/products/{filename_slug}{extension.lower()}"
                 else:
                     # Fallback if there's no extension for some reason
-                    record['image_url'] = None
+                    record["image_url"] = None
             else:
-                record['image_url'] = None
-
+                record["image_url"] = None
 
     if not records:
         logger.info("No records to upload.")
@@ -201,46 +202,41 @@ def upload_data(client: Client, table_name: str, file_path: str, data_type: str)
         else:
             text = ""
         texts_to_embed.append(text)
-    
+
     logger.info("Encoding texts to vectors...")
     embeddings = model.encode(texts_to_embed, show_progress_bar=True)
 
     # Add embeddings to records
-    for record, embedding in zip(records, embeddings):
-        record['embedding'] = embedding.tolist()
+    for record, embedding in zip(records, embeddings, strict=True):
+        record["embedding"] = embedding.tolist()
 
     logger.info("Embeddings generated. Starting upload to Supabase...")
     for i in tqdm(range(0, total_records, BATCH_SIZE), desc=f"Uploading to {table_name}"):
-        batch = records[i:i + BATCH_SIZE]
+        batch = records[i : i + BATCH_SIZE]
         try:
             response = client.table(table_name).upsert(batch).execute()
-            if hasattr(response, 'error') and response.error:
+            if hasattr(response, "error") and response.error:
                 logger.error(f"Error uploading batch: {response.error}")
         except Exception as e:
             logger.error(f"An exception occurred during upload: {e}")
 
     logger.info(f"Upload complete for {table_name}.")
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate embeddings and upload data to Supabase from JSONL files.")
-    
+
     parser.add_argument(
-        "--products",
-        type=str,
-        help="Path to the products JSONL file.",
-        default="scripts/data/products_1.jsonl"
+        "--products", type=str, help="Path to the products JSONL file.", default="scripts/data/products_1.jsonl"
     )
     parser.add_argument(
         "--ingredients",
         type=str,
         help="Path to the ingredients JSONL file.",
-        default="scripts/data/ingredients_1.jsonl"
+        default="scripts/data/ingredients_1.jsonl",
     )
     parser.add_argument(
-        "--upload",
-        choices=["products", "ingredients", "all"],
-        required=True,
-        help="Specify what data to upload."
+        "--upload", choices=["products", "ingredients", "all"], required=True, help="Specify what data to upload."
     )
 
     args = parser.parse_args()
@@ -248,6 +244,6 @@ if __name__ == "__main__":
 
     if args.upload in ["products", "all"]:
         upload_data(supabase, "products_1", args.products, data_type="products")
-    
+
     if args.upload in ["ingredients", "all"]:
         upload_data(supabase, "ingredients_1", args.ingredients, data_type="ingredients")

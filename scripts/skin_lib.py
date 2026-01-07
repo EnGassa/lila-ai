@@ -4,81 +4,90 @@ skin_lib.py
 A shared library for skin analysis scripts, containing Pydantic models,
 helper functions, and agent configuration.
 """
+
 import json
 import os
 import sys
-from typing import Any, Dict, List, Optional, Literal
-from loguru import logger
-from dotenv import load_dotenv
 import tempfile
-from supabase import create_client, Client
+from typing import Any, Literal
 
+from dotenv import load_dotenv
+from loguru import logger
 from pydantic import BaseModel, Field
-from pydantic_ai import Agent
-from pydantic_ai.messages import BinaryContent
 from pydantic_ai.models.google import GoogleModel, GoogleModelSettings
-from pydantic_ai.providers.google import GoogleProvider
 from pydantic_ai.models.openai import OpenAIChatModel, OpenAIModelSettings
+from pydantic_ai.providers.google import GoogleProvider
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.settings import ModelSettings
+from supabase import Client, create_client
 
 # --- Simplified Pydantic Output Models ---
+
 
 class IdentifiedSubtype(BaseModel):
     key: str
     explanation: str
-    likely_causes: List[str]
-    care_education: List[str]
+    likely_causes: list[str]
+    care_education: list[str]
     confidence_0_1: float
+
 
 class RegionalBreakdown(BaseModel):
     region_key: str
     score_1_5: float = Field(..., ge=1.0, le=5.0, description="Severity score on 1.0-5.0 scale.")
 
+
 class Citation(BaseModel):
     title: str
     url: str
 
+
 class ConcernBlock(BaseModel):
-    name: str # e.g., "pores", "wrinkles"
+    name: str  # e.g., "pores", "wrinkles"
     score_1_5: float = Field(..., ge=1.0, le=5.0, description="Severity score on 1.0-5.0 scale.")
     confidence_0_1: float = Field(..., ge=0.0, le=1.0, description="Confidence score on 0.0-1.0 scale.")
     rationale_plain: str
-    possible_causes: List[str]
-    identified_subtypes: List[IdentifiedSubtype]
-    regional_breakdown: List[RegionalBreakdown]
-    citations: List[Citation]
+    possible_causes: list[str]
+    identified_subtypes: list[IdentifiedSubtype]
+    regional_breakdown: list[RegionalBreakdown]
+    citations: list[Citation]
     uncertainty_notes: str
 
+
 class UserReportedSymptoms(BaseModel):
-    itch: Optional[str] = None
-    pain_tenderness: Optional[str] = None
-    duration_weeks: Optional[int] = None
-    cycle_hormonal_changes: Optional[str] = None
-    photosensitivity: Optional[str] = None
-    friction_occlusion: Optional[str] = None
-    recent_products: Optional[str] = None
+    itch: str | None = None
+    pain_tenderness: str | None = None
+    duration_weeks: int | None = None
+    cycle_hormonal_changes: str | None = None
+    photosensitivity: str | None = None
+    friction_occlusion: str | None = None
+    recent_products: str | None = None
+
 
 class Session(BaseModel):
     id: str
     timestamp_iso: str
-    poses_received: List[str]
-    device_model: Optional[str] = None
-    user_reported_symptoms: Optional[UserReportedSymptoms] = None
+    poses_received: list[str]
+    device_model: str | None = None
+    user_reported_symptoms: UserReportedSymptoms | None = None
+
 
 class QC(BaseModel):
     status: str
-    fail_reasons: List[str]
+    fail_reasons: list[str]
     notes: str
+
 
 class SkinType(BaseModel):
     label: str
     rationale: str
     confidence_0_1: float
 
+
 class SkinToneFitzpatrick(BaseModel):
     label: str
     note: str
+
 
 class SkinAgeRange(BaseModel):
     low: int
@@ -86,24 +95,28 @@ class SkinAgeRange(BaseModel):
     rationale: str
     confidence_0_1: float
 
+
 class RegionSummary(BaseModel):
     region_key: str
     summary_plain: str
+
 
 class EscalationFlag(BaseModel):
     flag: str
     reason: str
     action: str
 
+
 class Analysis(BaseModel):
     skin_type: SkinType
     skin_tone_fitzpatrick: SkinToneFitzpatrick
     skin_age_range: SkinAgeRange
-    top_concerns: List[str]
+    top_concerns: list[str]
     overview_explanation: str
-    concerns: List[ConcernBlock]
-    region_summaries: List[RegionSummary]
-    escalation_flags: List[EscalationFlag]
+    concerns: list[ConcernBlock]
+    region_summaries: list[RegionSummary]
+    escalation_flags: list[EscalationFlag]
+
 
 class OverviewRadarScale(BaseModel):
     min: int
@@ -111,18 +124,22 @@ class OverviewRadarScale(BaseModel):
     direction: str
     formula: str
 
+
 class OverviewRadar(BaseModel):
-    axis_order: List[str]
-    values_1_5: List[float] = Field(..., description="List of severity scores (1.0-5.0) corresponding to axis_order.")
+    axis_order: list[str]
+    values_1_5: list[float] = Field(..., description="List of severity scores (1.0-5.0) corresponding to axis_order.")
     scale: OverviewRadarScale
+
 
 class Charts(BaseModel):
     overview_radar: OverviewRadar
 
+
 class Audit(BaseModel):
     prompt_version: str
     model_hint: str
-    limitations: List[str]
+    limitations: list[str]
+
 
 class FullSkinAnalysis(BaseModel):
     session: Session
@@ -131,116 +148,164 @@ class FullSkinAnalysis(BaseModel):
     charts: Charts
     audit: Audit
 
+
 class Ingredient(BaseModel):
     id: str
     name: str
-    what_it_does: Optional[List[str]] = None
-    description: Optional[str] = None
-    cosing_info: Optional[Dict[str, Any]] = None
+    what_it_does: list[str] | None = None
+    description: str | None = None
+    cosing_info: dict[str, Any] | None = None
     source_url: str
-    our_take: Optional[str] = None
-    quick_facts: Optional[List[str]] = None
-    image_url: Optional[str] = None
+    our_take: str | None = None
+    quick_facts: list[str] | None = None
+    image_url: str | None = None
     created_at: str
     updated_at: str
+
 
 class IntakeSubmission(BaseModel):
     id: str
     user_id: str
-    age: Optional[int]
-    gender: Optional[str]
-    city: Optional[str]
-    skin_conditions: Optional[List[str]]
-    sleep_hours: Optional[str]
-    stress_level: Optional[int]
-    hormonal_status: Optional[Dict[str, Any]]
-    medication: Optional[str]
-    allergies: Optional[str]
-    pregnancy_status: Optional[str]
-    makeup_frequency: Optional[str]
-    smoking: Optional[str]
-    daily_routine_frequency: Optional[str]
-    current_routine: Optional[Dict[str, Any]]
-    budget: Optional[str]
+    age: int | None
+    gender: str | None
+    city: str | None
+    skin_conditions: list[str] | None
+    sleep_hours: str | None
+    stress_level: int | None
+    hormonal_status: dict[str, Any] | None
+    medication: str | None
+    allergies: str | None
+    pregnancy_status: str | None
+    makeup_frequency: str | None
+    smoking: str | None
+    daily_routine_frequency: str | None
+    current_routine: dict[str, Any] | None
+    budget: str | None
     created_at: str
+
 
 class FeedbackSubmission(BaseModel):
     id: str
     user_id: str
-    recommendation_id: Optional[str]
-    helpfulness_score: Optional[int]
-    accuracy_score: Optional[int]
-    qualitative_feedback: Optional[str]
-    clarity_score: Optional[int]
-    explanation_quality: Optional[str]
-    trust_score: Optional[int]
-    personalization_suggestions: Optional[str]
-    ux_score: Optional[int]
-    frustration_points: Optional[str]
-    improvement_suggestions: Optional[str]
-    procurement_preference: Optional[str]
-    subscription_interest: Optional[str]
-    subscription_features: Optional[List[str]]
-    willingness_to_pay_sub: Optional[str]
-    willingness_to_pay_one_time: Optional[str]
-    derm_consult_interest: Optional[str]
-    interview_willingness: Optional[bool]
+    recommendation_id: str | None
+    helpfulness_score: int | None
+    accuracy_score: int | None
+    qualitative_feedback: str | None
+    clarity_score: int | None
+    explanation_quality: str | None
+    trust_score: int | None
+    personalization_suggestions: str | None
+    ux_score: int | None
+    frustration_points: str | None
+    improvement_suggestions: str | None
+    procurement_preference: str | None
+    subscription_interest: str | None
+    subscription_features: list[str] | None
+    willingness_to_pay_sub: str | None
+    willingness_to_pay_one_time: str | None
+    derm_consult_interest: str | None
+    interview_willingness: bool | None
     created_at: str
 
+
 # --- Pydantic Output Models for Recommendations ---
+
 
 class KeyIngredient(BaseModel):
     ingredient_slug: str = Field(..., description="The unique slug for the ingredient.")
     description: str = Field(..., description="A brief, user-specific description of what the ingredient does.")
-    concerns: List[str] = Field(..., description="List of concerns this ingredient helps address.")
+    concerns: list[str] = Field(..., description="List of concerns this ingredient helps address.")
+
 
 class ProductRecommendation(BaseModel):
     product_slug: str = Field(..., description="The unique slug for the product.")
     rationale: str = Field(..., description="Explanation for why this product is recommended.")
-    selection_type: Literal["primary", "alternative"] = Field("primary", description="Whether this is the top pick or an alternative option.")
-    reason_for_alternative: Optional[str] = Field(None, description="Short reason why this is an alternative (e.g. 'Budget Option', 'Splurge', 'Texture preference'). Required if selection_type is 'alternative'.")
+    selection_type: Literal["primary", "alternative"] = Field(
+        "primary", description="Whether this is the top pick or an alternative option."
+    )
+    reason_for_alternative: str | None = Field(
+        None,
+        description="Short reason why this is an alternative (e.g. 'Budget Option', 'Splurge', 'Texture preference'). Required if selection_type is 'alternative'.",
+    )
+
 
 class RoutineStep(BaseModel):
     step: str
-    products: List[ProductRecommendation]
+    products: list[ProductRecommendation]
     instructions: str
     is_optional: bool = Field(False, description="Set to true if this step is not essential for a minimal routine.")
 
+
 class Routine(BaseModel):
-    am: List[RoutineStep]
-    pm: List[RoutineStep]
-    weekly: Optional[List[RoutineStep]] = Field(None, description="Optional weekly treatments like masks or exfoliants.")
+    am: list[RoutineStep]
+    pm: list[RoutineStep]
+    weekly: list[RoutineStep] | None = Field(None, description="Optional weekly treatments like masks or exfoliants.")
+
 
 class Recommendations(BaseModel):
-    reasoning: str = Field(..., description="A step-by-step thought process explaining how the routine was constructed, how product conflicts were avoided, and why specific products were chosen.")
-    key_ingredients: List[KeyIngredient]
+    reasoning: str = Field(
+        ...,
+        description="A step-by-step thought process explaining how the routine was constructed, how product conflicts were avoided, and why specific products were chosen.",
+    )
+    key_ingredients: list[KeyIngredient]
     routine: Routine
-    general_advice: List[str]
+    general_advice: list[str]
+
 
 class ReviewResult(BaseModel):
     """
     Represents the outcome of the expert review agent's validation.
     """
-    review_status: Literal["approved", "rejected"] = Field(..., description="The final outcome of the expert review. 'approved' if safe, 'rejected' if issues are found.")
-    audit_log: str = Field(..., description="A detailed log of the safety checks performed, confirming what was verified (e.g., 'Checked for retinoid overlap: None found. Verified AM sunscreen: Present.').")
-    review_notes: List[str] = Field(..., description="A list of notes explaining the review decision. If rejected, this provides actionable feedback for the generator.")
-    validated_recommendations: Optional[Recommendations] = Field(None, description="The final, validated recommendations ONLY if the status is 'approved'.")
+
+    review_status: Literal["approved", "rejected"] = Field(
+        ..., description="The final outcome of the expert review. 'approved' if safe, 'rejected' if issues are found."
+    )
+    audit_log: str = Field(
+        ...,
+        description="A detailed log of the safety checks performed, confirming what was verified (e.g., 'Checked for retinoid overlap: None found. Verified AM sunscreen: Present.').",
+    )
+    review_notes: list[str] = Field(
+        ...,
+        description="A list of notes explaining the review decision. If rejected, this provides actionable feedback for the generator.",
+    )
+    validated_recommendations: Recommendations | None = Field(
+        None, description="The final, validated recommendations ONLY if the status is 'approved'."
+    )
+
 
 class SkincarePhilosophy(BaseModel):
     """
     Represents the high-level strategic plan for a user's skincare routine.
     This serves as the "blueprint" for the recommendation engine.
     """
-    diagnosis_rationale: str = Field(..., description="A detailed explanation of the diagnosis, explaining why specific goals and ingredients were chosen based on the user's unique analysis (e.g., 'Due to high sensitivity, I am avoiding strong acids despite the acne concern').")
-    primary_goals: List[str] = Field(..., description="The top 2-3 overarching goals for the routine, e.g., 'Reduce Acne & Inflammation', 'Strengthen Skin Barrier'.")
-    am_routine_focus: str = Field(..., description="The strategic focus for the morning routine, e.g., 'Protection and Prevention'.")
-    pm_routine_focus: str = Field(..., description="The strategic focus for the evening routine, e.g., 'Treatment and Repair'.")
-    key_ingredients_to_target: List[str] = Field(..., description="A list of specific active ingredients that should be prioritized in the routine.")
-    ingredients_to_avoid: List[str] = Field(..., description="A list of ingredients to avoid based on skin concerns or potential conflicts.")
-    target_product_categories: List[str] = Field(..., description="A list of product categories needed to build the routine")
+
+    diagnosis_rationale: str = Field(
+        ...,
+        description="A detailed explanation of the diagnosis, explaining why specific goals and ingredients were chosen based on the user's unique analysis (e.g., 'Due to high sensitivity, I am avoiding strong acids despite the acne concern').",
+    )
+    primary_goals: list[str] = Field(
+        ...,
+        description="The top 2-3 overarching goals for the routine, e.g., 'Reduce Acne & Inflammation', 'Strengthen Skin Barrier'.",
+    )
+    am_routine_focus: str = Field(
+        ..., description="The strategic focus for the morning routine, e.g., 'Protection and Prevention'."
+    )
+    pm_routine_focus: str = Field(
+        ..., description="The strategic focus for the evening routine, e.g., 'Treatment and Repair'."
+    )
+    key_ingredients_to_target: list[str] = Field(
+        ..., description="A list of specific active ingredients that should be prioritized in the routine."
+    )
+    ingredients_to_avoid: list[str] = Field(
+        ..., description="A list of ingredients to avoid based on skin concerns or potential conflicts."
+    )
+    target_product_categories: list[str] = Field(
+        ..., description="A list of product categories needed to build the routine"
+    )
 
 
 # --- Helper Functions ---
+
 
 def setup_logger():
     """Sets up a centralized logger."""
@@ -255,36 +320,38 @@ def setup_logger():
         rotation="10 MB",
         retention="10 days",
         format="{time} {level} {message}",
-        serialize=True, # for structured logging
+        serialize=True,  # for structured logging
     )
     return logger
 
+
 def get_supabase_client() -> Client:
     """Initialize and return a Supabase client."""
-    load_dotenv('.env.local')
-    
-    supabase_url = os.getenv('NEXT_PUBLIC_SUPABASE_URL')
+    load_dotenv(".env.local")
+
+    supabase_url = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
     # Prioritize Service Role Key for backend scripts to bypass RLS, fallback to Anon Key
-    supabase_key = os.getenv('SUPABASE_SERVICE_ROLE_KEY') or os.getenv('NEXT_PUBLIC_SUPABASE_ANON_KEY')
+    supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
 
     if not supabase_url or not supabase_key:
         raise ValueError("Missing Supabase credentials in .env.local")
 
     return create_client(supabase_url, supabase_key)
 
+
 def get_s3_client():
     """Initializes and returns a boto3 S3 client."""
     import boto3
-    
+
     endpoint = os.getenv("SUPABASE_S3_ENDPOINT")
     region = os.getenv("SUPABASE_S3_REGION")
     access_key = os.getenv("SUPABASE_S3_ACCESS_KEY_ID")
     secret_key = os.getenv("SUPABASE_S3_SECRET_ACCESS_KEY")
-    
+
     if not all([endpoint, region, access_key, secret_key]):
         logger.warning("Missing S3 environment variables.")
         return None
-        
+
     return boto3.client(
         "s3",
         endpoint_url=endpoint,
@@ -292,6 +359,7 @@ def get_s3_client():
         aws_access_key_id=access_key,
         aws_secret_access_key=secret_key,
     )
+
 
 def list_latest_s3_batch(bucket_name: str, user_id: str):
     """
@@ -301,70 +369,77 @@ def list_latest_s3_batch(bucket_name: str, user_id: str):
     s3 = get_s3_client()
     if not s3:
         return None
-        
+
     prefix = f"{user_id}/"
     logger.info(f"Listing S3 objects in bucket '{bucket_name}' with prefix '{prefix}'...")
-    
+
     try:
         response = s3.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
         if "Contents" not in response:
             logger.error(f"No files found in S3 bucket '{bucket_name}' for user '{user_id}'")
             return None
-        
+
         # Parse timestamps
         timestamps = set()
         file_keys = []
-        
+
         for obj in response["Contents"]:
             key = obj["Key"]
-            parts = key.split('/')
+            parts = key.split("/")
             if len(parts) >= 3:
                 ts = parts[1]
                 if ts.isdigit():
                     timestamps.add(ts)
             file_keys.append(key)
-        
+
         final_prefix = prefix
         latest_ts = None
-        
+
         if timestamps:
             latest_ts = sorted(list(timestamps), key=lambda x: int(x))[-1]
             logger.info(f"Found latest upload batch: {latest_ts}")
             final_prefix = f"{user_id}/{latest_ts}/"
         else:
-             logger.warning("No timestamped folders found in S3. Falling back to root user folder.")
+            logger.warning("No timestamped folders found in S3. Falling back to root user folder.")
 
         # Filter keys for the target prefix
-        target_keys = [k for k in file_keys if k.startswith(final_prefix) and k.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))]
-        
+        target_keys = [
+            k
+            for k in file_keys
+            if k.startswith(final_prefix) and k.lower().endswith((".png", ".jpg", ".jpeg", ".webp"))
+        ]
+
         if not target_keys:
             logger.error(f"No image files found in latest batch '{final_prefix}'")
             return None
-            
+
         return latest_ts, target_keys, s3
 
     except Exception as e:
         logger.error(f"S3 Listing Error: {e}")
         return None
 
-def download_files_from_s3(bucket_name: str, keys: List[str], dest_dir: str, s3_client=None):
+
+def download_files_from_s3(bucket_name: str, keys: list[str], dest_dir: str, s3_client=None):
     """Downloads a list of S3 keys to a destination directory."""
     if not s3_client:
         s3_client = get_s3_client()
-        if not s3_client: return None
+        if not s3_client:
+            return None
 
     downloaded_paths = []
     try:
         for key in keys:
-            filename = key.split('/')[-1]
+            filename = key.split("/")[-1]
             local_path = os.path.join(dest_dir, filename)
             logger.debug(f"Downloading {key} to {local_path}...")
             s3_client.download_file(bucket_name, key, local_path)
             downloaded_paths.append(local_path)
         return downloaded_paths
     except Exception as e:
-         logger.error(f"S3 Download Error: {e}")
-         return None
+        logger.error(f"S3 Download Error: {e}")
+        return None
+
 
 def download_from_s3(bucket_name: str, user_id: str):
     """
@@ -374,63 +449,66 @@ def download_from_s3(bucket_name: str, user_id: str):
     result = list_latest_s3_batch(bucket_name, user_id)
     if not result:
         return None
-        
+
     latest_ts, target_keys, s3 = result
-    
+
     # Create temp dir
     temp_dir = tempfile.mkdtemp(prefix=f"lila_analysis_{user_id}_")
     logger.info(f"Created temp dir: {temp_dir}")
-    
+
     downloaded_paths = download_files_from_s3(bucket_name, target_keys, temp_dir, s3)
-    
+
     if not downloaded_paths:
         return None
-        
+
     return downloaded_paths, temp_dir, target_keys
+
 
 def distill_analysis_for_prompt(analysis_data: dict) -> str:
     """
     Converts the detailed analysis JSON into a concise, clinically relevant summary for the LLM.
     """
     analysis = analysis_data.get("analysis", {})
-    
+
     summary_parts = ["**Patient Skin Analysis Summary**\n"]
-    
+
     if "skin_type" in analysis:
         summary_parts.append(f"*   **Skin Type:** {analysis['skin_type'].get('label', 'N/A')}")
     if "skin_tone_fitzpatrick" in analysis:
         summary_parts.append(f"*   **Fitzpatrick Skin Tone:** {analysis['skin_tone_fitzpatrick'].get('label', 'N/A')}")
     if "skin_age_range" in analysis:
-        summary_parts.append(f"*   **Estimated Age Range:** {analysis['skin_age_range'].get('low', 'N/A')}-{analysis['skin_age_range'].get('high', 'N/A')}")
-        
+        summary_parts.append(
+            f"*   **Estimated Age Range:** {analysis['skin_age_range'].get('low', 'N/A')}-{analysis['skin_age_range'].get('high', 'N/A')}"
+        )
+
     summary_parts.append("\n**Top Concerns:**")
     top_concerns = analysis.get("top_concerns", [])
     concerns_details = analysis.get("concerns", {})
-    
+
     for i, concern_name in enumerate(top_concerns, 1):
         concern_info = concerns_details.get(concern_name, {})
-        score = concern_info.get('score_1_5', 'N/A')
+        score = concern_info.get("score_1_5", "N/A")
         summary_parts.append(f"{i}.  **{concern_name.replace('_', ' ').title()}** (Score: {score}/5)")
 
     summary_parts.append("\n**Detailed Analysis & Care Guidance:**")
     for concern_name in top_concerns:
         concern_info = concerns_details.get(concern_name, {})
-        rationale = concern_info.get('rationale_plain', 'No details provided.')
+        rationale = concern_info.get("rationale_plain", "No details provided.")
         summary_parts.append(f"*   **{concern_name.replace('_', ' ').title()}:** {rationale}")
-        
+
         subtypes = concern_info.get("identified_subtypes", [])
         if subtypes:
             care_notes = []
             for subtype in subtypes:
-                subtype_key = subtype.get('key', 'N/A').replace('_', ' ').title()
-                subtype_exp = subtype.get('explanation', 'N/A')
+                subtype_key = subtype.get("key", "N/A").replace("_", " ").title()
+                subtype_exp = subtype.get("explanation", "N/A")
                 summary_parts.append(f"    *   **Subtype: {subtype_key}:** {subtype_exp}")
                 if "care_education" in subtype and subtype["care_education"]:
                     care_notes.extend(subtype["care_education"])
-            
+
             if care_notes:
                 summary_parts.append("    *   **Key Care Advice:**")
-                for note in set(care_notes): # Use set to avoid duplicates
+                for note in set(care_notes):  # Use set to avoid duplicates
                     summary_parts.append(f"        *   {note}")
 
     escalation_flags = analysis.get("escalation_flags", [])
@@ -443,14 +521,15 @@ def distill_analysis_for_prompt(analysis_data: dict) -> str:
 
     if "overview_explanation" in analysis:
         summary_parts.append(f"\n**Overall Overview:**\n{analysis['overview_explanation']}")
-        
+
     return "\n".join(summary_parts)
 
-def format_products_as_markdown(products: List[Dict[str, Any]]) -> str:
+
+def format_products_as_markdown(products: list[dict[str, Any]]) -> str:
     """
     Formats a list of product dictionaries into a resilient, dynamic Markdown string
     suitable for LLM consumption (RAG context).
-    
+
     Features:
     - Prioritizes key identifying information (Name, Brand, Category).
     - Blacklists technical/noisy fields (embeddings, internal IDs).
@@ -461,45 +540,59 @@ def format_products_as_markdown(products: List[Dict[str, Any]]) -> str:
 
     # 1. Configuration: Fields to Ignore and Prioritize
     BLACKLIST_KEYS = {
-        'embedding', 'vectors', 'vector', 'html_content', 'search_index',
-        'created_at', 'updated_at', 'disabled_at',
-        'ingredient_slugs', 'image_url',
-        'highlights', # Redundant if we show top-level benefits/concerns
-        'id'
+        "embedding",
+        "vectors",
+        "vector",
+        "html_content",
+        "search_index",
+        "created_at",
+        "updated_at",
+        "disabled_at",
+        "ingredient_slugs",
+        "image_url",
+        "highlights",  # Redundant if we show top-level benefits/concerns
+        "id",
     }
 
     PRIORITY_KEYS = [
-        'product_slug', 'category', 'rating', 'review_count', 'price',
-        'description',
-        'active_ingredients', 'matched_key_ingredients',
-        'benefits', 'concerns', 'attributes'
+        "product_slug",
+        "category",
+        "rating",
+        "review_count",
+        "price",
+        "description",
+        "active_ingredients",
+        "matched_key_ingredients",
+        "benefits",
+        "concerns",
+        "attributes",
     ]
-    
+
     # Header fields handled separately
-    HEADER_KEYS = {'name', 'brand', 'title', 'url'}
+    HEADER_KEYS = {"name", "brand", "title", "url"}
 
     formatted_output = []
 
     for idx, product in enumerate(products, 1):
         # --- A. Header Construction ---
-        brand = product.get('brand', 'Unknown Brand')
-        name = product.get('name', product.get('title', 'Unknown Product'))
-        url = product.get('url', 'N/A')
-        
+        brand = product.get("brand", "Unknown Brand")
+        name = product.get("name", product.get("title", "Unknown Product"))
+        url = product.get("url", "N/A")
+
         # Markdown Header: "### 1. [Brand] Product Name"
         card_parts = [f"### {idx}. [{brand}] {name}"]
-        
+
         # --- B. Priority Fields ---
         for key in PRIORITY_KEYS:
             if key in product and product[key]:
                 value = product[key]
-                label = key.replace('_', ' ').title()
-                
+                label = key.replace("_", " ").title()
+
                 # Special handling for lists
                 if isinstance(value, list):
                     val_str = ", ".join(str(v) for v in value)
-                    if len(val_str) > 300 and key == 'active_ingredients':
-                        val_str = val_str[:300] + "..." # Truncate massive ingredient lists
+                    if len(val_str) > 300 and key == "active_ingredients":
+                        val_str = val_str[:300] + "..."  # Truncate massive ingredient lists
                     card_parts.append(f"*   **{label}:** {val_str}")
                 else:
                     card_parts.append(f"*   **{label}:** {value}")
@@ -507,16 +600,16 @@ def format_products_as_markdown(products: List[Dict[str, Any]]) -> str:
         # --- C. Dynamic Discovery (The "Resilient" Part) ---
         # Flatten known nested dicts like 'overview' or 'meta_data'
         # and process any other unknown top-level keys.
-        
+
         processed_keys = BLACKLIST_KEYS.union(set(PRIORITY_KEYS)).union(HEADER_KEYS)
-        
+
         for key, value in product.items():
             if key in processed_keys or value in [None, "", [], {}]:
                 continue
-            
+
             # Helper to format a single line
             def format_line(k, v, indent=0):
-                k_label = k.replace('_', ' ').title()
+                k_label = k.replace("_", " ").title()
                 if isinstance(v, list):
                     return f"{' ' * indent}*   **{k_label}:** {', '.join(str(x) for x in v)}"
                 elif isinstance(v, dict):
@@ -526,94 +619,101 @@ def format_products_as_markdown(products: List[Dict[str, Any]]) -> str:
                         if sub_v:
                             sub_lines.append(format_line(sub_k, sub_v, indent + 4))
                     if sub_lines:
-                         return f"{' ' * indent}*   **{k_label}:**\n" + "\n".join(sub_lines)
+                        return f"{' ' * indent}*   **{k_label}:**\n" + "\n".join(sub_lines)
                     return None
                 else:
                     return f"{' ' * indent}*   **{k_label}:** {v}"
 
             # Special flattening for 'overview' and 'meta_data' if they exist
-            if key in ['overview', 'meta_data'] and isinstance(value, dict):
+            if key in ["overview", "meta_data"] and isinstance(value, dict):
                 for sub_k, sub_v in value.items():
                     line = format_line(sub_k, sub_v)
-                    if line: card_parts.append(line)
+                    if line:
+                        card_parts.append(line)
             else:
                 # Catch-all for new DB columns
                 line = format_line(key, value)
-                if line: card_parts.append(line)
+                if line:
+                    card_parts.append(line)
 
         # Always append URL at the end for reference
         card_parts.append(f"*   **URL:** {url}")
-        
+
         formatted_output.append("\n".join(card_parts))
 
     return "\n\n---\n\n".join(formatted_output)
 
+
 def get_media_type(file_path: str) -> str:
     """Determine the media type of a file based on its extension."""
     ext = os.path.splitext(file_path)[1].lower()
-    if ext in ['.jpg', '.jpeg']:
-        return 'image/jpeg'
-    elif ext == '.png':
-        return 'image/png'
-    elif ext == '.webp':
-        return 'image/webp'
+    if ext in [".jpg", ".jpeg"]:
+        return "image/jpeg"
+    elif ext == ".png":
+        return "image/png"
+    elif ext == ".webp":
+        return "image/webp"
     else:
-        return 'application/octet-stream' # Fallback
+        return "application/octet-stream"  # Fallback
+
 
 def load_system_prompt(prompt_path: str) -> str:
     """Load the system prompt from a file."""
     try:
-        with open(prompt_path, "r", encoding="utf-8") as f:
+        with open(prompt_path, encoding="utf-8") as f:
             return f.read()
-    except IOError as e:
+    except OSError as e:
         print(f"Error reading prompt file {prompt_path}: {e}", file=sys.stderr)
         raise
 
-def load_json_context(file_path: Optional[str]) -> Dict[str, Any]:
+
+def load_json_context(file_path: str | None) -> dict[str, Any]:
     """Load user context from a JSON file if provided."""
     if not file_path:
         return {}
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             return json.load(f)
-    except (IOError, json.JSONDecodeError) as e:
+    except (OSError, json.JSONDecodeError) as e:
         print(f"Error reading or parsing context file {file_path}: {e}", file=sys.stderr)
         raise
 
-def load_product_catalog(file_path: str) -> List[Dict[str, Any]]:
+
+def load_product_catalog(file_path: str) -> list[dict[str, Any]]:
     """Load product catalog from a JSONL file."""
     products = []
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             for line in f:
                 products.append(json.loads(line))
-    except (IOError, json.JSONDecodeError) as e:
+    except (OSError, json.JSONDecodeError) as e:
         print(f"Error reading or parsing product catalog file {file_path}: {e}", file=sys.stderr)
         raise
     return products
 
-def create_agent(model_str: str, api_key: Optional[str], reasoning_effort: Optional[str]):
+
+def create_agent(model_str: str, api_key: str | None, reasoning_effort: str | None):
     """Configure and initialize the AI agent."""
-    provider_name, model_name = model_str.split(':', 1)
-    
+    provider_name, model_name = model_str.split(":", 1)
+
     model = None
     model_settings = None
 
     settings_kwargs = {}
     if api_key:
-        settings_kwargs['api_key'] = api_key
+        settings_kwargs["api_key"] = api_key
 
-    if provider_name in ('google-gla', 'google-vertex'):
-        provider = GoogleProvider(api_key=api_key, vertexai=(provider_name == 'google-vertex'))
+    if provider_name in ("google-gla", "google-vertex"):
+        provider = GoogleProvider(api_key=api_key, vertexai=(provider_name == "google-vertex"))
         model = GoogleModel(model_name, provider=provider)
         if reasoning_effort:
-            settings_kwargs['google_thinking_config'] = {'include_thoughts': True}
+            settings_kwargs["google_thinking_config"] = {"include_thoughts": True}
         model_settings = GoogleModelSettings(**settings_kwargs)
-    elif provider_name == 'openai':
+    elif provider_name == "openai":
         provider = OpenAIProvider(api_key=api_key)
         model = OpenAIChatModel(model_name, provider=provider)
         if reasoning_effort:
-            settings_kwargs['openai_reasoning_effort'] = reasoning_effort
+            settings_kwargs["openai_reasoning_effort"] = reasoning_effort
         model_settings = OpenAIModelSettings(**settings_kwargs)
     else:
         model = model_str
