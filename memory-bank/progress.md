@@ -155,3 +155,5 @@
     - [x] **UI Cleanup:** Removed redundant "History" button from Analysis Detail view as it is now accessible from the main Dashboard.
     - [x] **Infinite Redirect Loop (Client):** Fixed loop in `UploadPageClient` when intake data is missing (forced redirect to `/intake`).
     - [x] **Infinite Redirect Loop (Server):** Fixed loop between Dashboard and Onboarding for users with `complete` status but no analysis (Implemented "Empty State" Dashboard).
+    - [x] **Build Fix:** Resolved `pnpm build` failure caused by syntax error and invalid export in `app/admin/products/actions.ts`.
+

@@ -39,9 +39,9 @@ const s3Client = new S3Client({
 })
 
 // --- Schemas ---
-export // --- Schemas ---
+
 import { ProductSchema } from "./schemas"
-export { ProductSchema }
+
 
 export async function searchIngredients(query: string) {
     if (!query || query.length < 2) return []
