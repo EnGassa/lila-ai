@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Plus, Trash } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +27,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Form,
   FormControl,
   FormField,
@@ -37,7 +48,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { RetailerSchema } from "@/app/admin/products/schemas";
-import { createRetailer, updateRetailer } from "@/app/admin/retailers/actions";
+import {
+  createRetailer,
+  updateRetailer,
+  deleteRetailer,
+} from "@/app/admin/retailers/actions";
 import { Retailer } from "@/lib/types";
 import { COUNTRIES } from "@/lib/constants";
 
@@ -55,6 +70,7 @@ export function RetailerDialog({
   const router = useRouter(); // Initialize router
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const isEdit = !!retailer;
 
@@ -114,6 +130,27 @@ export function RetailerDialog({
       toast.error("An unexpected error occurred");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!retailer?.id) return;
+
+    setIsDeleting(true);
+    try {
+      const res = await deleteRetailer(retailer.id);
+      if (res.success) {
+        toast.success(res.message);
+        router.refresh();
+        handleOpenChange(false);
+      } else {
+        toast.error(res.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete retailer");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -226,8 +263,45 @@ export function RetailerDialog({
               )}
             />
 
-            <DialogFooter>
-              <Button type="submit" disabled={loading}>
+            <DialogFooter className="flex-row justify-between space-x-0 sm:justify-between">
+              {isEdit && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      type="button"
+                      disabled={loading || isDeleting}
+                    >
+                      <Trash className="mr-2 h-4 w-4" /> Delete
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete the retailer.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleDelete();
+                        }}
+                        className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                      >
+                        {isDeleting ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : null}
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+              <Button type="submit" disabled={loading || isDeleting}>
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isEdit ? "Save Changes" : "Create Retailer"}
               </Button>

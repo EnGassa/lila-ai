@@ -161,6 +161,8 @@
   - Added "Retailers" link to Admin Navigation for better discoverability.
   - **Retailer Region Standardization:** Replaced open-ended text input with a standardized Country Selector (ISO codes) in `RetailerDialog`.
   - **Bug Fix:** Added `router.refresh()` to `RetailerDialog` to ensure immediate UI updates after creating/editing a retailer.
+  - **Feature:** Added "Delete Retailer" functionality with safeguard checks (prevents deletion if linked to products).
+  - **Bug Fix:** Fixed issue where `RetailersTable` would not refresh after deletion by adding a `useEffect` to sync state with server props.
 - **Admin Layout Fix:**
     - Resolved a critical `Runtime TypeError` in `AdminLayout` caused by a circular dependency in `lib/utils.ts`.
     - **Refactor:** Extracted `FaceCropper` (which depends on the heavy, browser-only `@mediapipe` library) into a dedicated `lib/face-cropper.ts` file.
