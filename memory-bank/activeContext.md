@@ -210,6 +210,11 @@
     - **Issue:** The "Analyze and Recommend" workflow (`trigger_analysis.yml`) was re-downloading heavy dependencies (Torch, Transformers ~1GB+) on every run.
     - **Cause:** `setup-uv` was enabled with default caching, which looks for `uv.lock`. Since we use inline script dependencies (`# /// script`), the cache key was not reflecting the actual dependencies.
     - **Fix:** Added `cache-dependency-glob: "scripts/*.py"` to the workflow. This forces the cache key to be a hash of the script contents, ensuring that environments are properly cached and reused unless the scripts change.
+- **Best Practices Audit:**
+    - Refactored `.github/workflows/test.yml` to use `setup-node`'s built-in `cache: 'pnpm'` (cleaner than manual hash keys).
+    - Added explicitly scoped `permissions: contents: read` to all workflows (Principle of Least Privilege).
+    - Enforced `timeout-minutes` on all jobs (`30m` for tests, `20m` for analysis) to prevent cost overrun from stalled runners.
+    - Upgraded all `actions/cache` usages to `v4`.
 
 ## Recent Work: AI Avatar Generation
 - **Automated Pipeline:**
