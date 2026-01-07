@@ -404,38 +404,57 @@
 }
 
 /* Gold Segmented Control */
+/* Gold Segmented Control */
 .gold-segmented-control {
-  background-color: var(--gold-3) !important;
+  background-color: var(--sand-3) !important;
   padding: 4px !important;
-  border-radius: var(--radius-3) !important;
+  border-radius: 8px !important;
+  /* Explicit radius for container */
 }
 
-/* Target the indicator if it exists, or the active item background */
+/* Target the indicator if it exists */
 .gold-segmented-control .rt-SegmentedControlIndicator {
-  background-color: #ffffff !important;
+  background-color: var(--color-card) !important;
+  border-radius: 6px !important;
+  /* R_inner = R_outer - Padding (approximated for visual balance) */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Ensure active item text is dark and distinct */
+/* Ensure active item text is distinct */
 .gold-segmented-control .rt-SegmentedControlItem[data-state='active'] {
-  background-color: #ffffff !important;
-  color: #1b1816 !important;
+  background-color: var(--color-card) !important;
+  color: var(--color-foreground) !important;
   font-weight: 500 !important;
+  border-radius: 6px !important;
+  /* Match indicator radius */
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 /* Inactive item text */
 .gold-segmented-control .rt-SegmentedControlItem[data-state='unchecked'] {
   background-color: transparent !important;
-  color: var(--sand-11) !important;
+  color: var(--sand-10) !important;
   font-weight: 400 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .gold-segmented-control .rt-SegmentedControlItem[data-state='unchecked']:hover {
-  background-color: rgba(255, 255, 255, 0.3) !important;
+  background-color: var(--sand-4) !important;
   color: var(--sand-12) !important;
+  border-radius: 6px !important;
+}
+
+/* Dark Mode Specific Overrides for Segmented Control */
+.dark .gold-segmented-control .rt-SegmentedControlItem[data-state='active'],
+.dark-theme .gold-segmented-control .rt-SegmentedControlItem[data-state='active'],
+.dark .gold-segmented-control .rt-SegmentedControlIndicator,
+.dark-theme .gold-segmented-control .rt-SegmentedControlIndicator {
+  background-color: var(--sand-5) !important;
+  /* Lighter than sand-3 container */
 }
 
 .gold-segmented-control .rt-SegmentedControlItem[data-state='active']:hover {
-  background-color: #ffffff !important;
+  background-color: var(--color-card) !important;
 }

@@ -30,6 +30,7 @@ import { FeedbackModal } from "@/components/FeedbackModal";
 import { Calendar, Camera, ArrowLeft } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface AnalysisHistoryItem {
   id: string;
@@ -215,51 +216,67 @@ export function SkincareDashboard({
           </SegmentedControl.Root>
 
           <Box>
-            {activeTab === 'overview' && (
-              <Flex direction="column" gap="4">
-                <SummaryOverview analysis={analysisData} charts={charts} />
+            <AnimatePresence mode="wait">
+              {activeTab === 'overview' ? (
+                <motion.div
+                  key="overview"
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Flex direction="column" gap="4">
+                    <SummaryOverview analysis={analysisData} charts={charts} />
 
-                <Box>
-                  <Box py="2">
-                    <Text as="div" size="6" weight="medium" mb="2">
-                      Severity Radar
-                    </Text>
-                    <p className="text-sm text-muted-foreground leading-snug mt-2">
-                      Severity is on a 1–5 scale. Radar shows overall severity: Larger filled area = more severe concerns across dimensions.
-                    </p>
-                    <Box height="350px" width="100%" mt="2">
-                      <SeverityRadar radarData={charts.overview_radar} />
+                    <Box>
+                      <Box py="2">
+                        <Text as="div" size="6" weight="medium" mb="2">
+                          Severity Radar
+                        </Text>
+                        <p className="text-sm text-muted-foreground leading-snug mt-2">
+                          Severity is on a 1–5 scale. Radar shows overall severity: Larger filled area = more severe concerns across dimensions.
+                        </p>
+                        <Box height="350px" width="100%" mt="2">
+                          <SeverityRadar radarData={charts.overview_radar} />
+                        </Box>
+                      </Box>
                     </Box>
-                  </Box>
-                </Box>
 
-                <Box>
-                  <Box py="2">
-                    <Text as="div" size="6" weight="medium" mb="2">
-                      Skin Concerns
-                    </Text>
-                    <p className="text-sm text-muted-foreground leading-snug mt-2">
-                      Below are all your skin attributes rated in order of severity. Click on each attribute to see a deeper analysis of each area.
-                    </p>
-                    <Flex direction="column" gap="4" mt="5">
-                      {concerns
-                        .sort((a, b) => b.score - a.score)
-                        .map((concern) => (
-                          <ConcernCard
-                            key={concern.name}
-                            concern={concern}
-                            onClick={() => setSelectedConcern(concern)}
-                          />
-                        ))}
-                    </Flex>
-                  </Box>
-                </Box>
-              </Flex>
-            )}
-
-            {activeTab === 'recommendations' && (
-              <RecommendationsTab recommendations={recommendations} />
-            )}
+                    <Box>
+                      <Box py="2">
+                        <Text as="div" size="6" weight="medium" mb="2">
+                          Skin Concerns
+                        </Text>
+                        <p className="text-sm text-muted-foreground leading-snug mt-2">
+                          Below are all your skin attributes rated in order of severity. Click on each attribute to see a deeper analysis of each area.
+                        </p>
+                        <Flex direction="column" gap="4" mt="5">
+                          {concerns
+                            .sort((a, b) => b.score - a.score)
+                            .map((concern) => (
+                              <ConcernCard
+                                key={concern.name}
+                                concern={concern}
+                                onClick={() => setSelectedConcern(concern)}
+                              />
+                            ))}
+                        </Flex>
+                      </Box>
+                    </Box>
+                  </Flex>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="recommendations"
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <RecommendationsTab recommendations={recommendations} />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Box>
         </Flex>
 
