@@ -205,6 +205,12 @@
     - Added `scripts/generate_avatar.py` to automate profile picture generation using Google Gemini 2.5 Flash Image.
     - Refactored shared S3 logic into `download_from_s3` in `skin_lib.py`.
 
+## Recent Work: CI/CD Cache Optimization
+- **Cache Miss Resolution:**
+    - **Issue:** The "Analyze and Recommend" workflow (`trigger_analysis.yml`) was re-downloading heavy dependencies (Torch, Transformers ~1GB+) on every run.
+    - **Cause:** `setup-uv` was enabled with default caching, which looks for `uv.lock`. Since we use inline script dependencies (`# /// script`), the cache key was not reflecting the actual dependencies.
+    - **Fix:** Added `cache-dependency-glob: "scripts/*.py"` to the workflow. This forces the cache key to be a hash of the script contents, ensuring that environments are properly cached and reused unless the scripts change.
+
 ## Recent Work: AI Avatar Generation
 - **Automated Pipeline:**
     -  Created `scripts/generate_avatar.py` to generate stylized avatars from `front_smiling` uploads.

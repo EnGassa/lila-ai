@@ -28,6 +28,7 @@ jobs:
         with:
           version: "latest"
           enable-cache: true
+          cache-dependency-glob: "scripts/*.py"
 
       - name: Set up Python
         uses: actions/setup-python@v5
