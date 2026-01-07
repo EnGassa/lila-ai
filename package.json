@@ -9,6 +9,7 @@
     "start": "next start",
     "test": "vitest",
     "test:ci": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test"
   },
   "dependencies": {
@@ -87,6 +88,7 @@
     "@types/react": "19.2.6",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
+    "@vitest/coverage-v8": "^4.0.16",
     "baseline-browser-mapping": "^2.9.2",
     "eslint": "^9.39.1",
     "eslint-config-next": "16.0.3",

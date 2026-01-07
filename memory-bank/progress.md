@@ -18,6 +18,7 @@
 *   **Testing Infrastructure:**
     - [x] **Unit Tests:** Vitest configured with React Testing Library.
     - [x] **E2E Tests:** Playwright configured with multiple browser projects.
+    - [x] **Code Coverage:** Configured reporting and achieved >80% on critical utilities.
     - [x] **CI/CD:** GitHub Actions workflow for automated regression testing.
     - [x] **Sanity Checks:** Verified setups with sample tests for Utilities and Landing Page.
 
