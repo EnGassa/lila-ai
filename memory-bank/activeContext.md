@@ -450,3 +450,13 @@ Implementation of the core secure Admin Dashboard structure.
     -   Restored the original upload page flow and moved the new upload page implementation to the main `/upload` route.
     -   Verified that the file capture and upload process works seamlessly with the new route structure.
 
+
+## Current Work: CI/CD Reliability (Fixes)
+- **Problem:** CI Test failures in `dashboard.spec.ts` and `onboarding.spec.ts` on Mobile Safari and WebKit.
+- **Root Cause 1 (Layout):** Login page had global `overflow-hidden`, preventing scrolling on small viewports (Mobile Safari) and hiding the "Magic Link" button.
+- **Root Cause 2 (Flakiness):** Authentication mocks in `dashboard.spec.ts` were too specific (`auth/v1/otp`), failing to catch some internal Supabase requests.
+- **Fixes:**
+    - **Responsive Layout:** Updated `app/login/page.tsx` to use `min-h-screen` (mobile) and `lg:h-screen` (desktop) to ensure accessibility on all devices.
+    - **Robust Mocks:** Updated all E2E tests to use wildcard `**/auth/v1/**` mocks.
+    - **Strict Assertions:** Added `await expect(page).toHaveURL` guardrails before interaction.
+- **Result:** 100% Pass Rate (25/25) across all browsers (Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari).
