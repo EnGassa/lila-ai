@@ -595,7 +595,7 @@ export function ProductDialog({
                       control={form.control}
                       name={`purchaseOptions.${index}.url`}
                       render={({ field }) => (
-                        <FormItem className="col-span-5">
+                        <FormItem className="col-span-4">
                           <FormLabel className="text-xs">URL</FormLabel>
                           <FormControl>
                             <Input
@@ -610,12 +610,61 @@ export function ProductDialog({
                     />
                     <FormField
                       control={form.control}
-                      name={`purchaseOptions.${index}.priority`}
+                      name={`purchaseOptions.${index}.price`}
                       render={({ field }) => (
                         <FormItem className="col-span-2">
-                          <FormLabel className="text-xs">Priority</FormLabel>
+                          <FormLabel className="text-xs">Price</FormLabel>
                           <FormControl>
-                            <Input type="number" {...field} className="h-8" />
+                            <div className="relative">
+                              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                                {(() => {
+                                  // Find the selected retailer for this specific row
+                                  const selectedRetailerId = form.watch(
+                                    `purchaseOptions.${index}.retailerId`,
+                                  );
+                                  const retailer = retailers.find(
+                                    (r) => r.id === selectedRetailerId,
+                                  );
+                                  const currency = retailer?.currency || "USD";
+
+                                  // Simple symbol map
+                                  const symbols: Record<string, string> = {
+                                    USD: "$",
+                                    EUR: "€",
+                                    GBP: "£",
+                                    CAD: "$",
+                                    AUD: "$",
+                                    JPY: "¥",
+                                    INR: "₹",
+                                  };
+                                  return symbols[currency] || "$";
+                                })()}
+                              </span>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                {...field}
+                                className="h-8 pl-5"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`purchaseOptions.${index}.priority`}
+                      render={({ field }) => (
+                        <FormItem className="col-span-1">
+                          <FormLabel className="text-xs">Prio</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              {...field}
+                              className="h-8 px-1 text-center"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

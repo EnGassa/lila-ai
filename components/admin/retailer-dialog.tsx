@@ -81,6 +81,7 @@ export function RetailerDialog({
       baseUrl: retailer?.base_url || "",
       logoUrl: retailer?.logo_url || "",
       countryCode: retailer?.country_code || "Global",
+      currency: retailer?.currency || "USD",
       isActive: retailer ? retailer.is_active : true,
     },
   });
@@ -102,6 +103,7 @@ export function RetailerDialog({
       if (values.logoUrl) formData.append("logoUrl", values.logoUrl);
       if (values.countryCode)
         formData.append("countryCode", values.countryCode);
+      if (values.currency) formData.append("currency", values.currency);
       formData.append("isActive", String(values.isActive));
 
       let result;
@@ -188,7 +190,7 @@ export function RetailerDialog({
                 </FormItem>
               )}
             />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <FormField
                 control={form.control}
                 name="countryCode"
@@ -201,7 +203,7 @@ export function RetailerDialog({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a region" />
+                          <SelectValue placeholder="Region" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -218,12 +220,39 @@ export function RetailerDialog({
               />
               <FormField
                 control={form.control}
+                name="currency"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Currency</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="USD" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="USD">USD ($)</SelectItem>
+                        <SelectItem value="EUR">EUR (€)</SelectItem>
+                        <SelectItem value="GBP">GBP (£)</SelectItem>
+                        <SelectItem value="CAD">CAD ($)</SelectItem>
+                        <SelectItem value="AUD">AUD ($)</SelectItem>
+                        <SelectItem value="JPY">JPY (¥)</SelectItem>
+                        <SelectItem value="INR">INR (₹)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="isActive"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                    <div className="space-y-0.5">
-                      <FormLabel>Active</FormLabel>
-                    </div>
+                  <FormItem className="flex flex-col justify-center space-y-2 rounded-lg border p-2 shadow-sm h-full items-center">
+                    <FormLabel className="text-xs">Active</FormLabel>
                     <FormControl>
                       <Switch
                         checked={field.value}

@@ -320,6 +320,7 @@ create table if not exists public.retailers (
   base_url text,
   logo_url text,
   country_code text default 'Global',
+  currency text default 'USD',
   is_active boolean default true,
   created_at timestamptz default now()
 );

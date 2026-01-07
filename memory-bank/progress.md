@@ -152,6 +152,8 @@
     - [x] **Relational Schema:** Implemented `retailers` and `product_purchase_options` tables for scalable link management.
     - [x] **Admin - Retailers:** Dedicated CRUD page for managing global retailer entities (Logos, Base URLs).
     - [x] **Admin - Products:** Upgraded Product Dialog to manage multiple purchase options (Price, Currency, URL, Priority).
+    - [x] **Admin - Price Check:** Added dedicated Price input field to purchase options.
+    - [x] **Admin - Retailer Currency:** Moved currency definition to Retailer level (Schema + UI).
     - [x] **Admin - Navigation:** Added "Retailers" link to the main admin navigation bar.
     - [x] **Data Quality:** Standardized Retailer Region Codes using a strict country selection dropdown (ISO 3166-1).
     - [x] **Frontend - "Shop" Logic:**

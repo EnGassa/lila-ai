@@ -1,6 +1,12 @@
 # Active Context
 
 
+## Recent Work: Admin Enhancements
+- **Product Price:** Added dedicated "Price" input field to the Product Purchase Options dialog, allowing admins to track pricing per retailer link.
+- **Retailer Currency:** Refactored currency logic to be defined at the **Retailer** level.
+    - **Schema:** Applied migration (`ALTER TABLE retailers ADD COLUMN currency`) to live Supabase project.
+    - **UI:** Updated Admin Dialogs to support currency configuration and display.
+
 ## Current Work: Dev Tooling & Build Health
 - **Pre-commit Hooks:** Implemented polyglot pre-commit hooks using `husky` and `lint-staged`.
     - Enforces `eslint`/`prettier` for JS/TS.

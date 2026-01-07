@@ -23,6 +23,7 @@ export const RetailerSchema = z.object({
   baseUrl: z.string().optional(),
   logoUrl: z.string().optional(),
   countryCode: z.enum(COUNTRY_CODES).default("Global"),
+  currency: z.string().default("USD"),
   isActive: z.boolean().default(true),
 });
 

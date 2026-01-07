@@ -48,6 +48,7 @@ export async function createRetailer(
     baseUrl: formData.get("baseUrl"),
     logoUrl: formData.get("logoUrl"),
     countryCode: formData.get("countryCode"),
+    currency: formData.get("currency"),
     isActive: formData.get("isActive") === "true",
   });
 
@@ -55,7 +56,7 @@ export async function createRetailer(
     return { success: false, message: validatedFields.error.errors[0].message };
   }
 
-  const { name, baseUrl, logoUrl, countryCode, isActive } =
+  const { name, baseUrl, logoUrl, countryCode, currency, isActive } =
     validatedFields.data;
 
   const { error } = await supabaseAdmin.from("retailers").insert({
@@ -63,6 +64,7 @@ export async function createRetailer(
     base_url: baseUrl,
     logo_url: logoUrl,
     country_code: countryCode,
+    currency: currency,
     is_active: isActive,
   });
 
@@ -88,6 +90,7 @@ export async function updateRetailer(
     baseUrl: formData.get("baseUrl"),
     logoUrl: formData.get("logoUrl"),
     countryCode: formData.get("countryCode"),
+    currency: formData.get("currency"),
     isActive: formData.get("isActive") === "true",
   });
 
@@ -95,7 +98,7 @@ export async function updateRetailer(
     return { success: false, message: validatedFields.error.errors[0].message };
   }
 
-  const { name, baseUrl, logoUrl, countryCode, isActive } =
+  const { name, baseUrl, logoUrl, countryCode, currency, isActive } =
     validatedFields.data;
 
   const { error } = await supabaseAdmin
@@ -105,6 +108,7 @@ export async function updateRetailer(
       base_url: baseUrl,
       logo_url: logoUrl,
       country_code: countryCode,
+      currency: currency,
       is_active: isActive,
     })
     .eq("id", id);

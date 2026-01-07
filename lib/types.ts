@@ -57,6 +57,7 @@ export interface Retailer {
   base_url?: string | null;
   logo_url?: string | null;
   country_code: string;
+  currency?: string;
   is_active: boolean;
   created_at: string;
 }
