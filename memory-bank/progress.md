@@ -23,6 +23,7 @@
     - [x] **Sanity Checks:** Verified setups with sample tests for Utilities and Landing Page.
     - [x] **E2E Expansion:** Onboarding & Login flows.
     - [x] **Product Validation:** Unit tests for ProductSchema.
+    - [x] **Core AI Logic:** Unit tests for Face Scan pose validation (caught 1 regression).
 
 *   **Self-Service Flow (Phases 1-3 Complete):**
     - [x] **Authentication**: Magic Link implementation for passwordless entry.

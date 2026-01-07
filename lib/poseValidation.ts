@@ -76,7 +76,7 @@ export function validatePose(
         message = yawDiff < 0 ? "Turn Right" : "Turn Left";
         correct = false;
       } else if (Math.abs(pitchDiff) > tolerance) {
-        message = pitchDiff < 0 ? "Look Down" : "Look Up";
+        message = pitchDiff < 0 ? "Look Up" : "Look Down";
         correct = false;
       }
       break;
@@ -114,7 +114,7 @@ export function validatePose(
         message = yawDiff < 0 ? "Turn Right" : "Turn Left";
         correct = false;
       } else if (Math.abs(pitchDiff) > tolerance) {
-        message = pitchDiff < 0 ? "Look Down" : "Look Up";
+        message = pitchDiff < 0 ? "Look Up" : "Look Down";
         correct = false;
       } else if (detected.smile < smileThreshold) {
         message = "Show us a smile!";
