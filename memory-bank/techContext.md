@@ -23,6 +23,10 @@
     *   `supabase`
     *   `boto3` (for robust S3 storage access)
     *   `python-dotenv`
+    *   **Testing:**
+        *   **Unit:** Vitest + React Testing Library (for components and utilities).
+        *   **E2E:** Playwright (for critical user flows and integration).
+        *   **CI:** GitHub Actions (`.github/workflows/test.yml`) runs tests on PRs.
 
 ## Development Setup
 

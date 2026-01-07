@@ -300,6 +300,14 @@
 
 ---
 
+## Recent Work: Testing Infrastructure (Regressions)
+- **Goal:** Prevent regressions as product surface area grows.
+- **Implementation:**
+    - **Unit Testing:** Integrated **Vitest** for component and utility testing. Verified with `lib/utils.test.ts`.
+    - **E2E Testing:** Integrated **Playwright** for critical flow verification (Landing Page).
+    - **CI/CD:** Created GitHub Actions workflow (`.github/workflows/test.yml`) to automatically run `pnpm test:ci` and `pnpm test:e2e` on every PR.
+    - **Tooling:** Updated `package.json` with standard `test`, `test:ci`, and `test:e2e` scripts.
+
 ## Previous Work: Latency Instrumentation (L-82)
 - Removed the capture latency stat popup (toast) and moved metrics logging to PostHog for better analytical tracking without UI distractions.
 

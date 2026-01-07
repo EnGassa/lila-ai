@@ -15,6 +15,12 @@
     - [x] **Performance:** Optimized high-frequency events (Face Mesh) to fire once per session.
     - [x] **Dashboard Metrics:** Tracked daily engagement (AM/PM toggles, routine expansion).
 
+*   **Testing Infrastructure:**
+    - [x] **Unit Tests:** Vitest configured with React Testing Library.
+    - [x] **E2E Tests:** Playwright configured with multiple browser projects.
+    - [x] **CI/CD:** GitHub Actions workflow for automated regression testing.
+    - [x] **Sanity Checks:** Verified setups with sample tests for Utilities and Landing Page.
+
 *   **Self-Service Flow (Phases 1-3 Complete):**
     - [x] **Authentication**: Magic Link implementation for passwordless entry.
     - [x] **Wizard UX**: Guided onboarding flow (`/onboarding`) managing Intake -> Upload -> Analysis states.
