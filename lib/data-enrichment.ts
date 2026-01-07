@@ -1,16 +1,16 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Recommendations, KeyIngredient, Step, Product } from '@/lib/types';
+import { SupabaseClient } from "@supabase/supabase-js";
+import { Recommendations, KeyIngredient, Step, Product } from "@/lib/types";
 
 export async function enrichRecommendations(
   supabase: SupabaseClient,
-  recommendationsData: Recommendations | null
+  recommendationsData: Recommendations | null,
 ): Promise<void> {
   if (!recommendationsData) return;
 
   const enrichIngredients = async () => {
     if (!recommendationsData.key_ingredients) return;
     const ingredientSlugs = recommendationsData.key_ingredients.map(
-      (ing: KeyIngredient) => ing.ingredient_slug
+      (ing: KeyIngredient) => ing.ingredient_slug,
     );
     if (ingredientSlugs.length === 0) return;
 
@@ -24,7 +24,7 @@ export async function enrichRecommendations(
         ingredientsDetails.map((ing) => [
           ing.ingredient_slug,
           { name: ing.name, image_url: ing.image_url },
-        ])
+        ]),
       );
       recommendationsData.key_ingredients =
         recommendationsData.key_ingredients.map((ing: KeyIngredient) => {
@@ -46,7 +46,7 @@ export async function enrichRecommendations(
       if (steps) {
         steps.forEach((step: Step) => {
           step.products.forEach((product: Product) =>
-            productSlugs.add(product.product_slug)
+            productSlugs.add(product.product_slug),
           );
         });
       }
@@ -57,7 +57,8 @@ export async function enrichRecommendations(
 
     const { data: productDetails, error } = await supabase
       .from("products_1")
-      .select(`
+      .select(
+        `
         product_slug, 
         name, 
         brand, 
@@ -77,7 +78,8 @@ export async function enrichRecommendations(
             is_active
           )
         )
-      `)
+      `,
+      )
       .in("product_slug", uniqueProductSlugs);
 
     if (error) {
@@ -86,25 +88,25 @@ export async function enrichRecommendations(
 
     if (productDetails) {
       interface DatabaseProduct {
-        product_slug: string
-        name: string
-        brand: string
-        image_url: string | null
+        product_slug: string;
+        name: string;
+        brand: string;
+        image_url: string | null;
         product_purchase_options: {
-          id: string
-          url: string
-          price: number | null
-          currency: string
-          priority: number
-          is_active: boolean
+          id: string;
+          url: string;
+          price: number | null;
+          currency: string;
+          priority: number;
+          is_active: boolean;
           retailers: {
-            id: string
-            name: string
-            logo_url: string | null
-            country_code: string
-            is_active: boolean
-          }
-        }[]
+            id: string;
+            name: string;
+            logo_url: string | null;
+            country_code: string;
+            is_active: boolean;
+          };
+        }[];
       }
 
       const productDetailsMap = new Map(
@@ -122,7 +124,7 @@ export async function enrichRecommendations(
               price: opt.price,
               currency: opt.currency || "USD",
               priority: opt.priority,
-              country_code: opt.retailers.country_code
+              country_code: opt.retailers.country_code,
             }))
             .sort((a, b) => b.priority - a.priority);
 
@@ -132,10 +134,10 @@ export async function enrichRecommendations(
               name: p.name,
               brand: p.brand,
               image_url: p.image_url || undefined,
-              purchase_options: validOptions || []
+              purchase_options: validOptions || [],
             },
           ];
-        })
+        }),
       );
 
       (["am", "pm", "weekly"] as const).forEach((routineType) => {
@@ -149,7 +151,7 @@ export async function enrichRecommendations(
                 name: details?.name || product.product_slug, // Fallback to id
                 brand: details?.brand || "Unknown Brand",
                 image_url: details?.image_url || undefined,
-                purchase_options: details?.purchase_options || []
+                purchase_options: details?.purchase_options || [],
               };
             });
           });
@@ -159,4 +161,42 @@ export async function enrichRecommendations(
   };
 
   await Promise.all([enrichIngredients(), enrichProducts()]);
+}
+
+/**
+ * Lighter weight enrichment that just adds product details (name, brand, image)
+ * to routine steps. Used for the dashboard summary view.
+ */
+export async function enrichBasicProducts(
+  supabase: SupabaseClient,
+  recommendationsData: Recommendations | null,
+): Promise<void> {
+  if (!recommendationsData || !recommendationsData.routine) return;
+
+  const productSlugs = new Set<string>();
+  (["am", "pm", "weekly"] as const).forEach((type) => {
+    recommendationsData.routine[type]?.forEach((step: Step) => {
+      step.products.forEach((p: Product) => productSlugs.add(p.product_slug));
+    });
+  });
+
+  if (productSlugs.size === 0) return;
+
+  const { data: products } = await supabase
+    .from("products_1")
+    .select("product_slug, name, brand, image_url")
+    .in("product_slug", Array.from(productSlugs));
+
+  if (products) {
+    const productMap = new Map(products.map((p) => [p.product_slug, p]));
+
+    (["am", "pm", "weekly"] as const).forEach((type) => {
+      recommendationsData.routine[type]?.forEach((step: Step) => {
+        step.products = step.products.map((p: Product) => {
+          const details = productMap.get(p.product_slug);
+          return { ...p, ...details };
+        });
+      });
+    });
+  }
 }

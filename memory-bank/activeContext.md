@@ -163,7 +163,9 @@
     - **Result:** `lib/utils.ts` is now lightweight and safe for SSR usage in server components.
 
 
-## Current Work: Affiliate Link System (Completed)
+
+
+## Recent Work: Affiliate Link System (Completed)
 - **Revenue Architecture:**
     - **Relational Model:** Pivot from simple strings to a robust relational model: `Retailers` Table (Global Entity) + `ProductPurchaseOptions` Table (Join with Price/URL).
     - **Logic:** Enables "One Product, Many Sellers" with granular control over pricing and priority per retailer.
@@ -177,8 +179,14 @@
         - **Multiple Options:** Dropdown/Popover sorted by **Priority** (Business Logic) + **Price**.
     - **Analytics:** Integrated PostHog tracking (`recommendations_click`) with detailed properties (retailer, product, price).
 - **Verification:**
-    - **Automated Tests:** Added Unit Tests for `ProductSchema` (Validation) and `enrichRecommendations` (Sorting/Filtering).
+    - **Automated Tests:** Added Unit Tests for `ProductSchema` (Validation) and `enrichRecommendations` (Sort/Filter).
     - **Manual Verification:** Verified entire flow from Admin Entry -> Database -> Frontend Display -> Click Tracking.
+
+## Recent Work: Refactoring & Cleanup
+- **Codebase Health:**
+    - **Type Safety:** Enforced strict typing in Admin components (`ProductDialog`, `ProductsTable`), replacing `any` with `ProductPurchaseOption` interfaces.
+    - **Cleanup:** Removed unused `app/internal-test` directory.
+    - **Build Stability:** Fixed strict TypeScript discrepancies in `ui/chart.tsx` (Recharts types) and `ui/toggle-group.tsx` to ensure a clean `pnpm tsc` build.
 
 ## Recent Work: Login Page Redesign
 - **Premium Aesthetic Overhaul:**

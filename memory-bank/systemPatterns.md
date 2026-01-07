@@ -13,7 +13,16 @@ flowchart TD
     Server --> AI[AI Analysis Service]
     AI --> Supabase
 ```
+    AI --> Supabase
+```
 
+### Affiliate Link Architecture
+To support a robust "One Product, Many Retailers" model without data duplication:
+1.  **Relational Standard:** We moved away from storing JSON blobs for purchase options.
+2.  **Entities:**
+    *   `Retailers` (Global): Stores brand info (Sephora, Amazon) and base metadata.
+    *   `ProductPurchaseOptions` (Join): Links a `Product` to a `Retailer` with specific overrides (Price, URL, Priority).
+3.  **Priority Logic:** The frontend sorts options by `priority` (descending). This allows the business to favor high-margin partners or direct channels while still offering user choice.
 ## Core Design Patterns
 
 ### Self-Service Wizard Pattern
