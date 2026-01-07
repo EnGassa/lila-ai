@@ -16,6 +16,15 @@
         - **Bordered Cards:** Data-dense Info Modules (Summary, Skin Age, Skin Type) use traditional bordered Cards to separate content clearly.
     - **Typography:** Unified dashboard text to "SF Pro Display" for a clean, app-like feel. "Playfair Display" reserved for high-impact editorial moments.
     - **Styling Consistency:** Standardized `InfoCard` metrics (Size 2 text, 1.6 line-height) across all summary blocks.
+- **Dashboard Look & Feel Polish (Completed):**
+    - **Navigation:** Replaced standard `Tabs` with a custom-styled Radix `SegmentedControl`.
+        - **Visuals:** Implemented a "Gold/Sand" theme with concentric border radii (8px container / 6px item) for a premium feel.
+        - **Transitions:** Added `transition-all` for smooth hover states and `framer-motion` for seamless content fade-ins.
+        - **Dark Mode:** Implemented specific overrides (`--sand-5` active state) to ensure proper contrast against the darker container.
+    - **Visual Hierarchy:**
+        - **Severity Radar:** Customized `recharts` to use a clean 5-step grid with labels positioned radially outside the chart to prevent clipping.
+        - **Refined Colors:** Restored the semantic "Red" palette for High Severity indicators (reverting a previous "Earth" tone override) to ensuring critical alerts are visible.
+        - **Spacing:** Optimized margins and gaps in the "Skin Concerns" section for better readability.
 - **Mobile Access Debugging (Ongoing):**
     - **Issue:** "Site cannot be reached" / Magic Link failure on mobile devices.
     - **Diagnosis:** Likely IP-based redirect issues (`localhost` vs local IP) and RLS blocking unauthenticated access on mobile browsers.

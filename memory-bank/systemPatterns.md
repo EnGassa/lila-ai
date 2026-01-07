@@ -97,6 +97,19 @@ To ensure accessibility, consistency, and rapid development of premium UI:
     *   **Editorial/Display:** Mapped to "Playfair Display" (emotional, brand-aligned).
 4.  **Theme Configuration:** Custom colors (Lila Earth, Lila Blue) are injected via Radix Theme Token overrides rather than just Tailwind utility classes.
 
+### Visual Design Patterns (Dashboard)
+To ensure a premium, consistent aesthetic:
+1.  **Concentric Border Radius:** Nested rounded elements must follow `R_inner = R_outer - Padding`.
+    *   *Example:* Segmented Control Container (8px) -> Padding (2px) -> Active Tab (6px).
+    *   *Rationale:* This prevents the "uneven gap" optical illusion and feels physically correct.
+2.  **Palette Usage (Gold vs Sand):**
+    *   **Sand:** The neutral foundation for backgrounds, borders, and text. Supports Dark Mode naturally (inverts correctly).
+    *   **Gold:** Used strictly for "Warmth" accents (e.g., active states, specific card backgrounds).
+    *   **Theme-Aware Overrides:** For components where the default inversion is poor (e.g., active tabs), use explicit CSS variable overrides (e.g., `.dark ... { background: var(--sand-5) }`) to maintain hierarchy.
+3.  **Semantic Severity Colors:**
+    *   **Warning/Critical (High Severity):** MUST use the standard Radix Red palette (`var(--red-9)`).
+    *   **Constraint:** Do NOT override global `--red-` variables with brand colors (e.g., Earth tones). Brand colors should have their own namespace (`--brown-`, `--lila-`). This ensures alerts remain universally recognizable.
+
 ### Notification Proxy Pattern
 To securely send third-party notifications (Discord) without exposing webhook URLs to the client:
 1.  **Server-Side Proxy:** A Next.js API route (`app/api/webhooks/discord/route.ts`) acts as the intermediary.

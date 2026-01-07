@@ -136,6 +136,9 @@
     - [x] **Hybrid Layout:** Implemented balanced interface with borderless radar sections and bordered summary cards.
     - [x] **Typography Polish:** Standardized font sizes (Size 2) and line-heights (1.6) across all information cards.
     - [x] **Mobile Debugging:** Identified RLS/IP issues preventing mobile access; implemented temporary Public Access (Admin) mode for testing.
+    - [x] **Navigation Refactor:** Replaced `Tabs` with custom `SegmentedControl` featuring concentric radii, smooth transitions, and dark mode contrast fixes.
+    - [x] **Visual Hierarchy:** Optimized "Severity Radar" (5-step grid, outside labels) and "Skin Concerns" (spacing, colors) for clarity.
+    - [x] **Color Correction:** Restored semantic "Red" for high-severity alerts, fixing a brand-palette override issue.
 
 *   **Recommendations Engine (V2):**
     - [x] **Multiple Product Options:** System now recommends a "Top Pick" and multiple "Alternatives" per routine step.

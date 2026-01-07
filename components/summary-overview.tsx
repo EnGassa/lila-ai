@@ -1,6 +1,7 @@
 import { Card, Text, Badge, Grid, Flex, Box, Heading } from "@radix-ui/themes";
 import { DotChart } from "./dot-chart";
 import { RegionWiseBreakdown } from "./region-wise-breakdown";
+import { cn } from "@/lib/utils";
 
 const capitalize = (s: string | undefined | null): string => {
   if (!s) return '';
@@ -26,7 +27,10 @@ interface InfoCardProps {
 
 function InfoCard({ label, value, description, className }: InfoCardProps) {
   return (
-    <Card className={className} size="2" style={{ backgroundColor: 'var(--gold-1)' }}>
+    <Card
+      className={cn("bg-[var(--gold-1)] dark:!bg-[var(--gold-1)]", className)}
+      size="2"
+    >
       <Flex direction="column" gap="2">
         <Text size="1" weight="medium" color="gray" style={{ letterSpacing: '0.05em' }}>{label}</Text>
         {value && <Box>{value}</Box>}
@@ -70,7 +74,10 @@ function SkinToneCard({ fitzpatrickTone }: { fitzpatrickTone: keyof typeof FITZP
   const fitzpatrickInfo = FITZPATRICK_TONES[fitzpatrickTone] || FITZPATRICK_TONES.IV;
 
   return (
-    <Card size="2" style={{ backgroundColor: 'var(--gold-1)' }}>
+    <Card
+      size="2"
+      className="bg-[var(--gold-1)] dark:!bg-[var(--gold-1)]"
+    >
       <Text size="1" weight="medium" color="gray" style={{ letterSpacing: '0.05em', textTransform: 'uppercase' }}>Skin Tone</Text>
       <Text as="p" mt="3" weight="medium" size="5">Fitzpatrick: {fitzpatrickTone}</Text>
 
@@ -112,7 +119,7 @@ function TopConcernsCard({ topConcerns }: { topConcerns?: string[] }) {
       value={
         <Flex wrap="wrap" gap="2">
           {topConcerns?.map((concern) => (
-            <Badge key={concern} variant="soft" color="red" size="2">
+            <Badge key={concern} variant="soft" color="brown" size="2">
               {capitalize(concern.replace(/_/g, ' '))}
             </Badge>
           ))}
