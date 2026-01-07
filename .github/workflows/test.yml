@@ -58,6 +58,9 @@ jobs:
       run: pnpm test:e2e
       env:
         CI: true
+        NEXT_PUBLIC_SUPABASE_URL: "https://mock-supabase-url.com"
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: "mock-anon-key"
+        SUPABASE_SERVICE_ROLE_KEY: "mock-service-role-key"
 
     - uses: actions/upload-artifact@v4
       if: failure()
