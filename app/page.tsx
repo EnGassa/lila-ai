@@ -6,21 +6,23 @@ import { redirect } from "next/navigation";
 
 export default async function LandingPage() {
   const supabase = await createClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (session) {
-    // Smart Redirect Pattern: 
+  if (user) {
+    // Smart Redirect Pattern:
     // Check status directly here to avoid double-redirect (Landing -> Onboarding -> Dashboard)
-    const { data: user } = await supabase
-      .from('users')
-      .select('onboarding_status')
-      .eq('id', session.user.id)
+    const { data: userData } = await supabase
+      .from("users")
+      .select("onboarding_status")
+      .eq("id", user.id)
       .single();
 
-    if (user?.onboarding_status === 'complete') {
-        redirect("/dashboard");
+    if (userData?.onboarding_status === "complete") {
+      redirect("/dashboard");
     } else {
-        redirect("/onboarding");
+      redirect("/onboarding");
     }
   }
 
@@ -33,7 +35,11 @@ export default async function LandingPage() {
         </div>
         <nav className="flex gap-4">
           {/* Admin Login hidden for now */}
-          <Button variant="ghost" className="text-muted-foreground hover:text-primary font-medium" asChild>
+          <Button
+            variant="ghost"
+            className="text-muted-foreground hover:text-primary font-medium"
+            asChild
+          >
             <Link href="/login">Sign In</Link>
           </Button>
         </nav>
@@ -48,17 +54,24 @@ export default async function LandingPage() {
           </div>
           <h1 className="text-5xl md:text-7xl font-serif font-medium tracking-tight text-primary leading-[1.1]">
             Your personal <br className="hidden md:block" />
-            <span className="italic block mt-1 text-accent">AI Dermatologist</span>
+            <span className="italic block mt-1 text-accent">
+              AI Dermatologist
+            </span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Clinical-grade skin analysis in your pocket. Get personalized routines,
-            track progress, and discover what truly works for your unique skin profile.
+            Clinical-grade skin analysis in your pocket. Get personalized
+            routines, track progress, and discover what truly works for your
+            unique skin profile.
           </p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 w-full max-w-xs sm:max-w-none justify-center animate-in fade-in slide-in-from-bottom-5 duration-1000 delay-200">
           {/* Main CTA */}
-          <Button size="lg" className="h-12 px-8 text-base bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20" asChild>
+          <Button
+            size="lg"
+            className="h-12 px-8 text-base bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
+            asChild
+          >
             <Link href="/login">
               Get Started
               <ArrowRight className="ml-2 w-4 h-4" />

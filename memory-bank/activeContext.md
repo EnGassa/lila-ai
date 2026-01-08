@@ -27,6 +27,8 @@
     - **Category Standardisation:** Replaced free-text category input with a strict `Select` dropdown populated from existing database values.
     - **Interaction Fixes:** Resolved Z-index/Focus trapping issues in `MultiSelectIngredients` by enforcing `modal={true}` on the Popover.
     - **Search UX:** Removed 2-character limit and increased fetch limit to 2000 to allow full list of ingredients to be viewable on focus.
+- **Security:**
+    - **Auth Enforcement:** Replaced `supabase.auth.getSession()` with `supabase.auth.getUser()` in server-side layouts (`app/admin/layout.tsx`, `app/page.tsx`) to prevent insecurities involving stale cookies and strictly validate sessions with Supabase.
 
 ## Current Work: Dashboard Styling & Mobile Access
 - **Design System Overhaul (Radix Themes):**
