@@ -11,8 +11,8 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '250mb',
     },
-    serverComponentsExternalPackages: ['got-scraping'],
   },
+  serverExternalPackages: ['got-scraping'],
   async headers() {
     return [
       {

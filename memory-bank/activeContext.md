@@ -29,6 +29,8 @@
     - **Search UX:** Removed 2-character limit and increased fetch limit to 2000 to allow full list of ingredients to be viewable on focus.
 - **Security:**
     - **Auth Enforcement:** Replaced `supabase.auth.getSession()` with `supabase.auth.getUser()` in server-side layouts (`app/admin/layout.tsx`, `app/page.tsx`) to prevent insecurities involving stale cookies and strictly validate sessions with Supabase.
+- **Maintenance:**
+    - **Next.js Config:** Updated `next.config.mjs` to move `serverComponentsExternalPackages` to the top-level `serverExternalPackages` property, resolving Next.js 16 deprecation warnings.
 
 ## Current Work: Dashboard Styling & Mobile Access
 - **Design System Overhaul (Radix Themes):**
