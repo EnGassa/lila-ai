@@ -31,6 +31,8 @@
     - **Auth Enforcement:** Replaced `supabase.auth.getSession()` with `supabase.auth.getUser()` in server-side layouts (`app/admin/layout.tsx`, `app/page.tsx`) to prevent insecurities involving stale cookies and strictly validate sessions with Supabase.
 - **Maintenance:**
     - **Next.js Config:** Updated `next.config.mjs` to move `serverComponentsExternalPackages` to the top-level `serverExternalPackages` property, resolving Next.js 16 deprecation warnings.
+- **Bug Fixes:**
+    - **Admin Grant:** Fixed `updateUser` server action in `app/admin/actions.ts` to correctly persist the `is_admin` flag to the database, ensuring role changes are saved.
 
 ## Current Work: Dashboard Styling & Mobile Access
 - **Design System Overhaul (Radix Themes):**
