@@ -41,6 +41,7 @@ import {
   createProduct,
   updateProduct,
   getSignedUploadUrl,
+  scrapeProductFromSkinsort,
 } from "@/app/admin/products/actions";
 import { MultiSelectIngredients } from "@/components/admin/multi-select-ingredients";
 import { MultiSelectString } from "@/components/admin/multi-select-string";
@@ -142,6 +143,10 @@ export function ProductDialog({
 }: ProductDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [scrapedImageUrl, setScrapedImageUrl] = useState<string | null>(null);
+  const [scrapeUrl, setScrapeUrl] = useState("");
+  const [isScraping, setIsScraping] = useState(false);
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(
     product?.image_url || null,
@@ -200,6 +205,50 @@ export function ProductDialog({
     if (file) {
       setSelectedFile(file);
       setPreviewUrl(URL.createObjectURL(file));
+      setScrapedImageUrl(null); // Clear scraped if user manually selects
+    }
+  };
+
+  const handleScrape = async () => {
+    if (!scrapeUrl) return;
+    setIsScraping(true);
+    try {
+      const { product: scraped, error } =
+        await scrapeProductFromSkinsort(scrapeUrl);
+
+      if (error) {
+        toast.error(error);
+        return;
+      }
+
+      if (scraped) {
+        form.setValue("name", scraped.name);
+        form.setValue("brand", scraped.brand);
+        form.setValue("description", scraped.description);
+        form.setValue("rating", scraped.rating);
+        form.setValue("review_count", scraped.review_count);
+        // Simple mapping or raw string for category
+        form.setValue("category", "Other"); // Default, user must check. Or scraped.category if we added it
+
+        if (scraped.attributes) form.setValue("attributes", scraped.attributes);
+        if (scraped.benefits) form.setValue("benefits", scraped.benefits);
+        if (scraped.active_ingredients)
+          form.setValue("active_ingredients", scraped.active_ingredients);
+        if (scraped.concerns) form.setValue("concerns", scraped.concerns);
+
+        if (scraped.image_url) {
+          setPreviewUrl(scraped.image_url);
+          setScrapedImageUrl(scraped.image_url);
+          setSelectedFile(null); // Clear manual file
+        }
+
+        toast.success("Product details scraped!");
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to scrape");
+    } finally {
+      setIsScraping(false);
     }
   };
 
@@ -208,6 +257,7 @@ export function ProductDialog({
     try {
       let finalImageUrl = product?.image_url;
 
+      // Priority: 1. Manual File Upload, 2. Scraped External URL, 3. Existing URL
       if (selectedFile) {
         const tempSlug = `${values.brand}-${values.name}`
           .toLowerCase()
@@ -247,6 +297,8 @@ export function ProductDialog({
         }
 
         finalImageUrl = publicUrl;
+      } else if (scrapedImageUrl) {
+        finalImageUrl = scrapedImageUrl;
       }
 
       const formData = new FormData();
@@ -322,6 +374,33 @@ export function ProductDialog({
               : "Add a new product to the database."}
           </DialogDescription>
         </DialogHeader>
+
+        {!isEdit && (
+          <div className="mb-6 rounded-md border bg-slate-50 p-4">
+            <h4 className="mb-2 text-sm font-medium">
+              Auto-populate from Skinsort
+            </h4>
+            <div className="flex gap-2">
+              <Input
+                placeholder="https://skinsort.com/products/..."
+                value={scrapeUrl}
+                onChange={(e) => setScrapeUrl(e.target.value)}
+              />
+              <Button
+                variant="secondary"
+                onClick={handleScrape}
+                disabled={isScraping || !scrapeUrl}
+              >
+                {isScraping ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Upload className="mr-2 h-4 w-4" /> // Reusing Upload icon or import
+                )}
+                Fetch
+              </Button>
+            </div>
+          </div>
+        )}
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

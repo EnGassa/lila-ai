@@ -15,6 +15,16 @@
 - **Pre-commit Fix:** Resolved `lint-staged` failure by fixing `any` types in highly-used UI components and ensuring `prettier` dependency is present.
 - **Build Fix:** Resolved `pnpm build` failure in `app/admin/products/actions.ts`.
 
+## Current Work: Skinsort Integration
+- **Auto-Population:**
+    - **Scraping:** Implemented server-side scraping of Skinsort URLs using `cheerio` and `got-scraping`.
+    - **Cloudflare Bypass:** Replaced standard `fetch`/`httpx` with `got-scraping` to successfully impersonate browser TLS fingerprints and bypass Cloudflare 403 blocks.
+    - **Configuration:** Added `got-scraping` to `serverComponentsExternalPackages` in `next.config.mjs` to resolve bundling issues.
+- **Image Handling:**
+    - **Server-Side Upload:** Implemented `uploadImageFromUrl` to download protected images (via `got-scraping`) and upload them directly to the project's S3 bucket, ensuring data ownership and persistence.
+- **UI:**
+    - **Product Dialog:** Added "Fetch from Skinsort" input and button to `ProductDialog`, auto-filling form fields and previewing the scraped image.
+
 ## Current Work: Dashboard Styling & Mobile Access
 - **Design System Overhaul (Radix Themes):**
     - **Migration:** Replaced Tailwind-based components with `@radix-ui/themes` for a robust, accessible foundation.

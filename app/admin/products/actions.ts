@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import * as cheerio from "cheerio";
+import { gotScraping } from "got-scraping";
 
 // --- Configuration ---
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -64,6 +66,134 @@ export async function searchIngredients(query: string) {
   }
 
   return data || [];
+}
+
+export async function scrapeProductFromSkinsort(url: string) {
+  if (!url.includes("skinsort.com")) {
+    return { error: "Invalid URL. Must be from skinsort.com" };
+  }
+
+  try {
+    const response = await gotScraping(url);
+    const html = response.body;
+    const $ = cheerio.load(html);
+
+    const product: {
+      name: string;
+      brand: string;
+      description: string;
+      image_url: string;
+      attributes: string[];
+      benefits: string[];
+      concerns: string[];
+      active_ingredients: string[];
+      rating: number;
+      review_count: number;
+    } = {
+      name: "",
+      brand: "",
+      description: "",
+      image_url: "",
+      attributes: [],
+      benefits: [],
+      concerns: [],
+      active_ingredients: [],
+      rating: 0,
+      review_count: 0,
+    };
+
+    // 1. Name & Brand
+    const h1 = $("h1").first();
+    const spans = h1.find("span");
+    if (spans.length >= 2) {
+      product.brand = $(spans[0]).text().trim();
+      product.name = $(spans[1]).text().trim();
+    } else {
+      product.name = h1.text().trim();
+    }
+
+    // 2. Description
+    const proseDiv = $(".prose.text-warm-gray-800").first();
+    if (proseDiv.length) {
+      product.description = proseDiv.text().trim();
+    } else {
+      product.description = $('meta[name="description"]').attr("content") || "";
+    }
+
+    // 3. Image & Rating (JSON-LD)
+    const jsonLd = $('script[type="application/ld+json"]').html();
+    if (jsonLd) {
+      try {
+        const data = JSON.parse(jsonLd);
+        if (data.image) {
+          // Ensure absolute URL
+          product.image_url = new URL(data.image, "https://skinsort.com").href;
+        }
+        if (data.aggregateRating) {
+          product.rating = data.aggregateRating.ratingValue || 0;
+          product.review_count = data.aggregateRating.reviewCount || 0;
+        }
+      } catch (e) {
+        console.error("JSON-LD parse error", e);
+      }
+    }
+
+    // 4. Attributes
+    $("[data-attribute-key]").each((_, el) => {
+      product.attributes.push($(el).text().trim());
+    });
+
+    // 5. Highlights (Benefits, Concerns, Ingredients)
+    const glanceSection = $("#at_a_glance");
+    if (glanceSection.length) {
+      glanceSection.find(".ring-1").each((_, col) => {
+        const title = $(col).find("h3").text().trim();
+        const items: string[] = [];
+        $(col)
+          .find("button span.text-\\[15px\\]")
+          .each((_, btn) => {
+            items.push($(btn).text().trim());
+          });
+
+        if (title === "Benefits") product.benefits = items;
+        if (title === "Concerns") product.concerns = items;
+        if (title === "Key Ingredients") product.active_ingredients = items;
+      });
+    }
+
+    return { product };
+  } catch (error: unknown) {
+    console.error("Scrape Error:", error);
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return { error: message };
+  }
+}
+
+async function uploadImageFromUrl(
+  url: string,
+  slug: string,
+): Promise<string | null> {
+  try {
+    const response = await gotScraping.get(url, { responseType: "buffer" });
+    const buffer = response.body; // Buffer directly
+
+    const contentType = response.headers["content-type"] || "image/jpeg";
+    const ext = contentType.split("/")[1] || "jpg";
+    const fileName = `${slug}.${ext}`; // Overwrite if exists, simplistic
+
+    const command = new PutObjectCommand({
+      Bucket: s3Bucket,
+      Key: fileName,
+      Body: buffer,
+      ContentType: contentType,
+    });
+
+    await s3Client.send(command);
+    return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${s3Bucket}/${fileName}`;
+  } catch (error) {
+    console.error("Image Upload Error:", error);
+    return null;
+  }
 }
 
 export type ProductActionState = {
@@ -147,13 +277,26 @@ export async function createProduct(
 
   const url = `https://lila.skin/products/${slug}`;
 
+  // Handle Image Upload if URL is external
+  let finalImageUrl = imageUrl;
+  if (
+    imageUrl &&
+    imageUrl.startsWith("http") &&
+    !imageUrl.includes("supabase.co")
+  ) {
+    const uploadedUrl = await uploadImageFromUrl(imageUrl, slug);
+    if (uploadedUrl) {
+      finalImageUrl = uploadedUrl;
+    }
+  }
+
   const { error } = await supabaseAdmin.from("products_1").insert({
     product_slug: slug,
     name,
     brand,
     category,
     description,
-    image_url: imageUrl,
+    image_url: finalImageUrl,
     url,
     // New fields
     rating: rating || 0,
@@ -293,6 +436,21 @@ export async function updateProduct(
   } else {
     // If imageUrl is explicitly empty, set image_url to null in DB
     updateData.image_url = null;
+  }
+
+  // Handle Image Upload if URL is external
+  if (
+    updateData.image_url &&
+    updateData.image_url.startsWith("http") &&
+    !updateData.image_url.includes("supabase.co")
+  ) {
+    const uploadedUrl = await uploadImageFromUrl(
+      updateData.image_url,
+      productSlug,
+    );
+    if (uploadedUrl) {
+      updateData.image_url = uploadedUrl;
+    }
   }
 
   const { error } = await supabaseAdmin

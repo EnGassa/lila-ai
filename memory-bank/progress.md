@@ -71,6 +71,10 @@
             - [x] **Ingredient Linking**: Smart search & multi-select from `ingredients` DB.
             - [x] **Field Enhancements**: Implemented Multi-Select UI for Benefits, Concerns, and Attributes using `MultiSelectString`.
             - [x] **Image Handling**: S3 Uploads and public bucket migration.
+            - [x] **Skinsort Integration**:
+                - [x] **Scraping**: Auto-populate product data from Skinsort URLs.
+                - [x] **Bypass**: Implemented `got-scraping` to bypass Cloudflare protection.
+                - [x] **Asset Persistence**: Auto-download and re-upload remote images to S3.
     *   **Infrastructure:** Dedicated `proxy.ts` (middleware) creates a robust auth layer.
 
 *   **User Interface & Experience:**
