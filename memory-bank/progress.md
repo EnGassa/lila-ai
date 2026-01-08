@@ -75,6 +75,7 @@
                 - [x] **Scraping**: Auto-populate product data from Skinsort URLs.
                 - [x] **Bypass**: Implemented `got-scraping` to bypass Cloudflare protection.
                 - [x] **Asset Persistence**: Auto-download and re-upload remote images to S3.
+                - [x] **UI Polish**: Standardized Category selection and improved Ingredients search UX (no min length).
     *   **Infrastructure:** Dedicated `proxy.ts` (middleware) creates a robust auth layer.
 
 *   **User Interface & Experience:**

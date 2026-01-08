@@ -61,10 +61,6 @@ export function MultiSelectIngredients({
 
   React.useEffect(() => {
     async function fetchIngredients() {
-      if (debouncedQuery.length < 2) {
-        setOptions([]);
-        return;
-      }
       setLoading(true);
       const results = await searchIngredients(debouncedQuery);
       setOptions(results || []);
@@ -88,7 +84,7 @@ export function MultiSelectIngredients({
 
   return (
     <div className="flex flex-col gap-2">
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={setOpen} modal={true}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"

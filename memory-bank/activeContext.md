@@ -22,8 +22,11 @@
     - **Configuration:** Added `got-scraping` to `serverComponentsExternalPackages` in `next.config.mjs` to resolve bundling issues.
 - **Image Handling:**
     - **Server-Side Upload:** Implemented `uploadImageFromUrl` to download protected images (via `got-scraping`) and upload them directly to the project's S3 bucket, ensuring data ownership and persistence.
-- **UI:**
+- **UI Refinements:**
     - **Product Dialog:** Added "Fetch from Skinsort" input and button to `ProductDialog`, auto-filling form fields and previewing the scraped image.
+    - **Category Standardisation:** Replaced free-text category input with a strict `Select` dropdown populated from existing database values.
+    - **Interaction Fixes:** Resolved Z-index/Focus trapping issues in `MultiSelectIngredients` by enforcing `modal={true}` on the Popover.
+    - **Search UX:** Removed 2-character limit and increased fetch limit to 2000 to allow full list of ingredients to be viewable on focus.
 
 ## Current Work: Dashboard Styling & Mobile Access
 - **Design System Overhaul (Radix Themes):**

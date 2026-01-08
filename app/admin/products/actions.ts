@@ -52,13 +52,25 @@ const s3Client = new S3Client({
 import { ProductSchema } from "./schemas";
 
 export async function searchIngredients(query: string) {
-  if (!query || query.length < 2) return [];
+  const supabaseAdmin = createClient(supabaseUrl!, supabaseServiceRoleKey!, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
 
-  const { data, error } = await supabaseAdmin
+  let queryBuilder = supabaseAdmin
     .from("ingredients_1")
     .select("ingredient_slug, name")
-    .ilike("name", `%${query}%`)
-    .limit(10);
+    .limit(2000); // Increased to cover all ~1400 ingredients
+
+  if (query && query.length > 0) {
+    queryBuilder = queryBuilder.ilike("name", `%${query}%`);
+  } else {
+    queryBuilder = queryBuilder.order("name", { ascending: true });
+  }
+
+  const { data, error } = await queryBuilder;
 
   if (error) {
     console.error("Search Ingredients Error:", error);

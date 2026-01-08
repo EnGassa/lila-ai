@@ -441,9 +441,34 @@ export function ProductDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Category</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Moisturizer" {...field} />
-                    </FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {[
+                          "Ampoule",
+                          "Eye Care",
+                          "Moisturizer",
+                          "Oil Cleanser",
+                          "Other",
+                          "Sunscreen",
+                          "Toner & Essence",
+                          "Treatment Serum",
+                          "Vitamin C Serum",
+                          "Water Cleanser",
+                        ].map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
