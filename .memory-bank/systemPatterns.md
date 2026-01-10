@@ -4,6 +4,16 @@
 
 Lila AI Web is a Next.js application that serves as the frontend for an AI-powered skincare analysis platform. It interfaces with Supabase for data persistence and authentication, and leverages external AI services for image analysis.
 
+## Monorepo Architecture (Turborepo)
+To support brand consistency and code reuse between the Product (`apps/web`) and Marketing (`apps/marketing`) sites, the project follows a Monorepo structure:
+-   **Apps:**
+    -   `apps/web`: The core SAAS application (Auth, Dashboard, Analysis).
+    -   `apps/marketing`: The public-facing marketing website.
+-   **Packages:**
+    -   `packages/ui`: Shared Design System components (Radix + Tailwind).
+    -   `packages/config`: Shared configurations (ESLint, Tailwind, TSConfig).
+    -   `packages/typescript-config`: Base TS configurations.
+
 ```mermaid
 flowchart TD
     User[User] --> Client[Next.js Client]

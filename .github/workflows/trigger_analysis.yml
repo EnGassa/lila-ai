@@ -29,7 +29,7 @@ jobs:
         with:
           version: "latest"
           enable-cache: true
-          cache-dependency-glob: "scripts/*.py"
+          cache-dependency-glob: "apps/web/scripts/*.py"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -65,8 +65,8 @@ jobs:
           echo "${{ github.event.client_payload }}"
           
           # Install dependencies and run script
-          # Note: 'uv run --script' handles dependency installation automatically from the inline script metadata
-          uv run scripts/onboard_beta_user.py \
+          # Note: We must run from apps/web for .env.local loading
+          cd apps/web && uv run scripts/onboard_beta_user.py \
             --user-id "${{ github.event.client_payload.user_id }}" \
             --env "${{ github.event.client_payload.env }}" \
             --model "google-gla:gemini-2.5-pro" \

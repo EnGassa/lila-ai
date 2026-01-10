@@ -17,7 +17,11 @@
     *   **Helper:** `lib/analytics.ts` provides a type-safe wrapper preventing event name typos and ensuring consistent property schemas.
     *   **Strategy:** Event-based tracking for critical user flows (Onboarding, Scan, Analysis) + Auto-capture disabled to reduce noise.
 *   **Logging:** Loguru
-*   **Package Manager:** pnpm (Frontend), uv (Python Scripts)
+*   **Package Manager:** pnpm (Workspaces), uv (Python Scripts)
+*   **Build System:** Turborepo
+*   **Monorepo Structure:**
+    *   `apps/*`: Next.js applications (`web`, `marketing`).
+    *   `packages/*`: Shared internal packages (`ui`, `config`).
 *   **Pre-commit Hooks:** `husky` + `lint-staged`
     *   JS/TS: `eslint`, `prettier`
     *   Python: `uvx ruff`

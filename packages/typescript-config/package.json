@@ -1,0 +1,9 @@
+{
+  "name": "@lila/typescript-config",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./nextjs.json": "./nextjs.json",
+    "./react-library.json": "./react-library.json"
+  }
+}

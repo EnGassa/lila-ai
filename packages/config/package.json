@@ -1,0 +1,24 @@
+{
+  "name": "@lila/config",
+  "version": "0.1.0",
+  "private": true,
+  "files": ["eslint-next.js", "eslint-library.js"],
+  "exports": {
+    "./eslint-next": "./eslint-next.js",
+    "./eslint-library": "./eslint-library.js"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^15.0.0",
+    "eslint-plugin-react": "^7.33.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "globals": "^15.0.0",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.0.0"
+  },
+  "peerDependencies": {
+    "eslint": "^9.0.0",
+    "typescript": "^5.0.0"
+  }
+}

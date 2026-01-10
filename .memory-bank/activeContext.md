@@ -1,6 +1,28 @@
 # Active Context
 
 
+## Current Work: Monorepo Migration (Completed)
+- **Goal:** Unify `lila-app` (Web App) and `lila-website` (Marketing Site) into a single Turborepo to share UI, Config, and Types.
+- **Structure Established:**
+    -   **Root:** `lila-monorepo` (History preserved from `lila-app`).
+    -   **Apps:**
+        -   `apps/web`: The core Next.js application (formerly `lila-app`).
+        -   `apps/marketing`: The marketing site (formerly `lila-website`).
+    -   **Packages:**
+        -   `packages/ui`: Shared React components (Radix/Tailwind).
+        -   `packages/config`: Shared ESLint & Tailwind configurations.
+        -   `packages/typescript-config`: Shared `tsconfig.json` bases.
+-   **Key Achievements:**
+    -   **Workspaces:** `pnpm` workspaces configured for efficient dependency management.
+    -   **Tooling:** `turbo` pipelines set up for Build, Lint, and Dev.
+    -   **Shared Config:** Both apps now consume standard ESLint configs from `@lila/config`.
+    -   **Shared UI:** Proof-of-concept `Button` component exported from `@lila/ui` and rendered in `apps/web`.
+    -   **CI/CD:** GitHub Actions updated to run in `apps/web` context.
+-   **Next Steps:**
+    1.  **Extract Components:** Move atomic components (Button, Input) to `@lila/ui`.
+    2.  **Unify Design:** Create shared Tailwind preset in `@lila/config`.
+    3.  **Deploy:** Configure Vercel projects for `web` and `marketing`.
+
 ## Recent Work: Admin Enhancements
 - **Product Price:** Added dedicated "Price" input field to the Product Purchase Options dialog, allowing admins to track pricing per retailer link.
 - **Retailer Currency:** Refactored currency logic to be defined at the **Retailer** level.
