@@ -11,6 +11,7 @@
     - [x] **Design System:** Unified via `@lila/config/theme.css` (Shared Palette & Typography).
     - [x] **Uniform Config:** Shared ESLint and TypeScript configurations.
     - [x] **CI/CD:** Workflows adapted for monorepo structure.
+    - [x] **Deployment:** `DEPLOYMENT.md` guide created for Vercel setup.
 
 *   **Premium Loading Experience:**
     - [x] **Universal Loading Screen:** Created a reusable `LoadingScreen` component (Beige/Earthy theme, pulsing logo).

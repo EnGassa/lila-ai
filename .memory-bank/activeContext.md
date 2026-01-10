@@ -17,12 +17,16 @@
     -   **Tooling:** `turbo` pipelines set up for Build, Lint, and Dev.
     -   **Shared Config:** Both apps now consume standard ESLint configs from `@lila/config`.
 -   **Next Steps:**
-    1.  **Deployment Operations:** Configure Vercel to build from `apps/web` and `apps/marketing` roots.
-    2.  **Shared Utilities:** Create `packages/types` and `packages/utils` if needed.
+    1.  **Shared Utilities:** Create `packages/types` and `packages/utils`.
+    2.  **User Execution:** User must manually configure Vercel projects using `DEPLOYMENT.md`.
 
-## Current Work: Design System Unification (Phase 6)
-- **Goal:** Centralize visualization (colors, typography) so `apps/marketing` matches `apps/web` perfectly.
-- **Status:** **Completed / Validated**
+## Current Work: Deployment Operations (Phase 7)
+- **Goal:** Prepare Vercel configuration for the monorepo structure.
+- **Status:** **Planned / Documented**
+- **Achievements:**
+    -   **Env Audit:** Audited all required environment variables for `web` and `marketing`.
+    -   **Deployment Guide:** Created `DEPLOYMENT.md` with step-by-step Vercel configuration instructions (Root Directory, turbo-ignore, pnpm).
+    -   **Strategy:** Opted for `npx turbo-ignore` in Vercel UI over root `vercel.json` for reliability.
 - **Achievements:**
     -   **Shared Theme:** Created `packages/config/src/themes/lila-theme.css` with providing "Lila Earth" and "Blue" palettes.
     -   **Unified Imports:** Refactored `globals.css` in both apps to `@import` the shared theme.
