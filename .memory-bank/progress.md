@@ -112,6 +112,7 @@
 *   **Deployment & Configuration:**
     - [x] **Magic Link Fix**: Explicitly prioritized `NEXT_PUBLIC_APP_URL` for auth redirects.
     - [x] **Middleware**: Standardized on `proxy.ts` convention for Next.js 16.
+    - [x] **Security:** Updated `next` to v16.1.1 in both apps to resolve CVE-2025-66478.
 
 *   **Intake Data Integration:**
     - [x] Migrate `generate_recommendations.py` to fetch user context (Budget, Habits) directly from Supabase `intake_submissions`.
