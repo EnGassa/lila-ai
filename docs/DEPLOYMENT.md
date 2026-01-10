@@ -15,7 +15,10 @@ The monorepo contains two deployable applications:
 
 ## 2. Vercel Configuration Settings
 
-Create **two separate projects** in Vercel, linked to the same GitHub repository.
+**Since you already have existing Vercel projects:**
+1.  Go to your existing `lila-app` and `lila-website` projects.
+2.  Go to **Settings > Git** and disconnect/reconnect the repository if needed (to ensure it points to `lila-monorepo` now).
+3.  Update the **Project Settings** as follows.
 
 ### A. Web App (`apps/web`)
 
@@ -26,8 +29,8 @@ Go to **Project Settings** and configure the following:
 - **Build Command:** `pnpm build` (runs `next build` via package.json script).
 - **Install Command:** `pnpm install` (Vercel should detect pnpm via `lockfile`).
 - **Ignored Build Step:**
-   - Command: `pnpm dlx turbo-ignore`
-   - *Reason:* Prevents `apps/web` from rebuilding when you only change `apps/marketing`.
+   - *Status:* **Configured via `vercel.json`** (No manual action needed).
+   - Command (Reference): `pnpm dlx turbo-ignore`
 
 #### Environment Variables (Web)
 Copy these from your local `.env.local`:
@@ -67,8 +70,8 @@ Go to **Project Settings** and configure the following:
 - **Build Command:** `pnpm build` (runs `next build`).
 - **Install Command:** `pnpm install`
 - **Ignored Build Step:**
-   - Command: `pnpm dlx turbo-ignore`
-   - *Reason:* Prevents `apps/marketing` from rebuilding when you only change `apps/web`.
+   - *Status:* **Configured via `vercel.json`** (No manual action needed).
+   - Command (Reference): `pnpm dlx turbo-ignore`
 
 #### Environment Variables (Marketing)
 Copy these from your local `.env.local`:
