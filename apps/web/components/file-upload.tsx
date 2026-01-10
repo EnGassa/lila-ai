@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import heic2any from 'heic2any'
-import { Button } from '@/components/ui/button'
+import { Button } from '@lila/ui'
 import { unstable_noStore as noStore } from 'next/cache'
 import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'

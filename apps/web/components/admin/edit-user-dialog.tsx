@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { Pencil, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@lila/ui"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
     Dialog,
@@ -17,7 +17,7 @@ import {
     DialogTrigger,
     DialogFooter,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
+import { Input } from "@lila/ui"
 import { Label } from "@/components/ui/label"
 import {
     Tooltip,

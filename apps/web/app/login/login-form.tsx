@@ -10,7 +10,7 @@ import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { analytics } from "@/lib/analytics"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@lila/ui"
 import {
     Form,
     FormControl,
@@ -19,7 +19,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import { Input } from "@lila/ui"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 const formSchema = z.object({

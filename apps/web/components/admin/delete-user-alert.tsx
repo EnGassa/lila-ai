@@ -22,7 +22,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { Button } from "@/components/ui/button"
+import { Button } from "@lila/ui"
 import { deleteUser } from "@/app/admin/actions"
 
 export function DeleteUserAlert({ userId }: { userId: string }) {

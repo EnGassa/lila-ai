@@ -21,7 +21,10 @@
 *   **Build System:** Turborepo
 *   **Monorepo Structure:**
     *   `apps/*`: Next.js applications (`web`, `marketing`).
-    *   `packages/*`: Shared internal packages (`ui`, `config`).
+    *   `packages/*`: Shared internal packages.
+        *   `ui`: Shared Design System (Radix + Tailwind).
+        *   `config`: Shared configuration (ESLint, Tailwind, TS).
+        *   `typescript-config`: Base TS configurations.
 *   **Pre-commit Hooks:** `husky` + `lint-staged`
     *   JS/TS: `eslint`, `prettier`
     *   Python: `uvx ruff`

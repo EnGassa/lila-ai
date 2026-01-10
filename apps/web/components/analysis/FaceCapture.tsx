@@ -22,7 +22,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lila/ui";
 import { RefreshCw, Check } from 'lucide-react';
 import { GUIDELINES } from '@/components/guidelines';
 import type { CapturePose } from "@/hooks/usePoseValidation";

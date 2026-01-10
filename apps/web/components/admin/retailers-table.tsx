@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Edit, Loader2, Link as LinkIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@lila/ui";
+import { Input } from "@lila/ui";
 import {
   Table,
   TableBody,

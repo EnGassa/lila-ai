@@ -7,7 +7,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { Loader2, Plus, Upload, X, Trash } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@lila/ui";
 import { ProductPurchaseOption } from "@/lib/types";
 import {
   Dialog,
@@ -26,7 +26,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Input } from "@lila/ui";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,

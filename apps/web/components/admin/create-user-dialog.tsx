@@ -6,7 +6,7 @@ import { Plus, Loader2 } from "lucide-react"
 import React, { useEffect } from "react"
 import { toast } from "sonner"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@lila/ui"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
     Dialog,
@@ -27,7 +27,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Input } from "@/components/ui/input"
+import { Input } from "@lila/ui"
 import { Label } from "@/components/ui/label"
 import { createUser } from "@/app/admin/actions"
 

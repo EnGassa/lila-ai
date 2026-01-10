@@ -3,7 +3,7 @@
 import { createBrowserClient } from "@supabase/ssr"
 import { useRouter } from "next/navigation"
 import { LogOut } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@lila/ui"
 
 export function SignOutButton() {
     const router = useRouter()

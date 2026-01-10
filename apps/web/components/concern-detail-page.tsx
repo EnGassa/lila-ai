@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { ChevronLeft } from 'lucide-react';
-import { Button } from "@/components/ui/button";
+import { Button } from "@lila/ui";
 
 interface ConcernDetailPageProps {
   userId: string;

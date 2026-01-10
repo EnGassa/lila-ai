@@ -12,6 +12,7 @@ export default [
       "build/**",
       "next-env.d.ts",
       "coverage/**",
+      "**/sw.js",
     ],
     settings: {
       next: {

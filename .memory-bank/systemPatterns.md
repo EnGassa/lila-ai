@@ -12,7 +12,17 @@ To support brand consistency and code reuse between the Product (`apps/web`) and
 -   **Packages:**
     -   `packages/ui`: Shared Design System components (Radix + Tailwind).
     -   `packages/config`: Shared configurations (ESLint, Tailwind, TSConfig).
+    -   `packages/config`: Shared configurations (ESLint, Tailwind, TSConfig).
     -   `packages/typescript-config`: Base TS configurations.
+
+### Shared Component Architecture
+To ensure design consistency and reduce duplication across the `web` and `marketing` apps:
+1.  **Atomic Design:** Core usage components (Button, Input) live in `packages/ui`.
+2.  **Direct Imports:** Apps import directly from `@lila/ui` (e.g., `import { Button } from '@lila/ui'`).
+3.  **Style Generation (Tailwind v4):**
+    *   Shared components do *not* ship with pre-compiled CSS.
+    *   Apps using the package must include a `@source` directive (e.g., `@source "../../packages/ui";`) in their main CSS file.
+    *   This tells the local Tailwind engine to scan the shared package's source files and generate the necessary utility classes on demand.
 
 ```mermaid
 flowchart TD

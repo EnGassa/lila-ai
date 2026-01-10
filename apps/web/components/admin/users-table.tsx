@@ -15,8 +15,8 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Input } from "@lila/ui"
+import { Button } from "@lila/ui"
 import { EditUserDialog } from "@/components/admin/edit-user-dialog"
 import { DeleteUserAlert } from "@/components/admin/delete-user-alert"
 import {

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@lila/ui";
 import { Camera, Sun, SwitchCamera } from "lucide-react";
 import AutoCaptureIndicator from "../AutoCaptureIndicator";
 

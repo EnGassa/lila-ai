@@ -6,8 +6,8 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { Edit, Loader2, MoreHorizontal, Search, Trash } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@lila/ui";
+import { Input } from "@lila/ui";
 import {
   Table,
   TableBody,

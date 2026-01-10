@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { analytics } from "@/lib/analytics";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lila/ui";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Camera, Clock, Calendar, Sparkles, Sun, Moon, History, TrendingUp, ChevronDown, ChevronUp } from "lucide-react";

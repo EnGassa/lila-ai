@@ -6,6 +6,8 @@
     - [x] **Turborepo:** Configured for build, lint, and dev orchestration.
     - [x] **Workspaces:** `apps/web`, `apps/marketing`, `packages/ui`, `packages/config` established.
     - [x] **Shared UI:** `@lila/ui` package created and linked.
+    - [x] **Component Migration:** `Button` and `Input` moved to shared package.
+    - [x] **Tailwind v4:** configured with `@source` directives for monorepo scanning.
     - [x] **Uniform Config:** Shared ESLint and TypeScript configurations.
     - [x] **CI/CD:** Workflows adapted for monorepo structure.
 

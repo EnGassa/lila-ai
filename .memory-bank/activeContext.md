@@ -19,9 +19,20 @@
     -   **Shared UI:** Proof-of-concept `Button` component exported from `@lila/ui` and rendered in `apps/web`.
     -   **CI/CD:** GitHub Actions updated to run in `apps/web` context.
 -   **Next Steps:**
-    1.  **Extract Components:** Move atomic components (Button, Input) to `@lila/ui`.
+    1.  **Extract Components:** Move remaining components (typography, layout) to `@lila/ui`.
     2.  **Unify Design:** Create shared Tailwind preset in `@lila/config`.
     3.  **Deploy:** Configure Vercel projects for `web` and `marketing`.
+
+## Current Work: Component Extraction (Phase 5)
+- **Goal:** Migrate atomic UI components from `apps/web` to the shared `@lila/ui` package to enable reuse in `apps/marketing`.
+- **Status:** **In Progress / Validated**
+- **Achievements:**
+    -   **Shared Utility:** Established `packages/ui/src/lib/utils.ts` with `cn` (Tailwind merge) helper.
+    -   **Button Component:** Successfully migrated `Button` and its cva variants to `@lila/ui`. Refactored `apps/web` to import from the package.
+    -   **Input Component:** Successfully migrated `Input` to `@lila/ui`. Refactored `apps/web` to import from the package.
+    -   **Tailwind v4 Integration:** Added `@source` directives to `globals.css` in both apps to ensure shared component styles are scanned and generated.
+    -   **Validation:** Verified via `pnpm build` and browser testing (localhost:3000/3001) that styling is preserved and components function correctly.
+
 
 ## Recent Work: Admin Enhancements
 - **Product Price:** Added dedicated "Price" input field to the Product Purchase Options dialog, allowing admins to track pricing per retailer link.
