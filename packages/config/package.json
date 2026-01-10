@@ -5,7 +5,8 @@
   "files": ["eslint-next.js", "eslint-library.js"],
   "exports": {
     "./eslint-next": "./eslint-next.js",
-    "./eslint-library": "./eslint-library.js"
+    "./eslint-library": "./eslint-library.js",
+    "./theme.css": "./src/themes/lila-theme.css"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.0.0",

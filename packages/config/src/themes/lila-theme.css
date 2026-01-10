@@ -1,0 +1,377 @@
+/* Lila Design System - Shared Theme */
+
+:root,
+.light,
+.light-theme {
+  /* Lila Earth Palette (Renamed to Brown) */
+  --brown-1: #fefdfc;
+  --brown-2: #fcf8f7;
+  --brown-3: #f7eeec;
+  --brown-4: #f2e4e0;
+  --brown-5: #edd9d5;
+  --brown-6: #e7cdc7;
+  --brown-7: #e0bdb5;
+  --brown-8: #d2a49a;
+  --brown-9: #bc8b80;
+  --brown-10: #b07f75;
+  --brown-11: #7e5c55;
+  --brown-12: #372d2b;
+
+  --brown-a1: #aa550003;
+  --brown-a2: #a0200008;
+  --brown-a3: #941b0013;
+  --brown-a4: #9521001f;
+  --brown-a5: #9219002a;
+  --brown-a6: #921c0038;
+  --brown-a7: #951c014a;
+  --brown-a8: #8e1a0065;
+  --brown-a9: #7917007f;
+  --brown-a10: #6d13008a;
+  --brown-a11: #3e0b00aa;
+  --brown-a12: #0f0300d4;
+
+  --brown-contrast: #fff;
+  --brown-surface: #fbf6f5cc;
+  --brown-indicator: #bc8b80;
+  --brown-track: #bc8b80;
+
+  /* Blue Palette (User Provided) */
+  --blue-1: #fbfdff;
+  --blue-2: #f4f9fe;
+  --blue-3: #e8f3fe;
+  --blue-4: #dcecfc;
+  --blue-5: #cce2f7;
+  --blue-6: #bad5ee;
+  --blue-7: #a3c3e3;
+  --blue-8: #86acd0;
+  --blue-9: #374d62;
+  --blue-10: #283d51;
+  --blue-11: #4a6e90;
+  --blue-12: #273d51;
+
+  --blue-a1: #0080ff04;
+  --blue-a2: #0074e80b;
+  --blue-a3: #007af417;
+  --blue-a4: #0075ea23;
+  --blue-a5: #006ed733;
+  --blue-a6: #0064c145;
+  --blue-a7: #0059b25c;
+  --blue-a8: #00519c79;
+  --blue-a9: #001c37c8;
+  --blue-a10: #001931d7;
+  --blue-a11: #003363b5;
+  --blue-a12: #001a32d8;
+
+  /* Custom Typography Scale (Figma 9-Step) */
+  --font-size-1: 12px;
+  --font-size-2: 14px;
+  --font-size-3: 16px;
+  --font-size-4: 18px;
+  --font-size-5: 20px;
+  --font-size-6: 24px;
+  --font-size-7: 28px;
+  --font-size-8: 35px;
+  --font-size-9: 60px;
+
+  --line-height-1: 16px;
+  --line-height-2: 20px;
+  --line-height-3: 24px;
+  --line-height-4: 26px;
+  --line-height-5: 28px;
+  --line-height-6: 30px;
+  --line-height-7: 36px;
+  --line-height-8: 40px;
+  --line-height-9: 60px;
+
+  --letter-spacing-1: 0.0025em;
+  --letter-spacing-2: 0em;
+  --letter-spacing-3: 0em;
+  --letter-spacing-4: -0.0025em;
+  --letter-spacing-5: -0.005em;
+  --letter-spacing-6: -0.00625em;
+  --letter-spacing-7: -0.0075em;
+  --letter-spacing-8: -0.01em;
+  --letter-spacing-9: -0.025em;
+
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  --blue-contrast: #fff;
+  --blue-surface: #f1f8fecc;
+  --blue-indicator: #374d62;
+  --blue-track: #374d62;
+}
+
+.dark,
+.dark-theme {
+  /* Lila Earth Dark Mode (Renamed to Brown) */
+  --brown-1: #131010;
+  --brown-2: #1c1817;
+  --brown-3: #27211f;
+  --brown-4: #322826;
+  --brown-5: #3d302d;
+  --brown-6: #4c3a36;
+  --brown-7: #604843;
+  --brown-8: #7d5c55;
+  --brown-9: #bc8b80;
+  --brown-10: #b07f75;
+  --brown-11: #dcb1a7;
+  --brown-12: #f8ded8;
+
+  --brown-a1: #bb000003;
+  --brown-a2: #fba6910c;
+  --brown-a3: #fbbca618;
+  --brown-a4: #fbb4a624;
+  --brown-a5: #fbb6a630;
+  --brown-a6: #fdb5a540;
+  --brown-a7: #ffb6a755;
+  --brown-a8: #ffb6a774;
+  --brown-a9: #febaabb8;
+  --brown-a10: #feb5a6ab;
+  --brown-a11: #ffcdc1da;
+  --brown-a12: #ffe4def8;
+
+  --brown-contrast: #fff;
+  --brown-surface: #271f1d80;
+  --brown-indicator: #bc8b80;
+  --brown-track: #bc8b80;
+
+  /* Blue Palette (Dark Mode) */
+  --blue-1: #0e1215;
+  --blue-2: #15191e;
+  --blue-3: #1b252f;
+  --blue-4: #202e3c;
+  --blue-5: #273848;
+  --blue-6: #304355;
+  --blue-7: #3d5368;
+  --blue-8: #4f6c87;
+  --blue-9: #5f81a2;
+  --blue-10: #57748f;
+  --blue-11: #99bada;
+  --blue-12: #daebfb;
+
+  --blue-a1: #0045de05;
+  --blue-a2: #5aa3fe0e;
+  --blue-a3: #5facf921;
+  --blue-a4: #63affb2f;
+  --blue-a5: #71baff3b;
+  --blue-a6: #7ec0ff49;
+  --blue-a7: #88c4fd5e;
+  --blue-a8: #8dc7fd7f;
+  --blue-a9: #90c8fe9c;
+  --blue-a10: #96ccff87;
+  --blue-a11: #b1d8fed8;
+  --blue-a12: #ddeffffb;
+
+  --blue-contrast: #fff;
+  --blue-surface: #19212b80;
+  --blue-indicator: #5f81a2;
+  --blue-track: #5f81a2;
+}
+
+@supports (color: color(display-p3 1 1 1)) {
+  @media (color-gamut: p3) {
+
+    :root,
+    .light,
+    .light-theme {
+      --brown-1: oklch(99.4% 0.0014 32.98);
+      --brown-2: oklch(98.3% 0.0047 32.98);
+      --brown-3: oklch(95.5% 0.0102 32.98);
+      --brown-4: oklch(92.8% 0.0161 32.98);
+      --brown-5: oklch(90% 0.0226 32.98);
+      --brown-6: oklch(86.9% 0.0308 32.98);
+      --brown-7: oklch(82.6% 0.042 32.98);
+      --brown-8: oklch(75.9% 0.0569 32.98);
+      --brown-9: oklch(68.1% 0.0625 32.98);
+      --brown-10: oklch(64.3% 0.0625 32.98);
+      --brown-11: oklch(50.8% 0.0461 32.98);
+      --brown-12: oklch(30.7% 0.0152 32.98);
+
+      --brown-a1: color(display-p3 0.6745 0.349 0.0235 / 0.012);
+      --brown-a2: color(display-p3 0.5098 0.1451 0.0196 / 0.032);
+      --brown-a3: color(display-p3 0.4784 0.1137 0.0078 / 0.075);
+      --brown-a4: color(display-p3 0.502 0.1059 0.0039 / 0.118);
+      --brown-a5: color(display-p3 0.4902 0.102 0.0039 / 0.161);
+      --brown-a6: color(display-p3 0.4941 0.1137 0.0039 / 0.216);
+      --brown-a7: color(display-p3 0.498 0.1137 0.0039 / 0.287);
+      --brown-a8: color(display-p3 0.4784 0.102 0.0039 / 0.389);
+      --brown-a9: color(display-p3 0.4078 0.0902 0.0039 / 0.491);
+      --brown-a10: color(display-p3 0.3686 0.0745 0 / 0.534);
+      --brown-a11: color(display-p3 0.2078 0.0431 0 / 0.663);
+      --brown-a12: color(display-p3 0.0471 0.0118 0 / 0.832);
+
+      --brown-contrast: #fff;
+      --brown-surface: color(display-p3 0.9843 0.9647 0.9608 / 0.8);
+      --brown-indicator: oklch(68.1% 0.0625 32.98);
+      --brown-track: oklch(68.1% 0.0625 32.98);
+
+      --blue-1: oklch(99.3% 0.0042 247.8);
+      --blue-2: oklch(98% 0.0078 247.8);
+      --blue-3: oklch(96.1% 0.0188 247.8);
+      --blue-4: oklch(93.6% 0.0281 247.8);
+      --blue-5: oklch(90.3% 0.0368 247.8);
+      --blue-6: oklch(86.1% 0.0455 247.8);
+      --blue-7: oklch(80.6% 0.0565 247.8);
+      --blue-8: oklch(72.9% 0.0671 247.8);
+      --blue-9: oklch(41.1% 0.0447 247.8);
+      --blue-10: oklch(35.2% 0.0447 247.8);
+      --blue-11: oklch(52.5% 0.0671 247.8);
+      --blue-12: oklch(35.1% 0.0447 247.8);
+
+      --blue-a1: color(display-p3 0.0235 0.5137 1 / 0.016);
+      --blue-a2: color(display-p3 0.0235 0.4157 0.8078 / 0.04);
+      --blue-a3: color(display-p3 0.0078 0.4353 0.9059 / 0.083);
+      --blue-a4: color(display-p3 0.0078 0.3804 0.8471 / 0.126);
+      --blue-a5: color(display-p3 0.0039 0.3647 0.7882 / 0.185);
+      --blue-a6: color(display-p3 0.0039 0.3294 0.7059 / 0.251);
+      --blue-a7: color(display-p3 0.0039 0.2941 0.6431 / 0.338);
+      --blue-a8: color(display-p3 0.0039 0.2588 0.5608 / 0.444);
+      --blue-a9: color(display-p3 0 0.0824 0.1843 / 0.765);
+      --blue-a10: color(display-p3 0 0.0706 0.1608 / 0.824);
+      --blue-a11: color(display-p3 0 0.1569 0.3412 / 0.679);
+      --blue-a12: color(display-p3 0 0.0745 0.1647 / 0.828);
+
+      --blue-contrast: #fff;
+      --blue-surface: color(display-p3 0.9529 0.9725 0.9922 / 0.8);
+      --blue-indicator: oklch(41.1% 0.0447 247.8);
+      --blue-track: oklch(41.1% 0.0447 247.8);
+    }
+
+    .dark,
+    .dark-theme {
+      --brown-1: oklch(17.8% 0.0042 32.98);
+      --brown-2: oklch(21.3% 0.0062 32.98);
+      --brown-3: oklch(25.3% 0.0107 32.98);
+      --brown-4: oklch(28.8% 0.0152 32.98);
+      --brown-5: oklch(32.4% 0.0202 32.98);
+      --brown-6: oklch(36.8% 0.0265 32.98);
+      --brown-7: oklch(42.7% 0.0342 32.98);
+      --brown-8: oklch(50.7% 0.0447 32.98);
+      --brown-9: oklch(68.1% 0.0625 32.98);
+      --brown-10: oklch(64.3% 0.0625 32.98);
+      --brown-11: oklch(79.6% 0.0523 32.98);
+      --brown-12: oklch(92% 0.0298 32.98);
+
+      --brown-a1: color(display-p3 0.8549 0 0 / 0.005);
+      --brown-a2: color(display-p3 0.9804 0.7059 0.6157 / 0.043);
+      --brown-a3: color(display-p3 0.9922 0.7725 0.6863 / 0.089);
+      --brown-a4: color(display-p3 0.9961 0.7569 0.698 / 0.131);
+      --brown-a5: color(display-p3 1 0.7569 0.7098 / 0.177);
+      --brown-a6: color(display-p3 1 0.7647 0.702 / 0.236);
+      --brown-a7: color(display-p3 0.9961 0.7608 0.698 / 0.316);
+      --brown-a8: color(display-p3 1 0.7529 0.6902 / 0.433);
+      --brown-a9: color(display-p3 1 0.7725 0.7098 / 0.69);
+      --brown-a10: color(display-p3 1 0.7569 0.6941 / 0.639);
+      --brown-a11: color(display-p3 1 0.8392 0.7922 / 0.824);
+      --brown-a12: color(display-p3 1 0.9137 0.8863 / 0.954);
+
+      --brown-contrast: #fff;
+      --brown-surface: color(display-p3 0.1412 0.1176 0.1098 / 0.5);
+      --brown-indicator: oklch(68.1% 0.0625 32.98);
+      --brown-track: oklch(68.1% 0.0625 32.98);
+
+      --blue-1: oklch(17.8% 0.0099 247.8);
+      --blue-2: oklch(21.2% 0.0106 247.8);
+      --blue-3: oklch(26.1% 0.0231 247.8);
+      --blue-4: oklch(29.6% 0.0324 247.8);
+      --blue-5: oklch(33.3% 0.0363 247.8);
+      --blue-6: oklch(37.5% 0.0396 247.8);
+      --blue-7: oklch(43.2% 0.0447 247.8);
+      --blue-8: oklch(51.9% 0.0543 247.8);
+      --blue-9: oklch(59% 0.0635 247.8);
+      --blue-10: oklch(54.7% 0.0543 247.8);
+      --blue-11: oklch(77.5% 0.0581 247.8);
+      --blue-12: oklch(93.2% 0.0278 247.8);
+
+      --blue-a1: color(display-p3 0 0.298 0.9922 / 0.017);
+      --blue-a2: color(display-p3 0.4235 0.6392 0.9961 / 0.055);
+      --blue-a3: color(display-p3 0.4549 0.7098 1 / 0.122);
+      --blue-a4: color(display-p3 0.4667 0.7098 1 / 0.177);
+      --blue-a5: color(display-p3 0.5176 0.7412 1 / 0.227);
+      --blue-a6: color(display-p3 0.5608 0.7608 1 / 0.278);
+      --blue-a7: color(display-p3 0.6039 0.7804 1 / 0.358);
+      --blue-a8: color(display-p3 0.6118 0.7882 1 / 0.488);
+      --blue-a9: color(display-p3 0.6235 0.7961 1 / 0.597);
+      --blue-a10: color(display-p3 0.6392 0.8039 1 / 0.522);
+      --blue-a11: color(display-p3 0.7412 0.8588 1 / 0.832);
+      --blue-a12: color(display-p3 0.8902 0.9412 1 / 0.975);
+
+      --blue-contrast: #fff;
+      --blue-surface: color(display-p3 0.102 0.1255 0.1569 / 0.5);
+      --blue-indicator: oklch(59% 0.0635 247.8);
+      --blue-track: oklch(59% 0.0635 247.8);
+    }
+  }
+}
+
+@theme {
+  --font-family-sans: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Geist", "Geist Fallback", ui-sans-serif, system-ui;
+  --font-family-serif: var(--font-playfair), "Playfair Display", serif;
+  --font-family-mono: "SF Mono", "Geist Mono", "Geist Mono Fallback", ui-monospace;
+
+  /* Lila Earth Base Colors */
+  --color-background: #F2F0E9;
+  --color-foreground: #4A4238;
+  
+  --color-card: var(--gold-1);
+  --color-card-foreground: #4A4238;
+  --color-popover: #F2F0E9;
+  --color-popover-foreground: #4A4238;
+  
+  --color-primary: var(--brown-9);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--sand-3);
+  --color-secondary-foreground: var(--sand-12);
+  --color-muted: var(--sand-3);
+  --color-muted-foreground: var(--sand-11);
+  --color-accent: var(--blue-9);
+  --color-accent-foreground: #ffffff;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #fafafa;
+  --color-border: var(--sand-6);
+  --color-input: var(--sand-3);
+  --color-ring: var(--blue-8);
+
+  /* Brand colors */
+  --color-brand: #C8A28E;
+  --color-brand-hover: #B6907D;
+  --color-brand-light: rgba(200, 162, 142, 0.1);
+  --color-brand-border: #D6CDBF;
+  --color-brown-500: #4A4238;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  /* More rounded */
+  --radius-lg: 1rem;
+}
+
+.dark {
+  --color-background: var(--sand-1);
+  --color-foreground: var(--sand-12);
+  --color-card: var(--sand-1);
+  --color-card-foreground: var(--sand-12);
+  --color-popover: var(--sand-1);
+  --color-popover-foreground: var(--sand-12);
+  --color-primary: var(--sand-12);
+  --color-primary-foreground: var(--sand-1);
+  --color-secondary: var(--sand-3);
+  --color-secondary-foreground: var(--sand-12);
+  --color-muted: var(--sand-3);
+  --color-muted-foreground: var(--sand-11);
+  --color-accent: var(--blue-9);
+  --color-accent-foreground: #fafafa;
+  --color-destructive: #7f1d1d;
+  --color-destructive-foreground: #fafafa;
+  --color-border: var(--sand-6);
+  --color-input: var(--sand-3);
+  --color-ring: var(--sand-8);
+
+  /* Brand colors - adjusted for dark mode */
+  --color-brand: #d4a599;
+  --color-brand-hover: #c48f82;
+  --color-brand-light: rgba(212, 165, 153, 0.15);
+  --color-brand-border: rgba(212, 165, 153, 0.3);
+}

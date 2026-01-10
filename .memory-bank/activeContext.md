@@ -16,22 +16,17 @@
     -   **Workspaces:** `pnpm` workspaces configured for efficient dependency management.
     -   **Tooling:** `turbo` pipelines set up for Build, Lint, and Dev.
     -   **Shared Config:** Both apps now consume standard ESLint configs from `@lila/config`.
-    -   **Shared UI:** Proof-of-concept `Button` component exported from `@lila/ui` and rendered in `apps/web`.
-    -   **CI/CD:** GitHub Actions updated to run in `apps/web` context.
 -   **Next Steps:**
-    1.  **Extract Components:** Move remaining components (typography, layout) to `@lila/ui`.
-    2.  **Unify Design:** Create shared Tailwind preset in `@lila/config`.
-    3.  **Deploy:** Configure Vercel projects for `web` and `marketing`.
+    1.  **Deployment Operations:** Configure Vercel to build from `apps/web` and `apps/marketing` roots.
+    2.  **Shared Utilities:** Create `packages/types` and `packages/utils` if needed.
 
-## Current Work: Component Extraction (Phase 5)
-- **Goal:** Migrate atomic UI components from `apps/web` to the shared `@lila/ui` package to enable reuse in `apps/marketing`.
-- **Status:** **In Progress / Validated**
+## Current Work: Design System Unification (Phase 6)
+- **Goal:** Centralize visualization (colors, typography) so `apps/marketing` matches `apps/web` perfectly.
+- **Status:** **Completed / Validated**
 - **Achievements:**
-    -   **Shared Utility:** Established `packages/ui/src/lib/utils.ts` with `cn` (Tailwind merge) helper.
-    -   **Button Component:** Successfully migrated `Button` and its cva variants to `@lila/ui`. Refactored `apps/web` to import from the package.
-    -   **Input Component:** Successfully migrated `Input` to `@lila/ui`. Refactored `apps/web` to import from the package.
-    -   **Tailwind v4 Integration:** Added `@source` directives to `globals.css` in both apps to ensure shared component styles are scanned and generated.
-    -   **Validation:** Verified via `pnpm build` and browser testing (localhost:3000/3001) that styling is preserved and components function correctly.
+    -   **Shared Theme:** Created `packages/config/src/themes/lila-theme.css` with providing "Lila Earth" and "Blue" palettes.
+    -   **Unified Imports:** Refactored `globals.css` in both apps to `@import` the shared theme.
+    -   **Validation:** Browser verification confirm identical visual language (Background `#F2F0E9`) across both apps.
 
 
 ## Recent Work: Admin Enhancements

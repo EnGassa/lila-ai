@@ -24,6 +24,16 @@ To ensure design consistency and reduce duplication across the `web` and `market
     *   Apps using the package must include a `@source` directive (e.g., `@source "../../packages/ui";`) in their main CSS file.
     *   This tells the local Tailwind engine to scan the shared package's source files and generate the necessary utility classes on demand.
 
+### CSS-First Design System (Tailwind v4)
+All application styling is unified through a single shared CSS file:
+1.  **Source:** `packages/config/src/themes/lila-theme.css`
+    - Defines properties: Colors (Lila Earth, Blue), Typography, Radius.
+    - Uses standard CSS variables (`:root`, `.dark`) and Tailwind `@theme` blocks.
+2.  **Consumption:**
+    - Applications import this file directly in their `globals.css`: `@import ".../lila-theme.css";`.
+    - This ensures `apps/web` and `apps/marketing` share the exact same visual foundation.
+
+
 ```mermaid
 flowchart TD
     User[User] --> Client[Next.js Client]

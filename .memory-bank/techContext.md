@@ -20,11 +20,13 @@
 *   **Package Manager:** pnpm (Workspaces), uv (Python Scripts)
 *   **Build System:** Turborepo
 *   **Monorepo Structure:**
-    *   `apps/*`: Next.js applications (`web`, `marketing`).
     *   `packages/*`: Shared internal packages.
         *   `ui`: Shared Design System (Radix + Tailwind).
-        *   `config`: Shared configuration (ESLint, Tailwind, TS).
+        *   `config`: Shared configuration (ESLint, TS, Tailwind CSS Themes).
         *   `typescript-config`: Base TS configurations.
+*   **Design System:** CSS-First Tailwind v4.
+    *   **Theme Source:** `packages/config/src/themes/lila-theme.css`.
+    *   **Consumption:** Apps `@import` theme CSS and `@source` the UI package.
 *   **Pre-commit Hooks:** `husky` + `lint-staged`
     *   JS/TS: `eslint`, `prettier`
     *   Python: `uvx ruff`

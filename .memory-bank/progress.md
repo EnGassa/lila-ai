@@ -8,6 +8,7 @@
     - [x] **Shared UI:** `@lila/ui` package created and linked.
     - [x] **Component Migration:** `Button` and `Input` moved to shared package.
     - [x] **Tailwind v4:** configured with `@source` directives for monorepo scanning.
+    - [x] **Design System:** Unified via `@lila/config/theme.css` (Shared Palette & Typography).
     - [x] **Uniform Config:** Shared ESLint and TypeScript configurations.
     - [x] **CI/CD:** Workflows adapted for monorepo structure.
 
