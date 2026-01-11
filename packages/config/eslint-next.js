@@ -11,7 +11,9 @@ module.exports = [
       "coverage/**",
       ".next/**",
       "out/**",
-      "node_modules/**"
+      "node_modules/**",
+      "**/sw.js",
+      "**/public/sw.js"
     ],
   },
 ];
