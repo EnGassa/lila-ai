@@ -12,6 +12,8 @@
     *   `recharts` for data visualization.
     *   `react-hook-form` + `zod` for strictly typed form management.
     *   `sonner` for toast notifications.
+    *   `@next/bundle-analyzer` (Dev) usage: `ANALYZE=true pnpm build`.
+    *   **React Compiler:** Enabled in `apps/web` (Next.js 16) for auto-memoization.
 *   **Analytics:**
     *   **Tool:** PostHog (Client-side via `posthog-js`).
     *   **Helper:** `lib/analytics.ts` provides a type-safe wrapper preventing event name typos and ensuring consistent property schemas.

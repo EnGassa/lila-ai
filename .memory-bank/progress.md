@@ -12,6 +12,12 @@
     - [x] **Uniform Config:** Shared ESLint and TypeScript configurations.
     - [x] **CI/CD:** Workflows adapted for monorepo structure.
     - [x] **Deployment:** `DEPLOYMENT.md` guide created for Vercel setup.
+    - [x] **Build Optimization (Phase 8):**
+        - [x] **Standalone Builds:** `output: 'standalone'` enabled for Docker-ready, minimal builds.
+        - [x] **React Compiler:** Enabled in `apps/web` (Next.js 16) for performance.
+        - [x] **Image Optimization:** Restored Vercel Image Optimization (LCP fix).
+        - [x] **Bundle Analyzer:** Integrated `@next/bundle-analyzer` with `ANALYZE=true` trigger.
+        - [x] **Dependencies:** Unified `framer-motion`/`lucide-react` and updated `tailwind-merge` (v3).
 
 *   **Premium Loading Experience:**
     - [x] **Universal Loading Screen:** Created a reusable `LoadingScreen` component (Beige/Earthy theme, pulsing logo).

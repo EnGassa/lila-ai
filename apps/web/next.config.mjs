@@ -1,17 +1,15 @@
 /** @type {import('next').NextConfig} */
+import withSerwistInit from "@serwist/next";
+
 const nextConfig = {
   transpilePackages: ["@lila/ui"],
-  eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
-  },
+  output: 'standalone',
+  reactCompiler: true,
   typescript: {
     ignoreBuildErrors: true,
   },
-  images: {
-    unoptimized: true,
-  },
+  // Images are now optimized by default (Vercel) for better LCP
+  // images: { unoptimized: true }, 
   cacheComponents: true,
   experimental: {
     serverActions: {
@@ -33,12 +31,14 @@ const nextConfig = {
   },
 }
 
-import withSerwistInit from "@serwist/next";
-
 const withSerwist = withSerwistInit({
   swSrc: "app/sw.ts",
   swDest: "public/sw.js",
   disable: process.env.NODE_ENV === "development",
 });
 
-export default withSerwist(nextConfig);
+const withBundleAnalyzer = (await import('@next/bundle-analyzer')).default({
+  enabled: process.env.ANALYZE === 'true',
+});
+
+export default withBundleAnalyzer(withSerwist(nextConfig));

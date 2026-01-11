@@ -20,7 +20,21 @@
     1.  **Shared Utilities:** Create `packages/types` and `packages/utils`.
     2.  **User Execution:** User must manually configure Vercel projects using `DEPLOYMENT.md`.
 
-## Current Work: Deployment Operations (Phase 7)
+## Current Work: Build Optimization (Phase 8)
+-   **Goal:** Optimize application builds for performance (LCP), deployment flexibility (Docker), and developer experience.
+-   **Achievements:**
+    -   **React Compiler:** Enabled `experimental: { reactCompiler: true }` in `apps/web` (Next.js 16) for automatic fine-grained memoization and reduced re-renders.
+    -   **Image Optimization:** Removed `images: { unoptimized: true }` from `apps/web` config. This re-enables Vercel Image Optimization, serving WebP/AVIF formats to drastically improve LCP.
+    -   **Standalone Builds:** Configured `output: 'standalone'` for both `web` and `marketing` apps. This generates minimal Node.js server builds, making the repo Docker-ready.
+    -   **Bundle Analysis:** Integrated `@next/bundle-analyzer`.
+        -   **Config:** Added `globalPassThroughEnv: ["ANALYZE"]` to `turbo.json`.
+        -   **Usage:** running `ANALYZE=true pnpm build` now generates visual bundle maps for size auditing.
+    -   **Dependency Health:**
+        -   Unified `framer-motion` (v12) and `lucide-react` versions across the monorepo.
+        -   Updated `tailwind-merge` to v3 for better Tailwind 4 compatibility.
+        -   Updated `eslint-config-next` to v16.1.1 to match framework version.
+
+## Previous Work: Deployment Operations (Phase 7)
 - **Goal:** Prepare Vercel configuration for the monorepo structure.
 - **Status:** **Planned / Documented**
 - **Achievements:**

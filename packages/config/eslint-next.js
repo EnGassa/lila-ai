@@ -1,19 +1,13 @@
-const { FlatCompat } = require("@eslint/eslintrc");
-const js = require("@eslint/js");
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
+const nextVitals = require("eslint-config-next/core-web-vitals");
+const nextTs = require("eslint-config-next/typescript");
 
 /** @type {import('eslint').Linter.Config[]} */
 module.exports = [
-  ...compat.extends("next/core-web-vitals"),
-  ...compat.extends("next/typescript"),
+  ...nextVitals,
+  ...nextTs,
   {
     ignores: [
-      "dist/**", 
+      "dist/**",
       "coverage/**",
       ".next/**",
       "out/**",
